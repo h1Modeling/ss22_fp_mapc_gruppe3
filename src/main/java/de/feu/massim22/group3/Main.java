@@ -32,7 +32,8 @@ public class Main {
                 for (int i = 0; i < confFiles.length; i++) {
                     System.out.println(i + " " + confFiles[i]);
                 }
-                Scanner in = new Scanner(System.in);
+                @SuppressWarnings("resource")
+				Scanner in = new Scanner(System.in);
                 Integer confNum = null;
                 while (confNum == null) {
                     try {
