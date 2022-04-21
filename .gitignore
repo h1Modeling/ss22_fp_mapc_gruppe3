@@ -1,4 +1,5 @@
-gruppe3/target
+gruppe3/target/
+.github/workflows/
 *.aux
 *.synctex.gz
 *.toc
