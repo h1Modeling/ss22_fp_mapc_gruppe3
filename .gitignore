@@ -1,1 +1,4 @@
-/target
+gruppe3/target
+*.aux
+*.synctex.gz
+*.toc
