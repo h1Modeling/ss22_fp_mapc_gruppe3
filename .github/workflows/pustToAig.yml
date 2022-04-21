@@ -31,9 +31,7 @@ jobs:
         cd /home/runner/work/ss22_fp_mapc_g3/ss22_fp_mapc_g3
         git remote remove origin
         git remote add origin "https://x-access-token:$GH_TOKEN@github.com/aig-hagen/ss22_fp_mapc.git"
-        git fetch
-        git config user.email "stadler.heinz@gmail.com"
-        git config user.name "Heinz Stadler"
+        git config user.name "Bot Gruppe 3"
         git config pull.rebase false
         git branch --set-upstream-to origin/main
         git pull
