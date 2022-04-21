@@ -32,6 +32,8 @@ jobs:
         git remote remove origin
         git remote add origin "https://x-access-token:$GH_TOKEN@github.com/aig-hagen/ss22_fp_mapc.git"
         git fetch
+        git config user.email "stadler.heinz@gmail.com"
+        git config user.name "Heinz Stadler"
         git config pull.rebase false
         git branch --set-upstream-to origin/main
         git pull
