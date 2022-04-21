@@ -6,9 +6,9 @@ name: Push_to_aig_hagen
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -37,5 +37,5 @@ jobs:
         git config pull.rebase false
         git branch --set-upstream-to origin/main
         git pull
-        git push -u origin main
+        git push -u origin master:main
         echo finished
