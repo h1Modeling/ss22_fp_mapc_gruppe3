@@ -24,12 +24,18 @@ jobs:
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
-    - name: test
+    - name: Push
       env:
         GH_TOKEN: ${{ secrets.TOKEN }}
       run: |
-        cd /home/runner/work/testlokal/testlokal
+        cd /home/runner/work/ss22_fp_mapc_g3/ss22_fp_mapc_g3
         git remote remove origin
-        git remote add origin "https://x-access-token:$GH_TOKEN@github.com/h1Modeling/testuni.git"
-        git push -u origin main
+        git remote add origin "https://x-access-token:$GH_TOKEN@github.com/aig-hagen/ss22_fp_mapc.git"
+        git fetch
+        git config user.email "stadler.heinz@gmail.com"
+        git config user.name "Heinz Stadler"
+        git config pull.rebase false
+        git branch --set-upstream-to origin/main
+        git pull
+        git push -u origin master:main
         echo finished
