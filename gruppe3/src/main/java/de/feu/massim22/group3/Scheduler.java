@@ -1,4 +1,4 @@
-package de.feu.massim22.group3;
+package massim.javaagents;
 
 import eis.AgentListener;
 import eis.EnvironmentListener;
@@ -9,11 +9,10 @@ import eis.exceptions.RelationException;
 import eis.iilang.EnvironmentState;
 import eis.iilang.Percept;
 import massim.eismassim.EnvironmentInterface;
-
+import massim.javaagents.agents.Agent;
+import massim.javaagents.agents.BasicAgent;
+import massim.javaagents.agents.G3Agent;
 import org.json.JSONObject;
-
-import de.feu.massim22.group3.agents.Agent;
-import de.feu.massim22.group3.agents.BasicAgent;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -101,6 +100,9 @@ public class Scheduler implements AgentListener, EnvironmentListener{
                     agent = new BasicAgent(agentConf.name, mailService);
                     break;
                 // [add further types here]
+                case "G3Agent":
+                    agent = new G3Agent(agentConf.name, mailService);
+                    break;    
                 default:
                     System.out.println("Unknown agent type/class " + agentConf.className);
             }
