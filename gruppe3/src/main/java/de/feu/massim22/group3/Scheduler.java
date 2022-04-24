@@ -1,4 +1,4 @@
-package massim.javaagents;
+package de.feu.massim22.group3;
 
 import eis.AgentListener;
 import eis.EnvironmentListener;
