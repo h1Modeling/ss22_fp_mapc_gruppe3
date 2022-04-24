@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import de.feu.massim22.group3.agents.Agent;
 import de.feu.massim22.group3.agents.BasicAgent;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -102,7 +103,7 @@ public class Scheduler implements AgentListener, EnvironmentListener{
                     break;
                 // [add further types here]
                 default:
-                    System.out.println("Unknown agent type/class " + agentConf.className);
+                    AgentLogger.warning("Unknown agent type/class " + agentConf.className);
             }
             if(agent == null) continue;
 
@@ -116,7 +117,7 @@ public class Scheduler implements AgentListener, EnvironmentListener{
 
             try {
                 ei.associateEntity(agent.getName(), agentConf.entity);
-                System.out.println("associated agent \"" + agent.getName() + "\" with entity \"" + agentConf.entity + "\"");
+                AgentLogger.info("associated agent \"" + agent.getName() + "\" with entity \"" + agentConf.entity + "\"");
             } catch (RelationException e) {
                 e.printStackTrace();
             }
@@ -153,7 +154,7 @@ public class Scheduler implements AgentListener, EnvironmentListener{
                 try {
                     eis.performAction(agent.getName(), action);
                 } catch (ActException e) {
-                    System.out.println("Could not perform action " + action.getName() + " for " + agent.getName());
+                    AgentLogger.warning("Could not perform action " + action.getName() + " for " + agent.getName());
                 }
             }
         });
