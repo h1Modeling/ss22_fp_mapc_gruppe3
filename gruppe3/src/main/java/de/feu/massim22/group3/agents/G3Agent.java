@@ -9,7 +9,7 @@ import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import eis.iilang.*;
 import massim.eismassim.Log;
-import massim.javaagents.MailService;
+import de.feu.massim22.group3.MailService;
 
 public class G3Agent extends Agent {
 
