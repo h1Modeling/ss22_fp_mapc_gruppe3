@@ -9,9 +9,9 @@ import eis.exceptions.RelationException;
 import eis.iilang.EnvironmentState;
 import eis.iilang.Percept;
 import massim.eismassim.EnvironmentInterface;
-import massim.javaagents.agents.Agent;
-import massim.javaagents.agents.BasicAgent;
-import massim.javaagents.agents.G3Agent;
+import de.feu.massim22.group3.agents.Agent;
+import de.feu.massim22.group3.agents.BasicAgent;
+import de.feu.massim22.group3.agents.G3Agent;
 import org.json.JSONObject;
 
 import java.io.IOException;
