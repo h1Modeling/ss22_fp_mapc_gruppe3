@@ -1,4 +1,4 @@
-package massim.javaagents.agents;
+package de.feu.massim22.group3.agents;
 
 import java.util.*;
 import java.awt.Point;
