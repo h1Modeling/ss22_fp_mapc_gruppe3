@@ -14,7 +14,11 @@ import org.json.JSONObject;
 
 import de.feu.massim22.group3.agents.Agent;
 import de.feu.massim22.group3.agents.BasicAgent;
+import de.feu.massim22.group3.agents.G3Agent;
+
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -102,6 +106,9 @@ public class Scheduler implements AgentListener, EnvironmentListener{
                     agent = new BasicAgent(agentConf.name, mailService);
                     break;
                 // [add further types here]
+                case "G3Agent":
+                    agent = new G3Agent(agentConf.name, mailService);
+                    break;
                 default:
                     AgentLogger.warning("Unknown agent type/class " + agentConf.className);
             }

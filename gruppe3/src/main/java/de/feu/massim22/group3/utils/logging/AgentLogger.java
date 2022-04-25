@@ -26,6 +26,7 @@ public class AgentLogger{
 	
 	
 	private static Logger logger = null;
+	// tags given with logging statements to specify file name of log file
 	private static Set<String> tags = new HashSet<>();
 	
 	

@@ -38,9 +38,6 @@ public class BasicAgent extends Agent {
         	AgentLogger.info(this.getName(),
         			"Percept " +
                     String.format("%s - %s", percept.getName(), percept.getParameters()));
-//        	AgentLogger.warning(this.getName(), "piep warn");
-//        	AgentLogger.fine(this.getName(), "piep fine");
-//        	AgentLogger.config("piep config");
         	}
         	if (percept.getName().equals("actionID")) {
                 Parameter param = percept.getParameters().get(0);

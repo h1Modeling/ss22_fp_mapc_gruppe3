@@ -1,7 +1,6 @@
 package de.feu.massim22.group3;
 
 import eis.iilang.Percept;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
