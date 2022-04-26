@@ -7,6 +7,8 @@ import massim.eismassim.EnvironmentInterface;
 import java.io.File;
 import java.util.Scanner;
 
+import de.feu.massim22.group3.utils.logging.AgentLogger;
+
 /**
  * Starts a new scheduler.
  */
@@ -16,15 +18,15 @@ public class Main {
 
         String configDir = "";
 
-        System.out.println("PHASE 1: INSTANTIATING SCHEDULER");
+        AgentLogger.info("PHASE 1: INSTANTIATING SCHEDULER");
         if (args.length != 0) configDir = args[0];
         else {
-            System.out.println("PHASE 1.2: CHOOSE CONFIGURATION");
+            AgentLogger.info("PHASE 1.2: CHOOSE CONFIGURATION");
             File confDir = new File("conf");
             confDir.mkdirs();
             File[] confFiles = confDir.listFiles(File::isDirectory);
             if (confFiles == null || confFiles.length == 0) {
-                System.out.println("No javaagents config files available - exit JavaAgents.");
+                AgentLogger.warning("No javaagents config files available - exit JavaAgents.");
                 System.exit(0);
             }
             else {
@@ -51,7 +53,7 @@ public class Main {
         }
         Scheduler scheduler = new Scheduler(configDir);
 
-        System.out.println("PHASE 2: INSTANTIATING ENVIRONMENT");
+        AgentLogger.info("PHASE 2: INSTANTIATING ENVIRONMENT");
         EnvironmentInterface ei = new EnvironmentInterface(configDir + File.separator + "eismassimconfig.json");
 
         try {
@@ -60,13 +62,13 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println("PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT");
+        AgentLogger.info("PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT");
         scheduler.setEnvironment(ei);
 
-        System.out.println("PHASE 4: RUNNING");
+        AgentLogger.info("PHASE 4: RUNNING");
         int step = 0;
         while ((ei.getState() == EnvironmentState.RUNNING)) {
-            System.out.println("SCHEDULER STEP " + step);
+            AgentLogger.info("SCHEDULER STEP " + step);
             scheduler.step();
             step++;
         }
