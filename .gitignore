@@ -1,6 +1,5 @@
-gruppe3/target/
 target/
-.github/workflows/
+logs/
 .metadata/
 *.aux
 *.synctex.gz

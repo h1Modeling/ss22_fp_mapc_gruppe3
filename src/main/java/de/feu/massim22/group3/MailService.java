@@ -44,7 +44,7 @@ public class MailService {
         if(recipient == null) {
             logger.warning("Cannot deliver message to " + to + "; unknown target,");
         }
-        else{
+        else {
             recipient.handleMessage(message, from);
         }
     }
