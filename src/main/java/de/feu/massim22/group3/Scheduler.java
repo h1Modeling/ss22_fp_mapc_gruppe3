@@ -6,6 +6,7 @@ import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
 import eis.exceptions.PerceiveException;
 import eis.exceptions.RelationException;
+import eis.iilang.Action;
 import eis.iilang.EnvironmentState;
 import eis.iilang.Percept;
 import massim.eismassim.EnvironmentInterface;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import de.feu.massim22.group3.agents.Agent;
 import de.feu.massim22.group3.agents.BasicAgent;
+import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.G3Agent;
 
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -31,7 +33,7 @@ import java.util.*;
  * blocks until new percepts are available!
  * (Also, queued and notifications should be disabled)
  */
-public class Scheduler implements AgentListener, EnvironmentListener{
+public class Scheduler implements AgentListener, EnvironmentListener, EisSender {
 
     /**
      * Holds configured agent data.
@@ -109,6 +111,11 @@ public class Scheduler implements AgentListener, EnvironmentListener{
                 case "G3Agent":
                     agent = new G3Agent(agentConf.name, mailService);
                     break;
+                case "BdiAgentV1":
+                	agent = new BdiAgentV1(agentConf.name, mailService, this);
+                	Thread t = new Thread((Runnable)agent);
+                	t.start();
+                	break;
                 default:
                     AgentLogger.warning("Unknown agent type/class " + agentConf.className);
             }
@@ -156,14 +163,23 @@ public class Scheduler implements AgentListener, EnvironmentListener{
 
         // step all agents which have new percepts
         newPerceptAgents.forEach(agent -> {
-            eis.iilang.Action action = agent.step();
-            if (action != null) {
-                try {
-                    eis.performAction(agent.getName(), action);
-                } catch (ActException e) {
-                    AgentLogger.warning("Could not perform action " + action.getName() + " for " + agent.getName());
-                }
-            }
+        	// Notify multithreaded agents
+        	if (agent instanceof Runnable) {
+        		String sender = "Scheduler";
+        		Percept message = new Percept(TaskName.UPDATE.name());
+        		agent.handleMessage(message, sender);
+        	} 
+        	// get actions if agent is not multithreaded
+        	else {
+                eis.iilang.Action action = agent.step();
+                if (action != null) {
+                    try {
+                        eis.performAction(agent.getName(), action);
+                    } catch (ActException e) {
+                        AgentLogger.warning("Could not perform action " + action.getName() + " for " + agent.getName());
+                    }
+                }	
+        	}
         });
 
         if(newPerceptAgents.size() == 0) try {
@@ -187,4 +203,15 @@ public class Scheduler implements AgentListener, EnvironmentListener{
 
     @Override
     public void handleNewEntity(String entity) {}
+
+	@Override
+	public void send(Agent agent, Action action) {
+        if (action != null) {
+            try {
+                eis.performAction(agent.getName(), action);
+            } catch (ActException e) {
+                AgentLogger.warning("Could not perform action " + action.getName() + " for " + agent.getName());
+            }
+        }
+	}
 }
