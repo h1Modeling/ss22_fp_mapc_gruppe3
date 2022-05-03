@@ -1,5 +1,6 @@
 target/
 logs/
+logs/AgentLogger.log
 .metadata/
 *.aux
 *.synctex.gz
