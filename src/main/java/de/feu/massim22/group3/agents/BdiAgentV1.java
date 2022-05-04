@@ -139,6 +139,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 			e.printStackTrace();
 		}
         Action a = new Action("move", new Identifier("n"));
+		//Action a = new Action("survey", new Identifier("dispenser"));
     	intention.setNextAction(a);
 	}
 	
