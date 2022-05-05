@@ -1,18 +1,20 @@
 package de.feu.massim22.group3.agents;
 
+import java.awt.Point;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
-import eis.iilang.Function;
 import eis.iilang.Identifier;
-import eis.iilang.Parameter;
 import eis.iilang.Percept;
+import massim.protocol.data.Thing;
 
 public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 	
@@ -69,11 +71,6 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		}
 	}
 	
-	@Override
-	public void forwardMessageFromSupervisor(Percept message, String receiver) {
-		this.sendMessage(message, receiver, this.getName());
-	}
-	
 	// TODO Add Agent Logic 
 	private void performTask(Percept task, String sender) {
 		String taskKey = task.getName();
@@ -85,16 +82,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 			setDummyAction();
 			break;
 		case TO_SUPERVISOR:
-			Percept toPercept = unpackSupervisorPercept(task);
-			if (toPercept != null) {
-				forwardMessage(toPercept, sender);
-			}
-			break;
-		case FROM_SUPERVISOR:
-			Percept fromPercept = unpackSupervisorPercept(task);
-			if (fromPercept != null) {
-				handleSupervisorMessage(fromPercept);
-			}
+			this.supervisor.handleMessage(task, sender);
 			break;
 		default:
 			throw new IllegalArgumentException("Message is not handled!");
@@ -103,32 +91,22 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		
 	}
 	
-	private Percept unpackSupervisorPercept(Percept task) {
-		List<Parameter> fromParas = task.getParameters();
-		if (fromParas.size() > 0) {
-			Parameter p = fromParas.get(0);
-			if (!(p instanceof Function)) {
-				throw new IllegalArgumentException("Supervisor Messages must contain a function in Body");
-			}
-			Function f = (Function)p;
-			String name = f.getName();
-			return new Percept(name, f.getParameters());
-		}
-		return null;
-	}
-	
-	private void handleSupervisorMessage(Percept p) {
-		
-	}
-	
-	private void forwardMessage(Percept p, String sender) {
-		
-	}
-	
 	private void updatePercepts() {
-        List<Percept> percepts = getPercepts();
+
+        // Update Percepts
+		List<Percept> percepts = getPercepts();
         belief.update(percepts);
-        AgentLogger.info(belief.toString());
+		AgentLogger.info(belief.toString());
+		
+		// Update Navi
+		Set<Thing> things = belief.getThings();
+		List<Point> goalPoints = belief.getGoalZones();
+		List<Point> rolePoints = belief.getRoleZones();
+		Point position = belief.getPosition();
+		Navi.get().updateAgent(this.getName(), position, things, goalPoints, rolePoints);
+		
+		// Inform Supervisor of Map send
+		this.supervisor.receiveConfirmation(this.getName(), TaskName.MAP_SENT_TO_NAVI);
 	}
 	
 	private void setDummyAction() {
@@ -144,5 +122,15 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 	
 	private record PerceptMessage(String sender, Percept percept) {
 		
+	}
+
+	@Override
+	public void forwardMessageFromSupervisor(Percept message, String receiver, String sender) {
+		this.sendMessage(message, receiver, sender);
+	}
+
+	@Override
+	public void initSupervisorStep() {
+		this.supervisor.initStep();
 	}
 }

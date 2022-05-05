@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.awt.Point;
 
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import eis.iilang.Action;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -42,18 +42,18 @@ public class Belief {
     private String lastActionResult;
     private List<String> lastActionParams = new ArrayList<>();
     
-	private List<Position> attachedThings = new ArrayList<>();
+	private List<Point> attachedThings = new ArrayList<>();
     private int energy;
     private boolean deactivated;
     private String role;
     private List<StepEvent> stepEvents = new ArrayList<>();
     private List<String> violations = new ArrayList<>();
-    private List<Position> goalZones = new ArrayList<>();
-    private List<Position> roleZones = new ArrayList<>();
+    private List<Point> goalZones = new ArrayList<>();
+    private List<Point> roleZones = new ArrayList<>();
     
     // Group 3 Beliefs
-    private Position position = new Position(0, 0);
-	
+    private Point position = new Point(0, 0);
+
 	Belief() { }
     
 	void update(List<Percept> percepts) {
@@ -95,7 +95,7 @@ public class Belief {
 			case "attached":
 				int attX = toNumber(p, 0, Integer.class);
 				int attY = toNumber(p, 0, Integer.class);
-				attachedThings.add(new Position(attX, attY));
+				attachedThings.add(new Point(attX, attY));
 				break;
 			case "energy":
 				energy = toNumber(p, 0, Integer.class);
@@ -138,12 +138,12 @@ public class Belief {
 			case "roleZone":
 				int roleX = toNumber(p, 0, Integer.class);
 				int roleY = toNumber(p, 1, Integer.class);
-				roleZones.add(new Position(roleX, roleY));
+				roleZones.add(new Point(roleX, roleY));
 				break;
 			case "goalZone":
 				int goalX = toNumber(p, 0, Integer.class);
 				int goalY = toNumber(p, 1, Integer.class);
-				goalZones.add(new Position(goalX, goalY));
+				goalZones.add(new Point(goalX, goalY));
 				break;
 			case "surveyed":
 				String surveyType = toStr(p, 0);
@@ -231,7 +231,7 @@ public class Belief {
 		return lastActionParams;
 	}
 
-	List<Position> getAttachedThings() {
+	List<Point> getAttachedThings() {
 		return attachedThings;
 	}
 
@@ -255,12 +255,20 @@ public class Belief {
 		return violations;
 	}
 
-	List<Position> getGoalZones() {
+	List<Point> getGoalZones() {
 		return goalZones;
 	}
 
-	List<Position> getRoleZones() {
+	List<Point> getRoleZones() {
 		return roleZones;
+	}
+
+	Point getPosition() {
+		return position;
+	}
+
+	void setPosition(Point position) {
+		this.position = position;
 	}
 	
 	public String toString() {
@@ -316,8 +324,8 @@ public class Belief {
 		}
 		b.append(System.lineSeparator())
 			.append("Attached Things: ");
-		for (Position t : attachedThings) {
-			b.append(t.toJSON() + " | ");
+		for (Point t : attachedThings) {
+			b.append("[" + t.x + ", " + t.y + "] | ");
 		}
 		b.append(System.lineSeparator())
 			.append("Energy: ").append(energy)
@@ -338,12 +346,12 @@ public class Belief {
 		}
 		b.append(System.lineSeparator())
 			.append("Goal Zones: ");
-		for (Position t : goalZones) {
+		for (Point t : goalZones) {
 			b.append("[" + t.x + ", " + t.y + "] | ");
 		}
 		b.append(System.lineSeparator())
 		.append("Role Zones: ");
-		for (Position t : roleZones) {
+		for (Point t : roleZones) {
 			b.append("[" + t.x + ", " + t.y + "] | ");
 		}
 		return b.toString();

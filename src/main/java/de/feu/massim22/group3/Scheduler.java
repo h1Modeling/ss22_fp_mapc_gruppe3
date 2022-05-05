@@ -15,9 +15,10 @@ import org.json.JSONObject;
 
 import de.feu.massim22.group3.agents.Agent;
 import de.feu.massim22.group3.agents.BasicAgent;
+import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.G3Agent;
-
+import de.feu.massim22.group3.agents.Supervisable;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 
@@ -159,6 +160,13 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
                 if (!addList.isEmpty() || !delList.isEmpty()) newPerceptAgents.add(ag);
                 ag.setPercepts(addList, delList);
             } catch (PerceiveException ignored) { }
+        });
+
+        // for safety initStep at supervisor first
+        newPerceptAgents.forEach(agent -> {
+            if (agent instanceof Supervisable) {
+                ((Supervisable)agent).initSupervisorStep();
+            }
         });
 
         // step all agents which have new percepts

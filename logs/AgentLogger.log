@@ -1,24 +1,24 @@
-[17:54:07:679] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
-[17:54:07:735] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
-[17:54:09:862] [INFO   ] PHASE 2: INSTANTIATING ENVIRONMENT
-[17:54:09:906] [INFO   ] PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT
-[17:54:09:910] [INFO   ] associated agent "A1" with entity "connectionA1"
-[17:54:09:910] [INFO   ] PHASE 4: RUNNING
-[17:54:09:911] [INFO   ] SCHEDULER STEP 0
-[17:54:10:017] [INFO   ] SCHEDULER STEP 1
-[17:54:10:022] [INFO   ] SCHEDULER STEP 2
-[17:54:10:125] [INFO   ] SCHEDULER STEP 3
-[17:54:10:172] [INFO   ] Simulation Beliefs:
+[18:59:49:544] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
+[18:59:49:618] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
+[18:59:56:607] [INFO   ] PHASE 2: INSTANTIATING ENVIRONMENT
+[18:59:56:704] [INFO   ] PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT
+[18:59:56:709] [INFO   ] associated agent "A1" with entity "connectionA1"
+[18:59:56:711] [INFO   ] PHASE 4: RUNNING
+[18:59:56:712] [INFO   ] SCHEDULER STEP 0
+[18:59:56:826] [INFO   ] SCHEDULER STEP 1
+[18:59:56:829] [INFO   ] SCHEDULER STEP 2
+[18:59:56:933] [INFO   ] SCHEDULER STEP 3
+[18:59:56:959] [INFO   ] Simulation Beliefs:
 Name: null
 Team: A
-TeamSize: 1
-Steps: 700
+TeamSize: 20
+Steps: 750
 Roles: 
 {"vision":7,"name":"explorer","clear":{"chance":0.3,"maxDistance":7},"actions":["rotate","move","adopt","clear","detach","survey","skip","attach"],"speed":[3,0]}
-{"vision":5,"name":"worker","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[2,1,1,0]}
-{"vision":5,"name":"digger","clear":{"chance":1,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1,0]}
-{"vision":5,"name":"constructor","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[1]}
-{"vision":5,"name":"default","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1]}
+{"vision":5,"name":"digger","clear":{"chance":1,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","survey","skip"],"speed":[1,0]}
+{"vision":5,"name":"worker","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","clear","skip","adopt","detach","survey","attach","connect"],"speed":[2,1,1,0]}
+{"vision":5,"name":"default","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","survey","skip"],"speed":[1]}
+{"vision":5,"name":"constructor","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","clear","skip","adopt","detach","survey","attach","connect"],"speed":[1]}
 
 Step Beliefs:
 Things: 
@@ -36,38 +36,77 @@ Step Events:
 Violations: 
 Goal Zones: 
 Role Zones: 
-[17:54:10:228] [INFO   ] SCHEDULER STEP 4
-[17:54:10:329] [INFO   ] SCHEDULER STEP 5
-[17:54:10:433] [INFO   ] SCHEDULER STEP 6
-[17:54:10:537] [INFO   ] SCHEDULER STEP 7
-[17:54:10:640] [INFO   ] SCHEDULER STEP 8
-[17:54:10:646] [INFO   ] SCHEDULER STEP 9
-[17:54:10:747] [INFO   ] SCHEDULER STEP 10
-[17:54:10:851] [INFO   ] SCHEDULER STEP 11
-[17:54:10:954] [INFO   ] SCHEDULER STEP 12
-[17:54:11:057] [INFO   ] SCHEDULER STEP 13
-[17:54:11:161] [INFO   ] SCHEDULER STEP 14
-[17:54:11:186] [INFO   ] Simulation Beliefs:
+[18:59:57:036] [INFO   ] SCHEDULER STEP 4
+[18:59:57:138] [INFO   ] SCHEDULER STEP 5
+[18:59:57:240] [INFO   ] SCHEDULER STEP 6
+[18:59:57:341] [INFO   ] SCHEDULER STEP 7
+[18:59:57:433] [FINE   ] GL_VENDOR: Intel
+GL_RENDERER: Mesa Intel(R) UHD Graphics 620 (KBL GT2)
+GL_VERSION: 4.6 (Compatibility Profile) Mesa 21.3.8
+[18:59:57:442] [INFO   ] SCHEDULER STEP 8
+[18:59:57:464] [FINE   ] 
+ShaderInfoLog: 
+ProgramInfoLog: 
+ShaderCompileStatus: 1
+ShaderLinkStatus: 0
+
+[18:59:57:544] [INFO   ] SCHEDULER STEP 9
+[18:59:57:645] [INFO   ] SCHEDULER STEP 10
+[18:59:57:753] [INFO   ] SCHEDULER STEP 11
+[18:59:57:874] [INFO   ] SCHEDULER STEP 12
+[18:59:57:976] [INFO   ] SCHEDULER STEP 13
+[18:59:58:517] [INFO   ] SCHEDULER STEP 14
+[18:59:58:712] [INFO   ] SCHEDULER STEP 15
+[18:59:58:962] [INFO   ] SCHEDULER STEP 16
+[18:59:59:142] [INFO   ] SCHEDULER STEP 17
+[18:59:59:244] [INFO   ] SCHEDULER STEP 18
+[18:59:59:432] [INFO   ] SCHEDULER STEP 19
+[18:59:59:503] [INFO   ] SCHEDULER STEP 20
+[18:59:59:574] [INFO   ] Simulation Beliefs:
 Name: null
 Team: A
-TeamSize: 1
-Steps: 700
+TeamSize: 20
+Steps: 750
 Roles: 
-{"vision":5,"name":"default","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1]}
-{"vision":5,"name":"worker","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[2,1,1,0]}
-{"vision":5,"name":"digger","clear":{"chance":1,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1,0]}
-{"vision":5,"name":"constructor","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[1]}
+{"vision":5,"name":"worker","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","clear","skip","adopt","detach","survey","attach","connect"],"speed":[2,1,1,0]}
+{"vision":5,"name":"constructor","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","clear","skip","adopt","detach","survey","attach","connect"],"speed":[1]}
+{"vision":5,"name":"digger","clear":{"chance":1,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","survey","skip"],"speed":[1,0]}
 {"vision":7,"name":"explorer","clear":{"chance":0.3,"maxDistance":7},"actions":["rotate","move","adopt","clear","detach","survey","skip","attach"],"speed":[3,0]}
+{"vision":5,"name":"default","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","survey","skip"],"speed":[1]}
 
 Step Beliefs:
-Things: {"x":0,"y":0,"details":"A","type":"entity"}
-{"x":-3,"y":0,"details":"b1","type":"dispenser"}
+Things: {"x":3,"y":2,"details":"","type":"obstacle"}
+{"x":1,"y":-2,"details":"","type":"obstacle"}
+{"x":-1,"y":-1,"details":"","type":"obstacle"}
+{"x":1,"y":4,"details":"","type":"obstacle"}
+{"x":-2,"y":-3,"details":"","type":"obstacle"}
+{"x":2,"y":2,"details":"","type":"obstacle"}
+{"x":0,"y":-4,"details":"","type":"obstacle"}
+{"x":-1,"y":-4,"details":"","type":"obstacle"}
+{"x":-3,"y":2,"details":"","type":"obstacle"}
+{"x":-3,"y":-2,"details":"","type":"obstacle"}
+{"x":3,"y":-2,"details":"","type":"obstacle"}
+{"x":1,"y":2,"details":"","type":"obstacle"}
+{"x":2,"y":1,"details":"","type":"obstacle"}
+{"x":0,"y":0,"details":"A","type":"entity"}
+{"x":2,"y":3,"details":"","type":"obstacle"}
+{"x":-2,"y":-2,"details":"","type":"obstacle"}
+{"x":1,"y":-4,"details":"","type":"obstacle"}
+{"x":-1,"y":-2,"details":"","type":"obstacle"}
+{"x":0,"y":-1,"details":"","type":"obstacle"}
+{"x":0,"y":-3,"details":"","type":"obstacle"}
+{"x":-1,"y":4,"details":"","type":"obstacle"}
+{"x":1,"y":3,"details":"","type":"obstacle"}
+{"x":2,"y":-2,"details":"","type":"obstacle"}
+{"x":2,"y":-3,"details":"","type":"obstacle"}
+{"x":0,"y":4,"details":"","type":"obstacle"}
 Tasks: 
-{"reward":10,"requirements":[{"x":0,"y":1,"details":"","type":"b1"}],"name":"task1","deadline":129}
-{"reward":160,"requirements":[{"x":0,"y":1,"details":"","type":"b2"},{"x":1,"y":1,"details":"","type":"b0"},{"x":1,"y":2,"details":"","type":"b0"},{"x":2,"y":2,"details":"","type":"b1"}],"name":"task0","deadline":179}
-{"reward":90,"requirements":[{"x":0,"y":1,"details":"","type":"b0"},{"x":1,"y":1,"details":"","type":"b1"},{"x":2,"y":1,"details":"","type":"b0"}],"name":"task2","deadline":282}
+{"reward":10,"requirements":[{"x":0,"y":1,"details":"","type":"b1"}],"name":"task3","deadline":344}
+{"reward":90,"requirements":[{"x":0,"y":1,"details":"","type":"b1"},{"x":0,"y":2,"details":"","type":"b0"},{"x":69,"y":2,"details":"","type":"b0"}],"name":"task1","deadline":176}
+{"reward":160,"requirements":[{"x":0,"y":1,"details":"","type":"b2"},{"x":0,"y":2,"details":"","type":"b1"},{"x":0,"y":3,"details":"","type":"b2"},{"x":69,"y":2,"details":"","type":"b1"}],"name":"task0","deadline":195}
+{"reward":10,"requirements":[{"x":0,"y":1,"details":"","type":"b2"}],"name":"task2","deadline":306}
 Norms: 
-{"requirements":[{"quantity":1,"name":"any","type":"block"}],"punishment":10,"name":"n3","start":93,"until":248}
+{"requirements":[{"quantity":2,"name":"constructor","type":"role"}],"punishment":11,"name":"n2","start":136,"until":321}
 Score: 0
 Last Action: no_action
 Last Action Result: success
@@ -79,100 +118,20 @@ Role: default
 Step Events: 
 Violations: 
 Goal Zones: 
-Role Zones: [2, 0] | [2, 1] | [4, 0] | [2, -1] | [4, 1] | [4, -1] | [-5, 0] | [3, 1] | [1, 0] | [3, 2] | [3, -1] | [3, 0] | [3, -2] | [5, 0] | 
-[17:54:11:264] [INFO   ] SCHEDULER STEP 15
-[17:54:11:269] [INFO   ] SCHEDULER STEP 16
-[17:54:11:373] [INFO   ] SCHEDULER STEP 17
-[17:54:11:477] [INFO   ] SCHEDULER STEP 18
-[17:54:11:581] [INFO   ] SCHEDULER STEP 19
-[17:54:11:683] [INFO   ] SCHEDULER STEP 20
-[17:54:11:787] [INFO   ] SCHEDULER STEP 21
-[17:54:11:889] [INFO   ] SCHEDULER STEP 22
-[17:54:11:990] [INFO   ] SCHEDULER STEP 23
-[17:54:12:092] [INFO   ] SCHEDULER STEP 24
-[17:54:12:194] [INFO   ] SCHEDULER STEP 25
-[17:54:12:196] [INFO   ] Simulation Beliefs:
-Name: null
-Team: A
-TeamSize: 1
-Steps: 700
-Roles: 
-{"vision":5,"name":"default","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1]}
-{"vision":7,"name":"explorer","clear":{"chance":0.3,"maxDistance":7},"actions":["rotate","move","adopt","clear","detach","survey","skip","attach"],"speed":[3,0]}
-{"vision":5,"name":"digger","clear":{"chance":1,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1,0]}
-{"vision":5,"name":"worker","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[2,1,1,0]}
-{"vision":5,"name":"constructor","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[1]}
+Role Zones: 
+[18:59:59:604] [INFO   ] SCHEDULER STEP 21
+[18:59:59:908] [INFO   ] SCHEDULER STEP 22
+[18:59:59:923] [FINE   ] GL_VENDOR: Intel
+GL_RENDERER: Mesa Intel(R) UHD Graphics 620 (KBL GT2)
+GL_VERSION: 4.6 (Compatibility Profile) Mesa 21.3.8
+[19:00:00:017] [FINE   ] 
+ShaderInfoLog: 
+ProgramInfoLog: 
+ShaderCompileStatus: 1
+ShaderLinkStatus: 0
 
-Step Beliefs:
-Things: {"x":-3,"y":1,"details":"b1","type":"dispenser"}
-{"x":0,"y":0,"details":"A","type":"entity"}
-Tasks: 
-{"reward":10,"requirements":[{"x":0,"y":1,"details":"","type":"b1"}],"name":"task1","deadline":129}
-{"reward":90,"requirements":[{"x":0,"y":1,"details":"","type":"b0"},{"x":1,"y":1,"details":"","type":"b1"},{"x":2,"y":1,"details":"","type":"b0"}],"name":"task2","deadline":282}
-{"reward":160,"requirements":[{"x":0,"y":1,"details":"","type":"b2"},{"x":1,"y":1,"details":"","type":"b0"},{"x":1,"y":2,"details":"","type":"b0"},{"x":2,"y":2,"details":"","type":"b1"}],"name":"task0","deadline":179}
-Norms: 
-{"requirements":[{"quantity":1,"name":"any","type":"block"}],"punishment":10,"name":"n3","start":93,"until":248}
-Score: 0
-Last Action: move
-Last Action Result: success
-Last Action Parameter: n | 
-Attached Things: 
-Energy: 100
-Deactivated: false
-Role: default
-Step Events: 
-Violations: 
-Goal Zones: 
-Role Zones: [2, 0] | [2, 1] | [4, 0] | [4, 1] | [4, -1] | [1, 1] | [3, 1] | [3, 2] | [3, -1] | [3, 0] | [5, 0] | [2, 2] | 
-[17:54:12:298] [INFO   ] SCHEDULER STEP 26
-[17:54:12:302] [INFO   ] SCHEDULER STEP 27
-[17:54:12:404] [INFO   ] SCHEDULER STEP 28
-[17:54:12:507] [INFO   ] SCHEDULER STEP 29
-[17:54:12:610] [INFO   ] SCHEDULER STEP 30
-[17:54:12:713] [INFO   ] SCHEDULER STEP 31
-[17:54:12:815] [INFO   ] SCHEDULER STEP 32
-[17:54:12:918] [INFO   ] SCHEDULER STEP 33
-[17:54:13:021] [INFO   ] SCHEDULER STEP 34
-[17:54:13:124] [INFO   ] SCHEDULER STEP 35
-[17:54:13:201] [INFO   ] Simulation Beliefs:
-Name: null
-Team: A
-TeamSize: 1
-Steps: 700
-Roles: 
-{"vision":5,"name":"default","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1]}
-{"vision":5,"name":"worker","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[2,1,1,0]}
-{"vision":7,"name":"explorer","clear":{"chance":0.3,"maxDistance":7},"actions":["rotate","move","adopt","clear","detach","survey","skip","attach"],"speed":[3,0]}
-{"vision":5,"name":"digger","clear":{"chance":1,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","skip"],"speed":[1,0]}
-{"vision":5,"name":"constructor","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","adopt","clear","detach","skip","attach","connect"],"speed":[1]}
-
-Step Beliefs:
-Things: {"x":0,"y":0,"details":"A","type":"entity"}
-{"x":-3,"y":2,"details":"b1","type":"dispenser"}
-Tasks: 
-{"reward":160,"requirements":[{"x":0,"y":1,"details":"","type":"b2"},{"x":1,"y":1,"details":"","type":"b0"},{"x":1,"y":2,"details":"","type":"b0"},{"x":2,"y":2,"details":"","type":"b1"}],"name":"task0","deadline":179}
-{"reward":90,"requirements":[{"x":0,"y":1,"details":"","type":"b0"},{"x":1,"y":1,"details":"","type":"b1"},{"x":2,"y":1,"details":"","type":"b0"}],"name":"task2","deadline":282}
-{"reward":10,"requirements":[{"x":0,"y":1,"details":"","type":"b1"}],"name":"task1","deadline":129}
-Norms: 
-{"requirements":[{"quantity":1,"name":"any","type":"block"}],"punishment":10,"name":"n3","start":93,"until":248}
-Score: 0
-Last Action: move
-Last Action Result: success
-Last Action Parameter: n | 
-Attached Things: 
-Energy: 100
-Deactivated: false
-Role: default
-Step Events: 
-Violations: 
-Goal Zones: 
-Role Zones: [2, 1] | [4, 0] | [4, 1] | [4, -1] | [1, 2] | [3, 1] | [3, 2] | [3, 0] | [5, 0] | [2, 2] | [2, 3] | 
-[17:54:13:225] [INFO   ] SCHEDULER STEP 36
-[17:54:13:226] [INFO   ] SCHEDULER STEP 37
-[17:54:13:327] [INFO   ] SCHEDULER STEP 38
-[17:54:13:428] [INFO   ] SCHEDULER STEP 39
-[17:54:13:530] [INFO   ] SCHEDULER STEP 40
-[17:54:13:633] [INFO   ] SCHEDULER STEP 41
-[17:54:13:735] [INFO   ] SCHEDULER STEP 42
-[17:54:13:837] [INFO   ] SCHEDULER STEP 43
-[17:54:13:939] [INFO   ] SCHEDULER STEP 44
+[19:00:00:113] [INFO   ] SCHEDULER STEP 23
+[19:00:00:231] [INFO   ] SCHEDULER STEP 24
+[19:00:00:462] [INFO   ] SCHEDULER STEP 25
+[19:00:00:566] [INFO   ] SCHEDULER STEP 26
+[19:00:00:724] [INFO   ] SCHEDULER STEP 27
