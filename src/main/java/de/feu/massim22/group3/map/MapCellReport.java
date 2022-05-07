@@ -6,12 +6,18 @@ public class MapCellReport {
 	private ZoneType zoneType;
 	private int reporter;
 	private long reportTime;
+	private int step;
 
-	public MapCellReport(CellType cellType, ZoneType zoneType, int reporter) {
+	public MapCellReport(CellType cellType, ZoneType zoneType, int reporter, int step) {
 		this.cellType = cellType;
 		this.zoneType = zoneType;
 		this.reporter = reporter;
 		this.reportTime = System.currentTimeMillis();
+		this.step = step;
+	}
+
+	public int getStep() {
+		return step;
 	}
 
 	CellType getCellType() {
@@ -31,6 +37,6 @@ public class MapCellReport {
 	}
 	
 	static MapCellReport createEmpty() {
-		return new MapCellReport(CellType.UNKNOWN, ZoneType.NONE, -1);
+		return new MapCellReport(CellType.UNKNOWN, ZoneType.NONE, -1, 0);
 	}
 }

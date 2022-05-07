@@ -15,10 +15,10 @@ import org.json.JSONObject;
 
 import de.feu.massim22.group3.agents.Agent;
 import de.feu.massim22.group3.agents.BasicAgent;
-import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.G3Agent;
 import de.feu.massim22.group3.agents.Supervisable;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 
@@ -44,12 +44,14 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
         String entity;
         String team;
         String className;
+        int index;
 
-        AgentConf(String name, String entity, String team, String className){
+        AgentConf(String name, String entity, String team, String className, int index){
             this.name = name;
             this.entity = entity;
             this.team = team;
             this.className = className;
+            this.index = index;
         }
     }
 
@@ -85,7 +87,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
 
                     for (int index = startIndex; index < startIndex + count; index++) {
                         agentConfigurations.add(
-                                new AgentConf(agentPrefix + index, entityPrefix + index, team, agentClass));
+                                new AgentConf(agentPrefix + index, entityPrefix + index, team, agentClass, index));
                     }
                 }
             }
@@ -113,7 +115,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
                     agent = new G3Agent(agentConf.name, mailService);
                     break;
                 case "BdiAgentV1":
-                	agent = new BdiAgentV1(agentConf.name, mailService, this);
+                	agent = new BdiAgentV1(agentConf.name, mailService, this, agentConf.index);
                 	Thread t = new Thread((Runnable)agent);
                 	t.start();
                 	break;
@@ -123,6 +125,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
             if(agent == null) continue;
 
             mailService.registerAgent(agent, agentConf.team);
+            Navi.get().registerAgent(agent.getName());
 
             try {
                 ei.registerAgent(agent.getName());

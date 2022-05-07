@@ -7,46 +7,67 @@ import org.lwjgl.opengl.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
+
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL43.*;
 
-class PathFinder implements Runnable {
-	private final ByteBuffer buf = BufferUtils.createByteBuffer(200);
+class PathFinder {
 	private int gComputeProgram;
-	private int mapSizeX = 100;
-	private int mapSizeY = 100;
-	private int goalNumber = 32;
-	private int agentSize = 51; // +1 for Input
-	private int inputTexId = 0;
+	private long windowHandler;
 	
-
-	PathFinder() { 
+	PathFinder(long windowHandler) {
+		this.windowHandler = windowHandler;
 	}
-	
-	private void logResult() {
 
-		float[] b = new float[mapSizeX * mapSizeY];
+	static void init() {
+		// Init GLFW Context - this must be done from the main thread and is therefore in the constructor
+		if (!glfwInit()) {
+			throw new IllegalStateException("Can't init GLFW");
+		}
+	}
 
-		glEnable(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, this.inputTexId);
+	static void close() {
+		// Free Resources
+		glfwTerminate(); 
+	}
+
+	static long createOpenGlContext() {
+		// Create Hidden Window to get OpenGL Context
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		ByteBuffer buf = BufferUtils.createByteBuffer(200);
+		long win = glfwCreateWindow(200, 200, buf, 0, 0);
+		glfwMakeContextCurrent(win);
+		GL.createCapabilities();
+		glfwMakeContextCurrent(0);
 		
-	    glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, b);
+		// Log OpenGL Details
+		StringBuilder b = new StringBuilder()
+		.append("GL_VENDOR: " + glGetString(GL_VENDOR))
+		.append(System.lineSeparator())
+		.append("GL_RENDERER: " + glGetString(GL_RENDERER))
+		.append(System.lineSeparator())
+		.append("GL_VERSION: " + glGetString(GL_VERSION));
+		AgentLogger.fine(b.toString());
 
-		for (int i = 0; i < mapSizeY; i++) {
-			for (int j = 0; j < mapSizeX; j++) {
-				System.out.print(b[i * mapSizeY + j] + " ");
-			}
-			System.out.println();			
-		}	
-	}
+		return win;
+	} 
 	
 	private void create2dTexture(FloatBuffer imageData, int channelSize, int bindingIndex, int imageSizeX, int imageSizeY, boolean readonly) {
 		int internalTextureFormat;
@@ -116,45 +137,22 @@ class PathFinder implements Runnable {
             AgentLogger.severe("Error " + glGetError());
 	    }
 	}
-	
-	private void createOpenGlContext() {
-		// Configure GLFW
-		if (!glfwInit()) {
-			throw new IllegalStateException("Can't init GLFW");
-		}
-		
-		// Create Hidden Window to get OpenGL Context
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		long win = glfwCreateWindow(200, 200, buf, 0, 0);
-		glfwMakeContextCurrent(win);
-		
-		GL.createCapabilities();
-		
-        StringBuilder b = new StringBuilder()
-            .append("GL_VENDOR: " + glGetString(GL_VENDOR))
-            .append(System.lineSeparator())
-            .append("GL_RENDERER: " + glGetString(GL_RENDERER))
-            .append(System.lineSeparator())
-            .append("GL_VERSION: " + glGetString(GL_VERSION));
-
-        AgentLogger.fine(b.toString());
-	}
     
-	private void initShader() throws IOException {
+	private void initShader(int goalCount, Point mapSize, boolean mapDiscovered) throws IOException {
         // Create and compile the compute shader.
         int mComputeShader = glCreateShader(GL_COMPUTE_SHADER);
         String shader = getResourceFileAsString("shader.glsl");
         
         // set shader variables before compilation
-        // TODO set correct values
         shader = shader
-        	.replaceFirst("VAR1", "1") 	    // Cores X (agents)
-        	.replaceFirst("VAR2", "1") 		// Cores Y
-        	.replaceFirst("VAR3", "1") 		// Cores Z
+        	.replaceFirst("VAR1", "1") 	   // local Cores X
+        	.replaceFirst("VAR2", goalCount + "") 	  // local Cores Y (goal Count)
+        	.replaceFirst("VAR3", "1") 		// local Cores Z
         	.replaceFirst("VAR4", "300") 	// Queue Size 
         	.replaceFirst("VAR5", "4")		// Max values in Queue list
-        	.replaceFirst("VAR6", mapSizeX + "")		   // Map size X 
-        	.replaceFirst("VAR7", mapSizeY + "");       // Map size Y
+        	.replaceFirst("VAR6", mapSize.x + "")		   // Map size X 
+        	.replaceFirst("VAR7", mapSize.y + "")        // Map size Y
+			.replaceFirst("VAR8", mapDiscovered + "");  // Map discovered
         		
         GL20.glShaderSource(mComputeShader, shader);
         glCompileShader(mComputeShader);
@@ -201,37 +199,21 @@ class PathFinder implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-		createOpenGlContext();
-		
+    public void start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
+
         // Create the compute program the compute shader is assigned to
+		glfwMakeContextCurrent(this.windowHandler);
+		GL.createCapabilities();
         gComputeProgram = glCreateProgram();
 
         try {
-            initShader();
+            initShader(goalCount, mapSize, mapDiscovered);
         } catch(IOException e) {
             AgentLogger.severe(e.getLocalizedMessage());
         }
-
-        // Create Input Data
-        FloatBuffer imageData = BufferUtils.createFloatBuffer(mapSizeX * mapSizeY * agentSize * 2);
-        
-        for (int k = 0; k < agentSize; k++) {
-            for (int i = 0; i < mapSizeY; i++) {
-            	for (int j = 0; j < mapSizeX; j++) {
-            		float v = k == 0 ? Math.round(Math.random() / 1.5) : 0;
-            		imageData.put(v);
-            		imageData.put(0.0f);
-            	}
-            }
-        }
-        imageData.flip();
-        
-        // Map Input
-        create3dTexture(imageData, 2, 0, mapSizeX, mapSizeY, agentSize, false);
         
         // Agent Data (x, y, colorChannel)
+		/*
         float[][][] agentData = new float[agentSize + 10][goalNumber + 1][2];
         
         for (int i = 0; i < agentSize; i++) {
@@ -246,7 +228,8 @@ class PathFinder implements Runnable {
             	agentData[i + 10][j+1][1] = Math.round(Math.random() * mapSizeY);
         	}
         }
-
+		*/
+		/*
         FloatBuffer agentDataBuffer = BufferUtils.createFloatBuffer((agentSize + 10) * (goalNumber + 1) * 2);
         for (int i = 0; i < goalNumber + 1; i++) {
         	for (int j = 0; j < agentSize + 10; j++) {
@@ -256,68 +239,74 @@ class PathFinder implements Runnable {
         }
 
         agentDataBuffer.flip();
+		*/
 
-        create2dTexture(agentDataBuffer, 2, 1, agentSize + 10, goalNumber + 1, true);
+		// Map and Output Texture
+		create3dTexture(mapBuffer, 2, 0, mapSize.x, mapSize.y, agentCount + 1, false);
+
+		// Data Input Texture
+        create2dTexture(dataBuffer, 2, 1, dataSize.x, dataSize.y, true);
         
         // Set Timer
         long start = System.currentTimeMillis();
         
-        glDispatchCompute( agentSize - 1 , goalNumber, 1 );
+        glDispatchCompute(agentCount, 1, 1);
         
         // Wait until calculation ends
 	    glMemoryBarrier( GL_ALL_BARRIER_BITS );
 	    
 	    testForErrors();
 	    
-		float[] b = new float[mapSizeY * mapSizeX * agentSize * 2];
-	    glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, b);
-	    
-	    int s = mapSizeX * mapSizeY * 4;
-	    float[] c = new float[s];
-	    int offset = s / 2;
-	    for (int i = 0; i < s / 4; i++) {
-	    	int value = (int)b[i*2+offset];
-	    	c[i*4] = value == 0 ? 0 : value + 150;      //r
-	    	c[i*4+1] = b[i*2+offset+1];  //g
-	    	c[i*4+2] = 0; 				 //b
-	    	c[i*4+3] = 255;              //a
-	    }
-	    
-	    for (int k = 0; k < agentSize; k++) {
-			System.out.println("");
-			String header = k == 0 ? "Map:" : "Agent: " + k;
-			System.out.println(header);
-			System.out.println("------------------------------");
-			for (int i = 0; i < mapSizeY; i++) {
-				for (int j = 0; j < mapSizeX; j++) {
-					System.out.print(b[(k * mapSizeX * mapSizeY + i * mapSizeY + j) * 2] + " " + b[(k * mapSizeX * mapSizeY + i * mapSizeY + j) * 2 + 1] + " | ");
-				}
-				System.out.println();
-				System.out.println("--------|---------|---------|-");			
-			}
-	    }
-		
+		// Get Result
+		float[] result = new float[mapSize.y * mapSize.x * (agentCount + 1) * 2];
+	    glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, result);
+	    		
         // Log Time spent
 	    long end = System.currentTimeMillis();
 	    long diff = end - start;
         AgentLogger.fine("Path Finding Duration: " + diff);
-	    
-        //Save the screen image
-        /*
-        File file = new File("output.png"); // The file to save to.
-        String format = "png"; // Example: "PNG" or "JPG"
-        BufferedImage image = new BufferedImage(mapSizeX, mapSizeY, BufferedImage.TYPE_INT_ARGB);
-        
-        WritableRaster raster = image.getRaster();
-        raster.setPixels(raster.getMinX() , raster.getMinY(), raster.getWidth(), raster.getHeight(), c);
-           
-        try {
-            ImageIO.write(image, format, file);
-        } catch (IOException e) { e.printStackTrace(); }
-	    */
-	    
-        // Free Resources
-        glfwTerminate(); 
-    }    
+
+		// Image logging
+		// TODO add logging parameter
+		if (true) {
+			logMap(mapSize, result, supervisor, step);
+		}
+		
+		// Remove Context from thread
+		glfwMakeContextCurrent(0);
+    } 
+
+	private void logMap(Point mapSize, float[] result, String supervisor, int step) {
+		// Translate to RGBA
+		int s = mapSize.x * mapSize.y;
+		float[] c = new float[s * 4];
+		int offset = s / 2;
+		for (int i = 0; i < s; i++) {
+			c[i*4] = (int)(result[i*2+offset] * 255);       //r
+			c[i*4+1] = (int)(result[i*2+offset+1] * 255);   //g
+			c[i*4+2] = 0; 				                    //b
+			c[i*4+3] = 255;                                 //a
+		}
+		
+		// Check if folder exists
+		String folder = "logs/map";
+		Path path = Paths.get(folder);
+		try {
+			if (!Files.exists(path)){
+				Files.createDirectories(path);
+			}
+			//Save the screen image
+			String format = "png";
+			File file = new File(folder + "/map_supervisor" + supervisor + "_step" + step + "." + format);
+			BufferedImage image = new BufferedImage(mapSize.x, mapSize.y, BufferedImage.TYPE_INT_ARGB);
+			
+			WritableRaster raster = image.getRaster();
+			raster.setPixels(raster.getMinX() , raster.getMinY(), raster.getWidth(), raster.getHeight(), c);
+			
+			ImageIO.write(image, format, file);
+		} catch (IOException e) { 
+			e.printStackTrace();
+		}
+	}
 }
 

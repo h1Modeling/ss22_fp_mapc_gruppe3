@@ -36,6 +36,7 @@ public class Main {
                 }
                 @SuppressWarnings("resource")
 				Scanner in = new Scanner(System.in);
+                //Integer confNum = 0;
                 Integer confNum = null;
                 while (confNum == null) {
                     try {
@@ -68,7 +69,7 @@ public class Main {
         AgentLogger.info("PHASE 4: RUNNING");
         int step = 0;
         while ((ei.getState() == EnvironmentState.RUNNING)) {
-            AgentLogger.info("SCHEDULER STEP " + step);
+            // AgentLogger.fine("SCHEDULER STEP " + step);
             scheduler.step();
             step++;
         }

@@ -21,10 +21,12 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 	private Queue<BdiAgentV1.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
 	private EisSender eisSender;
 	private ISupervisor supervisor;
+	private int index;
 	
-	public BdiAgentV1(String name, MailService mailbox, EisSender eisSender) {
+	public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
 		super(name, mailbox);
 		this.eisSender = eisSender;
+		this.index = index;
 		this.supervisor = new Supervisor(this);
 	}
 	
@@ -87,7 +89,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		default:
 			throw new IllegalArgumentException("Message is not handled!");
 		}
-		// TODO Action after Receiving Map Information from Supervisor
+		// TODO Action after Receiving Map Information from Navi
 		
 	}
 	
@@ -103,10 +105,9 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		List<Point> goalPoints = belief.getGoalZones();
 		List<Point> rolePoints = belief.getRoleZones();
 		Point position = belief.getPosition();
-		Navi.get().updateAgent(this.getName(), position, things, goalPoints, rolePoints);
-		
-		// Inform Supervisor of Map send
-		this.supervisor.receiveConfirmation(this.getName(), TaskName.MAP_SENT_TO_NAVI);
+		int vision = belief.getVision();
+		int step = belief.getStep();
+		Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints, rolePoints, step);
 	}
 	
 	private void setDummyAction() {
@@ -116,13 +117,35 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-        Action a = new Action("move", new Identifier("n"));
+		String dir = "n";
+		/*
+		List<Point> roleZones = belief.getRoleZones();
+		if (roleZones.size() > 0) {
+			Point goal = roleZones.get(0);
+			if (goal.x > 0) {
+				dir = "e";
+			}
+			if (goal.x < 0) {
+				dir = "w";
+			}
+			if (goal.y > 0) {
+				dir = "s";
+			}
+		}
+		*/
+		Action a = new Action("move", new Identifier(dir));
+		/*
+		if (roleZones.contains(new Point(0, 0))) {
+			a = new Action("adopt", new Identifier("constructor"));
+			if (belief.getRole().equals("constructor")) {
+				a = new Action("adopt", new Identifier("default"));
+			}
+		}
+		*/
     	intention.setNextAction(a);
 	}
 	
-	private record PerceptMessage(String sender, Percept percept) {
-		
-	}
+	private record PerceptMessage(String sender, Percept percept) {}
 
 	@Override
 	public void forwardMessageFromSupervisor(Percept message, String receiver, String sender) {

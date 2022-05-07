@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.feu.massim22.group3.TaskName;
-import de.feu.massim22.group3.map.Navi;
 import eis.iilang.Function;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
@@ -32,9 +31,6 @@ public class Supervisor implements ISupervisor {
 			String taskKey = data.getName();
 			TaskName taskName = TaskName.valueOf(taskKey);
 			switch (taskName) {
-			case MAP_SENT_TO_NAVI:
-				// TODO: 
-				break;
 			default:
 				throw new IllegalArgumentException("Supervisor can't handle Message");
 			}
@@ -59,22 +55,6 @@ public class Supervisor implements ISupervisor {
 			this.parent.forwardMessageFromSupervisor(message, name, agent);
 		}
 		switch (task) {
-		case MAP_SENT_TO_NAVI:
-			// Test if all Agents have already sent data
-			boolean allDone = true;
-			for (ConfirmationData data : confirmationData) {
-				if (data.agent.equals(agent)) {
-					data.mapSentToNavi = true;
-				}
-				if (data.mapSentToNavi == false) {
-					allDone = false;
-				}
-			}
-			// Start Navi Calculation
-			if (allDone) {
-				Navi.get().startCalculation();
-			}
-			break;
 		default:
 			throw new IllegalArgumentException("Confirmation " + task.name() + " is not implemented yet");
 		}	
@@ -85,7 +65,7 @@ public class Supervisor implements ISupervisor {
 	}
 
 	private Percept createConfirmationMessage(TaskName task) {
-		Parameter data = new Function(TaskName.MAP_SENT_TO_NAVI.name());
+		Parameter data = new Function(task.name());
 		return new Percept(TaskName.TO_SUPERVISOR.name(), data);
 	}
 
@@ -105,14 +85,12 @@ public class Supervisor implements ISupervisor {
 
 	private class ConfirmationData {
 		private String agent;
-		boolean mapSentToNavi = false;
 		
 		ConfirmationData(String agent) {
 			this.agent = agent;
 		}
 
 		void clear() {
-			mapSentToNavi = false;
 		}
 	}
 

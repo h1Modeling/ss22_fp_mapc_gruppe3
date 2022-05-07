@@ -6,6 +6,7 @@ layout(rg32f, binding = 1) uniform image2D data;
 const int queueSize = VAR4;
 const int queueSize2 = VAR5;
 const ivec2 mapSize = ivec2(VAR6,VAR7);
+const bool sizeDiscovered = VAR8;
 
 ivec2 getShortest(inout vec2[queueSize2] value, inout int curMin) {
 	int i;
@@ -82,41 +83,59 @@ void main() {
 		
 		// Saves neighbour values
 		ivec3 pixels[4];
+		if (sizeDiscovered) {
+			// Right
+			pixels[0] = ivec3( (shortest.x + 1) % mapSize.x, shortest.y, 0 );
+			// Bottom
+			pixels[1] = ivec3( shortest.x, (shortest.y + 1) % mapSize.y, 0 );
+			// Left
+			pixels[2] = ivec3( (shortest.x - 1 + mapSize.x) % mapSize.x, shortest.y, 0 );
+			// Top
+			pixels[3] = ivec3( shortest.x, (shortest.y - 1 + mapSize.y) % mapSize.y, 0 );
+		} else {
+			// Right
+			int rightCheck = shortest.x + 1 < mapSize.x ? 0 : 1;
+			pixels[0] = ivec3( shortest.x + 1, shortest.y, rightCheck );
+			// Bottom
+			int bottomCheck = shortest.y + 1 < mapSize.y ? 0 : 1;
+			pixels[1] = ivec3( shortest.x, shortest.y + 1, bottomCheck );
+			// Left
+			int leftCheck = shortest.x - 1 >= 0 ? 0 : 1;
+			pixels[2] = ivec3( shortest.x - 1, shortest.y, leftCheck );
+			// Top
+			int topCheck = shortest.y - 1 >= 0 ? 0 : 1;
+			pixels[3] = ivec3( shortest.x, shortest.y - 1, topCheck );			
+		}
 		
-		// Right
-		pixels[0] = ivec3( (shortest.x + 1) % mapSize.x, shortest.y, 0 );
-		// Bottom
-		pixels[1] = ivec3( shortest.x, (shortest.y + 1) % mapSize.y, 0 );
-		// Left
-		pixels[2] = ivec3( (shortest.x - 1 + mapSize.x) % mapSize.x, shortest.y, 0 );
-		// Top
-		pixels[3] = ivec3( shortest.x, (shortest.y - 1 + mapSize.y) % mapSize.y, 0 );
-		
+		// test all 4 sides
 		for (i = 0; i < 4; i++) {
 			ivec3 pixelMap = pixels[i];
-			float pixelMapValue = imageLoad( map, pixelMap ).r;
-			if (visited[pixelMap.x][pixelMap.y] == true) {
-				continue;
-			}
-			ivec3 pixelAgent = ivec3(pixelMap.xy, agentImageId);
-			float pixelAgentValue = imageLoad( map, pixelAgent).r;
+			// Check for out of bounds
+			if (pixelMap.z == 0) {
+				float pixelMapValue = imageLoad( map, pixelMap ).r;
+				if (visited[pixelMap.x][pixelMap.y] == true) {
+					continue;
+				}
+				ivec3 pixelAgent = ivec3(pixelMap.xy, agentImageId);
+				float pixelAgentValue = imageLoad( map, pixelAgent).r;
 
-			// No obstacle
-			if (pixelMapValue == 0.0) {
-				int dist = int(abs(end.x - pixelMap.x) + abs(end.y - pixelMap.y));
-				add(distances[dist], pixelMap.xy);
-				if (dist < curMin) {
-					curMin = dist;
+				// No obstacle
+				if (pixelMapValue == 0.0) {
+					int dist = int(abs(end.x - pixelMap.x) + abs(end.y - pixelMap.y));
+					add(distances[dist], pixelMap.xy);
+					if (dist < curMin) {
+						curMin = dist;
+					}
+					if (pixelAgentValue == 0 || pixelAgentValue > pixelShortestValue + 1) {
+						imageStore( map, pixelAgent, vec4( pixelShortestValue + 1, 0, 0, 0) );
+					}
 				}
-				if (pixelAgentValue == 0 || pixelAgentValue > pixelShortestValue + 1) {
-					imageStore( map, pixelAgent, vec4( pixelShortestValue + 1, 0, 0, 0) );
-				}
+				visited[pixelMap.x][pixelMap.y] = true;
 			}
-			visited[pixelMap.x][pixelMap.y] = true;
 		}
 	}
 	// Store Debug Info in Image
-	imageStore( map, ivec3(start, agentImageId), vec4( 0, 3.33, 0, 0) );
+	// imageStore( map, ivec3(start, agentImageId), vec4( 0, 3.33, 0, 0) );
 }
 
 

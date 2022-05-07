@@ -16,19 +16,19 @@ class MapCellTest {
 
 	@Test
 	void testRemoveAgentReport() {
-		cell.addReport(new MapCellReport(CellType.OBSTACLE, ZoneType.NONE, 0));
-		cell.addReport(new MapCellReport(CellType.FREE, ZoneType.NONE, 1));
+		cell.addReport(new MapCellReport(CellType.OBSTACLE, ZoneType.NONE, 0, 0));
+		cell.addReport(new MapCellReport(CellType.FREE, ZoneType.NONE, 1, 1));
 		cell.removeAgentReport(1);
 		assertEquals(CellType.OBSTACLE, cell.getCellType());
 	}
 
 	@Test
 	void testMergeIntoCell() throws InterruptedException {
-		cell.addReport(new MapCellReport(CellType.OBSTACLE, ZoneType.NONE, 0));
-		cell.addReport(new MapCellReport(CellType.FREE, ZoneType.NONE, 1));
+		cell.addReport(new MapCellReport(CellType.OBSTACLE, ZoneType.NONE, 0, 0));
+		cell.addReport(new MapCellReport(CellType.FREE, ZoneType.NONE, 1, 1));
 		Thread.sleep(1);
 		MapCell toMerge = new MapCell();
-		toMerge.addReport(new MapCellReport(CellType.DISPENSER_0, ZoneType.NONE, 2));
+		toMerge.addReport(new MapCellReport(CellType.DISPENSER_0, ZoneType.NONE, 2, 2));
 		cell.mergeIntoCell(toMerge);
 		assertEquals(CellType.DISPENSER_0, cell.getCellType());
 	}
