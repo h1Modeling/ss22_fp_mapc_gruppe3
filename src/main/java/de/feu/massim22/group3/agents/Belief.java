@@ -494,6 +494,10 @@ public class Belief {
 		int getEnergy() {
 			return energy;
 		}
+
+		public String toString() {
+			return "Agent " + name + " with role " + role + " and energy " + energy;  
+		}
 	}
 	
 	private class ThingSurveyStepEvent implements StepEvent {
@@ -512,6 +516,10 @@ public class Belief {
 		int getDistance() {
 			return distance;
 		}
+
+		public String toString() {
+			return name + " " + distance + " cells away";  
+		}
 	}
 	
 	private class HitStepEvent implements StepEvent {
@@ -523,6 +531,10 @@ public class Belief {
 
 		Position getPosition() {
 			return position;
+		}
+
+		public String toString() {
+			return "Hit at " + position.x + "/" + position.y;  
 		}
 	}
 
