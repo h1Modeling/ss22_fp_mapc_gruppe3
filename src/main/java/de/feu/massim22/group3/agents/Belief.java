@@ -202,6 +202,16 @@ public class Belief {
     int getStep() {
 		return step;
 	}
+    
+  //Melinda Betz 05.05.2022
+	String getTeam() {
+		return team;
+	}
+	
+	 //Melinda Betz 05.05.2022
+		int getTeamSize() {
+			return teamSize;
+		}
 
 	Set<Thing> getThings() {
 		return things;
@@ -246,7 +256,7 @@ public class Belief {
 	String getRole() {
 		return role;
 	}
-
+	
 	List<StepEvent> getStepEvents() {
 		return stepEvents;
 	}
@@ -477,7 +487,7 @@ public class Belief {
 		int getEnergy() {
 			return energy;
 		}
-
+		
 		public String toString() {
 			return "Agent " + name + " with role " + role + " and energy " + energy;  
 		}

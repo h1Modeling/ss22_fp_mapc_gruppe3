@@ -10,6 +10,8 @@ public abstract class BdiAgent extends Agent {
 	protected Belief belief;
 	protected List<Desire> desire = new ArrayList<>();
 	protected Intention intention;
+	//Melinda Betz 07.05.2022
+	protected boolean decisionsDone;
 
 	BdiAgent(String name, MailService mailbox) {
 		super(name, mailbox);

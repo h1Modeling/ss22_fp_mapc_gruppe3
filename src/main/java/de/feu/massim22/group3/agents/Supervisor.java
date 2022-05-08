@@ -7,6 +7,9 @@ public class Supervisor implements ISupervisor {
 	private String name;
 	private Supervisable parent;
 	
+	//Melinda Betz 07.05.2022
+	public boolean decisionsDone;
+	
 	public Supervisor(Supervisable parent) {
 		this.parent = parent;
 	}
