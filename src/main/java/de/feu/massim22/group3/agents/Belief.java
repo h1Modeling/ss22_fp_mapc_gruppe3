@@ -57,7 +57,9 @@ public class Belief {
     private Point position = new Point(0, 0);
 	private Set<Thing> thingsAtLastStep = new HashSet<>();
 
-	Belief() { }
+	Belief(String agentName) { 
+		this.name = agentName;
+	}
     
 	void update(List<Percept> percepts) {
 		clearLists();

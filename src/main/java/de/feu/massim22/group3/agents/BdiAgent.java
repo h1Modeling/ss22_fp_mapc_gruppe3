@@ -13,7 +13,7 @@ public abstract class BdiAgent extends Agent {
 
 	BdiAgent(String name, MailService mailbox) {
 		super(name, mailbox);
-		belief = new Belief();
+		belief = new Belief(name);
 		intention = new Intention();
 	}
 	

@@ -155,7 +155,7 @@ public class Navi {
         return result;
     }
 
-    private void startCalculation(String supervisor, GameMap map) {
+    private synchronized void startCalculation(String supervisor, GameMap map) {
         FloatBuffer mapBuffer = map.getMapBuffer();
         FloatBuffer agentBuffer = map.getEmptyBuffer();
         List<String> agents = getAgentsFromSupervisor(supervisor);
@@ -179,11 +179,14 @@ public class Navi {
         // y = 0: Position of agents
         // y = 1: Form of agent (attached blocks)
         // y = 2: Goal Position
-        int numberGoals = 32;
+        int maxNumberGoals = 32;
+        int dataY = 3;
+        List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals);
+        int numberGoals = interestingPoints.size();
         int textureSize = Math.max(agentSize, numberGoals);
-        Point dataSize = new Point(textureSize, textureSize);
-        FloatBuffer dataTextureBuffer = BufferUtils.createFloatBuffer(textureSize * textureSize * channelSize);
-        for (int y = 0; y < textureSize; y++) {
+        Point dataSize = new Point(textureSize, dataY);
+        FloatBuffer dataTextureBuffer = BufferUtils.createFloatBuffer(textureSize * dataY * channelSize);
+        for (int y = 0; y < 3; y++) {
             for (int x = 0; x < textureSize; x++) {
                 // Agent position
                 if (y == 0 && x < agentSize) {
@@ -198,11 +201,13 @@ public class Navi {
                     dataTextureBuffer.put(0);
                     dataTextureBuffer.put(0);
                 } 
-                // Goal Position
+                // Interesting Points Position (Path-Finding Goals)
                 else if (y == 2 && x < numberGoals) {
-                    // TODO add real goals
-                    dataTextureBuffer.put(3);
-                    dataTextureBuffer.put(2);
+                    InterestingPoint ip = interestingPoints.get(x);
+                    System.out.println(ip.toString());
+                    Point p = ip.point();
+                    dataTextureBuffer.put(p.x);
+                    dataTextureBuffer.put(p.y);
                 } 
                 // Fill Rest
                 else {
@@ -212,11 +217,21 @@ public class Navi {
             }
         }
         dataTextureBuffer.flip();
+        /*
+        float[] test = new float[textureSize * textureSize * 2];
+        dataTextureBuffer.get(test);
+
+        for (int i = 0; i < textureSize * 2 * 3; i++) {
+            System.out.println("Data " + test[i]);
+        } 
+        */
 
         long handler = openGlHandler.get(supervisor);
         PathFinder finder = new PathFinder(handler);
         boolean mapDiscovered = map.mapDiscovered();
-        finder.start(mapTextureBuffer, dataTextureBuffer, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+        if (numberGoals > 0) {
+            finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+        }
     }
 
     private CellType thingToCellType(Thing t) {

@@ -17,6 +17,7 @@ import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -31,6 +32,7 @@ import static org.lwjgl.opengl.GL43.*;
 class PathFinder {
 	private int gComputeProgram;
 	private long windowHandler;
+	private String shaderCache;
 	
 	PathFinder(long windowHandler) {
 		this.windowHandler = windowHandler;
@@ -189,17 +191,21 @@ class PathFinder {
 	}
 	
     public String getResourceFileAsString(String fileName) throws IOException {
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        try (InputStream is = classLoader.getResourceAsStream(fileName)) {
-            if (is == null) return null;
-            try (InputStreamReader isr = new InputStreamReader(is);
-                 BufferedReader reader = new BufferedReader(isr)) {
-                return reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            }
-        }
+		// Load from file
+		if (shaderCache == null) {
+			ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+			try (InputStream is = classLoader.getResourceAsStream(fileName)) {
+				if (is == null) return null;
+				try (InputStreamReader isr = new InputStreamReader(is);
+					 BufferedReader reader = new BufferedReader(isr)) {
+						shaderCache = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+				}
+			}
+		}
+		return shaderCache;
     }
 
-    public void start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
+    public void start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
 
         // Create the compute program the compute shader is assigned to
 		glfwMakeContextCurrent(this.windowHandler);
@@ -211,35 +217,6 @@ class PathFinder {
         } catch(IOException e) {
             AgentLogger.severe(e.getLocalizedMessage());
         }
-        
-        // Agent Data (x, y, colorChannel)
-		/*
-        float[][][] agentData = new float[agentSize + 10][goalNumber + 1][2];
-        
-        for (int i = 0; i < agentSize; i++) {
-        	// Agent Form
-        	agentData[1][0][0] = 100;
-        	// Agent Position
-        	agentData[i + 10][0][0] = i;
-        	agentData[i + 10][0][1] = i;
-        	// Agent Goals
-        	for(int j = 0; j < goalNumber; j++) {
-            	agentData[i + 10][j+1][0] = Math.round(Math.random() * mapSizeX);
-            	agentData[i + 10][j+1][1] = Math.round(Math.random() * mapSizeY);
-        	}
-        }
-		*/
-		/*
-        FloatBuffer agentDataBuffer = BufferUtils.createFloatBuffer((agentSize + 10) * (goalNumber + 1) * 2);
-        for (int i = 0; i < goalNumber + 1; i++) {
-        	for (int j = 0; j < agentSize + 10; j++) {
-        		agentDataBuffer.put(agentData[j][i][0]);
-        		agentDataBuffer.put(agentData[j][i][1]);
-        	}
-        }
-
-        agentDataBuffer.flip();
-		*/
 
 		// Map and Output Texture
 		create3dTexture(mapBuffer, 2, 0, mapSize.x, mapSize.y, agentCount + 1, false);
@@ -274,19 +251,46 @@ class PathFinder {
 		
 		// Remove Context from thread
 		glfwMakeContextCurrent(0);
-    } 
+
+		// Calculate Result
+		decodeResult(result, goalPoints, mapSize, agentCount);
+    }
+
+	private void decodeResult(float[] map, List<InterestingPoint> goalPoints, Point mapSize, int agentCount) {
+		int channels = 2;
+		int imageSize2D = mapSize.x * mapSize.y * channels;
+		for (int i = 0; i < agentCount; i++) {
+			int startIndex = (i + 1) * imageSize2D;
+			for (InterestingPoint ip : goalPoints) {
+				Point p = ip.point();
+				int index = startIndex + p.y * mapSize.x * 2 + p.x * 2;
+				float distance = map[index];
+				float direction = map[index + 1];
+				System.out.println("Calculation Result: " + ip.cellType() + " Distance: " + distance + " Test " + direction);
+			}
+		}
+	}
 
 	private void logMap(Point mapSize, float[] result, String supervisor, int step) {
 		// Translate to RGBA
 		int s = mapSize.x * mapSize.y;
+		// Map
 		float[] c = new float[s * 4];
-		int offset = s / 2;
 		for (int i = 0; i < s; i++) {
-			c[i*4] = (int)(result[i*2+offset] * 255);       //r
-			c[i*4+1] = (int)(result[i*2+offset+1] * 255);   //g
-			c[i*4+2] = 0; 				                    //b
-			c[i*4+3] = 255;                                 //a
+			c[i*4] = (int)(result[i*2] * 255);       //r
+			c[i*4+1] = (int)(result[i*2+1] * 255);   //g
+			c[i*4+2] = 0; 				             //b
+			c[i*4+3] = 255;                          //a
 		}
+		// Agent 1 Result
+		float[] a = new float[s * 4];
+		int offset = (s * 2);
+		for (int i = 0; i < s; i++) {
+			a[i*4] = (int)(result[offset + i*2] * 10);       //r
+			a[i*4+1] = (int)(result[offset + i*2+1] * 255);   //g
+			a[i*4+2] = 0; 				             //b
+			a[i*4+3] = 255;                          //a
+		}		
 		
 		// Check if folder exists
 		String folder = "logs/map";
@@ -297,13 +301,19 @@ class PathFinder {
 			}
 			//Save the screen image
 			String format = "png";
+
 			File file = new File(folder + "/map_supervisor" + supervisor + "_step" + step + "." + format);
 			BufferedImage image = new BufferedImage(mapSize.x, mapSize.y, BufferedImage.TYPE_INT_ARGB);
-			
 			WritableRaster raster = image.getRaster();
 			raster.setPixels(raster.getMinX() , raster.getMinY(), raster.getWidth(), raster.getHeight(), c);
-			
 			ImageIO.write(image, format, file);
+
+			File fileA = new File(folder + "/map_supervisor" + supervisor + "result_step" + step + "." + format);
+			BufferedImage imageA = new BufferedImage(mapSize.x, mapSize.y, BufferedImage.TYPE_INT_ARGB);
+			WritableRaster rasterA = imageA.getRaster();
+			rasterA.setPixels(rasterA.getMinX() , rasterA.getMinY(), rasterA.getWidth(), rasterA.getHeight(), a);
+			ImageIO.write(imageA, format, fileA);
+
 		} catch (IOException e) { 
 			e.printStackTrace();
 		}

@@ -165,6 +165,15 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
             } catch (PerceiveException ignored) { }
         });
 
+        // log
+        if (newPerceptAgents.size() > 0) {
+            AgentLogger.info("");
+            AgentLogger.info("------------------------------");
+            AgentLogger.info("------------ STEP ------------");
+            AgentLogger.info("------------------------------");
+            AgentLogger.info("");
+        }
+
         // for safety initStep at supervisor first
         newPerceptAgents.forEach(agent -> {
             if (agent instanceof Supervisable) {
