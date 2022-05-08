@@ -1,12 +1,14 @@
 package de.feu.massim22.group3.agents;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.awt.Point;
 
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import eis.iilang.Action;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -30,7 +32,7 @@ public class Belief {
 	private String team;
 	private int teamSize;
 	private int steps;
-	private Set<Role> roles = new HashSet<>();
+	private Map<String, Role> roles = new HashMap<>();
 	
 	// Step Beliefs
 	private int step;
@@ -42,22 +44,22 @@ public class Belief {
     private String lastActionResult;
     private List<String> lastActionParams = new ArrayList<>();
     
-	private List<Position> attachedThings = new ArrayList<>();
+	private List<Point> attachedThings = new ArrayList<>();
     private int energy;
     private boolean deactivated;
-    private String role;
+    private String role = "default";
     private List<StepEvent> stepEvents = new ArrayList<>();
     private List<String> violations = new ArrayList<>();
-    private List<Position> goalZones = new ArrayList<>();
-    private List<Position> roleZones = new ArrayList<>();
+    private List<Point> goalZones = new ArrayList<>();
+    private List<Point> roleZones = new ArrayList<>();
     
     // Group 3 Beliefs
-    private Position position = new Position(0, 0);
-	
+    private Point position = new Point(0, 0);
+	private Set<Thing> thingsAtLastStep = new HashSet<>();
+
 	Belief() { }
     
 	void update(List<Percept> percepts) {
-		updatePosition();
 		clearLists();
 		for (Percept percept : percepts) {
 			List<Parameter> p = percept.getParameters();
@@ -95,7 +97,7 @@ public class Belief {
 			case "attached":
 				int attX = toNumber(p, 0, Integer.class);
 				int attY = toNumber(p, 0, Integer.class);
-				attachedThings.add(new Position(attX, attY));
+				attachedThings.add(new Point(attX, attY));
 				break;
 			case "energy":
 				energy = toNumber(p, 0, Integer.class);
@@ -117,7 +119,7 @@ public class Belief {
 					double change = toNumber(p, 4, Double.class);
 					int maxDistance = toNumber(p, 1, Integer.class);					
 					Role r = new Role(roleName, roleVision, roleActions, roleSpeedArray, change, maxDistance);
-					roles.add(r);		
+					roles.put(roleName, r);		
 				} 
 				// Step percept
 				else {
@@ -138,12 +140,12 @@ public class Belief {
 			case "roleZone":
 				int roleX = toNumber(p, 0, Integer.class);
 				int roleY = toNumber(p, 1, Integer.class);
-				roleZones.add(new Position(roleX, roleY));
+				roleZones.add(new Point(roleX, roleY));
 				break;
 			case "goalZone":
 				int goalX = toNumber(p, 0, Integer.class);
 				int goalY = toNumber(p, 1, Integer.class);
-				goalZones.add(new Position(goalX, goalY));
+				goalZones.add(new Point(goalX, goalY));
 				break;
 			case "surveyed":
 				String surveyType = toStr(p, 0);
@@ -197,6 +199,14 @@ public class Belief {
 				AgentLogger.warning("Percept not transfered to Belief: " + percept.getName());
 			}
 		}
+		
+		updatePosition();
+	}
+
+	int getVision() {
+		Role r = roles.get(role);
+		if (r == null) { throw new IllegalArgumentException("Current role is not in existing roles"); }
+		return r.vision();
 	}
 	
     int getStep() {
@@ -231,7 +241,7 @@ public class Belief {
 		return lastActionParams;
 	}
 
-	List<Position> getAttachedThings() {
+	List<Point> getAttachedThings() {
 		return attachedThings;
 	}
 
@@ -255,12 +265,20 @@ public class Belief {
 		return violations;
 	}
 
-	List<Position> getGoalZones() {
+	List<Point> getGoalZones() {
 		return goalZones;
 	}
 
-	List<Position> getRoleZones() {
+	List<Point> getRoleZones() {
 		return roleZones;
+	}
+
+	Point getPosition() {
+		return position;
+	}
+
+	void setPosition(Point position) {
+		this.position = position;
 	}
 	
 	public String toString() {
@@ -277,7 +295,7 @@ public class Belief {
 			.append(System.lineSeparator())
 			.append("Roles: ")
 			.append(System.lineSeparator());
-		for (Role r : roles) {
+		for (Role r : roles.values()) {
 			b.append(r.toJSON())
 			.append(System.lineSeparator());
 		}
@@ -316,8 +334,8 @@ public class Belief {
 		}
 		b.append(System.lineSeparator())
 			.append("Attached Things: ");
-		for (Position t : attachedThings) {
-			b.append(t.toJSON() + " | ");
+		for (Point t : attachedThings) {
+			b.append("[" + t.x + ", " + t.y + "] | ");
 		}
 		b.append(System.lineSeparator())
 			.append("Energy: ").append(energy)
@@ -338,12 +356,12 @@ public class Belief {
 		}
 		b.append(System.lineSeparator())
 			.append("Goal Zones: ");
-		for (Position t : goalZones) {
+		for (Point t : goalZones) {
 			b.append("[" + t.x + ", " + t.y + "] | ");
 		}
 		b.append(System.lineSeparator())
 		.append("Role Zones: ");
-		for (Position t : roleZones) {
+		for (Point t : roleZones) {
 			b.append("[" + t.x + ", " + t.y + "] | ");
 		}
 		return b.toString();
@@ -351,31 +369,30 @@ public class Belief {
 	
 	private void updatePosition() {
 		if (lastAction != null && lastAction.equals(Actions.MOVE)) {
+			String dir = lastActionParams.get(0);
+			// Success
 			if (lastActionResult.equals(ActionResults.SUCCESS)) {
-				String dir = lastActionParams.get(0);
-				// TODO Position Object can't handle negative values
-				switch (dir) {
-				case "n":
-					//position = position.translate(0, -1);
-					break;
-				case "o":
-					//position = position.translate(1, 0);
-					break;
-				case "s":
-					//position = position.translate(0, 1);
-					break;
-				case "w":
-					//position = position.translate(-1, 0);
-					break;
+				move(dir);
+			}
+			// Partial Success
+			if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
+				Role currentRole = roles.get(role);
+				// With max speed 2 we can be sure that agent moved one cell
+				if (currentRole != null && currentRole.speed()[1] < 3) {
+					move(dir);
+				} 
+				// TODO Partial Success with speed > 2
+				else {
+					// Try to guess the position with information from last step
 				}
-			} else if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-				// TODO Update Position if possible
-				// if not indicate that agent is from now on not trustworthy
 			}
 		}
 	}
 	
 	private void clearLists() {
+		// copy things
+		thingsAtLastStep = new HashSet<Thing>(things);
+		// clearing
 		roles.clear();
 		things.clear();
 		taskInfo.clear();
@@ -518,6 +535,15 @@ public class Belief {
 
 		public String toString() {
 			return "Hit at " + position.x + "/" + position.y;  
+		}
+	}
+
+	private void move(String dir) {
+		switch (dir) {
+			case "n": position.y -= 1; break;
+			case "e": position.x += 1; break;
+			case "s": position.y += 1; break;
+			case "w": position.x -= 1; break;
 		}
 	}
 }
