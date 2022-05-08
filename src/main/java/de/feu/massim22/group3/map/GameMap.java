@@ -1,6 +1,11 @@
 package de.feu.massim22.group3.map;
 
 import java.awt.Point;
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.lwjgl.BufferUtils;
 
 public class GameMap {
 	
@@ -10,6 +15,7 @@ public class GameMap {
 	private MapCell[][] cells;
 	private Point topLeft; // top left indices can be negative
 	private int mapExtensionSize = 20;
+	private Map<String, Point> agentPosition = new HashMap<>(); 
 	
 	public GameMap(int x, int y) {
 		initialSize = new Point(x, y);
@@ -23,15 +29,33 @@ public class GameMap {
 			}
 		}
 	}
+
+	public boolean mapDiscovered() {
+		return size != null;
+	}
+
+	public Point getInternalAgentPosition(String agent) {
+		Point agentPos = agentPosition.get(agent);
+		return getInternalCellIndex(agentPos.x, agentPos.y);
+	}
+
+	public Point getInternalCellIndex(int x, int y) {
+		int cellX = getCellX(x);
+		int cellY = getCellY(y);
+		return new Point(cellX, cellY);
+	}
 	
-	public void addReport(int x, int y, CellType cellType, ZoneType zoneType, int agentId) {		
+	public void addReport(int x, int y, CellType cellType, ZoneType zoneType, int agentId, int step) {		
 		// Check if Array is big enough
 		checkBounds(x, y);
 		int cellX = getCellX(x);
 		int cellY = getCellY(y);
-
-		MapCellReport report = new MapCellReport(cellType, zoneType, agentId); 
+		MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step); 
 		cells[cellY][cellX].addReport(report);
+	}
+
+	public void setAgentPosition(String name, Point position) {
+		agentPosition.put(name, position);
 	}
 	
 	public Point getTopLeft() {
@@ -146,6 +170,45 @@ public class GameMap {
 		return cell.getCellType();
 	}
 	
+	public FloatBuffer getMapBuffer() {
+		Point curSize = getMapSize();
+		FloatBuffer data = BufferUtils.createFloatBuffer(curSize.x * curSize.y * 2);
+        
+		for (int i = 0; i < curSize.y; i++) {
+			for (int j = 0; j < curSize.x; j++) {
+				MapCell c = cells[i][j];
+				CellType type = c.getCellType();
+				float v = type.equals(CellType.FREE) ? 0f : 1f;
+				// r-channel
+				data.put(v);
+				// g-channel not used in map
+				data.put(0.0f);
+			}
+		}
+
+        data.flip();
+		return data;
+	}
+
+	public Point getMapSize() {
+		return size == null ? initialSize : size;
+	}
+
+	public FloatBuffer getEmptyBuffer() {
+		Point curSize = size == null ? initialSize : size;
+		FloatBuffer data = BufferUtils.createFloatBuffer(curSize.x * curSize.y * 2);
+        
+		for (int i = 0; i < curSize.y; i++) {
+			for (int j = 0; j < curSize.x; j++) {
+				data.put(0.0f);
+				data.put(0.0f);
+			}
+		}
+
+        data.flip();
+		return data;
+	}
+
 	private MapCell getCell(int x, int y) {
 		return cells[getCellY(y)][getCellX(x)];
 	}

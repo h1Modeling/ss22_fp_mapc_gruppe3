@@ -10,18 +10,14 @@ import eis.iilang.Action;
 import eis.iilang.EnvironmentState;
 import eis.iilang.Percept;
 import massim.eismassim.EnvironmentInterface;
-
 import org.json.JSONObject;
-
 import de.feu.massim22.group3.agents.Agent;
 import de.feu.massim22.group3.agents.BasicAgent;
 import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.BdiAgentV2;
-
+import de.feu.massim22.group3.agents.Supervisable;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-
-
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -43,12 +39,14 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
         String entity;
         String team;
         String className;
+        int index;
 
-        AgentConf(String name, String entity, String team, String className){
+        AgentConf(String name, String entity, String team, String className, int index){
             this.name = name;
             this.entity = entity;
             this.team = team;
             this.className = className;
+            this.index = index;
         }
     }
 
@@ -84,7 +82,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
 
                     for (int index = startIndex; index < startIndex + count; index++) {
                         agentConfigurations.add(
-                                new AgentConf(agentPrefix + index, entityPrefix + index, team, agentClass));
+                                new AgentConf(agentPrefix + index, entityPrefix + index, team, agentClass, index));
                     }
                 }
             }
@@ -109,7 +107,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
                     break;
                 // [add further types here]
                 case "BdiAgentV1":
-                	agent = new BdiAgentV1(agentConf.name, mailService, this);
+                	agent = new BdiAgentV1(agentConf.name, mailService, this, agentConf.index);
                 	Thread t = new Thread((Runnable)agent);
                 	t.start();
                 	break;
@@ -123,6 +121,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
             if(agent == null) continue;
 
             mailService.registerAgent(agent, agentConf.team);
+            Navi.get().registerAgent(agent.getName());
 
             try {
                 ei.registerAgent(agent.getName());
@@ -162,30 +161,44 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
             } catch (PerceiveException ignored) { }
         });
         
-        //Melinda Betz 05.05.2022
-        // step all agents which have new percepts
+        
+        
+
+
+
+        // for safety initStep at supervisor first
         newPerceptAgents.forEach(agent -> {
-        	// Notify multithreaded agents
-        	/*if (agent instanceof Runnable) {
-        		String sender = "Scheduler";
-        		Percept message = new Percept(TaskName.UPDATE.name());
-        		agent.handleMessage(message, sender);
-        	} 
-        	// get actions if agent is not multithreaded
-        	else {*/
-        	Runnable runnable = () -> {
-                eis.iilang.Action action = agent.step(); 
-                if (action != null) {
-                    try {
-                        eis.performAction(agent.getName(), action);
-                    } catch (ActException e) {
-                        AgentLogger.warning("Could not perform action " + action.getName() + " for " + agent.getName());
-                    }
-                }	
-        	};
-			Thread t1 = new Thread(runnable);
-            t1.start();
+            if (agent instanceof Supervisable) {
+                ((Supervisable)agent).initSupervisorStep();
+            }
         });
+
+
+        // step all agents which have new percepts
+		newPerceptAgents.forEach(agent -> {
+			// Notify multithreaded agents
+			if (agent instanceof Runnable) {
+				String sender = "Scheduler";
+				Percept message = new Percept(TaskName.UPDATE.name());
+				agent.handleMessage(message, sender);
+			}
+			// get actions if agent is not multithreaded
+			else {
+				Runnable runnable = () -> {
+					eis.iilang.Action action = agent.step();
+					if (action != null) {
+						try {
+							eis.performAction(agent.getName(), action);
+						} catch (ActException e) {
+							AgentLogger.warning(
+									"Could not perform action " + action.getName() + " for " + agent.getName());
+						}
+					}
+				};
+				Thread t1 = new Thread(runnable);
+				t1.start();
+			}
+		});
 
         if(newPerceptAgents.size() == 0) try {
             Thread.sleep(100); // wait a bit in case no agents have been executed
