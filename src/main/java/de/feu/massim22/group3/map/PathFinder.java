@@ -205,7 +205,7 @@ class PathFinder {
 		return shaderCache;
     }
 
-    public void start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
+    public PathFindingResult[][] start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
 
         // Create the compute program the compute shader is assigned to
 		glfwMakeContextCurrent(this.windowHandler);
@@ -253,22 +253,27 @@ class PathFinder {
 		glfwMakeContextCurrent(0);
 
 		// Calculate Result
-		decodeResult(result, goalPoints, mapSize, agentCount);
+		return decodeResult(result, goalPoints, mapSize, agentCount);
     }
 
-	private void decodeResult(float[] map, List<InterestingPoint> goalPoints, Point mapSize, int agentCount) {
+	private PathFindingResult[][] decodeResult(float[] map, List<InterestingPoint> goalPoints, Point mapSize, int agentCount) {
 		int channels = 2;
 		int imageSize2D = mapSize.x * mapSize.y * channels;
+		PathFindingResult[][] result = new PathFindingResult[agentCount][goalPoints.size()];
 		for (int i = 0; i < agentCount; i++) {
 			int startIndex = (i + 1) * imageSize2D;
-			for (InterestingPoint ip : goalPoints) {
+			for (int j = 0; j < goalPoints.size(); j++) {
+				InterestingPoint ip = goalPoints.get(j);
 				Point p = ip.point();
 				int index = startIndex + p.y * mapSize.x * 2 + p.x * 2;
-				float distance = map[index];
-				float direction = map[index + 1];
-				System.out.println("Calculation Result: " + ip.cellType() + " Distance: " + distance + " Test " + direction);
+				int distance = (int)map[index];
+				int direction = (int)map[index + 1];
+				PathFindingResult resultData = new PathFindingResult(distance, direction);
+				result[i][j] = resultData;
+				// AgentLogger.fine("Path-Finding Result: " + ip.cellType() + " Distance: " + distance + " Direction " + direction);
 			}
 		}
+		return result;
 	}
 
 	private void logMap(Point mapSize, float[] result, String supervisor, int step) {
@@ -285,11 +290,13 @@ class PathFinder {
 		// Agent 1 Result
 		float[] a = new float[s * 4];
 		int offset = (s * 2);
+
 		for (int i = 0; i < s; i++) {
-			a[i*4] = (int)(result[offset + i*2] * 10);       //r
-			a[i*4+1] = (int)(result[offset + i*2+1] * 255);   //g
-			a[i*4+2] = 0; 				             //b
-			a[i*4+3] = 255;                          //a
+			boolean noResult = result[offset + i*2] == 0;
+			a[i*4] = noResult ? 255 : (int)(result[offset + i*2] * 10); //r
+			a[i*4+1] = noResult ? 255 : (int)(result[offset + i*2+1]);  //g
+			a[i*4+2] = 255; 				                            //b
+			a[i*4+3] = 255;                                             //a
 		}		
 		
 		// Check if folder exists
@@ -308,7 +315,7 @@ class PathFinder {
 			raster.setPixels(raster.getMinX() , raster.getMinY(), raster.getWidth(), raster.getHeight(), c);
 			ImageIO.write(image, format, file);
 
-			File fileA = new File(folder + "/map_supervisor" + supervisor + "result_step" + step + "." + format);
+			File fileA = new File(folder + "/map_supervisor" + supervisor + "_step" + step + "_result." + format);
 			BufferedImage imageA = new BufferedImage(mapSize.x, mapSize.y, BufferedImage.TYPE_INT_ARGB);
 			WritableRaster rasterA = imageA.getRaster();
 			rasterA.setPixels(rasterA.getMinX() , rasterA.getMinY(), rasterA.getWidth(), rasterA.getHeight(), a);

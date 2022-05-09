@@ -103,6 +103,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
     void setEnvironment(EnvironmentInterface ei) {
         this.eis = ei;
         MailService mailService = new MailService();
+        Navi.get().setMailService(mailService);
         for (AgentConf agentConf: agentConfigurations) {
 
             Agent agent = null;

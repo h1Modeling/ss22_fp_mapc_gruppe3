@@ -13,6 +13,7 @@ import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
+import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import massim.protocol.data.Thing;
 
@@ -80,17 +81,20 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		switch (taskName) {
 		case UPDATE:
 			updatePercepts();
-			// TODO Send current Position to Supervisor
 			setDummyAction();
 			break;
 		case TO_SUPERVISOR:
 			this.supervisor.handleMessage(task, sender);
 			break;
+		case PATHFINDER_RESULT:
+			List<Parameter> parameters = task.getParameters();
+			belief.updateFromPathFinding(parameters);
+			AgentLogger.info(belief.reachablesToString());
+			// TODO Action after receiving Pathfinding infos
+			break;
 		default:
 			throw new IllegalArgumentException("Message is not handled!");
 		}
-		// TODO Action after Receiving Map Information from Navi
-		
 	}
 	
 	private void updatePercepts() {

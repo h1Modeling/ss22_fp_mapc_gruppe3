@@ -8,6 +8,15 @@ import java.util.Set;
 
 import org.lwjgl.BufferUtils;
 
+import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.TaskName;
+import eis.iilang.Function;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
+import eis.iilang.Parameter;
+import eis.iilang.TruthValue;
+import eis.iilang.Percept;
+
 import java.awt.Point;
 import java.nio.FloatBuffer;
 
@@ -15,6 +24,8 @@ import massim.protocol.data.Thing;
 
 public class Navi {
     private static Navi instance;
+    private String name = "Navi";
+    private MailService mailService;
     private Map<String, GameMap> maps = new HashMap<>();
     private Map<String, String> agentSupervisor = new HashMap<>();
     private Map<String, Integer> agentStep = new HashMap<>();
@@ -30,6 +41,10 @@ public class Navi {
             instance = new Navi();
         }
         return Navi.instance;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
     public void registerAgent(String name) {
@@ -204,7 +219,6 @@ public class Navi {
                 // Interesting Points Position (Path-Finding Goals)
                 else if (y == 2 && x < numberGoals) {
                     InterestingPoint ip = interestingPoints.get(x);
-                    System.out.println(ip.toString());
                     Point p = ip.point();
                     dataTextureBuffer.put(p.x);
                     dataTextureBuffer.put(p.y);
@@ -217,21 +231,51 @@ public class Navi {
             }
         }
         dataTextureBuffer.flip();
-        /*
-        float[] test = new float[textureSize * textureSize * 2];
-        dataTextureBuffer.get(test);
-
-        for (int i = 0; i < textureSize * 2 * 3; i++) {
-            System.out.println("Data " + test[i]);
-        } 
-        */
 
         long handler = openGlHandler.get(supervisor);
         PathFinder finder = new PathFinder(handler);
         boolean mapDiscovered = map.mapDiscovered();
+        
         if (numberGoals > 0) {
-            finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+            // Start Path Finding
+            PathFindingResult[][] result = finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+            
+            // Send Result to Agents
+            if (mailService != null) {
+                for (int i = 0; i < agents.size(); i++) {
+                    String agent = agents.get(i);
+                    PathFindingResult[] agentResultData = result[i];
+                    Point mapTopLeft = map.getTopLeft();
+                    sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft);
+                }
+            }
         }
+    }
+
+    private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+        List<Parameter> data = new ArrayList<>();
+        // Generate Percept
+        for (int j = 0; j < interestingPoints.size(); j++) {
+            PathFindingResult resultData = agentResultData[j];
+            // Result was found
+            if (resultData.distance() > 0) {
+                InterestingPoint ip = interestingPoints.get(j);
+                Parameter distance = new Numeral(resultData.distance());
+                Parameter direction = new Numeral(resultData.direction());
+                boolean iZ = ip.cellType().equals(CellType.UNKNOWN);
+                Parameter isZone = new TruthValue(iZ);
+                String det = iZ ? ip.zoneType().name() : ip.cellType().name();
+                Parameter detail = new Identifier(det);
+                Parameter pointX = new Numeral(ip.point().x + mapTopLeft.x);
+                Parameter pointY = new Numeral(ip.point().y + mapTopLeft.y);
+                // Generate Data for Point
+                Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction);
+                data.add(f);
+            }
+        }                
+        Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
+        // Send Data to Agent
+        mailService.sendMessage(message, agent, name);
     }
 
     private CellType thingToCellType(Thing t) {
