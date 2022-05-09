@@ -113,7 +113,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
                 	break;
                 //Melinda Betz 05.05.2022
                 case "BdiAgentV2":
-                    agent = new BdiAgentV2(agentConf.name, mailService);
+                    agent = new BdiAgentV2(agentConf.name, mailService, agentConf.index);
                     break;
                 default:
                     AgentLogger.warning("Unknown agent type/class " + agentConf.className);

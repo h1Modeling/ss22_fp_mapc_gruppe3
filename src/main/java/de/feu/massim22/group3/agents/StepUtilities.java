@@ -1,6 +1,10 @@
 package de.feu.massim22.group3.agents;
 
 import java.util.*;
+import java.util.List;
+
+import de.feu.massim22.group3.map.Navi;
+
 import java.awt.*;
 import massim.protocol.data.Thing;
 
@@ -134,7 +138,8 @@ public class StepUtilities {
 				if (((Thing) i.next()).type.equals(Thing.TYPE_MARKER)) {// clearEvent in Vision von Agent
 					if (((Thing) i.next()).details.equals("cp")) {// points die der Agent in seiner Vision hat vom clear Event
 						if(((Thing) i.next()).x == 0 && ((Thing) i.next()).y == 0 ) {// schon selbst drin
-							DodgeClear dodge = new DodgeClear();
+							DodgeClear dodge = new DodgeClear(agent);
+							agent.desire.add(dodge);
 						}
 					}
 						
@@ -144,9 +149,9 @@ public class StepUtilities {
 		
 						
 		
-		HinderEnemy hinder = new HinderEnemy();
-		GoGoalZone goGoalZone = new GoGoalZone();
-		RemoveObstacle remove = new RemoveObstacle();
+		HinderEnemy hinder = new HinderEnemy(agent);
+		GoGoalZone goGoalZone = new GoGoalZone(agent);
+		RemoveObstacle remove = new RemoveObstacle(agent);
 		
 		agent.decisionsDone = true;
 		return result;
@@ -165,5 +170,21 @@ public class StepUtilities {
 		supervisor.decisionsDone = true;
 		return result;
 	}
-
+	
+	/**
+	 * Update the Map.
+	 * 
+	 * @param agent - the Agent that wants to update the map
+	 *
+	 */
+	public void updateMap(BdiAgentV2 agent) {
+		Navi.get().updateAgent(agent.getSupervisor().getName(), agent.getName(), agent.index, agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(), agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep());
+	}
+	
+	public int getPriority(Desire desire){
+		int result = 0;
+		desire.priority = ;
+		
+		return result;
+	}
 }

@@ -1,12 +1,10 @@
 package de.feu.massim22.group3.agents;
 
-public class RemoveObstacle {
+public class RemoveObstacle extends Desire {
 	
-	public boolean remove() {
-		boolean result = false;
-		
-		
-		
-		return result;
+	RemoveObstacle(BdiAgent agent){
+		super("RemoveObstacle",agent);
 	}
+	
+	
 }
