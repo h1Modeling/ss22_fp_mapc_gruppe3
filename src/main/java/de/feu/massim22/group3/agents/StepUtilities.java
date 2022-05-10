@@ -121,7 +121,7 @@ public class StepUtilities {
 	}
 	
 	/**
-	 * The class runs the different agent decisions.
+	 * The method runs the different agent decisions.
 	 *
 	 * @param agent -  the agent who wants to make the decisions
 	 * 
@@ -129,36 +129,33 @@ public class StepUtilities {
 	 */
 	public synchronized boolean runAgentDecisions(BdiAgent agent) {
 		boolean result = false;
-		
-		
-		
-			Iterator i = agent.belief.getThings().iterator();
 
-			while (i.hasNext()) {
-				if (((Thing) i.next()).type.equals(Thing.TYPE_MARKER)) {// clearEvent in Vision von Agent
-					if (((Thing) i.next()).details.equals("cp")) {// points die der Agent in seiner Vision hat vom clear Event
-						if(((Thing) i.next()).x == 0 && ((Thing) i.next()).y == 0 ) {// schon selbst drin
-							DodgeClear dodge = new DodgeClear(agent);
-							agent.desire.add(dodge);
-						}
-					}
-						
-						
-				}
-			}
+		DodgeClear dodge = new DodgeClear(agent);
+		if(dodge.isDesirePossible(dodge)) { //desire ist möglich , hinzufügen
+			dodge.outputAction = dodge.getNextAction();
+			getPriority(dodge);
+			agent.desires.add(dodge);
+		}
 		
-						
+		DigFree dig = new DigFree(agent);
+		if(dig.isDesirePossible(dig)) { //desire ist möglich , hinzufügen
+			dig.outputAction = dig.getNextAction();
+			getPriority(dig);
+			agent.desires.add(dig);
+		}
 		
+
 		HinderEnemy hinder = new HinderEnemy(agent);
 		GoGoalZone goGoalZone = new GoGoalZone(agent);
-		RemoveObstacle remove = new RemoveObstacle(agent);
-		
+		GoRoleZone goRoleZone = new GoRoleZone(agent);
+		//RemoveObstacle removeObstacle = new RemoveObstacle(agent);
+
 		agent.decisionsDone = true;
 		return result;
 	}
 	
 	/**
-	 * The class runs the different supervisor decisions.
+	 * The method runs the different supervisor decisions.
 	 *
 	 * @param supervisor -  the supervisor who wants to make the decisions
 	 * 
@@ -181,10 +178,48 @@ public class StepUtilities {
 		Navi.get().updateAgent(agent.getSupervisor().getName(), agent.getName(), agent.index, agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(), agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep());
 	}
 	
-	public int getPriority(Desire desire){
+	/**
+	 * The method .
+	 *
+	 * @param supervisor -  the supervisor who wants to make the decisions
+	 * 
+	 * @return boolean - the supervisor decisions are done
+	 */
+	public int getPriority(Desire desire) {
 		int result = 0;
-		desire.priority = ;
-		
+
+		switch (desire.name) {
+		case "DigFree":
+			result = 10;
+		case "DodgeClear":
+			result = 20;
+		case "LocalHinderEnemy":
+			result = 90;
+		case "LocalGetBlocks":
+			result = 70;
+		case "GoGoalZone":
+			result = 80;
+		case "GoRoleZone":
+			result = 30;
+		case "ReactToNorm":
+			result = 40;
+		case "LocalExplore":
+			result = 100;
+		}
+
 		return result;
 	}
+	
+	public Desire determineIntention(BdiAgent agent) {
+		Desire result = null;
+		int priority = 1000;
+		for(Desire desire : agent.desires) {
+			if(desire.priority < priority ) {
+				result = desire;
+				priority = desire.priority;
+			}
+		}
+		return result;
+	}
+	
 }

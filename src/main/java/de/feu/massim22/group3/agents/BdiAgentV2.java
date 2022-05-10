@@ -19,6 +19,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 	public StepUtilities stepLogic = new StepUtilities();
 	private ISupervisor supervisor;
 	public int index;
+	public Desire intention;
 
 	/**
 	 * Constructor.
@@ -61,15 +62,14 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
 			Thread t4 = new Thread(() -> stepLogic.runAgentDecisions(this));
 			t4.start();
-
-			// Intention ermitteln (Goal mit höchster Priorität
 			
-			// Action ermitteln (1.Action des Plans)
+			//warten auf decisions (agent und supervisor)
 
-			// return new Action
-
+			// Intention ermitteln (Desire mit höchster Priorität)
+			intention = stepLogic.determineIntention(this);
 		}
-
+		//nächste Action
+		return intention.outputAction;
 	}
 
 	/**

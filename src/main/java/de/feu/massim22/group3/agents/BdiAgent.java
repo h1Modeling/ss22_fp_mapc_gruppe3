@@ -8,7 +8,7 @@ import de.feu.massim22.group3.MailService;
 public abstract class BdiAgent extends Agent {
 	
 	protected Belief belief;
-	protected List<Desire> desire = new ArrayList<>();
+	protected List<Desire> desires = new ArrayList<>();
 	protected Intention intention;
 	//Melinda Betz 07.05.2022
 	protected boolean decisionsDone;
@@ -20,7 +20,7 @@ public abstract class BdiAgent extends Agent {
 	}
 	
 	void addDesire(Desire d) {
-		desire.add(d);
+		desires.add(d);
 	}
 	
 	Intention getIntention() {
