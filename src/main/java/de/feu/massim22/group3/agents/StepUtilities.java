@@ -17,9 +17,11 @@ import massim.protocol.data.Thing;
 public class StepUtilities {
 	private static int countAgent = 0;
 	private static ArrayList<BdiAgent> allAgents = new ArrayList<BdiAgent>();
+	
+	Supervisor loopSupervisor;
 
 	/**
-	 * The agent has updated his map.
+	 * The agent has initiated his map update.
 	 * 
 	 * @param agent - the agent which has updated the map
 	 * @param step -  the step in which the program is at the moment
@@ -41,72 +43,94 @@ public class StepUtilities {
 	}
 
 	/**
-	 * All the things that have to be done to merge two groups together.
+	 * All the things that have to be done to merge two groups together,
+	 * update the maps for the resulting groups and 
+	 * do some group/supervisor decisions.
 	 *
 	 * @param step -  the step in which the program is at the moment
 	 * 
 	 * @return boolean - group merge was a success
 	 */
-	public synchronized boolean doGroupProcessing(int step) {
-		BdiAgent agent1 ;
-		BdiAgent agent2;
-		boolean result = false;
+	public void doGroupProcessing(int step) {
+		BdiAgentV2 agent1 ;
+		BdiAgentV2 agent2;
 		Iterator i = null;
-		ArrayList<BdiAgent> meetsAgent = new ArrayList<BdiAgent>();// überhaupt Agent gefunden
-		ArrayList<Point> foundAgent = new ArrayList<Point>();// wo Agent gefunden
+		//ArrayList<BdiAgentV2> meetsAgent = new ArrayList<BdiAgentV2>();// überhaupt Agent gefunden
+		//ArrayList<Point> foundAgent = new ArrayList<Point>();// wo Agent gefunden
+	    ArrayList<AgentMeeting> foundAgent = new ArrayList<AgentMeeting>();
 		ArrayList<Supervisor> groupsToMerge = new ArrayList<Supervisor>();
 		Set<Supervisor> allSupervisors = new HashSet<Supervisor>();
+	    Set<Supervisor> oldSupervisors = new HashSet<Supervisor>();
 
-		
-	
 		for (BdiAgent agent : allAgents) {
 			i = agent.belief.getThings().iterator();
 			allSupervisors.add(((BdiAgentV2)agent).getSupervisor());
 
+			for (Thing thing : agent.belief.getThings()) {
+			    
+			}
 			while (i.hasNext()) {
+			 // Agent hat in seiner Vision ein anderen Agent
 				if (((Thing) i.next()).type.equals(Thing.TYPE_ENTITY)) {
 					if (((Thing) i.next()).details.equals(agent.belief.getTeam())) {// gleiches Team
 						if (((Thing) i.next()).x != 0 && ((Thing) i.next()).y != 0) { // nicht er selber
-							meetsAgent.add(agent);
-							foundAgent.add(new Point(((Thing) i.next()).x, ((Thing) i.next()).y));
+							//meetsAgent.add((BdiAgentV2)agent);
+							foundAgent.add(new AgentMeeting((BdiAgentV2)agent, new Point(((Thing) i.next()).x, ((Thing) i.next()).y)));
 						}
 					}
 				}
 			}
 		}
 
-		for (int j = 0; j < meetsAgent.size(); j++) {// Agents suchen die sich getroffen haben
-			for (int k = j + 1; k < meetsAgent.size(); k++) {
-				if ((foundAgent.get(k).x == -foundAgent.get(j).x) && (foundAgent.get(k).y == -foundAgent.get(j).y)) {//
-					agent1 = meetsAgent.get(j);
-					agent2 = meetsAgent.get(k);
-					
-					if(!(((BdiAgentV2)agent1).getSupervisor() == ((BdiAgentV2)agent2).getSupervisor())) {// unterschiedliche Gruppen
-						if(countGroupSize(((BdiAgentV2)agent1).getSupervisor()) >= countGroupSize(((BdiAgentV2)agent2).getSupervisor())) {
-							//Gruppe von agent2 in Gruppe von agent1 mergen (Methdoenaufruf)
-						}else {
-							//Gruppe von agent1 in Gruppe von agent2 mergen (Methdoenaufruf)
-						}
-					}
-				}
-			}
-		}
-		
-		//Map update für Gruppen ?
-		
-		/*Schleife über alle Gruppen (nach dem merge) Group Decisions 
-		 * Thread pro Gruppe */
-		for (Supervisor supervisor : allSupervisors) {
-			Thread t3= new Thread(() -> runSupervisorDecisions(supervisor));
-			t3.start();
-			
-		}
-		
-		return result;
-	}
+        // Agents suchen die sich getroffen haben
+        for (int j = 0; j < foundAgent.size(); j++) {
+            for (int k = j + 1; k < foundAgent.size(); k++) {
+                if ((foundAgent.get(k).position.x == -foundAgent.get(j).position.x) && (foundAgent.get(k).position.y == -foundAgent.get(j).position.y)) {
+                    agent1 = foundAgent.get(j).agent;
+                    agent2 = foundAgent.get(k).agent;
+
+                    // Agents sind aus unterschiedlichen Gruppen
+                    if (!(agent1.getSupervisor() == agent2.getSupervisor())) {
+                        // die kleinere in die größere Gruppe mergen
+                        if (agent1.getSupervisor().getAgents().size() >= agent2.getSupervisor().getAgents().size()) {
+
+                            // Gruppe von agent2 in Gruppe von agent1 mergen (Methodenaufruf)
+                            oldSupervisors.add(agent2.getSupervisor());
+                        } else {
+
+                            // Gruppe von agent1 in Gruppe von agent2 mergen (Methodenaufruf)
+                            oldSupervisors.add(agent1.getSupervisor());
+                        }
+                    }
+                }
+            }
+        }
+        
+        allSupervisors.removeAll(oldSupervisors);
+
+        /*
+         * loop for all groups (after merge) with map update and group gecisions 
+         */
+        for (Supervisor sv : allSupervisors) {
+            loopSupervisor = sv;
+            Runnable runnable = () -> {
+                
+                // Gruppenmap berechnen (Methodenaufruf) z.B. mit updateSupervisor;
+                // dahinter dann der Aufruf startCalculation mit der vollständigen Map des Supervisors
+                // wodurch für die Agents die PATHFINDER_RESULT Message ausgelöst wird
+                
+                // Navi.get().updateSupervisor(loopSupervisor.getName());
+                runSupervisorDecisions(loopSupervisor);
+            };
+            Thread t3 = new Thread(runnable);
+            t3.start();
+
+        }
+    }
 	
 	/**
 	 * The class determines the group size of the group with the given supervisor.
+	 * (überflüssig, wenn man Zugriff auf die Liste agents im Supervisor hat)
 	 *
 	 * @param step -  the supervisor of the group of which we want to determine the size
 	 * 
@@ -223,5 +247,14 @@ public class StepUtilities {
 		}
 		return result;
 	}
-	
+}
+
+class AgentMeeting {
+    BdiAgentV2 agent;
+    Point position;   
+    
+    AgentMeeting (BdiAgentV2 agent, Point position) {
+        this.agent = agent;
+        this.position = position;
+    }
 }

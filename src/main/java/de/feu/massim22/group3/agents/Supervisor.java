@@ -109,4 +109,9 @@ public class Supervisor implements ISupervisor {
 			this.confirmationData.forEach(d -> d.clear());
 		}
 	}
+	
+    // Melinda Betz 07.05.2022
+    public List<String> getAgents() {
+        return agents;
+    }
 }
