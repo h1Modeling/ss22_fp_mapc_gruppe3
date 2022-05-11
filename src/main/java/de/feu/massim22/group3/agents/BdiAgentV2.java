@@ -57,7 +57,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 		stepLogic.updateMap(this);// Mapupdate
 
 		if (stepLogic.reportMapUpdate(this, belief.getStep(), belief.getTeamSize())) {
-			Thread t2 = new Thread(() -> stepLogic.proofGroupMerge(belief.getStep()));
+			Thread t2 = new Thread(() -> stepLogic.doGroupProcessing(belief.getStep()));
 			t2.start();
 
 			Thread t4 = new Thread(() -> stepLogic.runAgentDecisions(this));

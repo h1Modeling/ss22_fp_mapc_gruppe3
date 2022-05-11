@@ -47,7 +47,7 @@ public class StepUtilities {
 	 * 
 	 * @return boolean - group merge was a success
 	 */
-	public synchronized boolean proofGroupMerge(int step) {
+	public synchronized boolean doGroupProcessing(int step) {
 		BdiAgent agent1 ;
 		BdiAgent agent2;
 		boolean result = false;
@@ -57,12 +57,14 @@ public class StepUtilities {
 		ArrayList<Supervisor> groupsToMerge = new ArrayList<Supervisor>();
 		Set<Supervisor> allSupervisors = new HashSet<Supervisor>();
 
+		
+	
 		for (BdiAgent agent : allAgents) {
 			i = agent.belief.getThings().iterator();
 			allSupervisors.add(((BdiAgentV2)agent).getSupervisor());
 
 			while (i.hasNext()) {
-				if (((Thing) i.next()).type.equals(Thing.TYPE_ENTITY)) {// Agent hat in seiner Vision ein anderen Agent
+				if (((Thing) i.next()).type.equals(Thing.TYPE_ENTITY)) {
 					if (((Thing) i.next()).details.equals(agent.belief.getTeam())) {// gleiches Team
 						if (((Thing) i.next()).x != 0 && ((Thing) i.next()).y != 0) { // nicht er selber
 							meetsAgent.add(agent);
