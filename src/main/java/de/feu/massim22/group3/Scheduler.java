@@ -103,6 +103,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
     void setEnvironment(EnvironmentInterface ei) {
         this.eis = ei;
         MailService mailService = new MailService();
+        Navi.get().setMailService(mailService);
         for (AgentConf agentConf: agentConfigurations) {
 
             Agent agent = null;
@@ -164,6 +165,15 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
                 ag.setPercepts(addList, delList);
             } catch (PerceiveException ignored) { }
         });
+
+        // log
+        if (newPerceptAgents.size() > 0) {
+            AgentLogger.info("");
+            AgentLogger.info("------------------------------");
+            AgentLogger.info("------------ STEP ------------");
+            AgentLogger.info("------------------------------");
+            AgentLogger.info("");
+        }
 
         // for safety initStep at supervisor first
         newPerceptAgents.forEach(agent -> {
