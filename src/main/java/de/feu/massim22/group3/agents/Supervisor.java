@@ -15,6 +15,9 @@ public class Supervisor implements ISupervisor {
 	private List<String> agents = new ArrayList<>();
 	private List<ConfirmationData> confirmationData = new ArrayList<>();
 	
+	//Melinda Betz 07.05.2022
+	public boolean decisionsDone;
+	
 	public Supervisor(Supervisable parent) {
 		this.parent = parent;
 		this.name = parent.getName();
@@ -106,4 +109,9 @@ public class Supervisor implements ISupervisor {
 			this.confirmationData.forEach(d -> d.clear());
 		}
 	}
+	
+    // Melinda Betz 07.05.2022
+    public List<String> getAgents() {
+        return agents;
+    }
 }
