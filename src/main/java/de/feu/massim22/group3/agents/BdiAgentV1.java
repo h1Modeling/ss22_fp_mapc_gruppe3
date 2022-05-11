@@ -81,7 +81,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		case UPDATE:
 			updatePercepts();
 			// TODO Send current Position to Supervisor
-			setDummyAction();
+			desireHandler.setNextAction();
 			break;
 		case TO_SUPERVISOR:
 			this.supervisor.handleMessage(task, sender);
