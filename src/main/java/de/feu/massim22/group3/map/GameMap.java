@@ -2,7 +2,10 @@ package de.feu.massim22.group3.map;
 
 import java.awt.Point;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.BufferUtils;
@@ -16,6 +19,10 @@ public class GameMap {
 	private Point topLeft; // top left indices can be negative
 	private int mapExtensionSize = 20;
 	private Map<String, Point> agentPosition = new HashMap<>(); 
+	// These hold information relative to the internal array - only use for pathfinding
+	private List<Point> goalCache = new ArrayList<>();
+	private List<Point> roleCache = new ArrayList<>();
+	private List<InterestingPoint> dispenserCache = new ArrayList<>();
 	
 	public GameMap(int x, int y) {
 		initialSize = new Point(x, y);
@@ -173,21 +180,138 @@ public class GameMap {
 	public FloatBuffer getMapBuffer() {
 		Point curSize = getMapSize();
 		FloatBuffer data = BufferUtils.createFloatBuffer(curSize.x * curSize.y * 2);
+		
+		roleCache.clear();
+		goalCache.clear();
+		dispenserCache.clear();
         
-		for (int i = 0; i < curSize.y; i++) {
-			for (int j = 0; j < curSize.x; j++) {
-				MapCell c = cells[i][j];
+		for (int y = 0; y < curSize.y; y++) {
+			for (int x = 0; x < curSize.x; x++) {
+				MapCell c = cells[y][x];
 				CellType type = c.getCellType();
-				float v = type.equals(CellType.FREE) ? 0f : 1f;
+				float v = type.equals(CellType.FREE) || type.equals(CellType.TEAMMATE) ? 0f : 1f;
 				// r-channel
 				data.put(v);
 				// g-channel not used in map
 				data.put(0.0f);
+				
+				// update Cache
+				Point p = new Point(x, y);
+				if (c.getZoneType() == ZoneType.ROLEZONE) {
+					roleCache.add(p);
+				} else if (c.getZoneType() == ZoneType.GOALZONE) {
+					goalCache.add(p);
+				}
+				if (c.getCellType().name().contains("DISPENSER")) {
+					Point size = getMapSize();
+					// Get neighbour cells
+					// North
+					Point north = new Point(p.x, p.y - 1);
+					if (north.y >= 0 && cells[north.y][north.x].getCellType() == CellType.FREE) {
+						InterestingPoint ip = new InterestingPoint(north, ZoneType.NONE, c.getCellType());
+						dispenserCache.add(ip);
+					}
+					// East
+					Point east = new Point(p.x + 1, p.y);
+					if (east.x < size.x && cells[east.y][east.x].getCellType() == CellType.FREE) {
+						InterestingPoint ip = new InterestingPoint(east, ZoneType.NONE, c.getCellType());
+						dispenserCache.add(ip);
+					}
+					// South
+					Point south = new Point(p.x, p.y + 1);
+					if (south.y < size.y && cells[south.y][south.x].getCellType() == CellType.FREE) {
+						InterestingPoint ip = new InterestingPoint(south, ZoneType.NONE, c.getCellType());
+						dispenserCache.add(ip);
+					}
+					// South
+					Point west = new Point(p.x - 1, p.y);
+					if (west.x >= 0 && cells[west.y][west.x].getCellType() == CellType.FREE) {
+						InterestingPoint ip = new InterestingPoint(west, ZoneType.NONE, c.getCellType());
+						dispenserCache.add(ip);
+					}
+				}
 			}
 		}
 
         data.flip();
 		return data;
+	}
+
+	public List<InterestingPoint> getInterestingPoints(int maxCount) {
+		List<InterestingPoint> result = new ArrayList<>();
+		if (dispenserCache.size() <= maxCount) {
+			// Dispensers
+			result.addAll(dispenserCache);
+			int countLeft = maxCount - dispenserCache.size();
+			
+			// Goal and Role Zones 
+			List<List<Point>> goalLists = filterZones(goalCache, 6);
+			List<List<Point>> roleLists = filterZones(roleCache, 6);
+
+			// Alternate between goal and role
+			while (countLeft > 0 && (goalLists.size() != 0 || roleLists.size() != 0)) {
+				int goalListSize = goalLists.size();
+				int roleListSize = roleLists.size();
+				int maxSize = Math.max(goalListSize, roleListSize);
+
+				for (int i = 0; i < maxSize; i++) {
+					if (i < goalListSize) {
+						List<Point> goalList = goalLists.get(i);
+						if (goalList.size() > 0) {
+							Point p = goalList.get(0);
+							InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN);
+							result.add(ip);
+							countLeft -= 1;
+							goalList.remove(0);
+							// Remove Empty List
+							if (goalList.size() == 0) {
+								goalLists.remove(goalList);
+							}
+						}
+					}
+					if (i < roleListSize) {
+						List<Point> roleList = roleLists.get(i);
+						if (roleList.size() > 0) {
+							Point p = roleList.get(0);
+							InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN);
+							result.add(ip);
+							countLeft -= 1;
+							roleList.remove(0);
+							// Remove Empty List
+							if (roleList.size() == 0) {
+								roleLists.remove(roleList);
+							}
+						}
+					}
+				}
+			}
+
+		} else {
+			// TODO add strategy if maxCount should be increased
+		}
+		return result;
+	}
+
+	// creates different lists of close points
+	private List<List<Point>> filterZones(List<Point> zonePoints, int distinctionDistance) {
+		List<List<Point>> result = new LinkedList<>();
+		for (Point p : zonePoints) {
+			boolean added = false;
+			for (List<Point> list : result) {
+				Point first = list.get(0);
+				if (Math.abs(first.x - p.x) <= distinctionDistance) {
+					list.add(p);
+					added = true;
+					break;
+				}
+			}
+			if (!added) {
+				List<Point> newList = new LinkedList<>();
+				newList.add(p);
+				result.add(newList);
+			}
+		}
+		return result;
 	}
 
 	public Point getMapSize() {

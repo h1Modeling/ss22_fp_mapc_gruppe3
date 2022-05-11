@@ -8,6 +8,15 @@ import java.util.Set;
 
 import org.lwjgl.BufferUtils;
 
+import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.TaskName;
+import eis.iilang.Function;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
+import eis.iilang.Parameter;
+import eis.iilang.TruthValue;
+import eis.iilang.Percept;
+
 import java.awt.Point;
 import java.nio.FloatBuffer;
 
@@ -15,6 +24,8 @@ import massim.protocol.data.Thing;
 
 public class Navi {
     private static Navi instance;
+    private String name = "Navi";
+    private MailService mailService;
     private Map<String, GameMap> maps = new HashMap<>();
     private Map<String, String> agentSupervisor = new HashMap<>();
     private Map<String, Integer> agentStep = new HashMap<>();
@@ -30,6 +41,10 @@ public class Navi {
             instance = new Navi();
         }
         return Navi.instance;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
     public void registerAgent(String name) {
@@ -155,7 +170,7 @@ public class Navi {
         return result;
     }
 
-    private void startCalculation(String supervisor, GameMap map) {
+    private synchronized void startCalculation(String supervisor, GameMap map) {
         FloatBuffer mapBuffer = map.getMapBuffer();
         FloatBuffer agentBuffer = map.getEmptyBuffer();
         List<String> agents = getAgentsFromSupervisor(supervisor);
@@ -179,11 +194,14 @@ public class Navi {
         // y = 0: Position of agents
         // y = 1: Form of agent (attached blocks)
         // y = 2: Goal Position
-        int numberGoals = 32;
+        int maxNumberGoals = 32;
+        int dataY = 3;
+        List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals);
+        int numberGoals = interestingPoints.size();
         int textureSize = Math.max(agentSize, numberGoals);
-        Point dataSize = new Point(textureSize, textureSize);
-        FloatBuffer dataTextureBuffer = BufferUtils.createFloatBuffer(textureSize * textureSize * channelSize);
-        for (int y = 0; y < textureSize; y++) {
+        Point dataSize = new Point(textureSize, dataY);
+        FloatBuffer dataTextureBuffer = BufferUtils.createFloatBuffer(textureSize * dataY * channelSize);
+        for (int y = 0; y < 3; y++) {
             for (int x = 0; x < textureSize; x++) {
                 // Agent position
                 if (y == 0 && x < agentSize) {
@@ -198,11 +216,12 @@ public class Navi {
                     dataTextureBuffer.put(0);
                     dataTextureBuffer.put(0);
                 } 
-                // Goal Position
+                // Interesting Points Position (Path-Finding Goals)
                 else if (y == 2 && x < numberGoals) {
-                    // TODO add real goals
-                    dataTextureBuffer.put(3);
-                    dataTextureBuffer.put(2);
+                    InterestingPoint ip = interestingPoints.get(x);
+                    Point p = ip.point();
+                    dataTextureBuffer.put(p.x);
+                    dataTextureBuffer.put(p.y);
                 } 
                 // Fill Rest
                 else {
@@ -216,7 +235,47 @@ public class Navi {
         long handler = openGlHandler.get(supervisor);
         PathFinder finder = new PathFinder(handler);
         boolean mapDiscovered = map.mapDiscovered();
-        finder.start(mapTextureBuffer, dataTextureBuffer, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+        
+        if (numberGoals > 0) {
+            // Start Path Finding
+            PathFindingResult[][] result = finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+            
+            // Send Result to Agents
+            if (mailService != null) {
+                for (int i = 0; i < agents.size(); i++) {
+                    String agent = agents.get(i);
+                    PathFindingResult[] agentResultData = result[i];
+                    Point mapTopLeft = map.getTopLeft();
+                    sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft);
+                }
+            }
+        }
+    }
+
+    private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+        List<Parameter> data = new ArrayList<>();
+        // Generate Percept
+        for (int j = 0; j < interestingPoints.size(); j++) {
+            PathFindingResult resultData = agentResultData[j];
+            // Result was found
+            if (resultData.distance() > 0) {
+                InterestingPoint ip = interestingPoints.get(j);
+                Parameter distance = new Numeral(resultData.distance());
+                Parameter direction = new Numeral(resultData.direction());
+                boolean iZ = ip.cellType().equals(CellType.UNKNOWN);
+                Parameter isZone = new TruthValue(iZ);
+                String det = iZ ? ip.zoneType().name() : ip.cellType().name();
+                Parameter detail = new Identifier(det);
+                Parameter pointX = new Numeral(ip.point().x + mapTopLeft.x);
+                Parameter pointY = new Numeral(ip.point().y + mapTopLeft.y);
+                // Generate Data for Point
+                Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction);
+                data.add(f);
+            }
+        }                
+        Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
+        // Send Data to Agent
+        mailService.sendMessage(message, agent, name);
     }
 
     private CellType thingToCellType(Thing t) {

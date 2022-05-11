@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
+import de.feu.massim22.group3.map.CellType;
+import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
@@ -15,8 +17,8 @@ import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.ParameterList;
 import eis.iilang.Percept;
+import eis.iilang.TruthValue;
 import massim.protocol.data.NormInfo;
-import massim.protocol.data.Position;
 import massim.protocol.data.Role;
 import massim.protocol.data.Subject;
 import massim.protocol.data.TaskInfo;
@@ -56,8 +58,14 @@ public class Belief {
     // Group 3 Beliefs
     private Point position = new Point(0, 0);
 	private Set<Thing> thingsAtLastStep = new HashSet<>();
+	private List<ReachableDispenser> reachableDispensers = new ArrayList<>();
+	private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
+	private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
+	
 
-	Belief() { }
+	Belief(String agentName) { 
+		this.name = agentName;
+	}
     
 	void update(List<Percept> percepts) {
 		clearLists();
@@ -164,7 +172,8 @@ public class Belief {
 			case "hit":
 				int hitX = toNumber(p, 0, Integer.class);
 				int hitY = toNumber(p, 1, Integer.class);
-				StepEvent ev = new HitStepEvent(hitX, hitY);
+				Point hitPoint = new Point(hitX, hitY);
+				StepEvent ev = new HitStepEvent(hitPoint);
 				stepEvents.add(ev);
 				break;
 			case "name":
@@ -201,6 +210,43 @@ public class Belief {
 		}
 		
 		updatePosition();
+	}
+
+	void updateFromPathFinding(List<Parameter> points) {
+		reachableDispensers.clear();
+		reachableGoalZones.clear();
+		reachableRoleZones.clear();
+
+		for (Parameter p : points) {
+			if (!(p instanceof Function)) {
+				throw new IllegalArgumentException("Path Finding Results must be of Type function");
+			}
+			// Data
+			List<Parameter> paras = ((Function)p).getParameters();
+			String detail = toStr(paras, 0);
+			boolean isZone = toBool(paras, 1);
+			int px = toNumber(paras, 2, Integer.class);
+			int py = toNumber(paras, 3, Integer.class);
+			int distance = toNumber(paras, 4, Integer.class);
+			int direction = toNumber(paras, 5, Integer.class);
+			Point pos = new Point(px, py);
+
+			// Goal Zones
+			if (isZone && detail.equals(ZoneType.GOALZONE.name())) {
+				ReachableGoalZone gz = new ReachableGoalZone(pos, distance, direction);
+				reachableGoalZones.add(gz);
+			}
+			// Role Zones
+			if (isZone && detail.equals(ZoneType.ROLEZONE.name())) {
+				ReachableRoleZone rz = new ReachableRoleZone(pos, distance, direction);
+				reachableRoleZones.add(rz);
+			}
+			// Dispenser
+			if (!isZone) {
+				ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction);
+				reachableDispensers.add(rd);
+			}
+		}
 	}
 
 	int getVision() {
@@ -279,6 +325,23 @@ public class Belief {
 
 	void setPosition(Point position) {
 		this.position = position;
+	}
+
+	String reachablesToString() {
+		StringBuilder b = new StringBuilder();
+		for (ReachableDispenser d : reachableDispensers) {
+			b.append(d);
+			b.append(System.lineSeparator());
+		}
+		for (ReachableGoalZone d : reachableGoalZones) {
+			b.append(d);
+			b.append(System.lineSeparator());
+		}
+		for (ReachableRoleZone d : reachableRoleZones) {
+			b.append(d);
+			b.append(System.lineSeparator());
+		}
+		return b.toString();
 	}
 	
 	public String toString() {
@@ -407,14 +470,20 @@ public class Belief {
 
 	private <T extends Number> T toNumber(List<Parameter> parameters, int index, Class<T> type) {
 		Parameter p = parameters.get(index);
-		if (!(p instanceof Numeral)) throw new IllegalArgumentException();
+		if (!(p instanceof Numeral)) throw new IllegalArgumentException("Parameter is no Number");
 		return type.cast(((Numeral)p).getValue());
 	}
 	
 	private String toStr(List<Parameter> parameters, int index) {
 		Parameter p = parameters.get(index);
-		if (!(p instanceof Identifier)) throw new IllegalArgumentException();
+		if (!(p instanceof Identifier)) throw new IllegalArgumentException("Parameter is no String");
 		return (String)((Identifier)p).getValue();
+	}
+
+	private boolean toBool(List<Parameter> parameters, int index) {
+		Parameter p = parameters.get(index);
+		if (!(p instanceof TruthValue)) throw new IllegalArgumentException("Parameter is no Bool");
+		return ((TruthValue)p).getValue() == "true";
 	}
 	
 	private List<String> toStrList(List<Parameter> parameters, int index) {
@@ -472,69 +541,42 @@ public class Belief {
 		return result;
 	}
 	
-	private class AgentSurveyStepEvent implements StepEvent {
-		private String name;
-		private String role;
-		private int energy;
-		
-		private AgentSurveyStepEvent(String name, String role, int energy) {
-			this.name = name;
-			this.role = role;
-			this.energy = energy;
-		}
-
-		String getName() {
-			return name;
-		}
-
-		String getRole() {
-			return role;
-		}
-
-		int getEnergy() {
-			return energy;
-		}
-
+	private record AgentSurveyStepEvent(String name, String role, int energy) implements StepEvent {
 		public String toString() {
 			return "Agent " + name + " with role " + role + " and energy " + energy;  
 		}
 	}
 	
-	private class ThingSurveyStepEvent implements StepEvent {
-		private String name;
-		private int distance;
-		
-		private ThingSurveyStepEvent(String name, int distance) {
-			this.name = name;
-			this.distance = distance;
-		}
-
-		String getName() {
-			return name;
-		}
-
-		int getDistance() {
-			return distance;
-		}
-
+	private record ThingSurveyStepEvent(String name, int distance) implements StepEvent {
 		public String toString() {
 			return name + " " + distance + " cells away";  
 		}
 	}
 	
-	private class HitStepEvent implements StepEvent {
-		private Position position;
-		
-		private HitStepEvent(int x, int y) {
-			this.position = new Position(x, y);
-		}
-
-		Position getPosition() {
-			return position;
-		}
-
+	private record HitStepEvent(Point position) implements StepEvent {
 		public String toString() {
 			return "Hit at " + position.x + "/" + position.y;  
+		}
+	}
+
+	private record ReachableGoalZone(Point position, int distance, int direction) {
+		public String toString() {
+			String dir = DirectionUtil.intToStringDirection(direction);
+			return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
+		}
+	}
+
+	private record ReachableRoleZone(Point position, int distance, int direction) {
+		public String toString() {
+			String dir = DirectionUtil.intToStringDirection(direction);
+			return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
+		}
+	}
+
+	private record ReachableDispenser(Point position, CellType type, int distance, int direction) {
+		public String toString() {
+			String dir = DirectionUtil.intToStringDirection(direction);
+			return "Reachable " + type.name() + " at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
 		}
 	}
 
@@ -544,6 +586,21 @@ public class Belief {
 			case "e": position.x += 1; break;
 			case "s": position.y += 1; break;
 			case "w": position.x -= 1; break;
+		}
+	}
+
+	private static class DirectionUtil {
+		
+		static String intToStringDirection(int direction) {
+			String s = String.valueOf(direction)
+				.replaceAll("1", "n")
+				.replaceAll("2", "e")
+				.replaceAll("3", "s")
+				.replaceAll("4", "w");
+			
+			return new StringBuilder(s)
+				.reverse()
+				.toString();
 		}
 	}
 }
