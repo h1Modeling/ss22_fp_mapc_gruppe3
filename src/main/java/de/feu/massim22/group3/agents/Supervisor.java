@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import de.feu.massim22.group3.TaskName;
@@ -114,4 +115,5 @@ public class Supervisor implements ISupervisor {
     public List<String> getAgents() {
         return agents;
     }
+    
 }

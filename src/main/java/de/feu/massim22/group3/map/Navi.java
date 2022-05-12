@@ -57,7 +57,8 @@ public class Navi {
         openGlHandler.put(name, PathFinder.createOpenGlContext());
     }
 
-    public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
+    //Melinda Betz 12.05.2022 Übergabeparameter boolean für startCalculate abfrage
+    public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, boolean doCalc) {
         if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
@@ -122,8 +123,9 @@ public class Navi {
             }
         }
 
+        //Melinda Betz 12.05.2022
         // Start calculation
-        if (allSent) {
+        if (allSent && doCalc) {
             startCalculation(supervisor, map);
         }
     }
@@ -309,5 +311,10 @@ public class Navi {
             case "b4": return CellType.DISPENSER_4;
             default: return CellType.UNKNOWN;
         }
+    }
+    
+    //Melinda Betz 12.05.2022
+    public void updateSupervisor(String supervisor) {
+    	startCalculation(supervisor, maps.get(supervisor));
     }
 }

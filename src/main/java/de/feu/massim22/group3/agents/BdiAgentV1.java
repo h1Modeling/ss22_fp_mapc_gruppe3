@@ -111,7 +111,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		Point position = belief.getPosition();
 		int vision = belief.getVision();
 		int step = belief.getStep();
-		Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints, rolePoints, step);
+		Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints, rolePoints, step, true);
 	}
 	
 	private void setDummyAction() {

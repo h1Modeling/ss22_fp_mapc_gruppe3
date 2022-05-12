@@ -8,15 +8,9 @@ import de.feu.massim22.group3.map.Navi;
 import java.awt.*;
 import massim.protocol.data.Thing;
 
-/**
- * 
- * Class for
- * 
- */
-
 public class StepUtilities {
     private static int countAgent = 0;
-    private static ArrayList<BdiAgent> allAgents = new ArrayList<BdiAgent>();
+    private static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
 
     Supervisor loopSupervisor;
 
@@ -29,7 +23,7 @@ public class StepUtilities {
      * 
      * @return boolean - the agent is done updating the map
      */
-    public synchronized boolean reportMapUpdate(BdiAgent agent, int step, int teamSize) {
+    public synchronized boolean reportMapUpdate(BdiAgentV2 agent, int step, int teamSize) {
         boolean result = false;
         countAgent++;
         allAgents.add(agent);
@@ -58,8 +52,8 @@ public class StepUtilities {
         Set<Supervisor> allSupervisors = new HashSet<Supervisor>();
         Set<Supervisor> oldSupervisors = new HashSet<Supervisor>();
 
-        for (BdiAgent agent : allAgents) {
-            allSupervisors.add(((BdiAgentV2) agent).getSupervisor());
+        for (BdiAgentV2 agent : allAgents) {
+            allSupervisors.add(agent.getSupervisor());
 
             for (Thing thing : agent.belief.getThings()) {
                 // Agent hat in seiner Vision ein anderen Agent
@@ -69,7 +63,7 @@ public class StepUtilities {
                      // und nicht er selbst
                         if (thing.x != 0 && thing.y != 0) { 
                             // also ein Kandidat zum mergen
-                            foundAgent.add(new AgentMeeting((BdiAgentV2) agent, new Point(thing.x, thing.y)));
+                            foundAgent.add(new AgentMeeting(agent, new Point(thing.x, thing.y)));
                         }
                     }
                 }
@@ -85,22 +79,22 @@ public class StepUtilities {
                     agent1 = foundAgent.get(j).agent;
                     agent2 = foundAgent.get(k).agent;
 
-                    // Agents sind aus unterschiedlichen Gruppen
-                    if (!(agent1.getSupervisor() == agent2.getSupervisor())) {
-                        // die kleinere in die größere Gruppe mergen
-                        if (agent1.getSupervisor().getAgents().size() >= agent2.getSupervisor().getAgents().size()) {
-
-                            // Gruppe von agent2 in Gruppe von agent1 mergen (Methodenaufruf)
-                            oldSupervisors.add(agent2.getSupervisor());
-                        } else {
-
-                            // Gruppe von agent1 in Gruppe von agent2 mergen (Methodenaufruf)
-                            oldSupervisors.add(agent1.getSupervisor());
-                        }
-                    }
-                }
-            }
-        }
+					// Agents sind aus unterschiedlichen Gruppen
+					if (!(agent1.getSupervisor() == agent2.getSupervisor())) {
+						// die kleinere in die größere Gruppe mergen
+						if (agent1.getSupervisor().getAgents().size() >= agent2.getSupervisor().getAgents().size()) {
+							mergeGroups(agent1.getSupervisor(), agent2.getSupervisor());
+							// Gruppe von agent2 in Gruppe von agent1 mergen (Methodenaufruf)
+							oldSupervisors.add(agent2.getSupervisor());
+						} else {
+							mergeGroups(agent2.getSupervisor(), agent1.getSupervisor());
+							// Gruppe von agent1 in Gruppe von agent2 mergen (Methodenaufruf)
+							oldSupervisors.add(agent1.getSupervisor());
+						}
+					}
+				}
+			}
+		}
 
         allSupervisors.removeAll(oldSupervisors);
 
@@ -116,7 +110,7 @@ public class StepUtilities {
                 // Supervisors
                 // wodurch für die Agents die PATHFINDER_RESULT Message ausgelöst wird
 
-                // Navi.get().updateSupervisor(loopSupervisor.getName());
+                Navi.get().updateSupervisor(loopSupervisor.getName());
                 runSupervisorDecisions(loopSupervisor);
             };
             Thread t3 = new Thread(runnable);
@@ -132,7 +126,7 @@ public class StepUtilities {
      * 
      * @return boolean - the agent decisions are done
      */
-    public synchronized boolean runAgentDecisions(BdiAgent agent) {
+    public synchronized boolean runAgentDecisions(BdiAgentV2 agent) {
         boolean result = false;
 
         DodgeClear dodge = new DodgeClear(agent);
@@ -181,15 +175,15 @@ public class StepUtilities {
     public void updateMap(BdiAgentV2 agent) {
         Navi.get().updateAgent(agent.getSupervisor().getName(), agent.getName(), agent.index,
                 agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(),
-                agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep());
+                agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep(), false);
     }
 
     /**
-     * The method .
+     * The method has a certain priority for every desire.
      *
-     * @param supervisor - the supervisor who wants to make the decisions
+     * @param desire - the desire that needs a priority 
      * 
-     * @return boolean - the supervisor decisions are done
+     * @return int - the priority
      */
     public int getPriority(Desire desire) {
         int result = 0;
@@ -216,6 +210,13 @@ public class StepUtilities {
         return result;
     }
 
+    /**
+     * The method determines the Intention for a certain agent .
+     *
+     * @param agent - the agent that needs a intention
+     * 
+     * @return Desire - the intention
+     */
     public Desire determineIntention(BdiAgent agent) {
         Desire result = null;
         int priority = 1000;
@@ -227,6 +228,29 @@ public class StepUtilities {
         }
         return result;
     }
+    
+    /**
+     * The method merges two groups together
+     *
+     * @param supervisorGroup - the supervisor of the group that the other group is going to be merged into
+     * @param supervisorToMerge - the supervisor of the group that is going to be merged into the other group
+     * 
+     */
+	// mergen 
+	public void mergeGroups(Supervisor supervisorGroup, Supervisor supervisorToMerge) {
+		List<String> agentsSupervisorGroup = supervisorGroup.getAgents();
+		List<String> agentsSupervisorToMerge = supervisorToMerge.getAgents();
+
+		// Agents von agentsSupervisorToMerge in die Liste der Agents von agentsSupervisorGroup
+		agentsSupervisorGroup.addAll(agentsSupervisorToMerge);
+		
+		// neuer Supervisor für agents der agentsSupervisorToMerge Liste
+        for (BdiAgentV2 agent : allAgents) {
+        	if (agentsSupervisorToMerge.contains(agent.getName())) {
+        		agent.setSupervisor(supervisorGroup);
+        	}
+        }
+	}
 }
 
 class AgentMeeting {

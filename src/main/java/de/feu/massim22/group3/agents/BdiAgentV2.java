@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.*;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
@@ -36,6 +37,10 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
     Supervisor getSupervisor() {
         return (Supervisor) supervisor;
+    }
+    
+    void setSupervisor(Supervisor supervisor) {
+        this.supervisor = supervisor;
     }
 
     @Override
