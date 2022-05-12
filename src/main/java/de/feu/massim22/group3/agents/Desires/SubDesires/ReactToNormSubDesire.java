@@ -4,27 +4,25 @@ import eis.iilang.Action;
 
 public class ReactToNormSubDesire extends SubDesire {
 
-	public ReactToNormSubDesire(SubDesires subDesireType) {
-		super(subDesireType);
-	}
-	
-	@Override
-	public
-	Action getNextAction() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public boolean isExecutable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@Override
-	public boolean isDone() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public ReactToNormSubDesire(SubDesires subDesireType) {
+        super(subDesireType);
+    }
 
+    @Override
+    public Action getNextAction() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isExecutable() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isDone() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }
