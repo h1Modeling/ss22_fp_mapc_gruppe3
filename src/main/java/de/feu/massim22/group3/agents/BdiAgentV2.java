@@ -33,6 +33,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public BdiAgentV2(String name, MailService mailbox, int index) {
         super(name, mailbox);
         this.index = index;
+        this.supervisor = new Supervisor(this);
     }
 
     Supervisor getSupervisor() {
