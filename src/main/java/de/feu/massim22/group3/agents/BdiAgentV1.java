@@ -81,7 +81,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         switch (taskName) {
         case UPDATE:
             updatePercepts();
-            setDummyAction();
+            desireHandler.setNextAction();
             break;
         case TO_SUPERVISOR:
             this.supervisor.handleMessage(task, sender);
@@ -103,7 +103,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
         AgentLogger.info(belief.toString());
-        
+
         // Update Navi
         Set<Thing> things = belief.getThings();
         List<Point> goalPoints = belief.getGoalZones();
@@ -111,9 +111,10 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         Point position = belief.getPosition();
         int vision = belief.getVision();
         int step = belief.getStep();
-        Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints, rolePoints, step);
+        Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
+                rolePoints, step);
     }
-    
+
     private void setDummyAction() {
         // I need to think a lot
         try {
@@ -123,33 +124,21 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         }
         String dir = "n";
         /*
-        List<Point> roleZones = belief.getRoleZones();
-        if (roleZones.size() > 0) {
-            Point goal = roleZones.get(0);
-            if (goal.x > 0) {
-                dir = "e";
-            }
-            if (goal.x < 0) {
-                dir = "w";
-            }
-            if (goal.y > 0) {
-                dir = "s";
-            }
-        }
-        */
+         * List<Point> roleZones = belief.getRoleZones(); if (roleZones.size() > 0) {
+         * Point goal = roleZones.get(0); if (goal.x > 0) { dir = "e"; } if (goal.x < 0)
+         * { dir = "w"; } if (goal.y > 0) { dir = "s"; } }
+         */
         Action a = new Action("move", new Identifier(dir));
         /*
-        if (roleZones.contains(new Point(0, 0))) {
-            a = new Action("adopt", new Identifier("constructor"));
-            if (belief.getRole().equals("constructor")) {
-                a = new Action("adopt", new Identifier("default"));
-            }
-        }
-        */
+         * if (roleZones.contains(new Point(0, 0))) { a = new Action("adopt", new
+         * Identifier("constructor")); if (belief.getRole().equals("constructor")) { a =
+         * new Action("adopt", new Identifier("default")); } }
+         */
         intention.setNextAction(a);
     }
-    
-    private record PerceptMessage(String sender, Percept percept) {}
+
+    private record PerceptMessage(String sender, Percept percept) {
+    }
 
     @Override
     public void forwardMessageFromSupervisor(Percept message, String receiver, String sender) {
