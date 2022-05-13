@@ -10,6 +10,7 @@ import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
 import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
@@ -111,7 +112,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 		Point position = belief.getPosition();
 		int vision = belief.getVision();
 		int step = belief.getStep();
-		Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints, rolePoints, step, true);
+		Navi.<INaviAgentV1>get().updateMapAndPathfind(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints, rolePoints, step);
 	}
 	
 	private void setDummyAction() {

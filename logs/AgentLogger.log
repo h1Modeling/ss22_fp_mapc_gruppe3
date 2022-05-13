@@ -1,2 +1,66 @@
-[10:00:28:741] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
-[10:00:28:800] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
+[19:41:33:735] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
+[19:41:33:794] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
+[19:41:40:226] [INFO   ] PHASE 2: INSTANTIATING ENVIRONMENT
+[19:41:40:303] [INFO   ] PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT
+[19:41:40:599] [FINE   ] GL_VENDOR: null
+GL_RENDERER: null
+GL_VERSION: null
+[19:41:40:600] [INFO   ] associated agent "A1" with entity "connectionA1"
+[19:41:40:601] [INFO   ] PHASE 4: RUNNING
+[19:41:49:238] [INFO   ] 
+[19:41:49:240] [INFO   ] ------------------------------
+[19:41:49:241] [INFO   ] ------------ STEP ------------
+[19:41:49:243] [INFO   ] ------------------------------
+[19:41:49:244] [INFO   ] 
+[19:41:49:253] [INFO   ] Simulation Beliefs:
+Name: A1
+Team: A
+TeamSize: 2
+Steps: 750
+Roles: 
+{"vision":5,"name":"default","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","survey","skip"],"speed":[1]}
+{"vision":7,"name":"explorer","clear":{"chance":0.3,"maxDistance":7},"actions":["rotate","move","adopt","clear","detach","survey","skip","attach"],"speed":[3,0]}
+{"vision":5,"name":"constructor","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","clear","skip","adopt","detach","survey","attach","connect"],"speed":[1]}
+{"vision":5,"name":"worker","clear":{"chance":0.3,"maxDistance":5},"actions":["rotate","request","disconnect","move","submit","clear","skip","adopt","detach","survey","attach","connect"],"speed":[2,1,1,0]}
+{"vision":5,"name":"digger","clear":{"chance":1,"maxDistance":5},"actions":["rotate","move","adopt","clear","detach","survey","skip"],"speed":[1,0]}
+
+Step Beliefs:
+Things: {"x":0,"y":1,"details":"A","type":"entity"}
+{"x":-1,"y":2,"details":"b2","type":"dispenser"}
+{"x":-4,"y":0,"details":"","type":"obstacle"}
+{"x":0,"y":0,"details":"A","type":"entity"}
+{"x":-1,"y":-3,"details":"","type":"obstacle"}
+{"x":-4,"y":1,"details":"","type":"obstacle"}
+{"x":0,"y":-2,"details":"","type":"obstacle"}
+{"x":1,"y":3,"details":"","type":"obstacle"}
+{"x":-1,"y":-4,"details":"","type":"obstacle"}
+{"x":-2,"y":0,"details":"","type":"obstacle"}
+{"x":-3,"y":2,"details":"","type":"obstacle"}
+{"x":-1,"y":0,"details":"","type":"obstacle"}
+{"x":-2,"y":-3,"details":"","type":"obstacle"}
+{"x":-1,"y":-1,"details":"","type":"obstacle"}
+{"x":0,"y":-1,"details":"","type":"obstacle"}
+{"x":1,"y":4,"details":"","type":"obstacle"}
+{"x":5,"y":0,"details":"b0","type":"dispenser"}
+{"x":-3,"y":1,"details":"","type":"obstacle"}
+{"x":-3,"y":0,"details":"","type":"obstacle"}
+{"x":-1,"y":-2,"details":"","type":"obstacle"}
+{"x":-2,"y":-2,"details":"","type":"obstacle"}
+{"x":-2,"y":-1,"details":"","type":"obstacle"}
+Tasks: 
+{"reward":160,"requirements":[{"x":0,"y":1,"details":"","type":"b2"},{"x":0,"y":2,"details":"","type":"b2"},{"x":14,"y":2,"details":"","type":"b2"},{"x":15,"y":2,"details":"","type":"b2"}],"name":"task0","deadline":178}
+{"reward":160,"requirements":[{"x":0,"y":1,"details":"","type":"b1"},{"x":0,"y":2,"details":"","type":"b1"},{"x":15,"y":1,"details":"","type":"b1"},{"x":15,"y":2,"details":"","type":"b1"}],"name":"task1","deadline":107}
+Norms: 
+{"requirements":[{"quantity":2,"name":"constructor","type":"role"}],"punishment":17,"name":"n1","start":20,"until":31}
+Score: 0
+Last Action: 
+Last Action Result: 
+Last Action Parameter: 
+Attached Things: 
+Energy: 100
+Deactivated: false
+Role: default
+Step Events: 
+Violations: 
+Goal Zones: 
+Role Zones: 

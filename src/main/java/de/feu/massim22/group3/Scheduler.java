@@ -16,6 +16,7 @@ import de.feu.massim22.group3.agents.BasicAgent;
 import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Supervisable;
+import de.feu.massim22.group3.map.INavi;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
     void setEnvironment(EnvironmentInterface ei) {
         this.eis = ei;
         MailService mailService = new MailService();
-        Navi.get().setMailService(mailService);
+        Navi.<INavi>get().setMailService(mailService);
         for (AgentConf agentConf: agentConfigurations) {
 
             Agent agent = null;

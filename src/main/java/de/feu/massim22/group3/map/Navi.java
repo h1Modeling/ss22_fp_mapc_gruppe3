@@ -22,7 +22,7 @@ import java.nio.FloatBuffer;
 
 import massim.protocol.data.Thing;
 
-public class Navi {
+public class Navi implements INaviAgentV1, INaviAgentV2 {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
@@ -36,11 +36,12 @@ public class Navi {
         // TODO At end of application PathFinder must be closed to free resources
     }
 
-    public static synchronized Navi get() {
+    @SuppressWarnings("unchecked")
+    public static synchronized <T extends INavi> T get() {
         if (Navi.instance == null) {
             instance = new Navi();
         }
-        return Navi.instance;
+        return (T)(Navi.instance);
     }
 
     public void setMailService(MailService mailService) {
@@ -57,8 +58,35 @@ public class Navi {
         openGlHandler.put(name, PathFinder.createOpenGlContext());
     }
 
-    //Melinda Betz 12.05.2022 Übergabeparameter boolean für startCalculate abfrage
-    public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, boolean doCalc) {
+    @Override
+    public void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
+
+        updateMap(supervisor, agent, agentIndex, position, vision, things, goalPoints, rolePoints, step);
+
+        // Test if all agents in group have already sent step information
+        boolean allSent = true;
+        for (String agentKey : agentStep.keySet()) {
+            // Get supervisor
+            String aSupervisor = agentSupervisor.get(agentKey);
+            if (aSupervisor.equals(supervisor)) {
+                // Test if agent is in same step
+                Integer aStep = agentStep.get(agentKey);
+                if (aStep < step) {
+                    allSent = false;
+                    break;
+                }
+            }
+        }
+
+        // Start calculation
+        if (allSent) {
+            GameMap map = maps.get(supervisor);
+            startCalculation(supervisor, map);
+        }
+    }
+
+    @Override
+    public void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
         if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
@@ -107,31 +135,10 @@ public class Navi {
 
         // Update internal step
         agentStep.put(agent, step);
-
-        // Test if all agents in group have already sent step information
-        boolean allSent = true;
-        for (String agentKey : agentStep.keySet()) {
-            // Get supervisor
-            String aSupervisor = agentSupervisor.get(agentKey);
-            if (aSupervisor.equals(supervisor)) {
-                // Test if agent is in same step
-                Integer aStep = agentStep.get(agentKey);
-                if (aStep < step) {
-                    allSent = false;
-                    break;
-                }
-            }
-        }
-
-        //Melinda Betz 12.05.2022
-        // Start calculation
-        if (allSent && doCalc) {
-            startCalculation(supervisor, map);
-        }
     }
 
     // Creates array with CellType.FREE in vision and CellType.UNKNOWN outside of vision
-    CellType[][] getBlankCellArray(int vision) {
+    public CellType[][] getBlankCellArray(int vision) {
         int size = 2 * vision + 1;
         CellType[][] cells = new CellType[size][size];
         // Initialize with unknown cells
@@ -313,7 +320,6 @@ public class Navi {
         }
     }
     
-    //Melinda Betz 12.05.2022
     public void updateSupervisor(String supervisor) {
     	startCalculation(supervisor, maps.get(supervisor));
     }
