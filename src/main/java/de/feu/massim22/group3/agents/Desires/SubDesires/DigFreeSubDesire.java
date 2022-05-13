@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class DigFreeSubDesire extends SubDesire {
 
-    public DigFreeSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public DigFreeSubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class DigFreeSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.DIG_FREE;
     }
 }

@@ -1,17 +1,18 @@
 package de.feu.massim22.group3.agents;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import de.feu.massim22.group3.agents.Desires.*;
 import de.feu.massim22.group3.agents.Desires.SubDesires.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
-public class DesireHandler {
+class DesireHandler {
 
     private BdiAgent agent;
     private Desire currentTeamGoal = null;
-    private LinkedList<Desire> highPrioAgentGoals = new LinkedList<Desire>();
-    private LinkedList<Desire> lowPrioAgentGoals = new LinkedList<Desire>();
+    private List<Desire> highPrioAgentGoals = new LinkedList<Desire>();
+    private List<Desire> lowPrioAgentGoals = new LinkedList<Desire>();
 
     public DesireHandler(BdiAgent agent) {
         this.agent = agent;

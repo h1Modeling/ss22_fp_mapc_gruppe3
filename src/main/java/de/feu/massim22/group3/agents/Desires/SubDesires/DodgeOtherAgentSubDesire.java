@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class DodgeOtherAgentSubDesire extends SubDesire {
 
-    public DodgeOtherAgentSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public DodgeOtherAgentSubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class DodgeOtherAgentSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.DODGE_OTHER_AGENT;
     }
 }

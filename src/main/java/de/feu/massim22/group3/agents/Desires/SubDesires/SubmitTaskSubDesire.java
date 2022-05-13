@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class SubmitTaskSubDesire extends SubDesire {
 
-    public SubmitTaskSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public SubmitTaskSubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class SubmitTaskSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.SUBMIT_TASK;
     }
 }

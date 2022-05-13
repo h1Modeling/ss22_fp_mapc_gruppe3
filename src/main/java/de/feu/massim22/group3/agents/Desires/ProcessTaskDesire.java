@@ -4,8 +4,8 @@ import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesires;
 
 public class ProcessTaskDesire extends Desire {
 
-    public ProcessTaskDesire(Desires desireType) {
-        super(desireType);
+    public ProcessTaskDesire() {
+        super();
     }
 
     @Override
@@ -16,5 +16,8 @@ public class ProcessTaskDesire extends Desire {
         subDesires.add(SubDesires.ASSEMBLE_TASK.getSubDesireObj());
         subDesires.add(SubDesires.GO_TO_GOAL_AREA.getSubDesireObj());
         subDesires.add(SubDesires.SUBMIT_TASK.getSubDesireObj());
+    }
+    void setType() {
+        this.desireType = Desires.PROCESS_TASK;
     }
 }

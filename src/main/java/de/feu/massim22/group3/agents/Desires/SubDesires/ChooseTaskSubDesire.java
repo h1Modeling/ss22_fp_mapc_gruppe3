@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class ChooseTaskSubDesire extends SubDesire {
 
-    public ChooseTaskSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public ChooseTaskSubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class ChooseTaskSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.CHOOSE_TASK;
     }
 }

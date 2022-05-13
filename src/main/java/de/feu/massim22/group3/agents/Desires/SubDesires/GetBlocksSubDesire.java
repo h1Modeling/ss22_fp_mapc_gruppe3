@@ -5,8 +5,8 @@ import eis.iilang.Identifier;
 
 public class GetBlocksSubDesire extends SubDesire {
 
-    public GetBlocksSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public GetBlocksSubDesire() {
+        super();
     }
 
     @Override
@@ -25,5 +25,8 @@ public class GetBlocksSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.GET_BLOCKS;
     }
 }

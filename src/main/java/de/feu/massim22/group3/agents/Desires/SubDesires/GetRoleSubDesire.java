@@ -7,8 +7,8 @@ public class GetRoleSubDesire extends SubDesire {
 
     private String role;
 
-    public GetRoleSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public GetRoleSubDesire() {
+        super();
     }
 
     public void setRoleToGet(String role) {
@@ -35,5 +35,8 @@ public class GetRoleSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.GET_ROLE;
     }
 }

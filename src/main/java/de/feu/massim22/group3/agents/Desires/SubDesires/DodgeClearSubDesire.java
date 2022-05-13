@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class DodgeClearSubDesire extends SubDesire {
 
-    public DodgeClearSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public DodgeClearSubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class DodgeClearSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.DODGE_CLEAR;
     }
 }

@@ -17,29 +17,29 @@ public enum SubDesires {
     public SubDesire getSubDesireObj() {
         switch (this) {
         case DIG_FREE:
-            return new DigFreeSubDesire(DIG_FREE);
+            return new DigFreeSubDesire();
         case DODGE_CLEAR:
-            return new DodgeClearSubDesire(DODGE_CLEAR);
+            return new DodgeClearSubDesire();
         case DODGE_OTHER_AGENT:
-            return new DodgeOtherAgentSubDesire(DODGE_OTHER_AGENT);
+            return new DodgeOtherAgentSubDesire();
         case SPONTANEOUS_HINDER_ENEMY:
-            return new SpontaneousHinderEnemySubDesire(SPONTANEOUS_HINDER_ENEMY);
+            return new SpontaneousHinderEnemySubDesire();
         case GO_TO_UNKNOWN_AREA:
-            return new GoToUnkownAreaSubDesire(GO_TO_UNKNOWN_AREA);
+            return new GoToUnkownAreaSubDesire();
         case GET_ROLE:
-            return new GetRoleSubDesire(GET_ROLE);
+            return new GetRoleSubDesire();
         case CHOOSE_TASK:
-            return new ChooseTaskSubDesire(CHOOSE_TASK);
+            return new ChooseTaskSubDesire();
         case GET_BLOCKS:
-            return new GetBlocksSubDesire(GET_BLOCKS);
+            return new GetBlocksSubDesire();
         case ASSEMBLE_TASK:
-            return new AssembleTaskSubDesire(ASSEMBLE_TASK);
+            return new AssembleTaskSubDesire();
         case GO_TO_GOAL_AREA:
-            return new GoToGoalAreaSubDesire(GO_TO_GOAL_AREA);
+            return new GoToGoalAreaSubDesire();
         case SUBMIT_TASK:
-            return new SubmitTaskSubDesire(SUBMIT_TASK);
+            return new SubmitTaskSubDesire();
         case REACT_TO_NORM:
-            return new ReactToNormSubDesire(REACT_TO_NORM);
+            return new ReactToNormSubDesire();
         default: {
             throw new IllegalArgumentException("Unknown type in during SubDesire instantiation.");
         }

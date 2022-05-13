@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class GoToGoalAreaSubDesire extends SubDesire {
 
-    public GoToGoalAreaSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public GoToGoalAreaSubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class GoToGoalAreaSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.GO_TO_GOAL_AREA;
     }
 }

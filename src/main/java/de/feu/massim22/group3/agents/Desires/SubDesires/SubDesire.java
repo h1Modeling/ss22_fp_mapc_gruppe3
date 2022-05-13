@@ -9,8 +9,8 @@ public abstract class SubDesire {
 
     protected SubDesires subDesireType;
 
-    SubDesire(SubDesires subDesireType) {
-        this.subDesireType = subDesireType;
+    SubDesire() {
+        setType();
     }
 
     @Override
@@ -26,4 +26,6 @@ public abstract class SubDesire {
 
     // Check post conditions, if true next subgoal in hierarchy is checked
     public abstract boolean isDone();
+
+    abstract void setType();
 }

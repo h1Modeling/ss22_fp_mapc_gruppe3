@@ -1,16 +1,17 @@
 package de.feu.massim22.group3.agents.Desires;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 
 public abstract class Desire {
 
     protected Desires desireType;
-    protected LinkedList<SubDesire> subDesires = new LinkedList<SubDesire>();
+    protected List<SubDesire> subDesires = new LinkedList<SubDesire>();
 
-    Desire(Desires desireType) {
-        this.desireType = desireType;
+    Desire() {
+        setType();
         defineSubDesires();
     }
 
@@ -21,7 +22,9 @@ public abstract class Desire {
 
     abstract void defineSubDesires();
 
-    public LinkedList<SubDesire> getSubDesires() {
+    public List<SubDesire> getSubDesires() {
         return subDesires;
     }
+
+    abstract void setType();
 }

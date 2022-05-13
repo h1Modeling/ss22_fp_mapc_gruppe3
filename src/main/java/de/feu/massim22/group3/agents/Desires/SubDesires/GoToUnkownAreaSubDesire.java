@@ -5,8 +5,8 @@ import eis.iilang.Identifier;
 
 public class GoToUnkownAreaSubDesire extends SubDesire {
 
-    public GoToUnkownAreaSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public GoToUnkownAreaSubDesire() {
+        super();
     }
 
     @Override
@@ -25,5 +25,8 @@ public class GoToUnkownAreaSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.GO_TO_UNKNOWN_AREA;
     }
 }

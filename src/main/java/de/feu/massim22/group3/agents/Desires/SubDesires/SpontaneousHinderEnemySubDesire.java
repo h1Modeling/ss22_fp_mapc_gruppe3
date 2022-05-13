@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class SpontaneousHinderEnemySubDesire extends SubDesire {
 
-    public SpontaneousHinderEnemySubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public SpontaneousHinderEnemySubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class SpontaneousHinderEnemySubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.SPONTANEOUS_HINDER_ENEMY;
     }
 }

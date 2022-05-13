@@ -19,29 +19,29 @@ public enum Desires {
     public Desire getDesireObj() {
         switch (this) {
         case PROCESS_TASK:
-            return new ProcessTaskDesire(PROCESS_TASK);
+            return new ProcessTaskDesire();
         case ATTACK_ENEMY:
-            return new AttackEnemyDesire(ATTACK_ENEMY);
+            return new AttackEnemyDesire();
         case DETERMINE_MAP_SIZE:
-            return new DetermineMapSizeDesire(DETERMINE_MAP_SIZE);
+            return new DetermineMapSizeDesire();
         case EXPLORE_MAP:
-            return new ExploreMapDesire(EXPLORE_MAP);
+            return new ExploreMapDesire();
         case GOAL_ZONE_GUARD:
-            return new GoalZoneGuardDesire(GOAL_ZONE_GUARD);
+            return new GoalZoneGuardDesire();
         case HELP_TASK_AGENT:
-            return new HelpTaskAgentDesire(HELP_TASK_AGENT);
+            return new HelpTaskAgentDesire();
         case DIG_FREE:
-            return new DigFreeDesire(DIG_FREE);
+            return new DigFreeDesire();
         case DODGE_CLEAR:
-            return new DogeClearDesire(DODGE_CLEAR);
+            return new DogeClearDesire();
         case DODGE_OTHER_AGENT:
-            return new DogeOtherAgentDesire(DODGE_OTHER_AGENT);
+            return new DogeOtherAgentDesire();
         case REACT_TO_NORM:
-            return new ReactToNormDesire(REACT_TO_NORM);
+            return new ReactToNormDesire();
         case SPONTANEOUS_HINDER_ENEMY:
-            return new SpontaneousHinderEnemyDesire(SPONTANEOUS_HINDER_ENEMY);
+            return new SpontaneousHinderEnemyDesire();
         case GO_TO_UNKNOWN_AREA:
-            return new GoToUnknownAreaDesire(GO_TO_UNKNOWN_AREA);
+            return new GoToUnknownAreaDesire();
         default: {
             throw new IllegalArgumentException("Unknown type during Desire instantiation.");
         }

@@ -4,8 +4,8 @@ import eis.iilang.Action;
 
 public class ReactToNormSubDesire extends SubDesire {
 
-    public ReactToNormSubDesire(SubDesires subDesireType) {
-        super(subDesireType);
+    public ReactToNormSubDesire() {
+        super();
     }
 
     @Override
@@ -24,5 +24,8 @@ public class ReactToNormSubDesire extends SubDesire {
     public boolean isDone() {
         // TODO Auto-generated method stub
         return false;
+    }
+    void setType() {
+        this.subDesireType = SubDesires.REACT_TO_NORM;
     }
 }
