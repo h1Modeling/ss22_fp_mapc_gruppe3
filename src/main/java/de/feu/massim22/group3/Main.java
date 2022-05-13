@@ -7,6 +7,9 @@ import massim.eismassim.EnvironmentInterface;
 import java.io.File;
 import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
+
+import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
@@ -67,6 +70,10 @@ public class Main {
         scheduler.setEnvironment(ei);
 
         AgentLogger.info("PHASE 4: RUNNING");
+
+        // Create Debugger
+        SwingUtilities.invokeLater(new GraphicalDebugger());
+
         // int step = 0;
         while ((ei.getState() == EnvironmentState.RUNNING)) {
             // AgentLogger.fine("SCHEDULER STEP " + step);

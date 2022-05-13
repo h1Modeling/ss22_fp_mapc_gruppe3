@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch GraphicalDebugger",
+            "request": "launch",
+            "mainClass": "de.feu.massim22.group3.utils.debugger.GraphicalDebugger",
+            "projectName": "group3",
+            "vmArgs": "-Dsun.java2d.uiScale=2"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

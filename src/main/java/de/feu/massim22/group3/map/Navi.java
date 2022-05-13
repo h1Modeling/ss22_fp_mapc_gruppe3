@@ -10,6 +10,7 @@ import org.lwjgl.BufferUtils;
 
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
+import de.feu.massim22.group3.utils.Convert;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -81,7 +82,7 @@ public class Navi {
         thingVision[vision][vision] = CellType.TEAMMATE;
         // Things
         for (Thing t : things) {
-            CellType type = thingToCellType(t);
+            CellType type = Convert.thingToCellType(t);
             thingVision[t.y + vision][t.x + vision] = type;
         }
         // Role Zones
@@ -276,38 +277,5 @@ public class Navi {
         Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
         mailService.sendMessage(message, agent, name);
-    }
-
-    private CellType thingToCellType(Thing t) {
-        switch (t.type) {
-            case Thing.TYPE_BLOCK: return blockToCellType(t.details);
-            case Thing.TYPE_DISPENSER: return dispenserToCellType(t.details);
-            case Thing.TYPE_ENTITY: return CellType.ENTITY;
-            case Thing.TYPE_OBSTACLE: return CellType.OBSTACLE;
-            case Thing.TYPE_MARKER: return CellType.FREE;
-            default: return CellType.UNKNOWN;
-        } 
-    }
-
-    private CellType blockToCellType(String blockDetail) {
-        switch (blockDetail) {
-            case "b0": return CellType.BLOCK_0;
-            case "b1": return CellType.BLOCK_1;
-            case "b2": return CellType.BLOCK_2;
-            case "b3": return CellType.BLOCK_3;
-            case "b4": return CellType.BLOCK_4;
-            default: return CellType.UNKNOWN;
-        }
-    }
-
-    private CellType dispenserToCellType(String blockDetail) {
-        switch (blockDetail) {
-            case "b0": return CellType.DISPENSER_0;
-            case "b1": return CellType.DISPENSER_1;
-            case "b2": return CellType.DISPENSER_2;
-            case "b3": return CellType.DISPENSER_3;
-            case "b4": return CellType.DISPENSER_4;
-            default: return CellType.UNKNOWN;
-        }
     }
 }
