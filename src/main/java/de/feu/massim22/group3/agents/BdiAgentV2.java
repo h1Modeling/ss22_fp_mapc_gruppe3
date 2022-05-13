@@ -34,6 +34,8 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         super(name, mailbox);
         this.index = index;
         this.supervisor = new Supervisor(this);
+        StepUtilities.allAgents.add(this);
+        StepUtilities.allSupervisors.add((Supervisor)this.supervisor);
     }
 
     Supervisor getSupervisor() {
