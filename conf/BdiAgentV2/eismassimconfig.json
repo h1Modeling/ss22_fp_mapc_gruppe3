@@ -20,15 +20,6 @@
       "print-json": false,
       "start-index": 1,
       "count": -1
-    },
-    {
-      "name-prefix": "connectionB",
-      "username-prefix": "agentB",
-      "password": "1",
-      "print-iilang": false,
-      "print-json": false,
-      "start-index": 1,
-      "count": -1
     }
   ],
 

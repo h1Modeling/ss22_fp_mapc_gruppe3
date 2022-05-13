@@ -25,27 +25,28 @@ public class DigFree extends Desire {
 		boolean east = false;
 		boolean south = false;
 		boolean west = false;
-		Iterator i = agent.belief.getThings().iterator();
-
-		while (i.hasNext()) {
-			if (((Thing) i.next()).type.equals(Thing.TYPE_OBSTACLE)) {
-				if (((Thing) i.next()).x == 0 && ((Thing) i.next()).y == -1) {
-					north = true;
-				}
-				if (((Thing) i.next()).x == 1 && ((Thing) i.next()).y == 0) {
-					east = true;
-				}
-				if (((Thing) i.next()).x == 0 && ((Thing) i.next()).y == 1) {
-					south = true;
-				}
-				if (((Thing) i.next()).x == -1 && ((Thing) i.next()).y == 0) {
-					west = true;
-				}
-			}
-		}
+		
+        for (Thing thing : agent.belief.getThings()) {
+            if (thing.type.equals(Thing.TYPE_OBSTACLE)) {
+                if (thing.x == 0 && thing.y == -1) {
+                    north = true;
+                }
+                if (thing.x == 1 && thing.y == 0) {
+                    east = true;
+                }
+                if (thing.x == 0 && thing.y == 1) {
+                    south = true;
+                }
+                if (thing.x == -1 && thing.y == 0) {
+                    west = true;
+                }
+            }
+        }
+		
 		if (north && east && south && west) {
 			result = true;
 		}
+		
 		return result;
 	}
 

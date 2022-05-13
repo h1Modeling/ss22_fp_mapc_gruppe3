@@ -1,2 +1,82 @@
-[10:00:28:741] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
-[10:00:28:800] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
+[11:40:19:312] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
+[11:40:19:344] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
+[11:40:39:730] [INFO   ] PHASE 2: INSTANTIATING ENVIRONMENT
+[11:40:39:770] [INFO   ] PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT
+[11:40:40:109] [FINE   ] GL_VENDOR: null
+GL_RENDERER: null
+GL_VERSION: null
+[11:40:40:110] [INFO   ] associated agent "A1" with entity "connectionA1"
+[11:40:40:135] [FINE   ] GL_VENDOR: null
+GL_RENDERER: null
+GL_VERSION: null
+[11:40:40:135] [INFO   ] associated agent "A2" with entity "connectionA2"
+[11:40:40:159] [FINE   ] GL_VENDOR: null
+GL_RENDERER: null
+GL_VERSION: null
+[11:40:40:160] [INFO   ] associated agent "A3" with entity "connectionA3"
+[11:40:40:160] [INFO   ] PHASE 4: RUNNING
+[11:40:47:141] [INFO   ] 
+[11:40:47:142] [INFO   ] ------------------------------
+[11:40:47:142] [INFO   ] ------------ STEP ------------
+[11:40:47:142] [INFO   ] ------------------------------
+[11:40:47:143] [INFO   ] 
+[11:40:47:418] [FINE   ] 
+ShaderInfoLog: 
+ProgramInfoLog: WARNING: Too many temp register is used in Compute shader, it may cause slow execution.
+
+ShaderCompileStatus: 1
+ShaderLinkStatus: 0
+
+[11:40:49:786] [FINE   ] Path Finding Duration: 2349
+[11:40:50:114] [FINE   ] 
+ShaderInfoLog: 
+ProgramInfoLog: WARNING: Too many temp register is used in Compute shader, it may cause slow execution.
+
+ShaderCompileStatus: 1
+ShaderLinkStatus: 0
+
+[11:40:51:163] [INFO   ] 
+[11:40:51:164] [INFO   ] ------------------------------
+[11:40:51:164] [INFO   ] ------------ STEP ------------
+[11:40:51:164] [INFO   ] ------------------------------
+[11:40:51:165] [INFO   ] 
+[11:40:55:160] [INFO   ] 
+[11:40:55:161] [INFO   ] ------------------------------
+[11:40:55:161] [INFO   ] ------------ STEP ------------
+[11:40:55:162] [INFO   ] ------------------------------
+[11:40:55:162] [INFO   ] 
+[11:40:59:236] [INFO   ] 
+[11:40:59:237] [INFO   ] ------------------------------
+[11:40:59:237] [INFO   ] ------------ STEP ------------
+[11:40:59:237] [INFO   ] ------------------------------
+[11:40:59:238] [INFO   ] 
+[11:41:03:181] [INFO   ] 
+[11:41:03:181] [INFO   ] ------------------------------
+[11:41:03:182] [INFO   ] ------------ STEP ------------
+[11:41:03:182] [INFO   ] ------------------------------
+[11:41:03:182] [INFO   ] 
+[11:41:07:237] [INFO   ] 
+[11:41:07:237] [INFO   ] ------------------------------
+[11:41:07:238] [INFO   ] ------------ STEP ------------
+[11:41:07:238] [INFO   ] ------------------------------
+[11:41:07:238] [INFO   ] 
+[11:41:11:182] [INFO   ] 
+[11:41:11:182] [INFO   ] ------------------------------
+[11:41:11:183] [INFO   ] ------------ STEP ------------
+[11:41:11:183] [INFO   ] ------------------------------
+[11:41:11:183] [INFO   ] 
+[11:41:15:257] [INFO   ] 
+[11:41:15:257] [INFO   ] ------------------------------
+[11:41:15:257] [INFO   ] ------------ STEP ------------
+[11:41:15:257] [INFO   ] ------------------------------
+[11:41:15:258] [INFO   ] 
+[11:41:19:212] [INFO   ] 
+[11:41:19:212] [INFO   ] ------------------------------
+[11:41:19:213] [INFO   ] ------------ STEP ------------
+[11:41:19:213] [INFO   ] ------------------------------
+[11:41:19:213] [INFO   ] 
+[11:41:23:274] [INFO   ] 
+[11:41:23:274] [INFO   ] ------------------------------
+[11:41:23:274] [INFO   ] ------------ STEP ------------
+[11:41:23:274] [INFO   ] ------------------------------
+[11:41:23:275] [INFO   ] 

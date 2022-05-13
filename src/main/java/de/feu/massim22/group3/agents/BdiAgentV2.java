@@ -33,6 +33,9 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public BdiAgentV2(String name, MailService mailbox, int index) {
         super(name, mailbox);
         this.index = index;
+        this.supervisor = new Supervisor(this);
+        StepUtilities.allAgents.add(this);
+        StepUtilities.allSupervisors.add((Supervisor)this.supervisor);
     }
 
     Supervisor getSupervisor() {
@@ -53,8 +56,8 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         stepLogic.updateMap(this);
 
         // Wenn es der letzte Agent war kommt die Gruppenverarbeitung
-        if (stepLogic.reportMapUpdate(this, belief.getStep(), belief.getTeamSize())) {
-            Thread t2 = new Thread(() -> stepLogic.doGroupProcessing(belief.getStep()));
+        if (StepUtilities.reportMapUpdate(this, belief.getStep(), belief.getTeamSize())) {
+           Thread t2 = new Thread(() -> stepLogic.doGroupProcessing(belief.getStep()));
             t2.start();
         }
 
@@ -107,7 +110,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     private void updateBeliefs() {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
-        AgentLogger.info(belief.toString());
+        //AgentLogger.info(belief.toString());
     }
 
     private record PerceptMessage(String sender, Percept percept) {

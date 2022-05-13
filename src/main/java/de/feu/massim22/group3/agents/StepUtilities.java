@@ -9,8 +9,9 @@ import java.awt.*;
 import massim.protocol.data.Thing;
 
 public class StepUtilities {
+    public static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
+    public static Set<Supervisor> allSupervisors = new HashSet<Supervisor>();
     private static int countAgent = 0;
-    private static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
 
     Supervisor loopSupervisor;
 
@@ -23,14 +24,13 @@ public class StepUtilities {
      * 
      * @return boolean - the agent is done updating the map
      */
-    public synchronized boolean reportMapUpdate(BdiAgentV2 agent, int step, int teamSize) {
+    public static synchronized boolean reportMapUpdate(BdiAgentV2 agent, int step, int teamSize) {
         boolean result = false;
         countAgent++;
-        allAgents.add(agent);
 
         if (countAgent == teamSize) {
-            result = true;
             countAgent = 0;
+            result = true;
         }
 
         return result;
@@ -49,14 +49,13 @@ public class StepUtilities {
         BdiAgentV2 agent2;
 
         ArrayList<AgentMeeting> foundAgent = new ArrayList<AgentMeeting>();
-        Set<Supervisor> allSupervisors = new HashSet<Supervisor>();
         Set<Supervisor> oldSupervisors = new HashSet<Supervisor>();
+        Set<Thing> things = new HashSet<>();
 
         for (BdiAgentV2 agent : allAgents) {
-            allSupervisors.add(agent.getSupervisor());
-
-            for (Thing thing : agent.belief.getThings()) {
-                // Agent hat in seiner Vision ein anderen Agent
+            things = agent.belief.getThings();
+            for (Thing thing : things) {
+                // Agent hat in seiner Vision einen anderen Agent
                 if (thing.type.equals(Thing.TYPE_ENTITY)) {
                  // dieser ist aus dem gleichen Team
                     if (thing.details.equals(agent.belief.getTeam())) {
