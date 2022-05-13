@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents;
 import java.util.*;
 import java.util.List;
 
+import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;
 
 import java.awt.*;
@@ -109,7 +110,7 @@ public class StepUtilities {
                 // Supervisors
                 // wodurch für die Agents die PATHFINDER_RESULT Message ausgelöst wird
 
-                Navi.get().updateSupervisor(loopSupervisor.getName());
+                Navi.<INaviAgentV2>get().updateSupervisor(loopSupervisor.getName());
                 runSupervisorDecisions(loopSupervisor);
             };
             Thread t3 = new Thread(runnable);
@@ -172,9 +173,9 @@ public class StepUtilities {
      *
      */
     public void updateMap(BdiAgentV2 agent) {
-        Navi.get().updateAgent(agent.getSupervisor().getName(), agent.getName(), agent.index,
+        Navi.<INaviAgentV2>get().updateMap(agent.getSupervisor().getName(), agent.getName(), agent.index,
                 agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(),
-                agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep(), false);
+                agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep());
     }
 
     /**

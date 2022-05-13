@@ -1,16 +1,12 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
-import massim.protocol.data.Thing;
 
-import java.awt.Point;
 import java.util.Queue;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.*;
-import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
