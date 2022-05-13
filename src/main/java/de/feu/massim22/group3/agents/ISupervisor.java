@@ -5,9 +5,9 @@ import eis.iilang.Percept;
 
 public interface ISupervisor {
 
-	void handleMessage(Percept message, String sender);
-	void setName(String name);
-	String getName();
-	void receiveConfirmation(String agent, TaskName task);
-	void initStep();
+    void handleMessage(Percept message, String sender);
+    void setName(String name);
+    String getName();
+    void receiveConfirmation(String agent, TaskName task);
+    void initStep();
 }
