@@ -18,20 +18,20 @@ import eis.iilang.Percept;
 import massim.protocol.data.Thing;
 
 public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
-
+    
     private Queue<BdiAgentV1.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
     private EisSender eisSender;
     private ISupervisor supervisor;
     private int index;
-
+    
     public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
         super(name, mailbox);
         this.eisSender = eisSender;
         this.index = index;
         this.supervisor = new Supervisor(this);
     }
-
-    // Not needed for multi-threaded Agent
+    
+    // Not needed for multi-threaded Agent 
     @Override
     public Action step() {
         return null;
@@ -51,7 +51,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
     public void run() {
         while (true) {
 
-            // Send Action if already calculated
+            // Send Action if already calculated		
             Action nextAction = intention.getNextAction();
             if (nextAction != null) {
                 eisSender.send(this, nextAction);
@@ -70,11 +70,11 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
                 // Perform Task
                 BdiAgentV1.PerceptMessage message = queue.poll();
                 performTask(message.percept, message.sender);
-            }
+            }	
         }
     }
-
-    // TODO Add Agent Logic
+    
+    // TODO Add Agent Logic 
     private void performTask(Percept task, String sender) {
         String taskKey = task.getName();
         TaskName taskName = TaskName.valueOf(taskKey);
@@ -96,7 +96,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
             throw new IllegalArgumentException("Message is not handled!");
         }
     }
-
+    
     private void updatePercepts() {
 
         // Update Percepts
