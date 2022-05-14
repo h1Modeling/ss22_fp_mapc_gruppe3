@@ -257,16 +257,16 @@ public class Belief {
         return r.vision();
     }
     
-    //Melinda Betz 05.05.2022
+    // Melinda
     String getTeam() {
         return team;
     }
-    
-     //Melinda Betz 05.05.2022
-        int getTeamSize() {
-            return teamSize;
-        }
-    
+
+    int getTeamSize() {
+        return teamSize;
+    }
+    // Melinda Ende
+
     int getStep() {
         return step;
     }

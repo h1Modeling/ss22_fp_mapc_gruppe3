@@ -206,7 +206,7 @@ class PathFinder {
     }
 
     public PathFindingResult[][] start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
-
+        AgentLogger.info("PathFinder.start() Start");   
         // Create the compute program the compute shader is assigned to
 		glfwMakeContextCurrent(this.windowHandler);
 		GL.createCapabilities();
@@ -251,7 +251,7 @@ class PathFinder {
 		
 		// Remove Context from thread
 		glfwMakeContextCurrent(0);
-
+        AgentLogger.info("PathFinder.start() End");  
 		// Calculate Result
 		return decodeResult(result, goalPoints, mapSize, agentCount);
     }
@@ -270,7 +270,7 @@ class PathFinder {
 				int direction = (int)map[index + 1];
 				PathFindingResult resultData = new PathFindingResult(distance, direction);
 				result[i][j] = resultData;
-				// AgentLogger.fine("Path-Finding Result: " + ip.cellType() + " Distance: " + distance + " Direction " + direction);
+				//AgentLogger.fine("Path-Finding Result: " + ip.cellType() + " Distance: " + distance + " Direction " + direction);
 			}
 		}
 		return result;

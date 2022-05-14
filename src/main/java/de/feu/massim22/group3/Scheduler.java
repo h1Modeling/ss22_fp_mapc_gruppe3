@@ -170,11 +170,11 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender 
 
         // log
         if (newPerceptAgents.size() > 0) {
-            AgentLogger.info("");
-            AgentLogger.info("------------------------------");
-            AgentLogger.info("------------ STEP ------------");
-            AgentLogger.info("------------------------------");
-            AgentLogger.info("");
+            //AgentLogger.info("");
+            //AgentLogger.info("------------------------------");
+            //AgentLogger.info("------------ STEP ------------");
+            //AgentLogger.info("------------------------------");
+            //AgentLogger.info("");
         }
 
         // for safety initStep at supervisor first

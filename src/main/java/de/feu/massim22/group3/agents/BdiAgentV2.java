@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
+import massim.eismassim.Log;
 
 import java.util.Queue;
 import java.util.List;
@@ -48,6 +49,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         getSupervisor().decisionsDone = false;
         decisionsDone = false;// Agent
 
+        AgentLogger.info("step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
         // Mapupdate über updateAgent (wenn möglich, ohne startCalculation auszulösen?)
         stepLogic.updateMap(this);
 
@@ -58,6 +60,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         }
 
         // warten auf PATHFINDER_RESULT Message
+        AgentLogger.info("step() Waiting for PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
             if (queue.isEmpty()) {
                 try {
@@ -69,11 +72,12 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
                 BdiAgentV2.PerceptMessage message = queue.poll();
 
                 if (TaskName.valueOf(message.percept.getName()) == TaskName.PATHFINDER_RESULT) {
+                    AgentLogger.info("step() PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
                     List<Parameter> parameters = message.percept.getParameters();
                     belief.updateFromPathFinding(parameters);
                     AgentLogger.info(belief.reachablesToString());
 
-                    Thread t4 = new Thread(() -> stepLogic.runAgentDecisions(this));
+                    Thread t4 = new Thread(() -> stepLogic.runAgentDecisions(belief.getStep(), this));
                     t4.start();
                     break;
                 }
@@ -96,6 +100,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         }
 
         // nächste Action
+        AgentLogger.info("step() End - Step: " + belief.getStep() + " , Agent: " + this.getName());
         return intention.outputAction;
     }
 

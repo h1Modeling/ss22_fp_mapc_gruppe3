@@ -10,6 +10,7 @@ import org.lwjgl.BufferUtils;
 
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -57,6 +58,18 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         agentStep.put(name, -1);
         openGlHandler.put(name, PathFinder.createOpenGlContext());
     }
+   
+    // Melinda
+    @Override
+    public void registerSupervisor(String name, String supervisor) {
+        agentSupervisor.put(name, supervisor);
+    }
+    
+    @Override
+    public Point getPosition(String name, String supervisor) {
+        return maps.get(supervisor).getAgentPosition(name);
+    }
+    //Melinda Ende
 
     @Override
     public void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
@@ -87,6 +100,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
 
     @Override
     public void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
+        AgentLogger.info("updateMap() Start - Agent: " + agent + " , Supervisor: " + supervisor); 
         if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
@@ -94,6 +108,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
 
         // Set agent Position
         map.setAgentPosition(agent, position);
+        AgentLogger.info("updateMap() Start - AgentPosition: " + agent + " , " + map.getInternalAgentPosition(agent));
 
         // create temporary vision array
         CellType[][] thingVision = getBlankCellArray(vision);
@@ -135,6 +150,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
 
         // Update internal step
         agentStep.put(agent, step);
+        AgentLogger.info("updateMap() End"); 
     }
 
     // Creates array with CellType.FREE in vision and CellType.UNKNOWN outside of vision
@@ -180,6 +196,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
     }
 
     private synchronized void startCalculation(String supervisor, GameMap map) {
+        AgentLogger.info("startCalculation() Start - Supervisor: " + supervisor); 
         FloatBuffer mapBuffer = map.getMapBuffer();
         FloatBuffer agentBuffer = map.getEmptyBuffer();
         List<String> agents = getAgentsFromSupervisor(supervisor);
@@ -189,6 +206,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         Point mapSize = map.getMapSize();
         int channelSize = 2;
         int z = 1 + agentSize;
+
+        AgentLogger.info("startCalculation() - agents: " + agents);
+        AgentLogger.info("startCalculation() - mapSize: " + mapSize);
         
         // Buffer for 3D-RG-Texture which contains the map at z=0 and for every agent a clear map for the agent path finding result
         FloatBuffer mapTextureBuffer = BufferUtils.createFloatBuffer(mapSize.x * mapSize.y * channelSize * z);
@@ -215,9 +235,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
                 // Agent position
                 if (y == 0 && x < agentSize) {
                     String agent = agents.get(x);
+                    AgentLogger.info("startCalculation() - Agent for Position: " + agent);
                     Point agentPos = map.getInternalAgentPosition(agent);
                     dataTextureBuffer.put(agentPos.x);
                     dataTextureBuffer.put(agentPos.y);
+                    AgentLogger.info("startCalculation() - AgentPosition: " + agent + " , " + agentPos);
                 } 
                 // Agent Form
                 else if (y == 1 && x < agentSize) {
@@ -244,28 +266,45 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         long handler = openGlHandler.get(supervisor);
         PathFinder finder = new PathFinder(handler);
         boolean mapDiscovered = map.mapDiscovered();
-        
+        AgentLogger.info("startCalculation() - numberGoals: " + numberGoals);        
         if (numberGoals > 0) {
             // Start Path Finding
+            AgentLogger.info("Before finder.start()");   
             PathFindingResult[][] result = finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
-            
+            AgentLogger.info("After finder.start()");             
             // Send Result to Agents
             if (mailService != null) {
+                AgentLogger.info("############## ");
+                AgentLogger.info("startCalculation() - Agenten: " + agents); 
+                AgentLogger.info("############## ");
                 for (int i = 0; i < agents.size(); i++) {
+                    AgentLogger.info("startCalculation() - Loop Agent: " +  agents.get(i)); 
+                    AgentLogger.info("PathFindingResult Index 1: " + result[i][1].distance());
+                    AgentLogger.info("PathFindingResult Index 1: " + result[i][1].direction());
+                    AgentLogger.info("InterestingPoint Index 1: " + interestingPoints.get(i));
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
                     sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft);
+                    AgentLogger.info("############## ");
                 }
             }
         }
+        
+        AgentLogger.info("startCalculation() - End"); 
     }
 
-    private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+        AgentLogger.info ("sendPathFindingResultToAgent() Start");
+        AgentLogger.info ("sendPathFindingResultToAgent() - interestingPoints.size: " + interestingPoints.size());
         List<Parameter> data = new ArrayList<>();
         // Generate Percept
         for (int j = 0; j < interestingPoints.size(); j++) {
+            AgentLogger.info("------------------------- ");
             PathFindingResult resultData = agentResultData[j];
+            AgentLogger.info ("sendPathFindingResultToAgent() - resultData.distance: " + resultData.distance());
+            AgentLogger.info ("sendPathFindingResultToAgent() - resultData.direction: " + resultData.direction());
+            AgentLogger.info ("sendPathFindingResultToAgent() - InterestingPoint: " + interestingPoints.get(j));
             // Result was found
             if (resultData.distance() > 0) {
                 InterestingPoint ip = interestingPoints.get(j);
@@ -283,8 +322,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
             }
         }                
         Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
+        AgentLogger.info ("sendPathFindingResultToAgent() - Result: " + message + " , " + data);
         // Send Data to Agent
         mailService.sendMessage(message, agent, name);
+        return message;
     }
 
     private CellType thingToCellType(Thing t) {
@@ -320,6 +361,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         }
     }
     
+    @Override
     public void updateSupervisor(String supervisor) {
     	startCalculation(supervisor, maps.get(supervisor));
     }

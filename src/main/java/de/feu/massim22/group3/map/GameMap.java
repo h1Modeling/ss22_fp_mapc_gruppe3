@@ -61,9 +61,14 @@ public class GameMap {
 		cells[cellY][cellX].addReport(report);
 	}
 
-	public void setAgentPosition(String name, Point position) {
-		agentPosition.put(name, position);
-	}
+    public void setAgentPosition(String name, Point position) {
+        agentPosition.put(name, position);
+    }
+
+    //Melinda
+    public Point getAgentPosition(String name) {
+        return agentPosition.get(name);
+    }
 	
 	public Point getTopLeft() {
 		return topLeft;

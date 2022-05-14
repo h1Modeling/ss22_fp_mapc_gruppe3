@@ -9,4 +9,8 @@ import massim.protocol.data.Thing;
 public interface INaviAgentV2 extends INavi {
     void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step);
     void updateSupervisor(String supervisor);
+    
+    //Melinda
+    void registerSupervisor(String name, String supervisor);
+    Point getPosition(String name, String supervisor);
 }
