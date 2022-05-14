@@ -34,9 +34,9 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     private SimulationPanel simulationPanel;
     private MapPanel mapPanel;
 
-    private Map<String, CellType[][]> maps = new HashMap<>();
-    private Map<String, PathFindingResult[][]> pathFinding = new HashMap<>();
     private Map<String, AgentDebugData> agentData = new HashMap<>();
+    private Map<String, GroupDebugData> groupData = new HashMap<>();
+    private String selectedGroup = "";
 
     public static void main( String[] args ) {
         SwingUtilities.invokeLater(new GraphicalDebugger());
@@ -80,7 +80,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         mapPanel = new MapPanel(this);
         add(mapPanel);
 
-        mapPanel.setData(createTestMap());
+        //mapPanel.setData(createTestMap());
 
         simulationPanel.setTasks(createTestTask());
 
@@ -164,12 +164,12 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         agentPanel.setAgentData(data);
     }
 
-    static record GroupDebugData(String supervisor, CellType[][] map, Point mapTopLeft, 
+    public static record GroupDebugData(String supervisor, CellType[][] map, Point mapTopLeft, 
         List<InterestingPoint> interestingPoints, PathFindingResult[][] pathFindingResult,
         Map<Point, String> agentPosition, List<Point> roleZones, List<Point> goalzones,
         List<String> agents) { }
 
-    static record AgentDebugData(
+    public static record AgentDebugData(
         String name,
         String supervisor,
         String role,
@@ -177,4 +177,18 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         String lastAction,
         String lastActionSuccess
     ) {}
+
+    @Override
+    public void setGroupData(GroupDebugData data) {
+        groupData.put(data.supervisor, data);
+        // TODO remove
+        if (selectedGroup == "") {
+            selectedGroup = data.supervisor;
+        }
+
+        // update current view
+        if (data.supervisor() == selectedGroup) {
+            mapPanel.setData(data);
+        }  
+    }
 }

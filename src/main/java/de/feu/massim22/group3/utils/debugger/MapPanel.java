@@ -228,6 +228,7 @@ public class MapPanel extends JPanel {
 
     void setData(GroupDebugData data) {
         this.data = data;
+        System.out.println("SET DATA");
         this.repaint();
     }
 }

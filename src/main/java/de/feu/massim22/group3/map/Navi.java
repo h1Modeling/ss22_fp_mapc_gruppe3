@@ -6,11 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import org.lwjgl.BufferUtils;
 
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
 import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
+import de.feu.massim22.group3.utils.debugger.IGraphicalDebugger;
+import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -31,9 +36,14 @@ public class Navi {
     private Map<String, String> agentSupervisor = new HashMap<>();
     private Map<String, Integer> agentStep = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
+    private IGraphicalDebugger debugger = new GraphicalDebugger();
     
     private Navi() {
         PathFinder.init();
+
+        // Open Debugger
+        SwingUtilities.invokeLater((Runnable)debugger);
+
         // TODO At end of application PathFinder must be closed to free resources
     }
 
@@ -62,7 +72,7 @@ public class Navi {
         if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
-        GameMap map = maps.get(supervisor);
+        GameMap map = maps.get(supervisor); 
 
         // Set agent Position
         map.setAgentPosition(agent, position);
@@ -240,6 +250,17 @@ public class Navi {
         if (numberGoals > 0) {
             // Start Path Finding
             PathFindingResult[][] result = finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+
+            // Update Debugger
+            CellType[][] cells = map.getDebugCells();
+            Point topLeft = map.getTopLeft();
+            Map<Point, String> agentPosition = map.getDebugAgentPosition();
+            List<Point> roleZones = map.getRoleCache();
+            List<Point> goalZones = map.getGoalCache();
+
+            // Update debugger
+            GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
+            debugger.setGroupData(debugData);
             
             // Send Result to Agents
             if (mailService != null) {
