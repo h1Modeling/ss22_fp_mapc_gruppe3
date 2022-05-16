@@ -1,9 +1,11 @@
 package de.feu.massim22.group3.agents.Desires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
+
 public class GoalZoneGuardDesire extends Desire {
 
-    public GoalZoneGuardDesire() {
-        super();
+    public GoalZoneGuardDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override

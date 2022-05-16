@@ -22,7 +22,7 @@ class DesireHandler {
     }
 
     public void setTeamGoal(Desires newDesire) {
-        currentTeamGoal = newDesire.getDesireObj();
+        currentTeamGoal = newDesire.getDesireObj(agent);
     }
 
     public void setNextAction() {
@@ -72,15 +72,15 @@ class DesireHandler {
 
     // Define high priority goals and their order here
     private void setHighPrioAgentGoals() {
-        this.highPrioAgentGoals.add(Desires.DIG_FREE.getDesireObj());
-        this.highPrioAgentGoals.add(Desires.DODGE_CLEAR.getDesireObj());
-        this.highPrioAgentGoals.add(Desires.DODGE_OTHER_AGENT.getDesireObj());
-        this.highPrioAgentGoals.add(Desires.REACT_TO_NORM.getDesireObj());
+        this.highPrioAgentGoals.add(Desires.DIG_FREE.getDesireObj(agent));
+        this.highPrioAgentGoals.add(Desires.DODGE_CLEAR.getDesireObj(agent));
+        this.highPrioAgentGoals.add(Desires.DODGE_OTHER_AGENT.getDesireObj(agent));
+        this.highPrioAgentGoals.add(Desires.REACT_TO_NORM.getDesireObj(agent));
     }
 
     // Define low priority goals and their order here
     private void setLowPrioAgentGoals() {
-        this.lowPrioAgentGoals.add(Desires.SPONTANEOUS_HINDER_ENEMY.getDesireObj());
-        this.lowPrioAgentGoals.add(Desires.GO_TO_UNKNOWN_AREA.getDesireObj());
+        this.lowPrioAgentGoals.add(Desires.SPONTANEOUS_HINDER_ENEMY.getDesireObj(agent));
+        this.lowPrioAgentGoals.add(Desires.GO_TO_UNKNOWN_AREA.getDesireObj(agent));
     }
 }

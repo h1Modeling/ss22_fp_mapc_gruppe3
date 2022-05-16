@@ -1,12 +1,13 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class GoToUnkownAreaSubDesire extends SubDesire {
 
-    public GoToUnkownAreaSubDesire() {
-        super();
+    public GoToUnkownAreaSubDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override

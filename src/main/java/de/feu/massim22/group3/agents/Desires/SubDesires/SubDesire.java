@@ -3,13 +3,16 @@ package de.feu.massim22.group3.agents.Desires.SubDesires;
 import java.util.LinkedList;
 
 import de.feu.massim22.group3.agents.Desires.Desires;
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
 
 public abstract class SubDesire {
 
     protected SubDesires subDesireType;
+    BdiAgent agent;
 
-    SubDesire() {
+    SubDesire(BdiAgent agent) {
+        this.agent = agent;
         setType();
     }
 

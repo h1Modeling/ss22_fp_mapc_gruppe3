@@ -1,20 +1,21 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class GetRoleSubDesire extends SubDesire {
 
-    private String role;
+    private String requiredRole;
 
-    public GetRoleSubDesire() {
-        super();
+    public GetRoleSubDesire(BdiAgent agent) {
+        super(agent);
     }
 
-    public void setRoleToGet(String role) {
+    public void setRoleToGet(String requiredRole) {
         // TODO where is the assignment of roles to Desires defined? Maybe active Norms
         // should be checked too;
-        this.role = role;
+        this.requiredRole = requiredRole;
     }
 
     @Override

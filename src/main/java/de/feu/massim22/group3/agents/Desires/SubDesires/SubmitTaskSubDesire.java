@@ -1,11 +1,12 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
 
 public class SubmitTaskSubDesire extends SubDesire {
 
-    public SubmitTaskSubDesire() {
-        super();
+    public SubmitTaskSubDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override

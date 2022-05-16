@@ -1,9 +1,10 @@
 package de.feu.massim22.group3.agents.Desires;
+import de.feu.massim22.group3.agents.BdiAgent;
 
 public class HelpTaskAgentDesire extends Desire {
 
-    public HelpTaskAgentDesire() {
-        super();
+    public HelpTaskAgentDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override

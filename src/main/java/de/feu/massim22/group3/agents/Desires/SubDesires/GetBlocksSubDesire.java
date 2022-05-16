@@ -1,12 +1,12 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
-import eis.iilang.Identifier;
 
 public class GetBlocksSubDesire extends SubDesire {
 
-    public GetBlocksSubDesire() {
-        super();
+    public GetBlocksSubDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override

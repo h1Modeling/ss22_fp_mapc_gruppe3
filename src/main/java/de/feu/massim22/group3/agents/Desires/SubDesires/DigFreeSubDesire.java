@@ -1,11 +1,12 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
 import eis.iilang.Action;
+import de.feu.massim22.group3.agents.BdiAgent;
 
 public class DigFreeSubDesire extends SubDesire {
 
-    public DigFreeSubDesire() {
-        super();
+    public DigFreeSubDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override
