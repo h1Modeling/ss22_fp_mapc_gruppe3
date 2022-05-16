@@ -8,6 +8,7 @@ import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 class AgentPanel extends JPanel {
 
@@ -30,31 +31,32 @@ class AgentPanel extends JPanel {
         JLabel nameLabel = new JLabel("Name:");
         add(nameLabel);
 
-        name = new JLabel("Test");
+        name = new JLabel();
         add(name, "wrap");
+        name.setMinimumSize(new Dimension(100, 10));
 
         JLabel roleLabel = new JLabel("Rolle:");
         add(roleLabel);
 
-        role = new JLabel("Test");
+        role = new JLabel();
         add(role, "wrap");
 
         JLabel energyLabel = new JLabel("Energie:");
         add(energyLabel);
 
-        energy = new JLabel("Test");
+        energy = new JLabel();
         add(energy, "wrap");
 
         JLabel lastActionLabel = new JLabel("Letzte Aktion:");
         add(lastActionLabel);
 
-        lastAction = new JLabel("Test");
+        lastAction = new JLabel();
         add(lastAction, "wrap");
 
         JLabel lastActionSuccessLabel = new JLabel("Aktion geglückt:");
         add(lastActionSuccessLabel);
 
-        lastActionSuccess = new JLabel("Test");
+        lastActionSuccess = new JLabel();
         add(lastActionSuccess, "wrap");
 
         JLabel desireDataLabel = new HeaderLabel("Desires:");
@@ -68,6 +70,7 @@ class AgentPanel extends JPanel {
             energy.setText(String.valueOf(data.energy()));
             lastAction.setText(data.lastAction());
             lastActionSuccess.setText(data.lastActionSuccess());
+            revalidate();
         } else {
             clear();
         }

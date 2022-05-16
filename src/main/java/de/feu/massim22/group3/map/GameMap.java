@@ -38,15 +38,13 @@ public class GameMap {
         }
     }
 
-    Map<Point, String> getDebugAgentPosition() {
-		Map<Point, String> result = new HashMap<>();
-		for (Entry<String, Point> e : agentPosition.entrySet()) {
-			Point agentPoint = e.getValue();
-			Point internalPoint = getInternalCellIndex(agentPoint.x, agentPoint.y);
-			result.put(internalPoint, e.getKey());
-		}
-		return result;
-	}
+    List<Point> getGoalCache() {
+        return goalCache;
+    }
+
+    List<Point> getRoleCache() {
+        return roleCache;
+    }
 
     public boolean mapDiscovered() {
         return size != null;
@@ -61,6 +59,18 @@ public class GameMap {
         int cellX = getCellX(x);
         int cellY = getCellY(y);
         return new Point(cellX, cellY);
+    }
+
+    CellType[][] getDebugCells() {
+        int ySize = cells.length;
+        int xSize = cells[0].length;
+        CellType[][] types = new CellType[ySize][xSize];
+        for (int y = 0; y < ySize; y++) {
+            for (int x = 0; x < xSize; x++) {
+                types[y][x] = cells[y][x].getCellType();
+            }
+        }
+        return types;
     }
     
     public void addReport(int x, int y, CellType cellType, ZoneType zoneType, int agentId, int step) {		
@@ -78,6 +88,16 @@ public class GameMap {
     
     public Point getTopLeft() {
         return topLeft;
+    }
+
+    Map<Point, String> getDebugAgentPosition() {
+        Map<Point, String> result = new HashMap<>();
+        for (Entry<String, Point> e : agentPosition.entrySet()) {
+            Point agentPoint = e.getValue();
+            Point internalPoint = getInternalCellIndex(agentPoint.x, agentPoint.y);
+            result.put(internalPoint, e.getKey());
+        }
+        return result;
     }
     
     public Point getBottomRight() {

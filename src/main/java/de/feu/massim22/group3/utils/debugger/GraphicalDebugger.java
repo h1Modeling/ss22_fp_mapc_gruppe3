@@ -2,7 +2,6 @@ package de.feu.massim22.group3.utils.debugger;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,9 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -21,26 +18,21 @@ import java.awt.Point;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
-import de.feu.massim22.group3.map.ZoneType;
 import massim.protocol.data.NormInfo;
-import massim.protocol.data.Subject;
 import massim.protocol.data.TaskInfo;
-import massim.protocol.data.Thing;
 
 public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDebugger {
 
-    private JPanel header;
+    private Header header;
     private AgentPanel agentPanel;
     private SimulationPanel simulationPanel;
     private MapPanel mapPanel;
 
     private Map<String, AgentDebugData> agentData = new HashMap<>();
     private Map<String, GroupDebugData> groupData = new HashMap<>();
+    private Set<String> groups = new HashSet<>();
     private String selectedGroup = "";
-
-    public static void main( String[] args ) {
-        SwingUtilities.invokeLater(new GraphicalDebugger());
-    }
+    private DebugStepListener listener;
 
     public GraphicalDebugger() {
         setTitle("Debugger - Massim 22 - Gruppe 3");
@@ -58,9 +50,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
 
     @Override
     public void run() {
-        System.out.println("START ...");
-
-        header = new Header();
+        header = new Header(this);
         add(header, BorderLayout.NORTH);
 
         agentPanel = new AgentPanel();
@@ -68,24 +58,10 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
 
         simulationPanel = new SimulationPanel();
         JScrollPane scrollableSimPanel = new JScrollPane(simulationPanel);
-        //scrollableSimPanel.setBorder(null);
         add(scrollableSimPanel, BorderLayout.EAST);
-
-        // Agent Debug Data
-        AgentDebugData a1 = new AgentDebugData("A1", "AX", "default", 90, "move n", "success");
-        AgentDebugData a2 = new AgentDebugData("A2", "AY", "digger", 100, "move s", "success");
-        agentData.put("A1", a1);
-        agentData.put("A2", a2);
 
         mapPanel = new MapPanel(this);
         add(mapPanel);
-
-        //mapPanel.setData(createTestMap());
-
-        simulationPanel.setTasks(createTestTask());
-
-        simulationPanel.setNorms(createTestNorm());
-        // ....
 
         setPreferredSize(new Dimension(1000, 800));
         setSize(1000, 800);
@@ -94,68 +70,6 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         setLocationRelativeTo(null);
         setVisible(true);
         toFront();
-    }
-
-    private GroupDebugData createTestMap() {
-        CellType[] row1 = {CellType.BLOCK_0, CellType.ENEMY, CellType.DISPENSER_2, CellType.OBSTACLE};
-        CellType[] row2 = {CellType.FREE, CellType.FREE, CellType.FREE, CellType.TEAMMATE};
-        CellType[] row3 = {CellType.FREE, CellType.TEAMMATE, CellType.OBSTACLE, CellType.FREE};
-        CellType[] row4 = {CellType.OBSTACLE, CellType.OBSTACLE, CellType.OBSTACLE, CellType.FREE};
-        CellType[][] map = {row1, row2, row3, row4};
-
-        List<InterestingPoint> interestingPoints = new ArrayList<>();
-        interestingPoints.add(new InterestingPoint(new Point(0, 1), ZoneType.GOALZONE, CellType.FREE));
-        interestingPoints.add(new InterestingPoint(new Point(2, 1), ZoneType.NONE, CellType.DISPENSER_2));
-
-        PathFindingResult[] result = {
-            new PathFindingResult(5, 11),
-            new PathFindingResult(10, 33)
-        };
-        PathFindingResult[] result2 = {
-            new PathFindingResult(2, 22),
-            new PathFindingResult(4, 44)
-        };
-        PathFindingResult[][] pathFindingResults = { result, result2 };
-
-        Map<Point, String> agentPosition = new HashMap<>();
-        agentPosition.put(new Point(3, 1), "A1");
-        agentPosition.put(new Point(1, 2), "A2");
-
-        List<Point> goalZones = new ArrayList<>();
-        goalZones.add(new Point(0,1));
-        goalZones.add(new Point(0, 2));
-
-        List<Point> roleZones = new ArrayList<>();
-        roleZones.add(new Point(3, 2));
-        roleZones.add(new Point(3,3));
-
-        List<String> agents = new ArrayList<>();
-        agents.add("A1");
-        agents.add("A2");
-
-        return new GroupDebugData("Hallo", map, new Point(-2, -2),
-            interestingPoints, pathFindingResults, agentPosition, roleZones, goalZones, agents);  
-    }
-
-    private Set<TaskInfo> createTestTask() {
-        Set<TaskInfo> result = new HashSet<>();
-        Set<Thing> things = new HashSet<>();
-        things.add(new Thing(-1, -1, Thing.TYPE_BLOCK, "b1"));
-        things.add(new Thing(0, -1, Thing.TYPE_BLOCK, "b0"));
-        things.add(new Thing(0, 1, Thing.TYPE_BLOCK, "b1"));
-        TaskInfo info = new TaskInfo("Test", 230, 50, things);
-        result.add(info);
-        return result;
-    }
-
-    private Set<NormInfo> createTestNorm() {
-        Set<NormInfo> result = new HashSet<>();
-        Set<Subject> requirements = new HashSet<>();
-        requirements.add(new Subject(Subject.Type.BLOCK, "test", 2, "test test"));
-
-        NormInfo info = new NormInfo("test", 20, 100, requirements, 30);
-        result.add(info);
-        return result;
     }
 
     @Override
@@ -179,16 +93,72 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     ) {}
 
     @Override
-    public void setGroupData(GroupDebugData data) {
+    public synchronized void setGroupData(GroupDebugData data) {
         groupData.put(data.supervisor, data);
-        // TODO remove
+
+        // Sets first data as current group
         if (selectedGroup == "") {
             selectedGroup = data.supervisor;
+        }
+
+        // Update Groups
+        if (!groups.contains(data.supervisor)) {
+            groups.add(data.supervisor);
+            header.setGroups(groups, selectedGroup);
         }
 
         // update current view
         if (data.supervisor() == selectedGroup) {
             mapPanel.setData(data);
-        }  
+        }
+    }
+
+    @Override
+    public void setSimInfo(int currentStep, int maxSteps, int points) {
+        header.setData(currentStep, maxSteps, points);
+    }
+
+    @Override
+    public void setNorms(Set<NormInfo> norms, int step) {
+        simulationPanel.setNorms(norms, step);
+    }
+
+    @Override
+    public void setTasks(Set<TaskInfo> tasks, int step) {
+        simulationPanel.setTasks(tasks, step);
+    }
+
+    @Override
+    public synchronized void removeSupervisor(String name, String newGroup) {
+        groups.remove(name);
+        if (selectedGroup.equals(name)) {
+            selectedGroup = newGroup;
+        }
+        header.setGroups(groups, selectedGroup);
+    }
+
+    @Override
+    public void setSelectedGroup(String name) {
+        GroupDebugData data = groupData.get(name);
+        if (data != null) {
+            selectedGroup = name;
+            mapPanel.setData(data);
+        }
+    }
+
+    @Override
+    public void makeStep() {
+        listener.debugStep();
+    }
+
+    @Override
+    public void setDebugStepListener(DebugStepListener listener) {
+        this.listener = listener;
+        header.showStepButton();
+    }
+
+    @Override
+    public synchronized void setAgentData(AgentDebugData data) {
+        agentData.put(data.name, data);  
     }
 }

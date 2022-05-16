@@ -13,8 +13,10 @@ import org.lwjgl.BufferUtils;
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
 import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
 import de.feu.massim22.group3.utils.debugger.IGraphicalDebugger;
+import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
@@ -26,6 +28,8 @@ import eis.iilang.Percept;
 import java.awt.Point;
 import java.nio.FloatBuffer;
 
+import massim.protocol.data.NormInfo;
+import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
 public class Navi {
@@ -54,6 +58,10 @@ public class Navi {
         return Navi.instance;
     }
 
+    public void setDebugStepListener(DebugStepListener listener) {
+        debugger.setDebugStepListener(listener);
+    }
+
     public void setMailService(MailService mailService) {
         this.mailService = mailService;
     }
@@ -68,8 +76,16 @@ public class Navi {
         openGlHandler.put(name, PathFinder.createOpenGlContext());
     }
 
-    public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
-        if (!maps.containsKey(supervisor)) {
+    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess) {
+        AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess);
+        debugger.setAgentData(data);
+    }
+
+    public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
+        List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
+        Set<TaskInfo> taskInfo) {
+
+            if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
         GameMap map = maps.get(supervisor); 
@@ -92,7 +108,12 @@ public class Navi {
         thingVision[vision][vision] = CellType.TEAMMATE;
         // Things
         for (Thing t : things) {
-            CellType type = Convert.thingToCellType(t);
+            CellType type;
+            if (t.type.equals(Thing.TYPE_ENTITY)) {
+                type = t.details.equals(team) ? CellType.TEAMMATE : CellType.ENEMY;
+            } else {
+                type = Convert.thingToCellType(t);
+            }
             thingVision[t.y + vision][t.x + vision] = type;
         }
         // Role Zones
@@ -117,6 +138,15 @@ public class Navi {
 
         // Update internal step
         agentStep.put(agent, step);
+
+        // Update Debugger simulation data
+        debugger.setSimInfo(step, maxSteps, score);
+
+        // Update Debugger Norms
+        debugger.setNorms(normsInfo, step);
+
+        // Update Debugger Tasks
+        debugger.setTasks(taskInfo, step);
 
         // Test if all agents in group have already sent step information
         boolean allSent = true;

@@ -22,6 +22,7 @@ public class MapPanel extends JPanel {
     private Point selectedCell = new Point(-1, -1);
     private IGraphicalDebugger debugger;
     private int selectedAgentIndex = -1;
+    private String selectedAgentName = "";
     private int selectedInterestingPointIndex = -1;
 
     MapPanel(IGraphicalDebugger debugger) {
@@ -51,6 +52,7 @@ public class MapPanel extends JPanel {
         if (selectedCell.x >= 0 && selectedCell.y >= 0 && 
             data.map()[selectedCell.y][selectedCell.x] == CellType.TEAMMATE) {
             String name = data.agentPosition().get(selectedCell);
+            selectedAgentName = name;
             debugger.selectAgent(name);
             
             // Get index of selected agent for pathfinding results
@@ -65,6 +67,7 @@ public class MapPanel extends JPanel {
         } else {
             debugger.selectAgent(null);
             selectedAgentIndex = -1;
+            selectedAgentName = "";
         }
         // Interesting Point
         selectedInterestingPointIndex = getInterestingPointIndex(selectedCell);
@@ -110,6 +113,8 @@ public class MapPanel extends JPanel {
                     boolean isSelected = x == selectedCell.x && y == selectedCell.y;
                     String name = "";
                     if (t == CellType.TEAMMATE) {
+                        String agentAtCell = data.agentPosition().get(new Point(x, y));
+                        isSelected = selectedAgentName != null && selectedAgentName.equals(agentAtCell);
                         name = data.agentPosition().get(new Point(x, y));
                     }
                     CellUtils.draw(g2d, t, rect, x, y, name, isSelected);
@@ -196,11 +201,8 @@ public class MapPanel extends JPanel {
                                         path.closePath();
                                         break;
                                 }
-                                // Draw Direction
-                                
-                                
-                                //Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX + 1, p.y * cellWidth + offsetY + 1, cellWidth - 2, cellWidth - 2);
-                                g2d.setColor(new Color(0,0, 255));
+
+                                g2d.setColor(new Color(28, 113, 216));
                                 g2d.fill(path);
                                 direction = direction / 10;
                             }
@@ -228,7 +230,6 @@ public class MapPanel extends JPanel {
 
     void setData(GroupDebugData data) {
         this.data = data;
-        System.out.println("SET DATA");
         this.repaint();
     }
 }

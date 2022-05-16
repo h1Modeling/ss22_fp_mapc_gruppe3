@@ -7,9 +7,6 @@ import massim.eismassim.EnvironmentInterface;
 import java.io.File;
 import java.util.Scanner;
 
-import javax.swing.SwingUtilities;
-
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**

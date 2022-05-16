@@ -1,47 +1,40 @@
 package de.feu.massim22.group3.utils.debugger;
 
 import java.awt.GridBagLayout;
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.util.Set;
 import java.awt.GridBagConstraints;
 
-import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.plaf.DimensionUIResource;
 import javax.swing.plaf.InsetsUIResource;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 class Header extends JPanel {
-    private int step = 0;
-    private int points = 0;
     private JButton next;
-    private JComboBox groupSelection;
+    private JComboBox<String> groupSelection;
+    private JLabel stepLabel;
+    private JLabel pointLabel;
 
-    Header() {
+    Header(IGraphicalDebugger debugger) {
+
         setLayout(new GridBagLayout());
-        //setBackground(Color.RED);
 
         GridBagConstraints c = new GridBagConstraints();
 
         // Step
-        JLabel stepLabel = new JLabel("Step: 10/200");
-        //stepLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        stepLabel = new JLabel();
         c.anchor = GridBagConstraints.WEST;
         c.gridx = 0;
         c.weightx = 0.2;
         c.insets = new InsetsUIResource(0, 10, 0, 10);
-        //stepLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(stepLabel, c);
 
         // Points
-        JLabel pointLabel = new JLabel("Punkte: 0");
+        pointLabel = new JLabel();
         c.gridx = 1;
         add(pointLabel, c);
 
@@ -50,6 +43,10 @@ class Header extends JPanel {
         c.gridx = 2;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
+        groupSelection.addActionListener(l -> {
+            String selection = (String)groupSelection.getSelectedItem();
+            debugger.setSelectedGroup(selection);
+        });
         add(groupSelection, c);
 
         // Button
@@ -58,7 +55,26 @@ class Header extends JPanel {
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.EAST;
         c.weightx = 1;
+        next.addActionListener(l -> {
+            debugger.makeStep();
+        });
+        next.setVisible(false);
         add(next, c);
-        
+    }
+
+    void setData(int currentStep, int maxSteps, int score) {
+        stepLabel.setText("Schritt: " + currentStep + " / " + maxSteps);
+        pointLabel.setText("Punkte: " + score + " $");
+    }
+
+    void setGroups(Set<String> groups, String selectedGroup) {
+        String[] items = groups.toArray(new String[groups.size()]);
+        ComboBoxModel<String> model = new DefaultComboBoxModel<String>(items);
+        groupSelection.setModel(model);
+        model.setSelectedItem(selectedGroup);
+    }
+
+    void showStepButton() {
+        next.setVisible(true);
     }
 }

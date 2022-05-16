@@ -11,9 +11,13 @@ class CellUtils {
     private static Color black = new ColorUIResource(36, 36, 36);
     private static Color dispenser0 = new ColorUIResource(113, 117, 72);
     private static Color dispenser1 = new ColorUIResource(186, 178, 23);
+    private static Color dispenser2 = new ColorUIResource(191, 184, 41);
+    private static Color dispenser3 = new ColorUIResource(191, 184, 41);
+    private static Color dispenser4 = new ColorUIResource(191, 184, 41);
 
     static void draw(Graphics2D g2d, CellType t, Rectangle2D.Double rect, int x, int y, String name, boolean selected) {
         int greyValue = (x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1) ? 238 : 221;
+        int unknownValue = (x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1) ? 88 : 71;
         switch (t) {
         case TEAMMATE:
             drawAgent(g2d, rect, new Color(28, 113, 216), greyValue, name, selected);
@@ -22,28 +26,28 @@ class CellUtils {
             g2d.setColor(black);
             g2d.fill(rect);
             break;
+        case UNKNOWN:
+            g2d.setColor(new Color(unknownValue, unknownValue, unknownValue));
+            g2d.fill(rect);
+            break;
         case FREE:
             g2d.setColor(new ColorUIResource(greyValue, greyValue, greyValue));
             g2d.fill(rect);
             break;
         case DISPENSER_0:
-            drawDispenser(g2d, rect, dispenser0);
+            drawDispenser(g2d, rect, dispenser0, "d0");
             break;
         case DISPENSER_1:
-            drawDispenser(g2d, rect, dispenser1);
+            drawDispenser(g2d, rect, dispenser1, "d1");
             break;
         case DISPENSER_2:
-            // TODO add correct colors
-            drawDispenser(g2d, rect, dispenser1);
+            drawDispenser(g2d, rect, dispenser2, "d2");
             break;
         case DISPENSER_3:
-            drawDispenser(g2d, rect, dispenser1);
+            drawDispenser(g2d, rect, dispenser3, "d3");
             break;
         case DISPENSER_4:
-            drawDispenser(g2d, rect, dispenser1);
-            break;
-        case DISPENSER_5:
-            drawDispenser(g2d, rect, dispenser1);
+            drawDispenser(g2d, rect, dispenser4, "d4");
             break;
         case BLOCK_0:
             drawBlock(g2d, rect, dispenser0, "b0");
@@ -52,13 +56,13 @@ class CellUtils {
             drawBlock(g2d, rect, dispenser1, "b1");
             break;
         case BLOCK_2:
-            drawBlock(g2d, rect, dispenser1, "b2");
+            drawBlock(g2d, rect, dispenser2, "b2");
             break;
         case BLOCK_3:
-            drawBlock(g2d, rect, dispenser1, "b3");
+            drawBlock(g2d, rect, dispenser3, "b3");
             break;
         case BLOCK_4:
-            drawBlock(g2d, rect, dispenser1, "b4");
+            drawBlock(g2d, rect, dispenser4, "b4");
             break;
         case ENEMY:
             drawAgent(g2d, rect, new Color(237, 51, 59), greyValue, "E", false);
@@ -68,12 +72,13 @@ class CellUtils {
         }
     }
 
-    private static void drawDispenser(Graphics2D g2d, Rectangle2D.Double rect, Color c) {
+    private static void drawDispenser(Graphics2D g2d, Rectangle2D.Double rect, Color c, String name) {
         g2d.setColor(new ColorUIResource(222, 80, 23));
         g2d.fill(rect);
         Rectangle2D.Double innerRect = new Rectangle2D.Double(rect.x + rect.width * 0.15, rect.y + rect.width * 0.15, rect.width * 0.7, rect.height * 0.7);
         g2d.setColor(c);
         g2d.fill(innerRect);
+        drawCenteredString(g2d, name, rect, Color.WHITE);
     }
 
     private static void drawBlock(Graphics2D g2d, Rectangle2D.Double rect, Color c, String name) {

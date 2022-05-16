@@ -18,6 +18,7 @@ class TaskPanel extends JPanel {
     TaskPanel(TaskInfo task) {
         MigLayout layout = new MigLayout("insets 10", "[left] [right] [right]");
         setLayout(layout);
+        setBackground(Color.WHITE);
 
         JLabel titleLabel = new JLabel("Titel:");
         add(titleLabel);
@@ -34,7 +35,7 @@ class TaskPanel extends JPanel {
         add(reward, "cell 2 0 2 2, wrap");
 
         TaskMapPanel mapPanel = new TaskMapPanel(task.requirements);
-        add(mapPanel, "cell 0 2, span");
+        add(mapPanel, "cell 0 2, span, wrap");
 
         mapPanel.setMinimumSize(new Dimension(150, 150));
     }
@@ -64,7 +65,16 @@ class TaskPanel extends JPanel {
             }
             // Draw Data
             for (Thing t : things) {
-                CellType type = Convert.thingToCellType(t);
+                CellType type;
+
+                switch (t.type) {
+                    case "b0": type = CellType.BLOCK_0; break;
+                    case "b1": type = CellType.BLOCK_1; break;
+                    case "b2": type = CellType.BLOCK_2; break;
+                    case "b3": type = CellType.BLOCK_3; break;
+                    case "b4": type = CellType.BLOCK_4; break;
+                    default: type = CellType.FREE;
+                }
                 Rectangle2D.Double rect = new Rectangle2D.Double((t.x + extensionSize) * cellWidth, (t.y + extensionSize) * cellWidth, cellWidth, cellWidth);
                 CellUtils.draw(g2d, type, rect, t.x, t.y, "", false);
             }

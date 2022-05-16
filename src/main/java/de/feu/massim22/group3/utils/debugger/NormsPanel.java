@@ -14,6 +14,7 @@ public class NormsPanel extends JPanel {
     NormsPanel(NormInfo norm) {
         MigLayout layout = new MigLayout("insets 10", "[left] [right]");
         setLayout(layout);
+        setBackground(Color.WHITE);
 
         JLabel title = new JLabel(norm.name);
         add(title, "grow, wrap");
