@@ -22,4 +22,7 @@ public abstract class BdiAgent extends Agent {
         // TODO return default if intention == null
         return intention;
     }
+    public Belief getAgentBelief() {
+        return belief;
+    }
 }

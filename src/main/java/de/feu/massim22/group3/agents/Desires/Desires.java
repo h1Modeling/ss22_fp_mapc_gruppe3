@@ -1,5 +1,7 @@
 package de.feu.massim22.group3.agents.Desires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
+
 public enum Desires {
     // Team Desires
     PROCESS_TASK,
@@ -16,32 +18,32 @@ public enum Desires {
     SPONTANEOUS_HINDER_ENEMY,
     GO_TO_UNKNOWN_AREA,;
 
-    public Desire getDesireObj() {
+    public Desire getDesireObj(BdiAgent agent) {
         switch (this) {
         case PROCESS_TASK:
-            return new ProcessTaskDesire();
+            return new ProcessTaskDesire(agent);
         case ATTACK_ENEMY:
-            return new AttackEnemyDesire();
+            return new AttackEnemyDesire(agent);
         case DETERMINE_MAP_SIZE:
-            return new DetermineMapSizeDesire();
+            return new DetermineMapSizeDesire(agent);
         case EXPLORE_MAP:
-            return new ExploreMapDesire();
+            return new ExploreMapDesire(agent);
         case GOAL_ZONE_GUARD:
-            return new GoalZoneGuardDesire();
+            return new GoalZoneGuardDesire(agent);
         case HELP_TASK_AGENT:
-            return new HelpTaskAgentDesire();
+            return new HelpTaskAgentDesire(agent);
         case DIG_FREE:
-            return new DigFreeDesire();
+            return new DigFreeDesire(agent);
         case DODGE_CLEAR:
-            return new DogeClearDesire();
+            return new DogeClearDesire(agent);
         case DODGE_OTHER_AGENT:
-            return new DogeOtherAgentDesire();
+            return new DogeOtherAgentDesire(agent);
         case REACT_TO_NORM:
-            return new ReactToNormDesire();
+            return new ReactToNormDesire(agent);
         case SPONTANEOUS_HINDER_ENEMY:
-            return new SpontaneousHinderEnemyDesire();
+            return new SpontaneousHinderEnemyDesire(agent);
         case GO_TO_UNKNOWN_AREA:
-            return new GoToUnknownAreaDesire();
+            return new GoToUnknownAreaDesire(agent);
         default: {
             throw new IllegalArgumentException("Unknown type during Desire instantiation.");
         }

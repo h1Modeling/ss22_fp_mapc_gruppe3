@@ -1,5 +1,7 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
+
 public enum SubDesires {
     DIG_FREE,
     DODGE_CLEAR,
@@ -14,32 +16,32 @@ public enum SubDesires {
     SUBMIT_TASK,
     REACT_TO_NORM,;
 
-    public SubDesire getSubDesireObj() {
+    public SubDesire getSubDesireObj(BdiAgent agent) {
         switch (this) {
         case DIG_FREE:
-            return new DigFreeSubDesire();
+            return new DigFreeSubDesire(agent);
         case DODGE_CLEAR:
-            return new DodgeClearSubDesire();
+            return new DodgeClearSubDesire(agent);
         case DODGE_OTHER_AGENT:
-            return new DodgeOtherAgentSubDesire();
+            return new DodgeOtherAgentSubDesire(agent);
         case SPONTANEOUS_HINDER_ENEMY:
-            return new SpontaneousHinderEnemySubDesire();
+            return new SpontaneousHinderEnemySubDesire(agent);
         case GO_TO_UNKNOWN_AREA:
-            return new GoToUnkownAreaSubDesire();
+            return new GoToUnkownAreaSubDesire(agent);
         case GET_ROLE:
-            return new GetRoleSubDesire();
+            return new GetRoleSubDesire(agent);
         case CHOOSE_TASK:
-            return new ChooseTaskSubDesire();
+            return new ChooseTaskSubDesire(agent);
         case GET_BLOCKS:
-            return new GetBlocksSubDesire();
+            return new GetBlocksSubDesire(agent);
         case ASSEMBLE_TASK:
-            return new AssembleTaskSubDesire();
+            return new AssembleTaskSubDesire(agent);
         case GO_TO_GOAL_AREA:
-            return new GoToGoalAreaSubDesire();
+            return new GoToGoalAreaSubDesire(agent);
         case SUBMIT_TASK:
-            return new SubmitTaskSubDesire();
+            return new SubmitTaskSubDesire(agent);
         case REACT_TO_NORM:
-            return new ReactToNormSubDesire();
+            return new ReactToNormSubDesire(agent);
         default: {
             throw new IllegalArgumentException("Unknown type in during SubDesire instantiation.");
         }

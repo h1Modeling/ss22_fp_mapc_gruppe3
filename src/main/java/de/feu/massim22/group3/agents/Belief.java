@@ -569,7 +569,7 @@ public class Belief {
     private record ReachableRoleZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
+            return "Reachable Rolezone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
     }
 
