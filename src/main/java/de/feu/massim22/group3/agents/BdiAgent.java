@@ -12,6 +12,7 @@ public abstract class BdiAgent extends Agent {
 	protected Intention intention;
 	//Melinda Betz 07.05.2022
 	protected boolean decisionsDone;
+	protected boolean reachablesDone;
 
 	BdiAgent(String name, MailService mailbox) {
 		super(name, mailbox);

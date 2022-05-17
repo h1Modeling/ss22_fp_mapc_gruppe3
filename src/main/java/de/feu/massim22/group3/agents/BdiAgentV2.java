@@ -47,9 +47,10 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public Action step() {
         updateBeliefs();
         getSupervisor().decisionsDone = false;
-        decisionsDone = false;// Agent
+        decisionsDone = false; // Agent
+        reachablesDone = false; // Agent
 
-        AgentLogger.info("step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
         // Mapupdate über updateAgent (wenn möglich, ohne startCalculation auszulösen?)
         stepLogic.updateMap(this);
 
@@ -59,28 +60,21 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
             t2.start();
         }
 
-        // warten auf PATHFINDER_RESULT Message
-        AgentLogger.info("step() Waiting for PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        // warten auf PATHFINDER_RESULT 
+        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
-            if (queue.isEmpty()) {
-                try {
+            if (!reachablesDone) {
+                     try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             } else {
-                BdiAgentV2.PerceptMessage message = queue.poll();
-
-                if (TaskName.valueOf(message.percept.getName()) == TaskName.PATHFINDER_RESULT) {
-                    AgentLogger.info("step() PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
-                    List<Parameter> parameters = message.percept.getParameters();
-                    belief.updateFromPathFinding(parameters);
-                    AgentLogger.info(belief.reachablesToString());
+                    AgentLogger.info(Thread.currentThread().getName() + " step() PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
 
                     Thread t4 = new Thread(() -> stepLogic.runAgentDecisions(belief.getStep(), this));
                     t4.start();
                     break;
-                }
             }
         }
 
@@ -100,7 +94,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         }
 
         // nächste Action
-        AgentLogger.info("step() End - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName());
         return intention.outputAction;
     }
 

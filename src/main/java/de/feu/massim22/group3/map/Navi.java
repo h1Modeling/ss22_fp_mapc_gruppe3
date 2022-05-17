@@ -69,6 +69,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
     public Point getPosition(String name, String supervisor) {
         return maps.get(supervisor).getAgentPosition(name);
     }
+ 
+    @Override
+    public GameMap getMap(String supervisor) {
+        return maps.get(supervisor);
+    }
     //Melinda Ende
 
     @Override
@@ -281,7 +286,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
                     AgentLogger.info("startCalculation() - Loop Agent: " +  agents.get(i)); 
                     AgentLogger.info("PathFindingResult Index 1: " + result[i][1].distance());
                     AgentLogger.info("PathFindingResult Index 1: " + result[i][1].direction());
-                    AgentLogger.info("InterestingPoint Index 1: " + interestingPoints.get(i));
+                    AgentLogger.info("InterestingPoint Index 1: " + interestingPoints.get(1));
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
