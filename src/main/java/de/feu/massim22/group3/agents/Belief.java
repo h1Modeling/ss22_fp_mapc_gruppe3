@@ -83,7 +83,7 @@ public class Belief {
                 break;
             case "lastActionParams":
                 lastActionParams = toStrList(p, 0);
-                break;  
+                break;	
             case "score":
                 score = toNumber(p, 0, Long.class);
                 break;
@@ -125,14 +125,14 @@ public class Belief {
                         roleSpeedArray[i] = roleSpeedList.get(i);
                     }
                     double change = toNumber(p, 4, Double.class);
-                    int maxDistance = toNumber(p, 1, Integer.class);                    
+                    int maxDistance = toNumber(p, 1, Integer.class);					
                     Role r = new Role(roleName, roleVision, roleActions, roleSpeedArray, change, maxDistance);
-                    roles.put(roleName, r);     
+                    roles.put(roleName, r);		
                 } 
                 // Step percept
                 else {
                     role = toStr(p, 0);
-                }               
+                }				
                 break;
             case "violation" :
                 violations.add(toStr(p, 0));
@@ -216,8 +216,6 @@ public class Belief {
         reachableDispensers.clear();
         reachableGoalZones.clear();
         reachableRoleZones.clear();
-    
-
 
         for (Parameter p : points) {
             if (!(p instanceof Function)) {
@@ -251,100 +249,90 @@ public class Belief {
         }
     }
 
-    int getVision() {
+    public int getVision() {
         Role r = roles.get(role);
         if (r == null) { throw new IllegalArgumentException("Current role is not in existing roles"); }
         return r.vision();
     }
     
-    // Melinda
-    String getTeam() {
-        return team;
-    }
-
-    int getTeamSize() {
-        return teamSize;
-    }
-    
-    List<ReachableRoleZone> getReachableRoleZones() {
-        return reachableRoleZones;
-    }
-    
-    List<ReachableGoalZone> getReachableGoalZones() {
-        return reachableGoalZones;
-    }
-    
-    List<ReachableDispenser> getReachableDispensers() {
-        return reachableDispensers;
-    }
-    // Melinda Ende
-
-    int getStep() {
+    public int getStep() {
         return step;
     }
 
-    Set<Thing> getThings() {
+    public Set<Thing> getThings() {
         return things;
     }
 
-    Set<TaskInfo> getTaskInfo() {
+    public Set<TaskInfo> getTaskInfo() {
         return taskInfo;
     }
 
-    Set<NormInfo> getNormsInfo() {
+    public Set<NormInfo> getNormsInfo() {
         return normsInfo;
     }
 
-    long getScore() {
+    public long getScore() {
         return score;
     }
 
-    String getLastAction() {
+    public String getLastAction() {
         return lastAction;
     }
 
-    String getLastActionResult() {
+    public String getLastActionResult() {
         return lastActionResult;
     }
 
-    List<String> getLastActionParams() {
+    public List<String> getLastActionParams() {
         return lastActionParams;
     }
 
-    List<Point> getAttachedThings() {
+    public List<Point> getAttachedThings() {
         return attachedThings;
     }
 
-    int getEnergy() {
+    public int getEnergy() {
         return energy;
     }
 
-    boolean isDeactivated() {
+    public boolean isDeactivated() {
         return deactivated;
     }
 
-    String getRole() {
+    public String getRole() {
         return role;
     }
 
-    List<StepEvent> getStepEvents() {
+    public List<StepEvent> getStepEvents() {
         return stepEvents;
     }
 
-    List<String> getViolations() {
+    public List<String> getViolations() {
         return violations;
     }
 
-    List<Point> getGoalZones() {
+    public List<Point> getGoalZones() {
         return goalZones;
     }
 
-    List<Point> getRoleZones() {
+    public List<Point> getRoleZones() {
         return roleZones;
     }
 
-    Point getPosition() {
+    public Point getPosition() {
         return position;
+    }
+
+    public List<ReachableDispenser> getReachableDispensers(){
+        return reachableDispensers;
+    }
+
+    public List<ReachableGoalZone> getReachableGoalZones(){
+        return reachableGoalZones;
+    }
+
+    public List<ReachableRoleZone> getReachableRoleZones(){
+        return reachableRoleZones;
     }
 
     void setPosition(Point position) {
@@ -583,21 +571,21 @@ public class Belief {
         }
     }
 
-    record ReachableGoalZone(Point position, int distance, int direction) {
+    private record ReachableGoalZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
     }
 
-    record ReachableRoleZone(Point position, int distance, int direction) {
+    private record ReachableRoleZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
+            return "Reachable Rolezone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
     }
 
-    record ReachableDispenser(Point position, CellType type, int distance, int direction) {
+    private record ReachableDispenser(Point position, CellType type, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable " + type.name() + " at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
