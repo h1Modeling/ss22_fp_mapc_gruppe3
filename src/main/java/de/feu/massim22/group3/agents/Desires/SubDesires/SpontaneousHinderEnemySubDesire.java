@@ -1,11 +1,12 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
 
 public class SpontaneousHinderEnemySubDesire extends SubDesire {
 
-    public SpontaneousHinderEnemySubDesire() {
-        super();
+    public SpontaneousHinderEnemySubDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override

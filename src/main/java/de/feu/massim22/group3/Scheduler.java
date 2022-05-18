@@ -249,7 +249,6 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
             // Default Mode
             else {
                 try {
-                    System.out.println("DEFUö" + action.toProlog());
                     eis.performAction(agent.getName(), action);
                 } catch (ActException e) {
                     AgentLogger.warning("Could not perform action " + action.getName() + " for " + agent.getName());
@@ -262,7 +261,6 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
     public void debugStep() {
         for (AgentStep s : actionQueue) {
             try {
-                System.out.println("DEBUG " + s.toString());
                 eis.performAction(s.agentName(), s.action());
             } catch (ActException e) {
                 AgentLogger.warning("Could not perform action " + s.action.getName() + " for " + s.agentName);
@@ -270,6 +268,4 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
         }
         actionQueue.clear();
     }
-
-
 }

@@ -98,7 +98,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         case PATHFINDER_RESULT:
             List<Parameter> parameters = task.getParameters();
             belief.updateFromPathFinding(parameters);
-            //AgentLogger.info(belief.reachablesToString());
+            AgentLogger.info(belief.reachablesToString());
             // TODO Action after receiving Pathfinding infos
             break;
         default:

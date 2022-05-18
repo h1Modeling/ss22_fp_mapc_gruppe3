@@ -1,11 +1,12 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
 import eis.iilang.Action;
+import de.feu.massim22.group3.agents.BdiAgent;
 
 public class DodgeOtherAgentSubDesire extends SubDesire {
 
-    public DodgeOtherAgentSubDesire() {
-        super();
+    public DodgeOtherAgentSubDesire(BdiAgent agent) {
+        super(agent);
     }
 
     @Override

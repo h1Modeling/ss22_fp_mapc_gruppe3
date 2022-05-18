@@ -257,79 +257,91 @@ public class Belief {
         return team;
     }
 
-    int getVision() {
+    public int getVision() {
         Role r = roles.get(role);
         if (r == null) { throw new IllegalArgumentException("Current role is not in existing roles"); }
         return r.vision();
     }
     
-    int getStep() {
+    public int getStep() {
         return step;
     }
 
-    Set<Thing> getThings() {
+    public Set<Thing> getThings() {
         return things;
     }
 
-    Set<TaskInfo> getTaskInfo() {
+    public Set<TaskInfo> getTaskInfo() {
         taskInfo.removeIf(e -> e.deadline < step);
         return taskInfo;
     }
 
-    Set<NormInfo> getNormsInfo() {
+    public Set<NormInfo> getNormsInfo() {
         return normsInfo;
     }
 
-    long getScore() {
+    public long getScore() {
         return score;
     }
 
-    String getLastAction() {
+    public String getLastAction() {
         return lastAction;
     }
 
-    String getLastActionResult() {
+    public String getLastActionResult() {
         return lastActionResult;
     }
 
-    List<String> getLastActionParams() {
+    public List<String> getLastActionParams() {
         return lastActionParams;
     }
 
-    List<Point> getAttachedThings() {
+    public List<Point> getAttachedThings() {
         return attachedThings;
     }
 
-    int getEnergy() {
+    public int getEnergy() {
         return energy;
     }
 
-    boolean isDeactivated() {
+    public boolean isDeactivated() {
         return deactivated;
     }
 
-    String getRole() {
+    public String getRole() {
         return role;
     }
 
-    List<StepEvent> getStepEvents() {
+    public List<StepEvent> getStepEvents() {
         return stepEvents;
     }
 
-    List<String> getViolations() {
+    public List<String> getViolations() {
         return violations;
     }
 
-    List<Point> getGoalZones() {
+    public List<Point> getGoalZones() {
         return goalZones;
     }
 
-    List<Point> getRoleZones() {
+    public List<Point> getRoleZones() {
         return roleZones;
     }
 
-    Point getPosition() {
+    public Point getPosition() {
         return position;
+    }
+
+    public List<ReachableDispenser> getReachableDispensers(){
+        return reachableDispensers;
+    }
+
+    public List<ReachableGoalZone> getReachableGoalZones(){
+        return reachableGoalZones;
+    }
+
+    public List<ReachableRoleZone> getReachableRoleZones(){
+        return reachableRoleZones;
     }
 
     void setPosition(Point position) {
@@ -578,7 +590,7 @@ public class Belief {
     private record ReachableRoleZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
+            return "Reachable Rolezone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
     }
 
