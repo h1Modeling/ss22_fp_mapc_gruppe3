@@ -4,7 +4,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class RemoveObstacle extends Desire {
-    RemoveObstacle(BdiAgent agent) {
+    RemoveObstacle(BdiAgentV2 agent) {
         super("RemoveObstacle", agent);
     }
 

@@ -5,6 +5,7 @@ import massim.eismassim.Log;
 
 import java.util.Queue;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.*;
@@ -22,7 +23,9 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public Desire intention;
     public boolean decisionsDone;
     public boolean beliefsDone;
-    public List<Desire> desires;
+    public List<Desire> desires = new ArrayList<Desire>();
+    public int directionCounter = 0;
+    public int circleSize = 5;
 
     /**
      * Constructor.

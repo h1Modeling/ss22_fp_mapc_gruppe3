@@ -15,7 +15,7 @@ public abstract class BdiAgent extends Agent {
         super(name, mailbox);
         belief = new Belief(name);
         intention = new Intention();
-        desireHandler = new DesireHandler(this);
+        //desireHandler = new DesireHandler(this);
     }
     
     Intention getIntention() {

@@ -120,6 +120,9 @@ public class StepUtilities {
          */
         for (Supervisor supervisor : allSupervisors) {
             AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - Supervisor: " + supervisor.getName());
+            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Befor Test updateSupervisor()");
+            Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
+            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() After Test updateSupervisor()");
 
             Runnable runnable = () -> { // Gruppenmap berechnen 
                 AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Before calcGroup() - Supervisor: " + supervisor.getName());
@@ -302,10 +305,10 @@ public class StepUtilities {
 	}
 	
 	   /**
-     * The method merges two groups together
+     * 
      *
-     * @param supervisorGroup - the supervisor of the group that the other group is going to be merged into
-     * @param supervisorToMerge - the supervisor of the group that is going to be merged into the other group
+     * @param supervisor - the supervisor of the group 
+     * @return  List<CalcResult>
      * 
      */
     public synchronized List<CalcResult> calcGroup(Supervisor supervisor) {

@@ -4,7 +4,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class GoRoleZone extends Desire {
-    GoRoleZone(BdiAgent agent) {
+    GoRoleZone(BdiAgentV2 agent) {
         super("GoRoleZone", agent);
     }
 

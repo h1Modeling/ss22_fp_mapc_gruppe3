@@ -4,7 +4,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class HinderEnemy extends Desire {
-    HinderEnemy(BdiAgent agent) {
+    HinderEnemy(BdiAgentV2 agent) {
         super("HinderEnemy", agent);
     }
 

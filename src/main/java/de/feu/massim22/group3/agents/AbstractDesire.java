@@ -7,10 +7,10 @@ import eis.iilang.*;
 abstract class AbstractDesire {
     public String name;
     public int priority;
-    public BdiAgent agent;
+    public BdiAgentV2 agent;
     public Action outputAction;
 
-    AbstractDesire(String name, BdiAgent agent) {
+    AbstractDesire(String name, BdiAgentV2 agent) {
         this.name = name;
         this.agent = agent;
     }

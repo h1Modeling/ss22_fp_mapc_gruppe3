@@ -7,7 +7,7 @@ import massim.protocol.data.Thing;
 
 public class DodgeClear extends Desire {
 	
-	DodgeClear(BdiAgent agent){
+	DodgeClear(BdiAgentV2 agent){
 		super("DodgeClear", agent);
 	}
 

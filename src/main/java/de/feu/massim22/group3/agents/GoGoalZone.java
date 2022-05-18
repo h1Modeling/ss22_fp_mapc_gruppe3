@@ -4,7 +4,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class GoGoalZone extends Desire {
-    GoGoalZone(BdiAgent agent) {
+    GoGoalZone(BdiAgentV2 agent) {
         super("GoGoalZone", agent);
     }
 

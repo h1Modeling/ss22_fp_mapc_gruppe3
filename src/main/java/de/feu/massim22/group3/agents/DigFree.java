@@ -10,7 +10,7 @@ import massim.protocol.data.Thing;
 
 public class DigFree extends Desire {
 	
-	DigFree(BdiAgent agent){
+	DigFree(BdiAgentV2 agent){
 		super("DigFree", agent);
 	}
 	
