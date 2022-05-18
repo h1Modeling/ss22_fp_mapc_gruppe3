@@ -266,6 +266,7 @@ public class GameMap {
                             // Remove Empty List
                             if (goalList.size() == 0) {
                                 goalLists.remove(goalList);
+                                goalListSize = goalLists.size();
                             }
                         }
                     }
@@ -280,6 +281,7 @@ public class GameMap {
                             // Remove Empty List
                             if (roleList.size() == 0) {
                                 roleLists.remove(roleList);
+                                roleListSize = roleLists.size();
                             }
                         }
                     }
