@@ -132,7 +132,7 @@ public class StepUtilities {
                     List<Parameter> parameters = agentCalcResult.percepts().getParameters();
                     AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Before updateFromPathFinding() - agentCalcResult: " + agentCalcResult.agent());
                     agent.belief.updateFromPathFinding(parameters);
-                    agent.reachablesDone = true;
+                    agent.beliefsDone = true;
                     AgentLogger.info(agent.belief.reachablesToString());
                 }
                 AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Before runSupervisorDecisions() - Supervisor: " + supervisor.getName());                
@@ -260,7 +260,7 @@ public class StepUtilities {
      * 
      * @return Desire - the intention
      */
-    public Desire determineIntention(BdiAgent agent) {
+    public Desire determineIntention(BdiAgentV2 agent) {
         Desire result = null;
         int priority = 1000;
         for (Desire desire : agent.desires) {

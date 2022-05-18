@@ -20,6 +20,9 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     private ISupervisor supervisor;
     public int index;
     public Desire intention;
+    public boolean decisionsDone;
+    public boolean beliefsDone;
+    public List<Desire> desires;
 
     /**
      * Constructor.
@@ -48,7 +51,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         updateBeliefs();
         getSupervisor().decisionsDone = false;
         decisionsDone = false; // Agent
-        reachablesDone = false; // Agent
+        beliefsDone = false; // Agent
 
         AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
         // Mapupdate über updateAgent (wenn möglich, ohne startCalculation auszulösen?)
@@ -63,7 +66,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         // warten auf PATHFINDER_RESULT 
         AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
-            if (!reachablesDone) {
+            if (!beliefsDone) {
                      try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {

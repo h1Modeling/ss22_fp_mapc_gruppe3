@@ -258,6 +258,16 @@ public class Belief {
     public int getStep() {
         return step;
     }
+    
+    // Melinda
+    String getTeam() {
+        return team;
+    }
+
+    int getTeamSize() {
+        return teamSize;
+    }
+    // Melinda Ende
 
     public Set<Thing> getThings() {
         return things;
@@ -571,21 +581,21 @@ public class Belief {
         }
     }
 
-    private record ReachableGoalZone(Point position, int distance, int direction) {
+    record ReachableGoalZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
     }
 
-    private record ReachableRoleZone(Point position, int distance, int direction) {
+    record ReachableRoleZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable Rolezone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
     }
 
-    private record ReachableDispenser(Point position, CellType type, int distance, int direction) {
+    record ReachableDispenser(Point position, CellType type, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable " + type.name() + " at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;

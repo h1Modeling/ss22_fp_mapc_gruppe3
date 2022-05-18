@@ -40,6 +40,11 @@ public class GameMap {
     public boolean mapDiscovered() {
         return size != null;
     }
+    
+    //Melinda
+    public Point getAgentPosition(String name) {
+        return agentPosition.get(name);
+    }
 
     public Point getInternalAgentPosition(String agent) {
         Point agentPos = agentPosition.get(agent);

@@ -106,4 +106,12 @@ public class Supervisor implements ISupervisor {
             this.confirmationData.forEach(d -> d.clear());
         }
     }
+    
+    //Melinda Betz 
+    public boolean decisionsDone;
+
+    public List<String> getAgents() {
+        return agents;
+    }
+    // Melinda Betz Ende
 }
