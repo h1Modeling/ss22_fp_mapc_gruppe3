@@ -2,17 +2,8 @@ package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
 
-class Desire {
-
-	public String name;
-	public int priority;
-	public BdiAgent agent;
-	public Action outputAction;
-	
+abstract class Desire extends AbstractDesire {
 	Desire(String name, BdiAgent agent) {
-		this.name = name;
-		this.agent = agent;
-		
+		super(name, agent);		
 	}
-
 }

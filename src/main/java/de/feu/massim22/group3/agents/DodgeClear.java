@@ -8,7 +8,7 @@ import massim.protocol.data.Thing;
 public class DodgeClear extends Desire {
 	
 	DodgeClear(BdiAgent agent){
-		super("DodgeClear",agent);
+		super("DodgeClear", agent);
 	}
 
 	/**
@@ -18,20 +18,20 @@ public class DodgeClear extends Desire {
 	 * 
 	 * @return boolean - the desire is possible or not
 	 */
-	public boolean isDesirePossible(Desire desire) {
+    @Override
+	public boolean isExecutable(Desire desire) {
 		boolean result = false;
-		Iterator i = agent.belief.getThings().iterator();
 
-		while (i.hasNext()) {
-			if (((Thing) i.next()).type.equals(Thing.TYPE_MARKER)) {
-				if (((Thing) i.next()).x == 0 && ((Thing) i.next()).y == 0) {
-					if (((Thing) i.next()).details.equals("cp")) {
+		for (Thing thing : agent.belief.getThings()) {
+			if (thing.type.equals(Thing.TYPE_MARKER)) {
+				if (thing.x == 0 && thing.y == 0) {
+					if (thing.details.equals("cp")) {
 						result = true;
 					}
-					if (((Thing) i.next()).details.equals("ci")) {
+					if (thing.details.equals("ci")) {
 						result = true;
 					}
-					if (((Thing) i.next()).details.equals("clear")) {
+					if (thing.details.equals("clear")) {
 						result = true;
 					}
 				}
@@ -48,6 +48,7 @@ public class DodgeClear extends Desire {
 	 **/
 	
 	//Norden To Do: richtige Richtung
+    @Override
 	public Action getNextAction() {
 		Identifier newDirection = new Identifier("n");
 		

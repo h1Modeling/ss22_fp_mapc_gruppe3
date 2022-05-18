@@ -157,26 +157,33 @@ public class StepUtilities {
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step + " , Supervisor: " + agent.getName());
         
         DodgeClear dodge = new DodgeClear(agent);
-        if (dodge.isDesirePossible(dodge)) { // desire ist möglich , hinzufügen
+        if (dodge.isExecutable(dodge)) { // desire ist möglich , hinzufügen
             dodge.outputAction = dodge.getNextAction();
             getPriority(dodge);
             agent.desires.add(dodge);
         }
 
         DigFree dig = new DigFree(agent);
-        if (dig.isDesirePossible(dig)) { // desire ist möglich , hinzufügen
+        if (dig.isExecutable(dig)) { // desire ist möglich , hinzufügen
             dig.outputAction = dig.getNextAction();
             getPriority(dig);
             agent.desires.add(dig);
         }
 
         HinderEnemy hinder = new HinderEnemy(agent);
+        
         GoGoalZone goGoalZone = new GoGoalZone(agent);
-        GoRoleZone goRoleZone = new GoRoleZone(agent);
+        if (dig.isExecutable(dig)) { // desire ist möglich , hinzufügen
+            dig.outputAction = dig.getNextAction();
+            getPriority(dig);
+            agent.desires.add(dig);
+        }
+        
+        //GoRoleZone goRoleZone = new GoRoleZone(agent);
         // RemoveObstacle removeObstacle = new RemoveObstacle(agent);
         
         LocalExplore expl = new LocalExplore(agent);
-        if (expl.isDesirePossible(expl)) { // desire ist möglich , hinzufügen
+        if (expl.isExecutable(expl)) { // desire ist möglich , hinzufügen
             expl.outputAction = expl.getNextAction();
             getPriority(expl);
             agent.desires.add(expl);
@@ -457,6 +464,30 @@ class DirectionUtil {
             .replaceAll("w", "4");
         
         return Integer.parseInt(s);
+    }
+   
+    static Point getCellInDirection(String direction) {
+        int x = 0;
+        int y = 0;;
+
+        switch (direction) {
+        case "n":
+            x = 0;
+            y = -1;
+            break;
+        case "e":
+            x = 1;
+            y = 0;
+            break;
+        case "s":
+            x = 0;
+            y = 1;
+            break;
+        case "w":
+            x = -1;
+            y = 0;
+        }
+        return new Point(x, y);
     }
 }
 

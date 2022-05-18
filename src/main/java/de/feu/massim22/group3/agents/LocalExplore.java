@@ -18,7 +18,7 @@
          * 
          * @return boolean - the desire is possible or not
          */
-        public boolean isDesirePossible(Desire desire) {
+        public boolean isExecutable(Desire desire) {
              return true;
         }
 

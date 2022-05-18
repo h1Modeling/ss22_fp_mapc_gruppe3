@@ -1,7 +1,9 @@
 package de.feu.massim22.group3.agents;
 
-import java.util.Iterator;
+import java.awt.Point;
+import java.util.List;
 
+import de.feu.massim22.group3.agents.Belief.*;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
@@ -9,7 +11,7 @@ import massim.protocol.data.Thing;
 public class DigFree extends Desire {
 	
 	DigFree(BdiAgent agent){
-		super("DigFree",agent);
+		super("DigFree", agent);
 	}
 	
 	/**
@@ -19,7 +21,8 @@ public class DigFree extends Desire {
 	 * 
 	 * @return boolean - the desire is possible or not
 	 */
-	public boolean isDesirePossible(Desire desire) {
+	@Override 
+	public boolean isExecutable(Desire desire) {
 		boolean result = false;
 		boolean north = false;
 		boolean east = false;
@@ -30,13 +33,13 @@ public class DigFree extends Desire {
             if (thing.type.equals(Thing.TYPE_OBSTACLE)) {
                 if (thing.x == 0 && thing.y == -1) {
                     north = true;
-                }
+                } else
                 if (thing.x == 1 && thing.y == 0) {
                     east = true;
-                }
+                } else
                 if (thing.x == 0 && thing.y == 1) {
                     south = true;
-                }
+                } else
                 if (thing.x == -1 && thing.y == 0) {
                     west = true;
                 }
@@ -57,12 +60,48 @@ public class DigFree extends Desire {
 	 * 
 	 **/
 	
-	//Norden To Do: richtige Richtung
-	public Action getNextAction() {
-		Identifier x = new Identifier("0");
-		Identifier y = new Identifier("-1");
-		
-		return new Action("clear", x, y );
-	}
+	//mit Block in Richtung der nächsten GoalZone, ohne Block in Richtung dispenser (?)
+    @Override
+    public Action getNextAction() {
+        String direction;
+
+        if (agent.belief.getAttachedThings().size() > 0) {
+            List<ReachableGoalZone> zoneList = agent.belief.getReachableGoalZones();
+            ReachableGoalZone nearestZone = getNearestGoalZone(zoneList);
+            direction = DirectionUtil.intToString(nearestZone.direction());
+        } else {
+            List<ReachableDispenser> zoneList = agent.belief.getReachableDispensers();
+            ReachableDispenser nearestZone = getNearestDispenser(zoneList);
+            direction = DirectionUtil.intToString(nearestZone.direction());
+        }
+
+        Point p = DirectionUtil.getCellInDirection(direction);  
+        return new Action("clear", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
+    }
 	
+    ReachableGoalZone getNearestGoalZone(List<ReachableGoalZone> inZoneList) {
+        int distance = 1000;
+        ReachableGoalZone result = null;
+        
+        for (ReachableGoalZone zone : (List<ReachableGoalZone>) inZoneList) {
+            if (zone.distance() < distance) {
+                distance = zone.distance();
+                result = zone;
+            }
+        }
+        return result;
+    }
+       
+    ReachableDispenser getNearestDispenser(List<ReachableDispenser> inZoneList) {
+        int distance = 1000;
+        ReachableDispenser result = null;
+        
+        for (ReachableDispenser zone : (List<ReachableDispenser>) inZoneList) {
+            if (zone.distance() < distance) {
+                distance = zone.distance();
+                result = zone;
+            }
+        }
+        return result;
+    }
 }
