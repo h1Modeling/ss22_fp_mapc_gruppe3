@@ -1,604 +1,442 @@
-[10:15:53:510] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
-[10:15:53:543] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
-[10:16:01:442] [INFO   ] PHASE 2: INSTANTIATING ENVIRONMENT
-[10:16:01:482] [INFO   ] PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT
-[10:16:01:860] [FINE   ] GL_VENDOR: null
+[17:00:08:425] [INFO   ] PHASE 1: INSTANTIATING SCHEDULER
+[17:00:08:458] [INFO   ] PHASE 1.2: CHOOSE CONFIGURATION
+[17:00:26:610] [INFO   ] PHASE 2: INSTANTIATING ENVIRONMENT
+[17:00:26:649] [INFO   ] PHASE 3: CONNECTING SCHEDULER AND ENVIRONMENT
+[17:00:27:016] [FINE   ] GL_VENDOR: null
 GL_RENDERER: null
 GL_VERSION: null
-[10:16:01:861] [INFO   ] associated agent "A1" with entity "connectionA1"
-[10:16:01:888] [FINE   ] GL_VENDOR: null
+[17:00:27:017] [INFO   ] associated agent "A1" with entity "connectionA1"
+[17:00:27:045] [FINE   ] GL_VENDOR: null
 GL_RENDERER: null
 GL_VERSION: null
-[10:16:01:889] [INFO   ] associated agent "A2" with entity "connectionA2"
-[10:16:01:914] [FINE   ] GL_VENDOR: null
+[17:00:27:046] [INFO   ] associated agent "A2" with entity "connectionA2"
+[17:00:27:072] [FINE   ] GL_VENDOR: null
 GL_RENDERER: null
 GL_VERSION: null
-[10:16:01:914] [INFO   ] associated agent "A3" with entity "connectionA3"
-[10:16:01:915] [INFO   ] PHASE 4: RUNNING
-[10:16:05:087] [INFO   ] Thread-10 step() Start in neuem Thread - Step: 0 , Agent: A3
-[10:16:05:087] [INFO   ] Thread-9 step() Start in neuem Thread - Step: 0 , Agent: A2
-[10:16:05:087] [INFO   ] Thread-8 step() Start in neuem Thread - Step: 0 , Agent: A1
-[10:16:05:088] [INFO   ] Thread-9 Before updateMap() - Step: 0 , Agent: A2
-[10:16:05:087] [INFO   ] Thread-10 Before updateMap() - Step: 0 , Agent: A3
-[10:16:05:088] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
-[10:16:05:088] [INFO   ] Thread-8 Before updateMap() - Step: 0 , Agent: A1
-[10:16:05:089] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A3
-[10:16:05:089] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
-[10:16:05:098] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
-[10:16:05:098] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
-[10:16:05:098] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=10,y=10]
-[10:16:05:099] [INFO   ] updateMap() End
-[10:16:05:099] [INFO   ] updateMap() End
-[10:16:05:099] [INFO   ] updateMap() End
-[10:16:05:100] [INFO   ] Thread-9 After updateMap() - Step: 0 , Agent: A2
-[10:16:05:100] [INFO   ] Thread-8 After updateMap() - Step: 0 , Agent: A1
-[10:16:05:100] [INFO   ] Thread-10 After updateMap() - Step: 0 , Agent: A3
-[10:16:05:101] [INFO   ] Thread-9 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A2
-[10:16:05:101] [INFO   ] Thread-8 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A1
-[10:16:05:102] [INFO   ] Thread-10 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A3
-[10:16:05:102] [INFO   ] Thread-11 doGroupProcessing() in neuem Thread - Step: 0
-[10:16:05:103] [INFO   ] Thread-11 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@68837a77, de.feu.massim22.group3.agents.Supervisor@57829d67]
-[10:16:05:104] [INFO   ] Thread-11 doGroupProcessing() Start - Agent: A1
-[10:16:05:104] [INFO   ] Thread-11 doGroupProcessing() Start - Agent: A2
-[10:16:05:104] [INFO   ] Thread-11 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
-[10:16:05:105] [INFO   ] Thread-11 doGroupProcessing() Start - Agent: A3
-[10:16:05:106] [INFO   ] Thread-11 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
-[10:16:05:106] [INFO   ] Thread-11 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
-[10:16:05:106] [INFO   ] Thread-11 doGroupProcessing() merge 2 in 1 - Supervisor1: A2 , Supervisor2: A3
-[10:16:05:107] [INFO   ] Thread-11 mergeGroups() Start - Supervisor: A2 , OldSupervisor: A3 , java.awt.Point[x=1,y=-1]
-[10:16:05:107] [INFO   ] Thread-11 Before updateMap() - Step: 0 , Agent: A3
-[10:16:05:108] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
-[10:16:05:108] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
-[10:16:05:108] [INFO   ] updateMap() End
-[10:16:05:109] [INFO   ] Thread-11 After updateMap() - Step: 0 , Agent: A3
-[10:16:05:109] [INFO   ] Thread-11 doGroupProcessing() Loop - Supervisor: A2
-[10:16:05:109] [INFO   ] Thread-11 doGroupProcessing() Befor Test updateSupervisor()
-[10:16:05:110] [INFO   ] startCalculation() Start - Supervisor: A2
-[10:16:05:112] [INFO   ] startCalculation() - agents: [A2, A3]
-[10:16:05:113] [INFO   ] startCalculation() - mapSize: java.awt.Point[x=20,y=20]
-[10:16:05:113] [INFO   ] startCalculation() - Agent for Position: A2
-[10:16:05:114] [INFO   ] startCalculation() - AgentPosition: A2 , java.awt.Point[x=10,y=10]
-[10:16:05:114] [INFO   ] startCalculation() - Agent for Position: A3
-[10:16:05:114] [INFO   ] startCalculation() - AgentPosition: A3 , java.awt.Point[x=11,y=9]
-[10:16:05:115] [INFO   ] startCalculation() - numberGoals: 17
-[10:16:05:115] [INFO   ] Before finder.start()
-[10:16:05:379] [FINE   ] 
+[17:00:27:072] [INFO   ] associated agent "A3" with entity "connectionA3"
+[17:00:27:073] [INFO   ] PHASE 4: RUNNING
+[17:00:28:732] [INFO   ] Thread-8 step() Start in neuem Thread - Step: 0 , Agent: A1
+[17:00:28:732] [INFO   ] Thread-10 step() Start in neuem Thread - Step: 0 , Agent: A3
+[17:00:28:732] [INFO   ] Thread-9 step() Start in neuem Thread - Step: 0 , Agent: A2
+[17:00:28:733] [INFO   ] Thread-10 Before updateMap() - Step: 0 , Agent: A3
+[17:00:28:732] [INFO   ] Thread-8 Before updateMap() - Step: 0 , Agent: A1
+[17:00:28:734] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A3
+[17:00:28:733] [INFO   ] Thread-9 Before updateMap() - Step: 0 , Agent: A2
+[17:00:28:734] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:28:736] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:28:747] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
+[17:00:28:747] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:28:748] [INFO   ] updateMap() End
+[17:00:28:747] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=10,y=10]
+[17:00:28:748] [INFO   ] updateMap() End
+[17:00:28:748] [INFO   ] Thread-9 After updateMap() - Step: 0 , Agent: A2
+[17:00:28:749] [INFO   ] updateMap() End
+[17:00:28:749] [INFO   ] Thread-8 After updateMap() - Step: 0 , Agent: A1
+[17:00:28:749] [INFO   ] Thread-9 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A2
+[17:00:28:750] [INFO   ] Thread-10 After updateMap() - Step: 0 , Agent: A3
+[17:00:28:750] [INFO   ] Thread-8 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A1
+[17:00:28:751] [INFO   ] Thread-10 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A3
+[17:00:28:751] [INFO   ] Thread-11 doGroupProcessing() in neuem Thread - Step: 0
+[17:00:28:752] [INFO   ] Thread-11 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:28:752] [INFO   ] Thread-11 doGroupProcessing() Start - Agent: A1
+[17:00:28:752] [INFO   ] Thread-11 doGroupProcessing() Start - Agent: A2
+[17:00:28:753] [INFO   ] Thread-11 doGroupProcessing() Start - Agent: A3
+[17:00:28:753] [INFO   ] Thread-11 doGroupProcessing() Loop - Supervisor: A3
+[17:00:28:753] [INFO   ] Thread-11 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:28:755] [INFO   ] Thread-11 doGroupProcessing() After Test updateSupervisor()
+[17:00:28:757] [INFO   ] Thread-11 doGroupProcessing() Loop - Supervisor: A1
+[17:00:28:757] [INFO   ] Thread-12 doGroupProcessing() Before calcGroup() - Supervisor: A3
+[17:00:28:758] [INFO   ] Thread-11 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:28:758] [INFO   ] Thread-12 calcGroup() Start - Supervisor: A3
+[17:00:28:760] [INFO   ] Thread-11 doGroupProcessing() After Test updateSupervisor()
+[17:00:28:760] [INFO   ] Thread-12 calcGroup() - interestingPoints.size(): 0
+[17:00:28:760] [INFO   ] Thread-11 doGroupProcessing() Loop - Supervisor: A2
+[17:00:28:760] [INFO   ] Thread-12 calcGroup() End - Supervisor: A3
+[17:00:28:760] [INFO   ] Thread-13 doGroupProcessing() Before calcGroup() - Supervisor: A1
+[17:00:28:761] [INFO   ] Thread-12 doGroupProcessing() After calcGroup() - Supervisor: A3
+[17:00:28:761] [INFO   ] Thread-11 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:28:762] [INFO   ] Thread-12 doGroupProcessing() Before runSupervisorDecisions() - Supervisor: A3
+[17:00:28:762] [INFO   ] Thread-13 calcGroup() Start - Supervisor: A1
+[17:00:28:763] [INFO   ] Thread-11 doGroupProcessing() After Test updateSupervisor()
+[17:00:28:763] [INFO   ] Thread-13 calcGroup() - interestingPoints.size(): 0
+[17:00:28:764] [INFO   ] Thread-11 doGroupProcessing() End - Step: 0
+[17:00:28:764] [INFO   ] Thread-13 calcGroup() End - Supervisor: A1
+[17:00:28:764] [INFO   ] Thread-14 doGroupProcessing() Before calcGroup() - Supervisor: A2
+[17:00:28:765] [INFO   ] Thread-12 runSupervisorDecisions() Start - Step: 0 , Supervisor: A3
+[17:00:28:765] [INFO   ] Thread-13 doGroupProcessing() After calcGroup() - Supervisor: A1
+[17:00:28:765] [INFO   ] Thread-14 calcGroup() Start - Supervisor: A2
+[17:00:28:766] [INFO   ] Thread-13 doGroupProcessing() Before runSupervisorDecisions() - Supervisor: A1
+[17:00:28:766] [INFO   ] Thread-14 calcGroup() - interestingPoints.size(): 0
+[17:00:28:766] [INFO   ] Thread-14 calcGroup() End - Supervisor: A2
+[17:00:28:767] [INFO   ] Thread-14 doGroupProcessing() After calcGroup() - Supervisor: A2
+[17:00:28:767] [INFO   ] Thread-13 runSupervisorDecisions() Start - Step: 0 , Supervisor: A1
+[17:00:28:767] [INFO   ] Thread-14 doGroupProcessing() Before runSupervisorDecisions() - Supervisor: A2
+[17:00:28:768] [INFO   ] Thread-14 runSupervisorDecisions() Start - Step: 0 , Supervisor: A2
+[17:00:28:835] [INFO   ] Thread-15 step() Start in neuem Thread - Step: 0 , Agent: A1
+[17:00:28:835] [INFO   ] Thread-17 step() Start in neuem Thread - Step: 0 , Agent: A3
+[17:00:28:835] [INFO   ] Thread-16 step() Start in neuem Thread - Step: 0 , Agent: A2
+[17:00:28:836] [INFO   ] Thread-17 Before updateMap() - Step: 0 , Agent: A3
+[17:00:28:835] [INFO   ] Thread-15 Before updateMap() - Step: 0 , Agent: A1
+[17:00:28:836] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A3
+[17:00:28:836] [INFO   ] Thread-16 Before updateMap() - Step: 0 , Agent: A2
+[17:00:28:837] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=10,y=10]
+[17:00:28:837] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:28:837] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:28:838] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
+[17:00:28:838] [INFO   ] updateMap() End
+[17:00:28:838] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:28:839] [INFO   ] Thread-17 After updateMap() - Step: 0 , Agent: A3
+[17:00:28:839] [INFO   ] updateMap() End
+[17:00:28:839] [INFO   ] Thread-17 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A3
+[17:00:28:839] [INFO   ] updateMap() End
+[17:00:28:840] [INFO   ] Thread-15 After updateMap() - Step: 0 , Agent: A1
+[17:00:28:840] [INFO   ] Thread-16 After updateMap() - Step: 0 , Agent: A2
+[17:00:28:841] [INFO   ] Thread-15 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A1
+[17:00:28:841] [INFO   ] Thread-16 step() Waiting for PATHFINDER_RESULT - Step: 0 , Agent: A2
+[17:00:28:841] [INFO   ] Thread-18 doGroupProcessing() in neuem Thread - Step: 0
+[17:00:28:842] [INFO   ] Thread-18 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:28:842] [INFO   ] Thread-18 doGroupProcessing() Start - Agent: A1
+[17:00:28:842] [INFO   ] Thread-18 doGroupProcessing() Start - Agent: A2
+[17:00:28:843] [INFO   ] Thread-18 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:28:843] [INFO   ] Thread-18 doGroupProcessing() Start - Agent: A3
+[17:00:28:844] [INFO   ] Thread-18 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:28:844] [INFO   ] Thread-18 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:28:844] [INFO   ] Thread-18 doGroupProcessing() merge 2 in 1 - Supervisor1: A2 , Supervisor2: A3
+[17:00:28:845] [INFO   ] Thread-18 mergeGroups() Start - Supervisor: A2 , OldSupervisor: A3 , java.awt.Point[x=1,y=-1]
+[17:00:28:845] [INFO   ] Thread-18 Before updateMap() - Step: 0 , Agent: A3
+[17:00:28:845] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:28:846] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:28:846] [INFO   ] updateMap() End
+[17:00:28:846] [INFO   ] Thread-18 After updateMap() - Step: 0 , Agent: A3
+[17:00:28:847] [INFO   ] Thread-18 doGroupProcessing() Loop - Supervisor: A1
+[17:00:28:847] [INFO   ] Thread-18 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:28:865] [FINE   ] 
 ShaderInfoLog: 
 ProgramInfoLog: WARNING: Too many temp register is used in Compute shader, it may cause slow execution.
 
 ShaderCompileStatus: 1
 ShaderLinkStatus: 0
 
-[10:16:07:730] [FINE   ] Path Finding Duration: 2332
-[10:16:07:796] [INFO   ] After finder.start()
-[10:16:07:796] [INFO   ] ############## 
-[10:16:07:797] [INFO   ] startCalculation() - Agenten: [A2, A3]
-[10:16:07:797] [INFO   ] ############## 
-[10:16:07:797] [INFO   ] startCalculation() - Loop Agent: A2
-[10:16:07:798] [INFO   ] PathFindingResult Index 1: 0
-[10:16:07:798] [INFO   ] PathFindingResult Index 1: 0
-[10:16:07:798] [INFO   ] InterestingPoint Index 1: Point: java.awt.Point[x=15,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:799] [INFO   ] sendPathFindingResultToAgent() Start
-[10:16:07:799] [INFO   ] sendPathFindingResultToAgent() - interestingPoints.size: 17
-[10:16:07:799] [INFO   ] ------------------------- 
-[10:16:07:800] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:800] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:800] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=14,y=7] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:801] [INFO   ] ------------------------- 
-[10:16:07:801] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:801] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:801] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=15,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:802] [INFO   ] ------------------------- 
-[10:16:07:802] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:802] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:803] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=14,y=9] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:803] [INFO   ] ------------------------- 
-[10:16:07:803] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:803] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:804] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=13,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:804] [INFO   ] ------------------------- 
-[10:16:07:805] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:805] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:805] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=5] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:806] [INFO   ] ------------------------- 
-[10:16:07:806] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:806] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:806] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=9,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:807] [INFO   ] ------------------------- 
-[10:16:07:807] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:807] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:807] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:808] [INFO   ] ------------------------- 
-[10:16:07:808] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:808] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:809] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=11,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:809] [INFO   ] ------------------------- 
-[10:16:07:809] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:809] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:810] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=8,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:810] [INFO   ] ------------------------- 
-[10:16:07:810] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:810] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:811] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=9,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:811] [INFO   ] ------------------------- 
-[10:16:07:811] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:811] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:812] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:812] [INFO   ] ------------------------- 
-[10:16:07:812] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:812] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:813] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=11,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:813] [INFO   ] ------------------------- 
-[10:16:07:813] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:814] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:814] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=12,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:814] [INFO   ] ------------------------- 
-[10:16:07:814] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:815] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:815] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=9,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:815] [INFO   ] ------------------------- 
-[10:16:07:815] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:816] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:816] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:816] [INFO   ] ------------------------- 
-[10:16:07:816] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:817] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:817] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=11,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:817] [INFO   ] ------------------------- 
-[10:16:07:817] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:817] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:818] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=9] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:819] [INFO   ] sendPathFindingResultToAgent() - Result: PATHFINDER_RESULT , []
-[10:16:07:819] [INFO   ] ############## 
-[10:16:07:819] [INFO   ] startCalculation() - Loop Agent: A3
-[10:16:07:819] [INFO   ] PathFindingResult Index 1: 0
-[10:16:07:819] [INFO   ] PathFindingResult Index 1: 0
-[10:16:07:823] [INFO   ] InterestingPoint Index 1: Point: java.awt.Point[x=15,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:824] [INFO   ] sendPathFindingResultToAgent() Start
-[10:16:07:824] [INFO   ] sendPathFindingResultToAgent() - interestingPoints.size: 17
-[10:16:07:824] [INFO   ] ------------------------- 
-[10:16:07:824] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:824] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:825] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=14,y=7] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:825] [INFO   ] ------------------------- 
-[10:16:07:825] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:825] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:826] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=15,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:826] [INFO   ] ------------------------- 
-[10:16:07:826] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:826] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:826] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=14,y=9] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:827] [INFO   ] ------------------------- 
-[10:16:07:827] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:827] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:827] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=13,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:827] [INFO   ] ------------------------- 
-[10:16:07:828] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:828] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:828] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=5] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:828] [INFO   ] ------------------------- 
-[10:16:07:828] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:829] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:829] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=9,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:829] [INFO   ] ------------------------- 
-[10:16:07:829] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:829] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:830] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:830] [INFO   ] ------------------------- 
-[10:16:07:830] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:831] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:831] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=11,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:831] [INFO   ] ------------------------- 
-[10:16:07:831] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:831] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:832] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=8,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:832] [INFO   ] ------------------------- 
-[10:16:07:832] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:832] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:833] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=9,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:833] [INFO   ] ------------------------- 
-[10:16:07:833] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:833] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:833] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:834] [INFO   ] ------------------------- 
-[10:16:07:834] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:834] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:834] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=11,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:835] [INFO   ] ------------------------- 
-[10:16:07:835] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:835] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:835] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=12,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:835] [INFO   ] ------------------------- 
-[10:16:07:836] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:836] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:836] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=9,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:836] [INFO   ] ------------------------- 
-[10:16:07:836] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:837] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:837] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:837] [INFO   ] ------------------------- 
-[10:16:07:837] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:837] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:838] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=11,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:838] [INFO   ] ------------------------- 
-[10:16:07:838] [INFO   ] sendPathFindingResultToAgent() - resultData.distance: 0
-[10:16:07:838] [INFO   ] sendPathFindingResultToAgent() - resultData.direction: 0
-[10:16:07:839] [INFO   ] sendPathFindingResultToAgent() - InterestingPoint: Point: java.awt.Point[x=10,y=9] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:839] [INFO   ] sendPathFindingResultToAgent() - Result: PATHFINDER_RESULT , []
-[10:16:07:839] [INFO   ] ############## 
-[10:16:07:839] [INFO   ] startCalculation() - End
-[10:16:07:839] [INFO   ] Thread-11 doGroupProcessing() After Test updateSupervisor()
-[10:16:07:842] [INFO   ] Thread-11 doGroupProcessing() Loop - Supervisor: A1
-[10:16:07:842] [INFO   ] Thread-12 doGroupProcessing() Before calcGroup() - Supervisor: A2
-[10:16:07:842] [INFO   ] Thread-11 doGroupProcessing() Befor Test updateSupervisor()
-[10:16:07:842] [INFO   ] Thread-12 calcGroup() Start - Supervisor: A2
-[10:16:07:842] [INFO   ] startCalculation() Start - Supervisor: A1
-[10:16:07:843] [INFO   ] Thread-12 calcGroup() - interestingPoints.size(): 17
-[10:16:07:844] [INFO   ] startCalculation() - agents: [A1]
-[10:16:07:844] [INFO   ] startCalculation() - mapSize: java.awt.Point[x=20,y=20]
-[10:16:07:844] [INFO   ] Thread-12 calcGroup() - agents.size(): 2
-[10:16:07:844] [INFO   ] startCalculation() - Agent for Position: A1
-[10:16:07:845] [INFO   ] Thread-12 calcGroup() - Loop Agent: A2 , Position: java.awt.Point[x=10,y=10]
-[10:16:07:845] [INFO   ] startCalculation() - AgentPosition: A1 , java.awt.Point[x=10,y=10]
-[10:16:07:845] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=14,y=7] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:845] [INFO   ] startCalculation() - numberGoals: 11
-[10:16:07:845] [INFO   ] Thread-12 PathFindingResult: 7
-[10:16:07:845] [INFO   ] Before finder.start()
-[10:16:07:846] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:846] [INFO   ] Thread-12 -------------------------
-[10:16:07:846] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=15,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:847] [INFO   ] Thread-12 PathFindingResult: 7
-[10:16:07:847] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:847] [INFO   ] Thread-12 -------------------------
-[10:16:07:847] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=14,y=9] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:848] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:848] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:848] [INFO   ] Thread-12 -------------------------
-[10:16:07:848] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=13,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:849] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:849] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:849] [INFO   ] Thread-12 -------------------------
-[10:16:07:849] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=5] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:849] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:850] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:850] [INFO   ] Thread-12 -------------------------
-[10:16:07:850] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=9,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:850] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:850] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:851] [INFO   ] Thread-12 -------------------------
-[10:16:07:851] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:851] [INFO   ] Thread-12 PathFindingResult: 4
-[10:16:07:851] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:851] [INFO   ] Thread-12 -------------------------
-[10:16:07:852] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=11,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:852] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:852] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:853] [INFO   ] Thread-12 -------------------------
-[10:16:07:853] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=8,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:853] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:853] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:854] [INFO   ] Thread-12 -------------------------
-[10:16:07:854] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=9,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:855] [INFO   ] Thread-12 PathFindingResult: 4
-[10:16:07:855] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:855] [INFO   ] Thread-12 -------------------------
-[10:16:07:856] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:856] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:856] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:856] [INFO   ] Thread-12 -------------------------
-[10:16:07:857] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=11,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:857] [INFO   ] Thread-12 PathFindingResult: 4
-[10:16:07:857] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:857] [INFO   ] Thread-12 -------------------------
-[10:16:07:857] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=12,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:858] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:858] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:858] [INFO   ] Thread-12 -------------------------
-[10:16:07:858] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=9,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:859] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:859] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:859] [INFO   ] Thread-12 -------------------------
-[10:16:07:859] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:859] [INFO   ] Thread-12 PathFindingResult: 2
-[10:16:07:860] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:860] [INFO   ] Thread-12 -------------------------
-[10:16:07:860] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=11,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:860] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:861] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:861] [INFO   ] Thread-12 -------------------------
-[10:16:07:861] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=9] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:861] [INFO   ] Thread-12 PathFindingResult: 1
-[10:16:07:861] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:862] [INFO   ] Thread-12 -------------------------
-[10:16:07:862] [INFO   ] Thread-12 pathFindingResultToPercept() Start - Agent: A2
-[10:16:07:864] [INFO   ] Thread-12 pathFindingResultToPercept() End - Result: [pointResult(DISPENSER_2,false,4,-3,7,2), pointResult(DISPENSER_2,false,5,-2,7,2), pointResult(DISPENSER_2,false,4,-1,5,2), pointResult(DISPENSER_2,false,3,-2,5,2), pointResult(GOALZONE,true,0,-5,5,1), pointResult(GOALZONE,true,-1,-4,5,1), pointResult(GOALZONE,true,0,-4,4,1), pointResult(GOALZONE,true,1,-4,5,1), pointResult(GOALZONE,true,-2,-3,5,1), pointResult(GOALZONE,true,-1,-3,4,1), pointResult(GOALZONE,true,0,-3,3,1), pointResult(GOALZONE,true,1,-3,4,1), pointResult(GOALZONE,true,2,-3,5,1), pointResult(GOALZONE,true,-1,-2,3,1), pointResult(GOALZONE,true,0,-2,2,1), pointResult(GOALZONE,true,1,-2,3,1), pointResult(GOALZONE,true,0,-1,1,1)]
-[10:16:07:865] [INFO   ] Thread-12 pathFindingResultToPercept() Start - Agent: A2
-[10:16:07:867] [INFO   ] Thread-12 pathFindingResultToPercept() End - Result: [pointResult(DISPENSER_2,false,4,-3,7,2), pointResult(DISPENSER_2,false,5,-2,7,2), pointResult(DISPENSER_2,false,4,-1,5,2), pointResult(DISPENSER_2,false,3,-2,5,2), pointResult(GOALZONE,true,0,-5,5,1), pointResult(GOALZONE,true,-1,-4,5,1), pointResult(GOALZONE,true,0,-4,4,1), pointResult(GOALZONE,true,1,-4,5,1), pointResult(GOALZONE,true,-2,-3,5,1), pointResult(GOALZONE,true,-1,-3,4,1), pointResult(GOALZONE,true,0,-3,3,1), pointResult(GOALZONE,true,1,-3,4,1), pointResult(GOALZONE,true,2,-3,5,1), pointResult(GOALZONE,true,-1,-2,3,1), pointResult(GOALZONE,true,0,-2,2,1), pointResult(GOALZONE,true,1,-2,3,1), pointResult(GOALZONE,true,0,-1,1,1)]
-[10:16:07:867] [INFO   ] Thread-12 calcGroup() - Loop Agent: A3 , Position: java.awt.Point[x=11,y=9]
-[10:16:07:867] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=14,y=7] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:868] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:868] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:868] [INFO   ] Thread-12 -------------------------
-[10:16:07:868] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=15,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:869] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:869] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:869] [INFO   ] Thread-12 -------------------------
-[10:16:07:869] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=14,y=9] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:870] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:870] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:870] [INFO   ] Thread-12 -------------------------
-[10:16:07:870] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=13,y=8] ZoneType: NONE CellType: DISPENSER_2
-[10:16:07:871] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:871] [INFO   ] Thread-12 PathFindingResult: e
-[10:16:07:871] [INFO   ] Thread-12 -------------------------
-[10:16:07:871] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=5] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:872] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:872] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:872] [INFO   ] Thread-12 -------------------------
-[10:16:07:873] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=9,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:873] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:873] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:873] [INFO   ] Thread-12 -------------------------
-[10:16:07:873] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:874] [INFO   ] Thread-12 PathFindingResult: 4
-[10:16:07:874] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:874] [INFO   ] Thread-12 -------------------------
-[10:16:07:874] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=11,y=6] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:875] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:875] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:875] [INFO   ] Thread-12 -------------------------
-[10:16:07:875] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=8,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:875] [INFO   ] Thread-12 PathFindingResult: 5
-[10:16:07:875] [INFO   ] Thread-12 PathFindingResult: w
-[10:16:07:876] [INFO   ] Thread-12 -------------------------
-[10:16:07:876] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=9,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:876] [INFO   ] Thread-12 PathFindingResult: 4
-[10:16:07:876] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:876] [INFO   ] Thread-12 -------------------------
-[10:16:07:877] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:877] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:877] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:877] [INFO   ] Thread-12 -------------------------
-[10:16:07:877] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=11,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:877] [INFO   ] Thread-12 PathFindingResult: 2
-[10:16:07:878] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:878] [INFO   ] Thread-12 -------------------------
-[10:16:07:878] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=12,y=7] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:878] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:878] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:878] [INFO   ] Thread-12 -------------------------
-[10:16:07:878] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=9,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:879] [INFO   ] Thread-12 PathFindingResult: 3
-[10:16:07:879] [INFO   ] Thread-12 PathFindingResult: w
-[10:16:07:879] [INFO   ] Thread-12 -------------------------
-[10:16:07:879] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:879] [INFO   ] Thread-12 PathFindingResult: 2
-[10:16:07:879] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:880] [INFO   ] Thread-12 -------------------------
-[10:16:07:880] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=11,y=8] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:880] [INFO   ] Thread-12 PathFindingResult: 1
-[10:16:07:880] [INFO   ] Thread-12 PathFindingResult: n
-[10:16:07:880] [INFO   ] Thread-12 -------------------------
-[10:16:07:880] [INFO   ] Thread-12 InterestingPoint: Point: java.awt.Point[x=10,y=9] ZoneType: GOALZONE CellType: UNKNOWN
-[10:16:07:880] [INFO   ] Thread-12 PathFindingResult: 1
-[10:16:07:881] [INFO   ] Thread-12 PathFindingResult: w
-[10:16:07:881] [INFO   ] Thread-12 -------------------------
-[10:16:07:881] [INFO   ] Thread-12 pathFindingResultToPercept() Start - Agent: A3
-[10:16:07:882] [INFO   ] Thread-12 pathFindingResultToPercept() End - Result: [pointResult(DISPENSER_2,false,4,-3,5,2), pointResult(DISPENSER_2,false,5,-2,5,2), pointResult(DISPENSER_2,false,4,-1,3,2), pointResult(DISPENSER_2,false,3,-2,3,2), pointResult(GOALZONE,true,0,-5,5,1), pointResult(GOALZONE,true,-1,-4,5,1), pointResult(GOALZONE,true,0,-4,4,1), pointResult(GOALZONE,true,1,-4,3,1), pointResult(GOALZONE,true,-2,-3,5,4), pointResult(GOALZONE,true,-1,-3,4,1), pointResult(GOALZONE,true,0,-3,3,1), pointResult(GOALZONE,true,1,-3,2,1), pointResult(GOALZONE,true,2,-3,3,1), pointResult(GOALZONE,true,-1,-2,3,4), pointResult(GOALZONE,true,0,-2,2,1), pointResult(GOALZONE,true,1,-2,1,1), pointResult(GOALZONE,true,0,-1,1,4)]
-[10:16:07:883] [INFO   ] Thread-12 pathFindingResultToPercept() Start - Agent: A3
-[10:16:07:884] [INFO   ] Thread-12 pathFindingResultToPercept() End - Result: [pointResult(DISPENSER_2,false,4,-3,5,2), pointResult(DISPENSER_2,false,5,-2,5,2), pointResult(DISPENSER_2,false,4,-1,3,2), pointResult(DISPENSER_2,false,3,-2,3,2), pointResult(GOALZONE,true,0,-5,5,1), pointResult(GOALZONE,true,-1,-4,5,1), pointResult(GOALZONE,true,0,-4,4,1), pointResult(GOALZONE,true,1,-4,3,1), pointResult(GOALZONE,true,-2,-3,5,4), pointResult(GOALZONE,true,-1,-3,4,1), pointResult(GOALZONE,true,0,-3,3,1), pointResult(GOALZONE,true,1,-3,2,1), pointResult(GOALZONE,true,2,-3,3,1), pointResult(GOALZONE,true,-1,-2,3,4), pointResult(GOALZONE,true,0,-2,2,1), pointResult(GOALZONE,true,1,-2,1,1), pointResult(GOALZONE,true,0,-1,1,4)]
-[10:16:07:884] [INFO   ] Thread-12 calcGroup() End - Supervisor: A2
-[10:16:07:884] [INFO   ] Thread-12 doGroupProcessing() After calcGroup() - Supervisor: A2
-[10:16:07:885] [INFO   ] Thread-12 doGroupProcessing() Loop - agentCalcResult: A2
-[10:16:07:885] [INFO   ] Thread-12 doGroupProcessing() Before updateFromPathFinding() - agentCalcResult: A2
-[10:16:07:888] [INFO   ] Reachable DISPENSER_2 at (4/-3) with distance 7 in direction e
-Reachable DISPENSER_2 at (5/-2) with distance 7 in direction e
-Reachable DISPENSER_2 at (4/-1) with distance 5 in direction e
-Reachable DISPENSER_2 at (3/-2) with distance 5 in direction e
-Reachable Goalzone at (0/-5) with distance 5 in direction n
-Reachable Goalzone at (-1/-4) with distance 5 in direction n
-Reachable Goalzone at (0/-4) with distance 4 in direction n
-Reachable Goalzone at (1/-4) with distance 5 in direction n
-Reachable Goalzone at (-2/-3) with distance 5 in direction n
-Reachable Goalzone at (-1/-3) with distance 4 in direction n
-Reachable Goalzone at (0/-3) with distance 3 in direction n
-Reachable Goalzone at (1/-3) with distance 4 in direction n
-Reachable Goalzone at (2/-3) with distance 5 in direction n
-Reachable Goalzone at (-1/-2) with distance 3 in direction n
-Reachable Goalzone at (0/-2) with distance 2 in direction n
-Reachable Goalzone at (1/-2) with distance 3 in direction n
-Reachable Goalzone at (0/-1) with distance 1 in direction n
-
-[10:16:07:889] [INFO   ] Thread-12 doGroupProcessing() Loop - agentCalcResult: A3
-[10:16:07:889] [INFO   ] Thread-12 doGroupProcessing() Before updateFromPathFinding() - agentCalcResult: A3
-[10:16:07:889] [INFO   ] Reachable DISPENSER_2 at (4/-3) with distance 5 in direction e
-Reachable DISPENSER_2 at (5/-2) with distance 5 in direction e
-Reachable DISPENSER_2 at (4/-1) with distance 3 in direction e
-Reachable DISPENSER_2 at (3/-2) with distance 3 in direction e
-Reachable Goalzone at (0/-5) with distance 5 in direction n
-Reachable Goalzone at (-1/-4) with distance 5 in direction n
-Reachable Goalzone at (0/-4) with distance 4 in direction n
-Reachable Goalzone at (1/-4) with distance 3 in direction n
-Reachable Goalzone at (-2/-3) with distance 5 in direction w
-Reachable Goalzone at (-1/-3) with distance 4 in direction n
-Reachable Goalzone at (0/-3) with distance 3 in direction n
-Reachable Goalzone at (1/-3) with distance 2 in direction n
-Reachable Goalzone at (2/-3) with distance 3 in direction n
-Reachable Goalzone at (-1/-2) with distance 3 in direction w
-Reachable Goalzone at (0/-2) with distance 2 in direction n
-Reachable Goalzone at (1/-2) with distance 1 in direction n
-Reachable Goalzone at (0/-1) with distance 1 in direction w
-
-[10:16:07:890] [INFO   ] Thread-12 doGroupProcessing() Before runSupervisorDecisions() - Supervisor: A2
-[10:16:07:890] [INFO   ] Thread-12 runSupervisorDecisions() Start - Step: 0 , Supervisor: A2
-[10:16:07:978] [INFO   ] Thread-9 step() PATHFINDER_RESULT - Step: 0 , Agent: A2
-[10:16:07:978] [INFO   ] Thread-10 step() PATHFINDER_RESULT - Step: 0 , Agent: A3
-[10:16:07:979] [INFO   ] Thread-13 runAgentDecisions() Start - Step: 0 , Supervisor: A3
-[10:16:07:979] [INFO   ] Thread-14 runAgentDecisions() Start - Step: 0 , Supervisor: A2
-[10:16:08:062] [FINE   ] 
+[17:00:31:036] [FINE   ] Path Finding Duration: 2150
+[17:00:31:077] [INFO   ] Thread-18 doGroupProcessing() After Test updateSupervisor()
+[17:00:31:077] [INFO   ] Thread-18 doGroupProcessing() Loop - Supervisor: A2
+[17:00:31:077] [INFO   ] Thread-19 doGroupProcessing() Before calcGroup() - Supervisor: A1
+[17:00:31:078] [INFO   ] Thread-18 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:31:078] [INFO   ] Thread-19 calcGroup() Start - Supervisor: A1
+[17:00:31:079] [INFO   ] Thread-19 calcGroup() - interestingPoints.size(): 11
+[17:00:31:080] [INFO   ] Thread-19 calcGroup() - agents.size(): 1
+[17:00:31:080] [INFO   ] Thread-19 calcGroup() - Loop Agent: A1 , Position: java.awt.Point[x=10,y=10]
+[17:00:31:081] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=10,y=11] ZoneType: NONE CellType: DISPENSER_0
+[17:00:31:081] [INFO   ] Thread-19 PathFindingResult: 1
+[17:00:31:081] [INFO   ] Thread-19 PathFindingResult: s
+[17:00:31:081] [INFO   ] Thread-19 -------------------------
+[17:00:31:082] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=11,y=12] ZoneType: NONE CellType: DISPENSER_0
+[17:00:31:082] [INFO   ] Thread-19 PathFindingResult: 3
+[17:00:31:082] [INFO   ] Thread-19 PathFindingResult: s
+[17:00:31:082] [INFO   ] Thread-19 -------------------------
+[17:00:31:083] [FINE   ] 
 ShaderInfoLog: 
 ProgramInfoLog: WARNING: Too many temp register is used in Compute shader, it may cause slow execution.
 
 ShaderCompileStatus: 1
 ShaderLinkStatus: 0
 
-[10:16:09:163] [INFO   ] Thread-15 step() Start in neuem Thread - Step: 1 , Agent: A1
-[10:16:09:163] [INFO   ] Thread-17 step() Start in neuem Thread - Step: 1 , Agent: A3
-[10:16:09:163] [INFO   ] Thread-16 step() Start in neuem Thread - Step: 1 , Agent: A2
-[10:16:09:163] [INFO   ] Thread-17 Before updateMap() - Step: 1 , Agent: A3
-[10:16:09:163] [INFO   ] Thread-15 Before updateMap() - Step: 1 , Agent: A1
-[10:16:09:164] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
-[10:16:09:164] [INFO   ] Thread-16 Before updateMap() - Step: 1 , Agent: A2
-[10:16:09:164] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
-[10:16:09:164] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
-[10:16:09:164] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
-[10:16:09:165] [INFO   ] updateMap() End
-[10:16:09:165] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
-[10:16:09:165] [INFO   ] Thread-17 After updateMap() - Step: 1 , Agent: A3
-[10:16:09:165] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
-[10:16:09:165] [INFO   ] Thread-17 step() Waiting for PATHFINDER_RESULT - Step: 1 , Agent: A3
-[10:16:09:165] [INFO   ] updateMap() End
-[10:16:09:166] [INFO   ] updateMap() End
-[10:16:09:166] [INFO   ] Thread-15 After updateMap() - Step: 1 , Agent: A1
-[10:16:09:166] [INFO   ] Thread-16 After updateMap() - Step: 1 , Agent: A2
-[10:16:09:166] [INFO   ] Thread-15 step() Waiting for PATHFINDER_RESULT - Step: 1 , Agent: A1
-[10:16:09:167] [INFO   ] Thread-16 step() Waiting for PATHFINDER_RESULT - Step: 1 , Agent: A2
-[10:16:09:167] [INFO   ] Thread-18 doGroupProcessing() in neuem Thread - Step: 1
-[10:16:09:167] [INFO   ] Thread-18 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@57829d67]
-[10:16:09:167] [INFO   ] Thread-18 doGroupProcessing() Start - Agent: A1
-[10:16:09:167] [INFO   ] Thread-18 doGroupProcessing() Start - Agent: A2
-[10:16:09:167] [INFO   ] Thread-18 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
-[10:16:09:168] [INFO   ] Thread-18 doGroupProcessing() Start - Agent: A3
-[10:16:09:168] [INFO   ] Thread-18 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
-[10:16:09:168] [INFO   ] Thread-18 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
-[10:16:09:168] [INFO   ] Thread-18 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
-[10:16:09:168] [INFO   ] Thread-18 doGroupProcessing() Loop - Supervisor: A2
-[10:16:09:168] [INFO   ] Thread-18 doGroupProcessing() Befor Test updateSupervisor()
-[10:16:13:186] [INFO   ] Thread-19 step() Start in neuem Thread - Step: 2 , Agent: A1
-[10:16:13:186] [INFO   ] Thread-20 step() Start in neuem Thread - Step: 2 , Agent: A2
-[10:16:13:186] [INFO   ] Thread-21 step() Start in neuem Thread - Step: 2 , Agent: A3
-[10:16:13:186] [INFO   ] Thread-20 Before updateMap() - Step: 2 , Agent: A2
-[10:16:13:186] [INFO   ] Thread-19 Before updateMap() - Step: 2 , Agent: A1
-[10:16:13:187] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
-[10:16:13:186] [INFO   ] Thread-21 Before updateMap() - Step: 2 , Agent: A3
-[10:16:13:187] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
-[10:16:13:187] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
-[10:16:13:187] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
-[10:16:13:187] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
-[10:16:13:187] [INFO   ] updateMap() End
-[10:16:13:187] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
-[10:16:13:188] [INFO   ] updateMap() End
-[10:16:13:188] [INFO   ] Thread-20 After updateMap() - Step: 2 , Agent: A2
-[10:16:13:188] [INFO   ] updateMap() End
-[10:16:13:188] [INFO   ] Thread-19 After updateMap() - Step: 2 , Agent: A1
-[10:16:13:188] [INFO   ] Thread-20 step() Waiting for PATHFINDER_RESULT - Step: 2 , Agent: A2
-[10:16:13:188] [INFO   ] Thread-21 After updateMap() - Step: 2 , Agent: A3
-[10:16:13:188] [INFO   ] Thread-19 step() Waiting for PATHFINDER_RESULT - Step: 2 , Agent: A1
-[10:16:13:189] [INFO   ] Thread-21 step() Waiting for PATHFINDER_RESULT - Step: 2 , Agent: A3
-[10:16:13:189] [INFO   ] Thread-22 doGroupProcessing() in neuem Thread - Step: 2
-[10:16:13:189] [INFO   ] Thread-22 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@57829d67]
-[10:16:13:189] [INFO   ] Thread-22 doGroupProcessing() Start - Agent: A1
-[10:16:13:190] [INFO   ] Thread-22 doGroupProcessing() Start - Agent: A2
-[10:16:13:190] [INFO   ] Thread-22 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
-[10:16:13:190] [INFO   ] Thread-22 doGroupProcessing() Start - Agent: A3
-[10:16:13:190] [INFO   ] Thread-22 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
-[10:16:13:190] [INFO   ] Thread-22 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
-[10:16:13:190] [INFO   ] Thread-22 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
-[10:16:13:191] [INFO   ] Thread-22 doGroupProcessing() Loop - Supervisor: A2
-[10:16:13:191] [INFO   ] Thread-22 doGroupProcessing() Befor Test updateSupervisor()
-[10:16:17:151] [INFO   ] Thread-23 step() Start in neuem Thread - Step: 3 , Agent: A1
-[10:16:17:151] [INFO   ] Thread-24 step() Start in neuem Thread - Step: 3 , Agent: A2
-[10:16:17:151] [INFO   ] Thread-25 step() Start in neuem Thread - Step: 3 , Agent: A3
-[10:16:17:151] [INFO   ] Thread-24 Before updateMap() - Step: 3 , Agent: A2
-[10:16:17:151] [INFO   ] Thread-23 Before updateMap() - Step: 3 , Agent: A1
-[10:16:17:151] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
-[10:16:17:151] [INFO   ] Thread-25 Before updateMap() - Step: 3 , Agent: A3
-[10:16:17:152] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
-[10:16:17:151] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
-[10:16:17:152] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
-[10:16:17:152] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
-[10:16:17:152] [INFO   ] updateMap() End
-[10:16:17:152] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
-[10:16:17:152] [INFO   ] Thread-24 After updateMap() - Step: 3 , Agent: A2
-[10:16:17:152] [INFO   ] updateMap() End
-[10:16:17:153] [INFO   ] Thread-24 step() Waiting for PATHFINDER_RESULT - Step: 3 , Agent: A2
-[10:16:17:153] [INFO   ] updateMap() End
-[10:16:17:153] [INFO   ] Thread-23 After updateMap() - Step: 3 , Agent: A1
-[10:16:17:153] [INFO   ] Thread-25 After updateMap() - Step: 3 , Agent: A3
-[10:16:17:153] [INFO   ] Thread-23 step() Waiting for PATHFINDER_RESULT - Step: 3 , Agent: A1
-[10:16:17:154] [INFO   ] Thread-25 step() Waiting for PATHFINDER_RESULT - Step: 3 , Agent: A3
-[10:16:17:154] [INFO   ] Thread-26 doGroupProcessing() in neuem Thread - Step: 3
-[10:16:17:154] [INFO   ] Thread-26 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@57829d67]
-[10:16:17:154] [INFO   ] Thread-26 doGroupProcessing() Start - Agent: A1
-[10:16:17:154] [INFO   ] Thread-26 doGroupProcessing() Start - Agent: A2
-[10:16:17:154] [INFO   ] Thread-26 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
-[10:16:17:154] [INFO   ] Thread-26 doGroupProcessing() Start - Agent: A3
-[10:16:17:155] [INFO   ] Thread-26 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
-[10:16:17:155] [INFO   ] Thread-26 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
-[10:16:17:155] [INFO   ] Thread-26 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
-[10:16:17:155] [INFO   ] Thread-26 doGroupProcessing() Loop - Supervisor: A2
-[10:16:17:155] [INFO   ] Thread-26 doGroupProcessing() Befor Test updateSupervisor()
-[10:16:21:211] [INFO   ] Thread-27 step() Start in neuem Thread - Step: 4 , Agent: A1
-[10:16:21:211] [INFO   ] Thread-29 step() Start in neuem Thread - Step: 4 , Agent: A3
-[10:16:21:211] [INFO   ] Thread-28 step() Start in neuem Thread - Step: 4 , Agent: A2
-[10:16:21:212] [INFO   ] Thread-27 Before updateMap() - Step: 4 , Agent: A1
-[10:16:21:212] [INFO   ] Thread-29 Before updateMap() - Step: 4 , Agent: A3
-[10:16:21:212] [INFO   ] Thread-28 Before updateMap() - Step: 4 , Agent: A2
-[10:16:21:212] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
-[10:16:21:212] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
-[10:16:21:212] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
-[10:16:21:212] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
-[10:16:21:212] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
-[10:16:21:212] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
-[10:16:21:212] [INFO   ] updateMap() End
-[10:16:21:212] [INFO   ] updateMap() End
-[10:16:21:212] [INFO   ] updateMap() End
-[10:16:21:213] [INFO   ] Thread-28 After updateMap() - Step: 4 , Agent: A2
-[10:16:21:212] [INFO   ] Thread-29 After updateMap() - Step: 4 , Agent: A3
-[10:16:21:213] [INFO   ] Thread-28 step() Waiting for PATHFINDER_RESULT - Step: 4 , Agent: A2
-[10:16:21:212] [INFO   ] Thread-27 After updateMap() - Step: 4 , Agent: A1
-[10:16:21:213] [INFO   ] Thread-29 step() Waiting for PATHFINDER_RESULT - Step: 4 , Agent: A3
-[10:16:21:213] [INFO   ] Thread-27 step() Waiting for PATHFINDER_RESULT - Step: 4 , Agent: A1
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() in neuem Thread - Step: 4
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@57829d67]
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() Start - Agent: A1
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() Start - Agent: A2
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() Start - Agent: A3
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
-[10:16:21:213] [INFO   ] Thread-30 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
-[10:16:21:214] [INFO   ] Thread-30 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
-[10:16:21:214] [INFO   ] Thread-30 doGroupProcessing() Loop - Supervisor: A2
-[10:16:21:214] [INFO   ] Thread-30 doGroupProcessing() Befor Test updateSupervisor()
-[10:16:25:185] [INFO   ] Thread-31 step() Start in neuem Thread - Step: 5 , Agent: A1
-[10:16:25:185] [INFO   ] Thread-33 step() Start in neuem Thread - Step: 5 , Agent: A3
-[10:16:25:185] [INFO   ] Thread-32 step() Start in neuem Thread - Step: 5 , Agent: A2
-[10:16:25:186] [INFO   ] Thread-31 Before updateMap() - Step: 5 , Agent: A1
-[10:16:25:186] [INFO   ] Thread-33 Before updateMap() - Step: 5 , Agent: A3
-[10:16:25:186] [INFO   ] Thread-32 Before updateMap() - Step: 5 , Agent: A2
-[10:16:25:186] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
-[10:16:25:186] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
-[10:16:25:186] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
-[10:16:25:186] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
-[10:16:25:186] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=10]
-[10:16:25:186] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
-[10:16:25:186] [INFO   ] updateMap() End
-[10:16:25:186] [INFO   ] updateMap() End
-[10:16:25:186] [INFO   ] updateMap() End
-[10:16:25:186] [INFO   ] Thread-33 After updateMap() - Step: 5 , Agent: A3
-[10:16:25:187] [INFO   ] Thread-31 After updateMap() - Step: 5 , Agent: A1
-[10:16:25:187] [INFO   ] Thread-32 After updateMap() - Step: 5 , Agent: A2
-[10:16:25:187] [INFO   ] Thread-33 step() Waiting for PATHFINDER_RESULT - Step: 5 , Agent: A3
-[10:16:25:187] [INFO   ] Thread-31 step() Waiting for PATHFINDER_RESULT - Step: 5 , Agent: A1
-[10:16:25:187] [INFO   ] Thread-32 step() Waiting for PATHFINDER_RESULT - Step: 5 , Agent: A2
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() in neuem Thread - Step: 5
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@2d554825, de.feu.massim22.group3.agents.Supervisor@57829d67]
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() Start - Agent: A1
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() Start - Agent: A2
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() Start - Agent: A3
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
-[10:16:25:187] [INFO   ] Thread-34 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
-[10:16:25:188] [INFO   ] Thread-34 doGroupProcessing() Loop - Supervisor: A2
-[10:16:25:188] [INFO   ] Thread-34 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:31:083] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=10,y=13] ZoneType: NONE CellType: DISPENSER_0
+[17:00:31:083] [INFO   ] Thread-19 PathFindingResult: 3
+[17:00:31:083] [INFO   ] Thread-19 PathFindingResult: s
+[17:00:31:084] [INFO   ] Thread-19 -------------------------
+[17:00:31:084] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=9,y=12] ZoneType: NONE CellType: DISPENSER_0
+[17:00:31:084] [INFO   ] Thread-19 PathFindingResult: 3
+[17:00:31:084] [INFO   ] Thread-19 PathFindingResult: s
+[17:00:31:085] [INFO   ] Thread-19 -------------------------
+[17:00:31:085] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=8,y=12] ZoneType: NONE CellType: DISPENSER_2
+[17:00:31:085] [INFO   ] Thread-19 PathFindingResult: 4
+[17:00:31:085] [INFO   ] Thread-19 PathFindingResult: s
+[17:00:31:086] [INFO   ] Thread-19 -------------------------
+[17:00:31:086] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=9,y=13] ZoneType: NONE CellType: DISPENSER_2
+[17:00:31:086] [INFO   ] Thread-19 PathFindingResult: 4
+[17:00:31:087] [INFO   ] Thread-19 PathFindingResult: s
+[17:00:31:087] [INFO   ] Thread-19 -------------------------
+[17:00:31:087] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=11,y=6] ZoneType: ROLEZONE CellType: UNKNOWN
+[17:00:31:087] [INFO   ] Thread-19 PathFindingResult: 5
+[17:00:31:087] [INFO   ] Thread-19 PathFindingResult: n
+[17:00:31:088] [INFO   ] Thread-19 -------------------------
+[17:00:31:088] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=12,y=7] ZoneType: ROLEZONE CellType: UNKNOWN
+[17:00:31:088] [INFO   ] Thread-19 PathFindingResult: 5
+[17:00:31:089] [INFO   ] Thread-19 PathFindingResult: n
+[17:00:31:089] [INFO   ] Thread-19 -------------------------
+[17:00:31:089] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=13,y=8] ZoneType: ROLEZONE CellType: UNKNOWN
+[17:00:31:089] [INFO   ] Thread-19 PathFindingResult: 5
+[17:00:31:089] [INFO   ] Thread-19 PathFindingResult: e
+[17:00:31:090] [INFO   ] Thread-19 -------------------------
+[17:00:31:090] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=14,y=9] ZoneType: ROLEZONE CellType: UNKNOWN
+[17:00:31:090] [INFO   ] Thread-19 PathFindingResult: 5
+[17:00:31:090] [INFO   ] Thread-19 PathFindingResult: e
+[17:00:31:090] [INFO   ] Thread-19 -------------------------
+[17:00:31:091] [INFO   ] Thread-19 InterestingPoint: Point: java.awt.Point[x=15,y=10] ZoneType: ROLEZONE CellType: UNKNOWN
+[17:00:31:091] [INFO   ] Thread-19 PathFindingResult: 5
+[17:00:31:091] [INFO   ] Thread-19 PathFindingResult: e
+[17:00:31:091] [INFO   ] Thread-19 -------------------------
+[17:00:31:092] [INFO   ] Thread-19 pathFindingResultToPercept() Start - Agent: A1
+[17:00:31:093] [INFO   ] Thread-19 pathFindingResultToPercept() End - Result: [pointResult(DISPENSER_0,false,0,1,1,3), pointResult(DISPENSER_0,false,1,2,3,3), pointResult(DISPENSER_0,false,0,3,3,3), pointResult(DISPENSER_0,false,-1,2,3,3), pointResult(DISPENSER_2,false,-2,2,4,3), pointResult(DISPENSER_2,false,-1,3,4,3), pointResult(ROLEZONE,true,1,-4,5,1), pointResult(ROLEZONE,true,2,-3,5,1), pointResult(ROLEZONE,true,3,-2,5,2), pointResult(ROLEZONE,true,4,-1,5,2), pointResult(ROLEZONE,true,5,0,5,2)]
+[17:00:31:094] [INFO   ] Thread-19 pathFindingResultToPercept() Start - Agent: A1
+[17:00:31:094] [INFO   ] Thread-19 pathFindingResultToPercept() End - Result: [pointResult(DISPENSER_0,false,0,1,1,3), pointResult(DISPENSER_0,false,1,2,3,3), pointResult(DISPENSER_0,false,0,3,3,3), pointResult(DISPENSER_0,false,-1,2,3,3), pointResult(DISPENSER_2,false,-2,2,4,3), pointResult(DISPENSER_2,false,-1,3,4,3), pointResult(ROLEZONE,true,1,-4,5,1), pointResult(ROLEZONE,true,2,-3,5,1), pointResult(ROLEZONE,true,3,-2,5,2), pointResult(ROLEZONE,true,4,-1,5,2), pointResult(ROLEZONE,true,5,0,5,2)]
+[17:00:31:095] [INFO   ] Thread-19 calcGroup() End - Supervisor: A1
+[17:00:31:095] [INFO   ] Thread-19 doGroupProcessing() After calcGroup() - Supervisor: A1
+[17:00:31:095] [INFO   ] Thread-19 doGroupProcessing() Loop - agentCalcResult: A1
+[17:00:31:095] [INFO   ] Thread-19 doGroupProcessing() Before updateFromPathFinding() - agentCalcResult: A1
+[17:00:31:098] [INFO   ] Reachable DISPENSER_0 at (0/1) with distance 1 in direction s
+Reachable DISPENSER_0 at (1/2) with distance 3 in direction s
+Reachable DISPENSER_0 at (0/3) with distance 3 in direction s
+Reachable DISPENSER_0 at (-1/2) with distance 3 in direction s
+Reachable DISPENSER_2 at (-2/2) with distance 4 in direction s
+Reachable DISPENSER_2 at (-1/3) with distance 4 in direction s
+Reachable Rolezone at (1/-4) with distance 5 in direction n
+Reachable Rolezone at (2/-3) with distance 5 in direction n
+Reachable Rolezone at (3/-2) with distance 5 in direction e
+Reachable Rolezone at (4/-1) with distance 5 in direction e
+Reachable Rolezone at (5/0) with distance 5 in direction e
+
+[17:00:31:098] [INFO   ] Thread-19 doGroupProcessing() Before runSupervisorDecisions() - Supervisor: A1
+[17:00:31:098] [INFO   ] Thread-19 runSupervisorDecisions() Start - Step: 0 , Supervisor: A1
+[17:00:31:135] [INFO   ] Thread-15 step() PATHFINDER_RESULT - Step: 0 , Agent: A1
+[17:00:31:136] [INFO   ] Thread-20 runAgentDecisions() Start - Step: 0 , Supervisor: A1
+[17:00:31:137] [INFO   ] Thread-20 LocalExplore.getNextAction() - Agent: A1
+[17:00:31:137] [INFO   ] Thread-20 LocalExplore.getNextAction() - Action: move, n
+[17:00:31:138] [INFO   ] Thread-20 runAgentDecisions() - Action: move(n)
+[17:00:31:151] [INFO   ] Thread-8 step() PATHFINDER_RESULT - Step: 0 , Agent: A1
+[17:00:31:151] [INFO   ] Thread-8 determineIntention() - Agent: A1 , Desire: LocalExplore , Action: move(n)
+[17:00:31:151] [INFO   ] Thread-21 runAgentDecisions() Start - Step: 0 , Supervisor: A1
+[17:00:31:152] [INFO   ] Thread-8 determineIntention() End - Agent: A1 , Intention: LocalExplore , Action: move(n)
+[17:00:31:152] [INFO   ] Thread-21 LocalExplore.getNextAction() - Agent: A1
+[17:00:31:152] [INFO   ] Thread-8 step() End - Step: 0 , Agent: A1 , Intention: LocalExplore , Action: move(n) , Params: n
+[17:00:31:152] [INFO   ] Thread-21 LocalExplore.getNextAction() - Action: move, n
+[17:00:31:153] [INFO   ] Thread-21 runAgentDecisions() - Action: move(n)
+[17:00:31:247] [INFO   ] Thread-15 determineIntention() - Agent: A1 , Desire: LocalExplore , Action: move(n)
+[17:00:31:247] [INFO   ] Thread-15 determineIntention() - Agent: A1 , Desire: LocalExplore , Action: move(n)
+[17:00:31:247] [INFO   ] Thread-15 determineIntention() End - Agent: A1 , Intention: LocalExplore , Action: move(n)
+[17:00:31:247] [INFO   ] Thread-15 step() End - Step: 0 , Agent: A1 , Intention: LocalExplore , Action: move(n) , Params: n
+[17:00:32:808] [INFO   ] Thread-22 step() Start in neuem Thread - Step: 1 , Agent: A1
+[17:00:32:808] [INFO   ] Thread-24 step() Start in neuem Thread - Step: 1 , Agent: A3
+[17:00:32:808] [INFO   ] Thread-23 step() Start in neuem Thread - Step: 1 , Agent: A2
+[17:00:32:809] [INFO   ] Thread-24 Before updateMap() - Step: 1 , Agent: A3
+[17:00:32:809] [INFO   ] Thread-22 Before updateMap() - Step: 1 , Agent: A1
+[17:00:32:809] [INFO   ] Thread-23 Before updateMap() - Step: 1 , Agent: A2
+[17:00:32:809] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:32:809] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:32:810] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:32:810] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:32:810] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=9]
+[17:00:32:810] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:32:810] [INFO   ] updateMap() End
+[17:00:32:811] [INFO   ] updateMap() End
+[17:00:32:811] [INFO   ] Thread-24 After updateMap() - Step: 1 , Agent: A3
+[17:00:32:811] [INFO   ] Thread-22 After updateMap() - Step: 1 , Agent: A1
+[17:00:32:811] [INFO   ] updateMap() End
+[17:00:32:811] [INFO   ] Thread-22 step() Waiting for PATHFINDER_RESULT - Step: 1 , Agent: A1
+[17:00:32:811] [INFO   ] Thread-24 step() Waiting for PATHFINDER_RESULT - Step: 1 , Agent: A3
+[17:00:32:811] [INFO   ] Thread-23 After updateMap() - Step: 1 , Agent: A2
+[17:00:32:812] [INFO   ] Thread-23 step() Waiting for PATHFINDER_RESULT - Step: 1 , Agent: A2
+[17:00:32:812] [INFO   ] Thread-25 doGroupProcessing() in neuem Thread - Step: 1
+[17:00:32:813] [INFO   ] Thread-25 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:32:813] [INFO   ] Thread-25 doGroupProcessing() Start - Agent: A1
+[17:00:32:813] [INFO   ] Thread-25 doGroupProcessing() Start - Agent: A2
+[17:00:32:813] [INFO   ] Thread-25 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:32:813] [INFO   ] Thread-25 doGroupProcessing() Start - Agent: A3
+[17:00:32:813] [INFO   ] Thread-25 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:32:814] [INFO   ] Thread-25 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:32:814] [INFO   ] Thread-25 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
+[17:00:32:814] [INFO   ] Thread-25 doGroupProcessing() Loop - Supervisor: A1
+[17:00:32:814] [INFO   ] Thread-25 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:36:863] [INFO   ] Thread-27 step() Start in neuem Thread - Step: 2 , Agent: A2
+[17:00:36:863] [INFO   ] Thread-28 step() Start in neuem Thread - Step: 2 , Agent: A3
+[17:00:36:863] [INFO   ] Thread-26 step() Start in neuem Thread - Step: 2 , Agent: A1
+[17:00:36:863] [INFO   ] Thread-28 Before updateMap() - Step: 2 , Agent: A3
+[17:00:36:863] [INFO   ] Thread-27 Before updateMap() - Step: 2 , Agent: A2
+[17:00:36:864] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:36:863] [INFO   ] Thread-26 Before updateMap() - Step: 2 , Agent: A1
+[17:00:36:864] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:36:864] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:36:864] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:36:864] [INFO   ] updateMap() End
+[17:00:36:864] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:36:865] [INFO   ] Thread-28 After updateMap() - Step: 2 , Agent: A3
+[17:00:36:865] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=9]
+[17:00:36:865] [INFO   ] Thread-28 step() Waiting for PATHFINDER_RESULT - Step: 2 , Agent: A3
+[17:00:36:865] [INFO   ] updateMap() End
+[17:00:36:865] [INFO   ] updateMap() End
+[17:00:36:865] [INFO   ] Thread-27 After updateMap() - Step: 2 , Agent: A2
+[17:00:36:866] [INFO   ] Thread-26 After updateMap() - Step: 2 , Agent: A1
+[17:00:36:866] [INFO   ] Thread-27 step() Waiting for PATHFINDER_RESULT - Step: 2 , Agent: A2
+[17:00:36:866] [INFO   ] Thread-29 doGroupProcessing() in neuem Thread - Step: 2
+[17:00:36:866] [INFO   ] Thread-26 step() Waiting for PATHFINDER_RESULT - Step: 2 , Agent: A1
+[17:00:36:867] [INFO   ] Thread-29 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:36:867] [INFO   ] Thread-29 doGroupProcessing() Start - Agent: A1
+[17:00:36:867] [INFO   ] Thread-29 doGroupProcessing() Start - Agent: A2
+[17:00:36:867] [INFO   ] Thread-29 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:36:867] [INFO   ] Thread-29 doGroupProcessing() Start - Agent: A3
+[17:00:36:868] [INFO   ] Thread-29 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:36:868] [INFO   ] Thread-29 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:36:868] [INFO   ] Thread-29 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
+[17:00:36:868] [INFO   ] Thread-29 doGroupProcessing() Loop - Supervisor: A1
+[17:00:36:868] [INFO   ] Thread-29 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:40:830] [INFO   ] Thread-30 step() Start in neuem Thread - Step: 3 , Agent: A1
+[17:00:40:830] [INFO   ] Thread-32 step() Start in neuem Thread - Step: 3 , Agent: A3
+[17:00:40:830] [INFO   ] Thread-31 step() Start in neuem Thread - Step: 3 , Agent: A2
+[17:00:40:830] [INFO   ] Thread-30 Before updateMap() - Step: 3 , Agent: A1
+[17:00:40:831] [INFO   ] Thread-31 Before updateMap() - Step: 3 , Agent: A2
+[17:00:40:830] [INFO   ] Thread-32 Before updateMap() - Step: 3 , Agent: A3
+[17:00:40:831] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:40:831] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:40:831] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:40:831] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=9]
+[17:00:40:831] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:40:831] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:40:832] [INFO   ] updateMap() End
+[17:00:40:832] [INFO   ] updateMap() End
+[17:00:40:832] [INFO   ] updateMap() End
+[17:00:40:832] [INFO   ] Thread-30 After updateMap() - Step: 3 , Agent: A1
+[17:00:40:832] [INFO   ] Thread-31 After updateMap() - Step: 3 , Agent: A2
+[17:00:40:832] [INFO   ] Thread-32 After updateMap() - Step: 3 , Agent: A3
+[17:00:40:832] [INFO   ] Thread-30 step() Waiting for PATHFINDER_RESULT - Step: 3 , Agent: A1
+[17:00:40:832] [INFO   ] Thread-31 step() Waiting for PATHFINDER_RESULT - Step: 3 , Agent: A2
+[17:00:40:833] [INFO   ] Thread-32 step() Waiting for PATHFINDER_RESULT - Step: 3 , Agent: A3
+[17:00:40:833] [INFO   ] Thread-33 doGroupProcessing() in neuem Thread - Step: 3
+[17:00:40:833] [INFO   ] Thread-33 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:40:833] [INFO   ] Thread-33 doGroupProcessing() Start - Agent: A1
+[17:00:40:834] [INFO   ] Thread-33 doGroupProcessing() Start - Agent: A2
+[17:00:40:834] [INFO   ] Thread-33 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:40:834] [INFO   ] Thread-33 doGroupProcessing() Start - Agent: A3
+[17:00:40:834] [INFO   ] Thread-33 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:40:834] [INFO   ] Thread-33 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:40:834] [INFO   ] Thread-33 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
+[17:00:40:835] [INFO   ] Thread-33 doGroupProcessing() Loop - Supervisor: A1
+[17:00:40:835] [INFO   ] Thread-33 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:44:800] [INFO   ] Thread-35 step() Start in neuem Thread - Step: 4 , Agent: A2
+[17:00:44:801] [INFO   ] Thread-36 step() Start in neuem Thread - Step: 4 , Agent: A3
+[17:00:44:800] [INFO   ] Thread-34 step() Start in neuem Thread - Step: 4 , Agent: A1
+[17:00:44:801] [INFO   ] Thread-36 Before updateMap() - Step: 4 , Agent: A3
+[17:00:44:801] [INFO   ] Thread-35 Before updateMap() - Step: 4 , Agent: A2
+[17:00:44:801] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:44:801] [INFO   ] Thread-34 Before updateMap() - Step: 4 , Agent: A1
+[17:00:44:802] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:44:801] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:44:802] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:44:802] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:44:802] [INFO   ] updateMap() End
+[17:00:44:802] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=9]
+[17:00:44:802] [INFO   ] Thread-36 After updateMap() - Step: 4 , Agent: A3
+[17:00:44:802] [INFO   ] updateMap() End
+[17:00:44:803] [INFO   ] Thread-36 step() Waiting for PATHFINDER_RESULT - Step: 4 , Agent: A3
+[17:00:44:803] [INFO   ] updateMap() End
+[17:00:44:803] [INFO   ] Thread-35 After updateMap() - Step: 4 , Agent: A2
+[17:00:44:803] [INFO   ] Thread-34 After updateMap() - Step: 4 , Agent: A1
+[17:00:44:803] [INFO   ] Thread-35 step() Waiting for PATHFINDER_RESULT - Step: 4 , Agent: A2
+[17:00:44:804] [INFO   ] Thread-34 step() Waiting for PATHFINDER_RESULT - Step: 4 , Agent: A1
+[17:00:44:804] [INFO   ] Thread-37 doGroupProcessing() in neuem Thread - Step: 4
+[17:00:44:804] [INFO   ] Thread-37 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:44:804] [INFO   ] Thread-37 doGroupProcessing() Start - Agent: A1
+[17:00:44:804] [INFO   ] Thread-37 doGroupProcessing() Start - Agent: A2
+[17:00:44:805] [INFO   ] Thread-37 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:44:805] [INFO   ] Thread-37 doGroupProcessing() Start - Agent: A3
+[17:00:44:805] [INFO   ] Thread-37 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:44:805] [INFO   ] Thread-37 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:44:805] [INFO   ] Thread-37 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
+[17:00:44:805] [INFO   ] Thread-37 doGroupProcessing() Loop - Supervisor: A1
+[17:00:44:805] [INFO   ] Thread-37 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:48:875] [INFO   ] Thread-40 step() Start in neuem Thread - Step: 5 , Agent: A3
+[17:00:48:875] [INFO   ] Thread-39 step() Start in neuem Thread - Step: 5 , Agent: A2
+[17:00:48:875] [INFO   ] Thread-38 step() Start in neuem Thread - Step: 5 , Agent: A1
+[17:00:48:876] [INFO   ] Thread-39 Before updateMap() - Step: 5 , Agent: A2
+[17:00:48:876] [INFO   ] Thread-40 Before updateMap() - Step: 5 , Agent: A3
+[17:00:48:876] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:48:876] [INFO   ] Thread-38 Before updateMap() - Step: 5 , Agent: A1
+[17:00:48:876] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:48:876] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:48:877] [INFO   ] updateMap() End
+[17:00:48:876] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:48:877] [INFO   ] Thread-39 After updateMap() - Step: 5 , Agent: A2
+[17:00:48:877] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:48:877] [INFO   ] Thread-39 step() Waiting for PATHFINDER_RESULT - Step: 5 , Agent: A2
+[17:00:48:877] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=9]
+[17:00:48:877] [INFO   ] updateMap() End
+[17:00:48:878] [INFO   ] updateMap() End
+[17:00:48:878] [INFO   ] Thread-40 After updateMap() - Step: 5 , Agent: A3
+[17:00:48:878] [INFO   ] Thread-38 After updateMap() - Step: 5 , Agent: A1
+[17:00:48:878] [INFO   ] Thread-40 step() Waiting for PATHFINDER_RESULT - Step: 5 , Agent: A3
+[17:00:48:878] [INFO   ] Thread-38 step() Waiting for PATHFINDER_RESULT - Step: 5 , Agent: A1
+[17:00:48:878] [INFO   ] Thread-41 doGroupProcessing() in neuem Thread - Step: 5
+[17:00:48:879] [INFO   ] Thread-41 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:48:879] [INFO   ] Thread-41 doGroupProcessing() Start - Agent: A1
+[17:00:48:879] [INFO   ] Thread-41 doGroupProcessing() Start - Agent: A2
+[17:00:48:879] [INFO   ] Thread-41 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:48:879] [INFO   ] Thread-41 doGroupProcessing() Start - Agent: A3
+[17:00:48:879] [INFO   ] Thread-41 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:48:880] [INFO   ] Thread-41 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:48:880] [INFO   ] Thread-41 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
+[17:00:48:880] [INFO   ] Thread-41 doGroupProcessing() Loop - Supervisor: A1
+[17:00:48:880] [INFO   ] Thread-41 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:52:841] [INFO   ] Thread-42 step() Start in neuem Thread - Step: 6 , Agent: A1
+[17:00:52:841] [INFO   ] Thread-44 step() Start in neuem Thread - Step: 6 , Agent: A3
+[17:00:52:842] [INFO   ] Thread-42 Before updateMap() - Step: 6 , Agent: A1
+[17:00:52:841] [INFO   ] Thread-43 step() Start in neuem Thread - Step: 6 , Agent: A2
+[17:00:52:842] [INFO   ] Thread-44 Before updateMap() - Step: 6 , Agent: A3
+[17:00:52:842] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:52:842] [INFO   ] Thread-43 Before updateMap() - Step: 6 , Agent: A2
+[17:00:52:842] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:52:842] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=9]
+[17:00:52:843] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:52:843] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:52:843] [INFO   ] updateMap() End
+[17:00:52:843] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:52:843] [INFO   ] updateMap() End
+[17:00:52:843] [INFO   ] Thread-42 After updateMap() - Step: 6 , Agent: A1
+[17:00:52:843] [INFO   ] updateMap() End
+[17:00:52:843] [INFO   ] Thread-44 After updateMap() - Step: 6 , Agent: A3
+[17:00:52:844] [INFO   ] Thread-42 step() Waiting for PATHFINDER_RESULT - Step: 6 , Agent: A1
+[17:00:52:844] [INFO   ] Thread-43 After updateMap() - Step: 6 , Agent: A2
+[17:00:52:844] [INFO   ] Thread-44 step() Waiting for PATHFINDER_RESULT - Step: 6 , Agent: A3
+[17:00:52:844] [INFO   ] Thread-43 step() Waiting for PATHFINDER_RESULT - Step: 6 , Agent: A2
+[17:00:52:844] [INFO   ] Thread-45 doGroupProcessing() in neuem Thread - Step: 6
+[17:00:52:845] [INFO   ] Thread-45 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:52:845] [INFO   ] Thread-45 doGroupProcessing() Start - Agent: A1
+[17:00:52:845] [INFO   ] Thread-45 doGroupProcessing() Start - Agent: A2
+[17:00:52:845] [INFO   ] Thread-45 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:52:845] [INFO   ] Thread-45 doGroupProcessing() Start - Agent: A3
+[17:00:52:845] [INFO   ] Thread-45 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:52:845] [INFO   ] Thread-45 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:52:846] [INFO   ] Thread-45 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
+[17:00:52:846] [INFO   ] Thread-45 doGroupProcessing() Loop - Supervisor: A1
+[17:00:52:846] [INFO   ] Thread-45 doGroupProcessing() Befor Test updateSupervisor()
+[17:00:56:917] [INFO   ] Thread-46 step() Start in neuem Thread - Step: 7 , Agent: A1
+[17:00:56:917] [INFO   ] Thread-48 step() Start in neuem Thread - Step: 7 , Agent: A3
+[17:00:56:917] [INFO   ] Thread-47 step() Start in neuem Thread - Step: 7 , Agent: A2
+[17:00:56:918] [INFO   ] Thread-48 Before updateMap() - Step: 7 , Agent: A3
+[17:00:56:918] [INFO   ] Thread-46 Before updateMap() - Step: 7 , Agent: A1
+[17:00:56:918] [INFO   ] Thread-47 Before updateMap() - Step: 7 , Agent: A2
+[17:00:56:918] [INFO   ] updateMap() Start - Agent: A3 , Supervisor: A2
+[17:00:56:918] [INFO   ] updateMap() Start - Agent: A1 , Supervisor: A1
+[17:00:56:918] [INFO   ] updateMap() Start - Agent: A2 , Supervisor: A2
+[17:00:56:918] [INFO   ] updateMap() Start - AgentPosition: A3 , java.awt.Point[x=11,y=9]
+[17:00:56:918] [INFO   ] updateMap() Start - AgentPosition: A1 , java.awt.Point[x=10,y=9]
+[17:00:56:918] [INFO   ] updateMap() Start - AgentPosition: A2 , java.awt.Point[x=10,y=10]
+[17:00:56:918] [INFO   ] updateMap() End
+[17:00:56:918] [INFO   ] updateMap() End
+[17:00:56:918] [INFO   ] Thread-48 After updateMap() - Step: 7 , Agent: A3
+[17:00:56:918] [INFO   ] updateMap() End
+[17:00:56:918] [INFO   ] Thread-46 After updateMap() - Step: 7 , Agent: A1
+[17:00:56:918] [INFO   ] Thread-48 step() Waiting for PATHFINDER_RESULT - Step: 7 , Agent: A3
+[17:00:56:919] [INFO   ] Thread-47 After updateMap() - Step: 7 , Agent: A2
+[17:00:56:919] [INFO   ] Thread-46 step() Waiting for PATHFINDER_RESULT - Step: 7 , Agent: A1
+[17:00:56:919] [INFO   ] Thread-47 step() Waiting for PATHFINDER_RESULT - Step: 7 , Agent: A2
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() in neuem Thread - Step: 7
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() allSupervisors: [de.feu.massim22.group3.agents.Supervisor@57829d67, de.feu.massim22.group3.agents.Supervisor@77b52d12]
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() Start - Agent: A1
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() Start - Agent: A2
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() Found - Agent: A2 , Position: java.awt.Point[x=1,y=-1]
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() Start - Agent: A3
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() Found - Agent: A3 , Position: java.awt.Point[x=-1,y=1]
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() meeting in vision - Agent1: A2 , Agent2: A3
+[17:00:56:919] [INFO   ] Thread-49 doGroupProcessing() no merge, already in same group - Supervisor1: A2 , Supervisor2: A2
+[17:00:56:920] [INFO   ] Thread-49 doGroupProcessing() Loop - Supervisor: A1
+[17:00:56:920] [INFO   ] Thread-49 doGroupProcessing() Befor Test updateSupervisor()

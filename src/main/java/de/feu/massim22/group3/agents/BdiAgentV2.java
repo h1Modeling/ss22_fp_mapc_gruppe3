@@ -23,7 +23,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public Desire intention;
     public boolean decisionsDone;
     public boolean beliefsDone;
-    public List<Desire> desires = new ArrayList<Desire>();
+    public List<Desire> desires;
     public int directionCounter = 0;
     public int circleSize = 5;
 
@@ -51,6 +51,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
     @Override
     public Action step() {
+        desires = new ArrayList<Desire>();
         updateBeliefs();
         getSupervisor().decisionsDone = false;
         decisionsDone = false; // Agent
@@ -100,7 +101,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         }
 
         // nächste Action
-        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.name + " , Action: " +  intention.outputAction + " , Params: " +  intention.outputAction.getParameters().get(0));
         return intention.outputAction;
     }
 

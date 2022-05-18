@@ -120,9 +120,11 @@ public class StepUtilities {
          */
         for (Supervisor supervisor : allSupervisors) {
             AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - Supervisor: " + supervisor.getName());
-            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Befor Test updateSupervisor()");
-            Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
-            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() After Test updateSupervisor()");
+            
+            /* Aufruf Pathfinder (GLFW / glDispatchCompute) */
+            //AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Befor Test updateSupervisor()");
+            //Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
+            //AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() After Test updateSupervisor()");
 
             Runnable runnable = () -> { // Gruppenmap berechnen 
                 AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Before calcGroup() - Supervisor: " + supervisor.getName());
@@ -176,10 +178,11 @@ public class StepUtilities {
         HinderEnemy hinder = new HinderEnemy(agent);
         
         GoGoalZone goGoalZone = new GoGoalZone(agent);
-        if (dig.isExecutable(dig)) { // desire ist möglich , hinzufügen
-            dig.outputAction = dig.getNextAction();
-            getPriority(dig);
-            agent.desires.add(dig);
+        if (dig.isExecutable(goGoalZone)) { // desire ist möglich , hinzufügen
+            dig.outputAction = goGoalZone.getNextAction();
+            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() - Action: " + goGoalZone.outputAction);
+            getPriority(goGoalZone);
+            agent.desires.add(goGoalZone);
         }
         
         //GoRoleZone goRoleZone = new GoRoleZone(agent);
@@ -188,6 +191,7 @@ public class StepUtilities {
         LocalExplore expl = new LocalExplore(agent);
         if (expl.isExecutable(expl)) { // desire ist möglich , hinzufügen
             expl.outputAction = expl.getNextAction();
+            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() - Action: " + expl.outputAction);
             getPriority(expl);
             agent.desires.add(expl);
         }
@@ -267,11 +271,14 @@ public class StepUtilities {
         Desire result = null;
         int priority = 1000;
         for (Desire desire : agent.desires) {
+            AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName() + " , Desire: " + desire.name + " , Action: " +  desire.outputAction);
             if (desire.priority < priority) {
                 result = desire;
                 priority = desire.priority;
             }
         }
+        
+        AgentLogger.info(Thread.currentThread().getName() + " determineIntention() End - Agent: " + agent.getName() + " , Intention: " + result.name + " , Action: " +  result.outputAction);
         return result;
     }
     
