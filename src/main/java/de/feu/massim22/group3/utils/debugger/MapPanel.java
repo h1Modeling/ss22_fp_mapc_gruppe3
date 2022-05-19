@@ -70,7 +70,9 @@ public class MapPanel extends JPanel {
             selectedAgentName = "";
         }
         // Interesting Point
-        selectedInterestingPointIndex = getInterestingPointIndex(selectedCell);
+        if (data != null) {
+            selectedInterestingPointIndex = getInterestingPointIndex(selectedCell);
+        }
 
         repaint();
     }
