@@ -1,14 +1,14 @@
 package de.feu.massim22.group3.agents;
 
-import java.util.Iterator;
+import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesires;
 import eis.iilang.*;
 import massim.protocol.data.Thing;
 
 
-public class DodgeClear extends Desire {
+public class DodgeClear extends ADesire {
 	
-	DodgeClear(BdiAgentV2 agent){
-		super("DodgeClear", agent);
+	DodgeClear(BdiAgentV2 agent, DesireUtilities desireProcessing){
+		super("DodgeClear", agent, desireProcessing);
 	}
 
 	/**
@@ -19,7 +19,7 @@ public class DodgeClear extends Desire {
 	 * @return boolean - the desire is possible or not
 	 */
     @Override
-	public boolean isExecutable(Desire desire) {
+	public boolean isExecutable() {
 		boolean result = false;
 
 		for (Thing thing : agent.belief.getThings()) {
