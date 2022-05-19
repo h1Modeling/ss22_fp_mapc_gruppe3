@@ -30,7 +30,7 @@ import massim.protocol.data.Subject.Type;
 public class Belief {
 
     // Start Beliefs
-    private String name;
+    private String name = "";
     private String team;
     private int teamSize;
     private int steps;
@@ -212,6 +212,10 @@ public class Belief {
         updatePosition();
     }
 
+    int getSteps() {
+        return steps;
+    }
+
     void updateFromPathFinding(List<Parameter> points) {
         reachableDispensers.clear();
         reachableGoalZones.clear();
@@ -249,6 +253,10 @@ public class Belief {
         }
     }
 
+    String getTeam() {
+        return team;
+    }
+
     public int getVision() {
         Role r = roles.get(role);
         if (r == null) { throw new IllegalArgumentException("Current role is not in existing roles"); }
@@ -264,6 +272,7 @@ public class Belief {
     }
 
     public Set<TaskInfo> getTaskInfo() {
+        taskInfo.removeIf(e -> e.deadline < step);
         return taskInfo;
     }
 

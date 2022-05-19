@@ -65,18 +65,18 @@ class ReportListTest {
         Thread.sleep(1);
         toMerge.add(new MapCellReport(CellType.DISPENSER_4, ZoneType.NONE, 4, 4));
         Thread.sleep(1);
-        list.add(new MapCellReport(CellType.DISPENSER_5, ZoneType.NONE, 5, 5));
+        list.add(new MapCellReport(CellType.DISPENSER_1, ZoneType.NONE, 5, 5));
         Thread.sleep(1);
-        toMerge.add(new MapCellReport(CellType.DISPENSER_6, ZoneType.NONE, 6, 6));
+        toMerge.add(new MapCellReport(CellType.DISPENSER_2, ZoneType.NONE, 6, 6));
         Thread.sleep(1);
-        toMerge.add(new MapCellReport(CellType.DISPENSER_7, ZoneType.NONE, 7, 7));
+        toMerge.add(new MapCellReport(CellType.DISPENSER_3, ZoneType.NONE, 7, 7));
         Thread.sleep(1);
         
         list.merge(toMerge);
         
-        assertEquals(CellType.DISPENSER_7, list.get(4).getCellType());
-        assertEquals(CellType.DISPENSER_6, list.get(3).getCellType());
-        assertEquals(CellType.DISPENSER_5, list.get(2).getCellType());
+        assertEquals(CellType.DISPENSER_3, list.get(4).getCellType());
+        assertEquals(CellType.DISPENSER_2, list.get(3).getCellType());
+        assertEquals(CellType.DISPENSER_1, list.get(2).getCellType());
         assertEquals(CellType.DISPENSER_4, list.get(1).getCellType());
         assertEquals(CellType.DISPENSER_3, list.get(0).getCellType());
     }

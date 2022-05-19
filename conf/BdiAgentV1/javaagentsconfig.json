@@ -8,5 +8,6 @@
       "team":  "A",
       "class": "BdiAgentV1"
     }
-  ]
+  ],
+  "manualMode" : false
 }

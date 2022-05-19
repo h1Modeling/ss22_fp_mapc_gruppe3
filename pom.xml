@@ -99,6 +99,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout</artifactId>
+            <version>3.7.4</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
         </dependency>
@@ -164,6 +170,7 @@
             <artifactId>eismassim</artifactId>
             <version>4.4</version>
         </dependency>
+
     </dependencies>
 
 </project>
