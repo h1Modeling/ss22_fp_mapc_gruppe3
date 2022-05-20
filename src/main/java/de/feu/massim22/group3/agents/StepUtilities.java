@@ -58,7 +58,11 @@ public class StepUtilities {
         ArrayList<AgentMeeting> foundAgent = new ArrayList<AgentMeeting>();
         Set<Supervisor> exSupervisors = new HashSet<Supervisor>();
         Set<Thing> things = new HashSet<>();
-        AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() allSupervisors: " + allSupervisors);
+        ArrayList<String> allSupervisorNames = new ArrayList<String>();
+        for (Supervisor s : allSupervisors) {
+            allSupervisorNames.add(s.getName());
+        }
+        AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() allSupervisors: " + allSupervisorNames);
 
         if (allSupervisors.size() > 1) {
             // Noch gibt es mehr als einen Supervisor
