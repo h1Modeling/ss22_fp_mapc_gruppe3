@@ -21,7 +21,7 @@ public class GoGoalZone extends ADesire {
     @Override
     public boolean isExecutable() {
         //es existiert eine goalZone ( die der Agent erreichen kann)
-        if(agent.belief.getReachableGoalZones().size() > 0)
+        if (agent.belief.getReachableGoalZones().size() > 0)
             return true;
         else {
             return false;
@@ -41,7 +41,6 @@ public class GoGoalZone extends ADesire {
         // Richtung zu goalZone To Do : Hindernissprüfung
         DirectionUtil.getDirection(agent.belief.getPosition(), nearestGoalZone.position());
         String direction = DirectionUtil.intToString(nearestGoalZone.direction());
-        Point p = DirectionUtil.getCellInDirection(direction);
-        return new Action("move", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
+        return new Action("move", new Identifier(direction));
     }
 }

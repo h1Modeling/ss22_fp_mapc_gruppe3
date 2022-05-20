@@ -41,7 +41,6 @@ public class GoRoleZone extends ADesire {
         // Richtung zu roleZone To Do : Hindernissprüfung
         DirectionUtil.getDirection(agent.belief.getPosition(), nearestRoleZone.position());
         String direction = DirectionUtil.intToString(nearestRoleZone.direction());
-        Point p = DirectionUtil.getCellInDirection(direction);
-        return new Action("move", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
+        return new Action("move", new Identifier(direction));
     }
 }

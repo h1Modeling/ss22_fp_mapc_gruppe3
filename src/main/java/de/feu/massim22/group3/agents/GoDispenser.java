@@ -70,8 +70,7 @@
             // Richtung zu Dispenser To Do : Hindernissprüfung
             DirectionUtil.getDirection(agent.belief.getPosition(), nearestDispenser.position());
             String direction = DirectionUtil.intToString(nearestDispenser.direction());
-            Point p = DirectionUtil.getCellInDirection(direction);
-            return new Action("move", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
+            return new Action("move", new Identifier(direction));
         }       
     }
 
