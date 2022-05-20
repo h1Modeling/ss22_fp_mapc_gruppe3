@@ -1,15 +1,14 @@
 package de.feu.massim22.group3.agents;
 
 import java.awt.Point;
-import java.util.List;
-
-import de.feu.massim22.group3.agents.Belief.ReachableRoleZone;
+import de.feu.massim22.group3.agents.Belief.*;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
-public class GoRoleZone extends Desire {
-    GoRoleZone(BdiAgentV2 agent) {
-        super("GoRoleZone", agent);
+public class GoRoleZone extends ADesire {
+    
+    GoRoleZone(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+        super("GoRoleZone", agent, desireProcessing);
     }
 
     /**
@@ -20,13 +19,13 @@ public class GoRoleZone extends Desire {
      * @return boolean - the desire is possible or not
      */
     @Override
-    public boolean isExecutable(Desire desire) {
-    	//es existiert eine roleZone ( die der Agent erreichen kann)
-    	if(agent.belief.getReachableRoleZones().size() > 0)
-    		return true;
-    	else {
-    		return false;
-    	}
+    public boolean isExecutable() {
+        //es existiert eine roleZone ( die der Agent erreichen kann)
+        if(agent.belief.getReachableRoleZones().size() > 0)
+            return true;
+        else {
+            return false;
+        }
     }
     
     /**
@@ -36,26 +35,13 @@ public class GoRoleZone extends Desire {
      * 
      **/
     @Override
-	public Action getNextAction() {
-		// roleZone mit der kürzesten Entfernung zum Agenten
-		ReachableRoleZone nearestRoleZone = getNearestRoleZone(agent.belief.getReachableRoleZones());
-		// Richtung zu roleZone To Do : Hindernissprüfung
-		DirectionUtil.getDirection(agent.belief.getPosition(), nearestRoleZone.position());
-		String direction = DirectionUtil.intToString(nearestRoleZone.direction());
-		Point p = DirectionUtil.getCellInDirection(direction);
-		return new Action("move", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
-	}
-    
-    ReachableRoleZone getNearestRoleZone(List<ReachableRoleZone> inZoneList) {
-        int distance = 1000;
-        ReachableRoleZone result = null;
-        
-        for (ReachableRoleZone zone : (List<ReachableRoleZone>) inZoneList) {
-            if (zone.distance() < distance) {
-                distance = zone.distance();
-                result = zone;
-            }
-        }
-        return result;
+    public Action getNextAction() {
+        // roleZone mit der kürzesten Entfernung zum Agenten
+        ReachableRoleZone nearestRoleZone = desireProcessing.getNearestRoleZone(agent.belief.getReachableRoleZones());
+        // Richtung zu roleZone To Do : Hindernissprüfung
+        DirectionUtil.getDirection(agent.belief.getPosition(), nearestRoleZone.position());
+        String direction = DirectionUtil.intToString(nearestRoleZone.direction());
+        Point p = DirectionUtil.getCellInDirection(direction);
+        return new Action("move", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
     }
 }

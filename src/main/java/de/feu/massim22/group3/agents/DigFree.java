@@ -8,10 +8,10 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
 
-public class DigFree extends Desire {
+public class DigFree extends ADesire {
 	
-	DigFree(BdiAgentV2 agent){
-		super("DigFree", agent);
+	DigFree(BdiAgentV2 agent, DesireUtilities desireProcessing){
+		super("DigFree", agent, desireProcessing);
 	}
 	
 	/**
@@ -22,7 +22,7 @@ public class DigFree extends Desire {
 	 * @return boolean - the desire is possible or not
 	 */
 	@Override 
-	public boolean isExecutable(Desire desire) {
+	public boolean isExecutable() {
 		boolean result = false;
 		boolean north = false;
 		boolean east = false;
@@ -67,11 +67,11 @@ public class DigFree extends Desire {
 
         if (agent.belief.getAttachedThings().size() > 0) {
             List<ReachableGoalZone> zoneList = agent.belief.getReachableGoalZones();
-            ReachableGoalZone nearestZone = getNearestGoalZone(zoneList);
+            ReachableGoalZone nearestZone = desireProcessing.getNearestGoalZone(zoneList);
             direction = DirectionUtil.intToString(nearestZone.direction());
         } else {
             List<ReachableDispenser> zoneList = agent.belief.getReachableDispensers();
-            ReachableDispenser nearestZone = getNearestDispenser(zoneList);
+            ReachableDispenser nearestZone = desireProcessing.getNearestDispenser(zoneList);
             direction = DirectionUtil.intToString(nearestZone.direction());
         }
 
@@ -79,29 +79,5 @@ public class DigFree extends Desire {
         return new Action("clear", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
     }
 	
-    ReachableGoalZone getNearestGoalZone(List<ReachableGoalZone> inZoneList) {
-        int distance = 1000;
-        ReachableGoalZone result = null;
-        
-        for (ReachableGoalZone zone : (List<ReachableGoalZone>) inZoneList) {
-            if (zone.distance() < distance) {
-                distance = zone.distance();
-                result = zone;
-            }
-        }
-        return result;
-    }
-       
-    ReachableDispenser getNearestDispenser(List<ReachableDispenser> inZoneList) {
-        int distance = 1000;
-        ReachableDispenser result = null;
-        
-        for (ReachableDispenser zone : (List<ReachableDispenser>) inZoneList) {
-            if (zone.distance() < distance) {
-                distance = zone.distance();
-                result = zone;
-            }
-        }
-        return result;
-    }
+
 }
