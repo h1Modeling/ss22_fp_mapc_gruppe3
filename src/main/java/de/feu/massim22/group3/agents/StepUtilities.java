@@ -185,7 +185,22 @@ public class StepUtilities {
             agent.desires.add(goGoalZone);
         }
         
-        //GoRoleZone goRoleZone = new GoRoleZone(agent);
+        GoRoleZone goRoleZone = new GoRoleZone(agent);
+        if (dig.isExecutable(goRoleZone)) { // desire ist möglich , hinzufügen
+            dig.outputAction = goRoleZone.getNextAction();
+            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() - Action: " + goRoleZone.outputAction);
+            getPriority(goRoleZone);
+            agent.desires.add(goRoleZone);
+        }
+        
+        GoDispenser goDispenser = new GoDispenser(agent);
+        if (dig.isExecutable(goDispenser)) { // desire ist möglich , hinzufügen
+            dig.outputAction = goDispenser.getNextAction();
+            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() - Action: " + goDispenser.outputAction);
+            getPriority(goDispenser);
+            agent.desires.add(goDispenser);
+        }
+        
         // RemoveObstacle removeObstacle = new RemoveObstacle(agent);
         
         LocalExplore expl = new LocalExplore(agent);
@@ -252,6 +267,8 @@ public class StepUtilities {
         case "GoRoleZone":
             result = 30;
         case "ReactToNorm":
+            result = 40;
+        case "GoDispenser":
             result = 40;
         case "LocalExplore":
             result = 100;
@@ -343,7 +360,7 @@ public class StepUtilities {
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos =  interestingPoints.get(j).point();
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
-                    String direction = getDirection(agentPos, targetPos);
+                    String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
   
                 AgentLogger.info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));                   
@@ -360,38 +377,7 @@ public class StepUtilities {
         return calcResults;
     }
     
-    private String getDirection(Point from, Point to) {
-        String result = " ";
-        Point pointTarget = new Point(to.x - from.x, to.y - from.y);       
-        
-        if (pointTarget.x == 0) {
-            if (pointTarget.y < 0)
-                result = "n";
-            else
-                result = "s";
-        }
-
-        if (pointTarget.y == 0) {
-            if (pointTarget.x < 0)
-                result = "w";
-            else
-                result = "e";
-        }
-
-        if (pointTarget.x != 0 && pointTarget.y != 0) {
-            if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
-                if (pointTarget.x < 0)
-                    result = "w";
-                else
-                    result = "e";
-            else if (pointTarget.y < 0)
-                result = "n";
-            else
-                result = "s";
-        }
-
-        return result;
-    }
+   
     
     private Percept pathFindingResultToPercept(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
         AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept() Start - Agent: " + agent);
@@ -498,6 +484,38 @@ class DirectionUtil {
             y = 0;
         }
         return new Point(x, y);
+    }
+    static String getDirection(Point from, Point to) {
+        String result = " ";
+        Point pointTarget = new Point(to.x - from.x, to.y - from.y);       
+        
+        if (pointTarget.x == 0) {
+            if (pointTarget.y < 0)
+                result = "n";
+            else
+                result = "s";
+        }
+
+        if (pointTarget.y == 0) {
+            if (pointTarget.x < 0)
+                result = "w";
+            else
+                result = "e";
+        }
+
+        if (pointTarget.x != 0 && pointTarget.y != 0) {
+            if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
+                if (pointTarget.x < 0)
+                    result = "w";
+                else
+                    result = "e";
+            else if (pointTarget.y < 0)
+                result = "n";
+            else
+                result = "s";
+        }
+
+        return result;
     }
 }
 
