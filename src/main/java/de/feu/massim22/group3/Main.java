@@ -67,11 +67,12 @@ public class Main {
         scheduler.setEnvironment(ei);
 
         AgentLogger.info("PHASE 4: RUNNING");
-        int step = 0;
+
+        // int step = 0;
         while ((ei.getState() == EnvironmentState.RUNNING)) {
-            //AgentLogger.info("SCHEDULER STEP: " + step);
+            // AgentLogger.fine("SCHEDULER STEP " + step);
             scheduler.step();
-            step++;
+            // step++;
         }
     }
 }

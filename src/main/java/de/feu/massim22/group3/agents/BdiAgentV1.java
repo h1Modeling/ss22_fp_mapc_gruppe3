@@ -15,6 +15,8 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
+import massim.protocol.data.NormInfo;
+import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
 public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
@@ -81,6 +83,13 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         switch (taskName) {
         case UPDATE:
             updatePercepts();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            Navi.get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRole(), belief.getEnergy(), belief.getLastAction(), belief.getLastActionResult());
             desireHandler.setNextAction();
             break;
         case TO_SUPERVISOR:
@@ -111,7 +120,13 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         Point position = belief.getPosition();
         int vision = belief.getVision();
         int step = belief.getStep();
-        //Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints, rolePoints, step);
+        String team = belief.getTeam();
+        int maxSteps = belief.getSteps();
+        int score = (int)belief.getScore();
+        Set<NormInfo> normsInfo = belief.getNormsInfo(); 
+        Set<TaskInfo> taskInfo = belief.getTaskInfo();
+        Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
+                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo);
     }
 
     private void setDummyAction() {

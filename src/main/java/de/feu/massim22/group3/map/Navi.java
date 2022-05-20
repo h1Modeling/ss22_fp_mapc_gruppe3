@@ -6,11 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import org.lwjgl.BufferUtils;
 
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.debugger.DebugStepListener;
+import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
+import de.feu.massim22.group3.utils.debugger.IGraphicalDebugger;
+import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
+import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -21,9 +28,11 @@ import eis.iilang.Percept;
 import java.awt.Point;
 import java.nio.FloatBuffer;
 
+import massim.protocol.data.NormInfo;
+import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
-public class Navi implements INaviAgentV1, INaviAgentV2 {
+public class Navi {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
@@ -31,18 +40,26 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
     private Map<String, String> agentSupervisor = new HashMap<>();
     private Map<String, Integer> agentStep = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
+    private IGraphicalDebugger debugger = new GraphicalDebugger();
     
     private Navi() {
         PathFinder.init();
+
+        // Open Debugger
+        SwingUtilities.invokeLater((Runnable)debugger);
+
         // TODO At end of application PathFinder must be closed to free resources
     }
 
-    @SuppressWarnings("unchecked")
-    public static synchronized <T extends INavi> T get() {
+    public static synchronized Navi get() {
         if (Navi.instance == null) {
             instance = new Navi();
         }
-        return (T)(Navi.instance);
+        return Navi.instance;
+    }
+
+    public void setDebugStepListener(DebugStepListener listener) {
+        debugger.setDebugStepListener(listener);
     }
 
     public void setMailService(MailService mailService) {
@@ -58,62 +75,23 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         agentStep.put(name, -1);
         openGlHandler.put(name, PathFinder.createOpenGlContext());
     }
-   
-    // Melinda
-    @Override
-    public void registerSupervisor(String name, String supervisor) {
-        agentSupervisor.put(name, supervisor);
-    }
-    
-    @Override
-    public Point getPosition(String name, String supervisor) {
-        return maps.get(supervisor).getAgentPosition(name);
-    }
- 
-    @Override
-    public GameMap getMap(String supervisor) {
-        return maps.get(supervisor);
-    }
-    //Melinda Ende
 
-    @Override
-    public void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
-
-        updateMap(supervisor, agent, agentIndex, position, vision, things, goalPoints, rolePoints, step);
-
-        // Test if all agents in group have already sent step information
-        boolean allSent = true;
-        for (String agentKey : agentStep.keySet()) {
-            // Get supervisor
-            String aSupervisor = agentSupervisor.get(agentKey);
-            if (aSupervisor.equals(supervisor)) {
-                // Test if agent is in same step
-                Integer aStep = agentStep.get(agentKey);
-                if (aStep < step) {
-                    allSent = false;
-                    break;
-                }
-            }
-        }
-
-        // Start calculation
-        if (allSent) {
-            GameMap map = maps.get(supervisor);
-            startCalculation(supervisor, map);
-        }
+    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess) {
+        AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess);
+        debugger.setAgentData(data);
     }
 
-    @Override
-    public void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step) {
-        AgentLogger.info("updateMap() Start - Agent: " + agent + " , Supervisor: " + supervisor); 
-        if (!maps.containsKey(supervisor)) {
+    public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
+        List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
+        Set<TaskInfo> taskInfo) {
+
+            if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
-        GameMap map = maps.get(supervisor);
+        GameMap map = maps.get(supervisor); 
 
         // Set agent Position
         map.setAgentPosition(agent, position);
-        AgentLogger.info("updateMap() Start - AgentPosition: " + agent + " , " + map.getInternalAgentPosition(agent));
 
         // create temporary vision array
         CellType[][] thingVision = getBlankCellArray(vision);
@@ -130,7 +108,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         thingVision[vision][vision] = CellType.TEAMMATE;
         // Things
         for (Thing t : things) {
-            CellType type = thingToCellType(t);
+            CellType type;
+            if (t.type.equals(Thing.TYPE_ENTITY)) {
+                type = t.details.equals(team) ? CellType.TEAMMATE : CellType.ENEMY;
+            } else {
+                type = Convert.thingToCellType(t);
+            }
             thingVision[t.y + vision][t.x + vision] = type;
         }
         // Role Zones
@@ -155,11 +138,39 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
 
         // Update internal step
         agentStep.put(agent, step);
-        AgentLogger.info("updateMap() End"); 
+
+        // Update Debugger simulation data
+        debugger.setSimInfo(step, maxSteps, score);
+
+        // Update Debugger Norms
+        debugger.setNorms(normsInfo, step);
+
+        // Update Debugger Tasks
+        debugger.setTasks(taskInfo, step);
+
+        // Test if all agents in group have already sent step information
+        boolean allSent = true;
+        for (String agentKey : agentStep.keySet()) {
+            // Get supervisor
+            String aSupervisor = agentSupervisor.get(agentKey);
+            if (aSupervisor.equals(supervisor)) {
+                // Test if agent is in same step
+                Integer aStep = agentStep.get(agentKey);
+                if (aStep < step) {
+                    allSent = false;
+                    break;
+                }
+            }
+        }
+
+        // Start calculation
+        if (allSent) {
+            startCalculation(supervisor, map);
+        }
     }
 
     // Creates array with CellType.FREE in vision and CellType.UNKNOWN outside of vision
-    public CellType[][] getBlankCellArray(int vision) {
+    CellType[][] getBlankCellArray(int vision) {
         int size = 2 * vision + 1;
         CellType[][] cells = new CellType[size][size];
         // Initialize with unknown cells
@@ -269,6 +280,17 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         if (numberGoals > 0) {
             // Start Path Finding
             PathFindingResult[][] result = finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
+
+            // Update Debugger
+            CellType[][] cells = map.getDebugCells();
+            Point topLeft = map.getTopLeft();
+            Map<Point, String> agentPosition = map.getDebugAgentPosition();
+            List<Point> roleZones = map.getRoleCache();
+            List<Point> goalZones = map.getGoalCache();
+
+            // Update debugger
+            GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
+            debugger.setGroupData(debugData);
             
             // Send Result to Agents
             if (mailService != null) {
@@ -306,43 +328,5 @@ public class Navi implements INaviAgentV1, INaviAgentV2 {
         Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
         mailService.sendMessage(message, agent, name);
-    }
-
-    private CellType thingToCellType(Thing t) {
-        switch (t.type) {
-            case Thing.TYPE_BLOCK: return blockToCellType(t.details);
-            case Thing.TYPE_DISPENSER: return dispenserToCellType(t.details);
-            case Thing.TYPE_ENTITY: return CellType.ENTITY;
-            case Thing.TYPE_OBSTACLE: return CellType.OBSTACLE;
-            case Thing.TYPE_MARKER: return CellType.FREE;
-            default: return CellType.UNKNOWN;
-        } 
-    }
-
-    private CellType blockToCellType(String blockDetail) {
-        switch (blockDetail) {
-            case "b0": return CellType.BLOCK_0;
-            case "b1": return CellType.BLOCK_1;
-            case "b2": return CellType.BLOCK_2;
-            case "b3": return CellType.BLOCK_3;
-            case "b4": return CellType.BLOCK_4;
-            default: return CellType.UNKNOWN;
-        }
-    }
-
-    private CellType dispenserToCellType(String blockDetail) {
-        switch (blockDetail) {
-            case "b0": return CellType.DISPENSER_0;
-            case "b1": return CellType.DISPENSER_1;
-            case "b2": return CellType.DISPENSER_2;
-            case "b3": return CellType.DISPENSER_3;
-            case "b4": return CellType.DISPENSER_4;
-            default: return CellType.UNKNOWN;
-        }
-    }
-    
-    @Override
-    public void updateSupervisor(String supervisor) {
-    	startCalculation(supervisor, maps.get(supervisor));
     }
 }
