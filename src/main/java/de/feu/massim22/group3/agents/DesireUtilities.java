@@ -27,6 +27,9 @@ public class DesireUtilities {
         doDecision(agent, new GoGoalZone(agent, this));
         doDecision(agent, new GoRoleZone(agent, this));
         doDecision(agent, new GoDispenser(agent, this));
+        doDecision(agent, new Submit(agent, this));
+        doDecision(agent, new GetBlock(agent, this));
+        doDecision(agent, new AdoptRole(agent, this));
         //doDecision(agent, new RemoveObstacle(agent, this));
         doDecision(agent, new LocalExplore(agent, this));
         
@@ -85,6 +88,14 @@ public class DesireUtilities {
         case "GoGoalZone":
             result = 80;
         case "GoRoleZone":
+            result = 30;
+        case "GoDispenser":
+            result = 30;
+        case "Submit":
+            result = 30;  
+        case "GetBlock":
+            result = 30;
+        case "AdoptRole":
             result = 30;
         case "ReactToNorm":
             result = 40;
