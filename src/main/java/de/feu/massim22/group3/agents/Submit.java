@@ -4,7 +4,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
 
-//ToDo Klassenlogik
+//TODO Klassenlogik
 public class Submit extends ADesire {
 
 	Submit(BdiAgentV2 agent, DesireUtilities desireProcessing) {

@@ -32,7 +32,7 @@ import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
-public class Navi {
+public class Navi implements INaviAgentV1, INaviAgentV2  {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
@@ -51,11 +51,11 @@ public class Navi {
         // TODO At end of application PathFinder must be closed to free resources
     }
 
-    public static synchronized Navi get() {
+    public static synchronized <T extends INavi> T get() {
         if (Navi.instance == null) {
             instance = new Navi();
         }
-        return Navi.instance;
+        return (T) (Navi.instance);
     }
 
     public void setDebugStepListener(DebugStepListener listener) {
@@ -75,15 +75,65 @@ public class Navi {
         agentStep.put(name, -1);
         openGlHandler.put(name, PathFinder.createOpenGlContext());
     }
+    
+    // Melinda
+    @Override
+    public void registerSupervisor(String name, String supervisor) {
+        agentSupervisor.put(name, supervisor);
+    }
+    
+    @Override
+    public Point getPosition(String name, String supervisor) {
+        return maps.get(supervisor).getAgentPosition(name);
+    }
+ 
+    @Override
+    public GameMap getMap(String supervisor) {
+        return maps.get(supervisor);
+    }
+    //Melinda Ende
 
     public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess) {
         AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess);
         debugger.setAgentData(data);
     }
+    
+    @Override
+    public void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
+            Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps,
+            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo) {
 
-    public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
+        updateMap(supervisor, agent, agentIndex, position, vision, things, goalPoints, rolePoints, step, team, maxSteps,
+                score, normsInfo, taskInfo);
+
+        // Test if all agents in group have already sent step information
+        boolean allSent = true;
+        for (String agentKey : agentStep.keySet()) {
+            // Get supervisor
+            String aSupervisor = agentSupervisor.get(agentKey);
+            if (aSupervisor.equals(supervisor)) {
+                // Test if agent is in same step
+                Integer aStep = agentStep.get(agentKey);
+                if (aStep < step) {
+                    allSent = false;
+                    break;
+                }
+            }
+        }
+
+        // Start calculation
+        if (allSent) {
+            GameMap map = maps.get(supervisor);
+            startCalculation(supervisor, map);
+        }
+    }
+
+    @Override
+    public void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
+            Set<TaskInfo> taskInfo) {
+    /*public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
         List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
-        Set<TaskInfo> taskInfo) {
+        Set<TaskInfo> taskInfo) {*/
 
             if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
@@ -147,30 +197,11 @@ public class Navi {
 
         // Update Debugger Tasks
         debugger.setTasks(taskInfo, step);
-
-        // Test if all agents in group have already sent step information
-        boolean allSent = true;
-        for (String agentKey : agentStep.keySet()) {
-            // Get supervisor
-            String aSupervisor = agentSupervisor.get(agentKey);
-            if (aSupervisor.equals(supervisor)) {
-                // Test if agent is in same step
-                Integer aStep = agentStep.get(agentKey);
-                if (aStep < step) {
-                    allSent = false;
-                    break;
-                }
-            }
-        }
-
-        // Start calculation
-        if (allSent) {
-            startCalculation(supervisor, map);
-        }
     }
 
     // Creates array with CellType.FREE in vision and CellType.UNKNOWN outside of vision
-    CellType[][] getBlankCellArray(int vision) {
+    @Override
+    public CellType[][] getBlankCellArray(int vision) {
         int size = 2 * vision + 1;
         CellType[][] cells = new CellType[size][size];
         // Initialize with unknown cells
@@ -328,5 +359,10 @@ public class Navi {
         Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
         mailService.sendMessage(message, agent, name);
+    }
+    
+    @Override
+    public void updateSupervisor(String supervisor) {
+        startCalculation(supervisor, maps.get(supervisor));
     }
 }

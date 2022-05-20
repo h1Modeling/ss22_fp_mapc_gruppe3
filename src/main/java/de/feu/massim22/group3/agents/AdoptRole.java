@@ -3,7 +3,7 @@ package de.feu.massim22.group3.agents;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
-//ToDo Klassenlogik
+//TODO Klassenlogik
 public class AdoptRole extends ADesire {
 	AdoptRole(BdiAgentV2 agent, DesireUtilities desireProcessing) {
 		super("AdoptRole", agent, desireProcessing);

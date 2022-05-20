@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
+//TODO Klassenlogik
 public class HinderEnemy extends ADesire {
     HinderEnemy(BdiAgentV2 agent, DesireUtilities desireProcessing) {
         super("HinderEnemy", agent, desireProcessing);
@@ -10,7 +11,7 @@ public class HinderEnemy extends ADesire {
 
     @Override
     public boolean isExecutable() {
-        return true;
+        return false;
     }
 
     @Override

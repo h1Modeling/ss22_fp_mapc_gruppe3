@@ -6,11 +6,10 @@ import java.util.List;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.*;
+import massim.protocol.data.*;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
-
-import massim.protocol.data.Thing;
 
 public class StepUtilities {
     DesireUtilities desireProcessing;
@@ -187,7 +186,10 @@ public class StepUtilities {
                 + " , Agent: " + agent.getName());
         Navi.<INaviAgentV2>get().updateMap(agent.supervisor.getName(), agent.getName(), agent.index,
                 agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(),
-                agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep());
+                agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep(),
+                agent.belief.getTeam(), agent.belief.getSteps(),  (int)agent.belief.getScore(), agent.belief.getNormsInfo(),
+                agent.belief.getTaskInfo());
+
         AgentLogger.info(Thread.currentThread().getName() + " After updateMap() - Step: " + agent.belief.getStep()
                 + " , Agent: " + agent.getName());
     }
