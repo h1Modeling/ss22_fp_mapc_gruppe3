@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents;
 
 import java.util.List;
+import java.util.*;
 
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
 import de.feu.massim22.group3.agents.Desires.ADesires.AdoptRole;
@@ -17,6 +18,7 @@ import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
+import massim.protocol.data.TaskInfo;
 import massim.protocol.messages.scenario.Actions;
 
 public class DesireUtilities {
@@ -71,9 +73,28 @@ public class DesireUtilities {
      */
     public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor) {
         boolean result = false;
+        int minBlockCount = 1000;
+        TaskInfo minTask;
+        
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
                 + " , Supervisor: " + supervisor.getName());
+       
+        BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
+        Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
         
+        //Schleife über alle Tasks
+        for(TaskInfo  t : set) {
+        	if(minBlockCount > t.requirements.size()) {
+        		//Task mit wenigsten Blöcken
+        		minBlockCount = t.requirements.size(); 
+        		minTask = t;
+        	}
+        }
+        
+        //Schleife über alle Tasks
+        for(TaskInfo  task : set) {
+        	
+        }
         
         supervisor.setDecisionsDone(true);
         return result;
