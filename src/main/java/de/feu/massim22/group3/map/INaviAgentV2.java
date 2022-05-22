@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Set;
-import de.feu.massim22.group3.agents.Supervisor;
 import massim.protocol.data.*;
 
 public interface INaviAgentV2 extends INavi {

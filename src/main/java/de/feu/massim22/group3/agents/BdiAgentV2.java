@@ -1,12 +1,9 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
-import massim.eismassim.Log;
 
-import java.util.Queue;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.*;
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;

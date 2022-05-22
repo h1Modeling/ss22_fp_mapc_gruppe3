@@ -1,12 +1,9 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import java.awt.Point;
-
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.agents.DirectionUtil;
-import de.feu.massim22.group3.agents.Belief.*;
-import de.feu.massim22.group3.agents.BeliefTypes.*;
+import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 

@@ -2,7 +2,6 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DesireUtilities;
-import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesires;
 import eis.iilang.*;
 import massim.protocol.data.Thing;
 

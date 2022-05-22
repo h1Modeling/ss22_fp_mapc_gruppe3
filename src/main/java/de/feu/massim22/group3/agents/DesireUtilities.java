@@ -1,9 +1,7 @@
 package de.feu.massim22.group3.agents;
 
-import java.awt.Point;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.Belief.*;
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
 import de.feu.massim22.group3.agents.Desires.ADesires.AdoptRole;
 import de.feu.massim22.group3.agents.Desires.ADesires.DigFree;
@@ -14,8 +12,10 @@ import de.feu.massim22.group3.agents.Desires.ADesires.GoGoalZone;
 import de.feu.massim22.group3.agents.Desires.ADesires.GoRoleZone;
 import de.feu.massim22.group3.agents.Desires.ADesires.LocalExplore;
 import de.feu.massim22.group3.agents.Desires.ADesires.Submit;
+import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
+import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
+import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import de.feu.massim22.group3.agents.BeliefTypes.*;
 import eis.iilang.Identifier;
 import massim.protocol.messages.scenario.Actions;
 
