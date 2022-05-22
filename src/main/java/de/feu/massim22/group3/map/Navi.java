@@ -87,10 +87,32 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
         return maps.get(supervisor).getAgentPosition(name);
     }
  
-    @Override
+    /*@Override
     public GameMap getMap(String supervisor) {
         return maps.get(supervisor);
+    }*/
+    
+    @Override
+	public List<InterestingPoint> getInterestingPoints(String supervisor, int maxNumberGoals) {
+		GameMap map = maps.get(supervisor);
+		return map.getInterestingPoints(maxNumberGoals);
+	}
+	
+    @Override
+	public Point getTopLeft(String supervisor) {
+		return maps.get(supervisor).getTopLeft();
     }
+    
+    @Override
+    public Point getInternalAgentPosition(String supervisor, String agent) {
+    	return maps.get(supervisor).getInternalAgentPosition(agent);
+    }
+    
+    @Override
+    public FloatBuffer getMapBuffer(String supervisor) {
+    	return maps.get(supervisor).getMapBuffer();
+    }
+    
     //Melinda Ende
 
     public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess) {

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.*;
+import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
@@ -49,7 +50,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public Action step() {
         desires = new ArrayList<ADesire>();
         updateBeliefs();
-        supervisor.decisionsDone = false;
+        supervisor.setDecisionsDone(false);
         decisionsDone = false; // Agent
         beliefsDone = false; // Agent
 
@@ -83,7 +84,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
         // warten auf decisions (agent und supervisor)
         while (true) {
-            if (!(decisionsDone && supervisor.decisionsDone)) {
+            if (!(decisionsDone && supervisor.getDecisionsDone())) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {

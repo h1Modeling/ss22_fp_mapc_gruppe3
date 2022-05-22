@@ -244,24 +244,23 @@ public class StepUtilities {
     public synchronized List<CalcResult> calcGroup(Supervisor supervisor) {
         AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Start - Supervisor: " + supervisor.getName());
         INaviAgentV2 navi = Navi.<INaviAgentV2>get();
-        GameMap map = navi.getMap(supervisor.getName());
         List<String> agents = supervisor.getAgents();
         List<Percept> percepts = new ArrayList<>();
         List<CalcResult> calcResults = new ArrayList<>();
-        FloatBuffer mapBuffer = map.getMapBuffer();
+        FloatBuffer mapBuffer = navi.getMapBuffer(supervisor.getName());
 
         int maxNumberGoals = 32;
-        List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals);
+        List<InterestingPoint> interestingPoints = navi.getInterestingPoints(supervisor.getName(), maxNumberGoals);
         AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoints.size(): "
                 + interestingPoints.size());
 
         if (interestingPoints.size() > 0) {
             PathFindingResult[] agentResultData = new PathFindingResult[interestingPoints.size()];
-            Point mapTopLeft = map.getTopLeft();
+            Point mapTopLeft = navi.getTopLeft(supervisor.getName());
             AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - agents.size(): " + agents.size());
 
             for (int i = 0; i < agents.size(); i++) {
-                Point agentPos = map.getInternalAgentPosition(agents.get(i));
+                Point agentPos = navi.getInternalAgentPosition(supervisor.getName(), agents.get(i));
                 AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - Loop Agent: " + agents.get(i)
                         + " , Position: " + agentPos);
 

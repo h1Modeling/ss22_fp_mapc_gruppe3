@@ -1,12 +1,14 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.Desires.ADesires;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 //TODO Klassenlogik
-public class HinderEnemy extends ADesire {
-    HinderEnemy(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-        super("HinderEnemy", agent, desireProcessing);
+public class RemoveObstacle extends ADesire {
+	public RemoveObstacle(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+        super("RemoveObstacle", agent, desireProcessing);
     }
 
     @Override

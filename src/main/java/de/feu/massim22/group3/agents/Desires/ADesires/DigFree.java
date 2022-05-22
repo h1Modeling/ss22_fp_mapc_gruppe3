@@ -1,8 +1,12 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 import java.util.List;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
+import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.BeliefTypes.*;
 import de.feu.massim22.group3.agents.Belief.*;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
@@ -10,7 +14,7 @@ import massim.protocol.data.Thing;
 
 public class DigFree extends ADesire {
 	
-	DigFree(BdiAgentV2 agent, DesireUtilities desireProcessing){
+	public DigFree(BdiAgentV2 agent, DesireUtilities desireProcessing){
 		super("DigFree", agent, desireProcessing);
 	}
 	

@@ -1,10 +1,12 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.*;
 
-abstract class ADesire {
+public abstract class ADesire {
     DesireUtilities desireProcessing;
     
     public String name;

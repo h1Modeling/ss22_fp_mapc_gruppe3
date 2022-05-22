@@ -1,13 +1,14 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.Desires.ADesires;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 //TODO Klassenlogik
-public class GetBlock extends ADesire {
-
-	GetBlock(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-		super("GetBlock", agent, desireProcessing);
+public class AdoptRole extends ADesire {
+	public AdoptRole(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+		super("AdoptRole", agent, desireProcessing);
 	}
 
 	/**
@@ -31,6 +32,6 @@ public class GetBlock extends ADesire {
 	 **/
 	@Override
 	public Action getNextAction() {
-		return new Action("attach", new Identifier("n"));
+		return new Action("adopt", new Identifier("worker"));
 	}
 }

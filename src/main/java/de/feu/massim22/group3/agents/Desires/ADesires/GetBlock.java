@@ -1,14 +1,15 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.Desires.ADesires;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
-import massim.protocol.data.Thing;
 
 //TODO Klassenlogik
-public class Submit extends ADesire {
+public class GetBlock extends ADesire {
 
-	Submit(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-		super("Submit", agent, desireProcessing);
+	public GetBlock(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+		super("GetBlock", agent, desireProcessing);
 	}
 
 	/**
@@ -21,6 +22,7 @@ public class Submit extends ADesire {
 	@Override
 	public boolean isExecutable() {
 		return false;
+		
 	}
 
 	/**
@@ -31,6 +33,6 @@ public class Submit extends ADesire {
 	 **/
 	@Override
 	public Action getNextAction() {
-		 return new Action("submit", new Identifier("task1"));
+		return new Action("attach", new Identifier("n"));
 	}
 }

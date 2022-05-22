@@ -108,7 +108,15 @@ public class Supervisor implements ISupervisor {
     }
     
     //Melinda Betz 
-    public boolean decisionsDone;
+    private boolean decisionsDone;
+    
+    public void setDecisionsDone(boolean decisionsDone) {
+        this.decisionsDone = decisionsDone;
+    }
+
+    public boolean getDecisionsDone() {
+        return this.decisionsDone;
+    }
 
     public List<String> getAgents() {
         return agents;

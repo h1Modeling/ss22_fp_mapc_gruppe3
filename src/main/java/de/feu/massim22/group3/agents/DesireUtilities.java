@@ -4,7 +4,18 @@ import java.awt.Point;
 import java.util.List;
 
 import de.feu.massim22.group3.agents.Belief.*;
+import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
+import de.feu.massim22.group3.agents.Desires.ADesires.AdoptRole;
+import de.feu.massim22.group3.agents.Desires.ADesires.DigFree;
+import de.feu.massim22.group3.agents.Desires.ADesires.DodgeClear;
+import de.feu.massim22.group3.agents.Desires.ADesires.GetBlock;
+import de.feu.massim22.group3.agents.Desires.ADesires.GoDispenser;
+import de.feu.massim22.group3.agents.Desires.ADesires.GoGoalZone;
+import de.feu.massim22.group3.agents.Desires.ADesires.GoRoleZone;
+import de.feu.massim22.group3.agents.Desires.ADesires.LocalExplore;
+import de.feu.massim22.group3.agents.Desires.ADesires.Submit;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+import de.feu.massim22.group3.agents.BeliefTypes.*;
 import eis.iilang.Identifier;
 import massim.protocol.messages.scenario.Actions;
 
@@ -62,7 +73,9 @@ public class DesireUtilities {
         boolean result = false;
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
                 + " , Supervisor: " + supervisor.getName());
-        supervisor.decisionsDone = true;
+        
+        
+        supervisor.setDecisionsDone(true);
         return result;
     }
 
@@ -130,7 +143,7 @@ public class DesireUtilities {
         return result;
     }
 
-    ReachableGoalZone getNearestGoalZone(List<ReachableGoalZone> inZoneList) {
+    public ReachableGoalZone getNearestGoalZone(List<ReachableGoalZone> inZoneList) {
         int distance = 1000;
         ReachableGoalZone result = null;
 
@@ -143,7 +156,7 @@ public class DesireUtilities {
         return result;
     }
     
-    ReachableRoleZone getNearestRoleZone(List<ReachableRoleZone> inZoneList) {
+    public ReachableRoleZone getNearestRoleZone(List<ReachableRoleZone> inZoneList) {
         int distance = 1000;
         ReachableRoleZone result = null;
         
@@ -156,7 +169,7 @@ public class DesireUtilities {
         return result;
     }
 
-    ReachableDispenser getNearestDispenser(List<ReachableDispenser> inZoneList) {
+    public ReachableDispenser getNearestDispenser(List<ReachableDispenser> inZoneList) {
         int distance = 1000;
         ReachableDispenser result = null;
 
@@ -169,7 +182,7 @@ public class DesireUtilities {
         return result;
     }
     
-    Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
+    public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
         Identifier resultDirection = new Identifier("n");
 
         if (agent.belief.getLastAction() != null && agent.belief.getLastAction().equals(Actions.MOVE)) {
@@ -191,76 +204,3 @@ public class DesireUtilities {
     }
 }
 
-class DirectionUtil {
-    static String intToString(int direction) {
-        String s = String.valueOf(direction).replaceAll("1", "n").replaceAll("2", "e").replaceAll("3", "s")
-                .replaceAll("4", "w");
-
-        return new StringBuilder(s).reverse().toString();
-    }
-
-    static int stringToInt(String direction) {
-        String s = String.valueOf(direction).replaceAll("n", "1").replaceAll("e", "2").replaceAll("s", "3")
-                .replaceAll("w", "4");
-
-        return Integer.parseInt(s);
-    }
-
-    static Point getCellInDirection(String direction) {
-        int x = 0;
-        int y = 0;
-        ;
-
-        switch (direction) {
-        case "n":
-            x = 0;
-            y = -1;
-            break;
-        case "e":
-            x = 1;
-            y = 0;
-            break;
-        case "s":
-            x = 0;
-            y = 1;
-            break;
-        case "w":
-            x = -1;
-            y = 0;
-        }
-        return new Point(x, y);
-    }
-
-    static String getDirection(Point from, Point to) {
-        String result = " ";
-        Point pointTarget = new Point(to.x - from.x, to.y - from.y);
-
-        if (pointTarget.x == 0) {
-            if (pointTarget.y < 0)
-                result = "n";
-            else
-                result = "s";
-        }
-
-        if (pointTarget.y == 0) {
-            if (pointTarget.x < 0)
-                result = "w";
-            else
-                result = "e";
-        }
-
-        if (pointTarget.x != 0 && pointTarget.y != 0) {
-            if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
-                if (pointTarget.x < 0)
-                    result = "w";
-                else
-                    result = "e";
-            else if (pointTarget.y < 0)
-                result = "n";
-            else
-                result = "s";
-        }
-
-        return result;
-    }
-}

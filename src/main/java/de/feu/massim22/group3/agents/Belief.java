@@ -10,6 +10,7 @@ import java.awt.Point;
 
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
+import de.feu.massim22.group3.agents.BeliefTypes.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
@@ -586,26 +587,7 @@ public class Belief {
         }
     }
 
-    record ReachableGoalZone(Point position, int distance, int direction) {
-        public String toString() {
-            String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
-        }
-    }
-
-    record ReachableRoleZone(Point position, int distance, int direction) {
-        public String toString() {
-            String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable Rolezone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
-        }
-    }
-
-    record ReachableDispenser(Point position, CellType type, int distance, int direction) {
-        public String toString() {
-            String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable " + type.name() + " at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
-        }
-    }
+   
 
     private void move(String dir) {
         switch (dir) {
@@ -616,7 +598,7 @@ public class Belief {
         }
     }
 
-    private static class DirectionUtil {
+   /* private static class DirectionUtil {
         
         static String intToStringDirection(int direction) {
             String s = String.valueOf(direction)
@@ -629,5 +611,7 @@ public class Belief {
                 .reverse()
                 .toString();
         }
-    }
+    }*/
 }
+
+

@@ -1,12 +1,16 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.Desires.ADesires;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
+import massim.protocol.data.Thing;
 
 //TODO Klassenlogik
-public class AdoptRole extends ADesire {
-	AdoptRole(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-		super("AdoptRole", agent, desireProcessing);
+public class Submit extends ADesire {
+
+	public Submit(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+		super("Submit", agent, desireProcessing);
 	}
 
 	/**
@@ -19,7 +23,6 @@ public class AdoptRole extends ADesire {
 	@Override
 	public boolean isExecutable() {
 		return false;
-		
 	}
 
 	/**
@@ -30,6 +33,6 @@ public class AdoptRole extends ADesire {
 	 **/
 	@Override
 	public Action getNextAction() {
-		return new Action("adopt", new Identifier("worker"));
+		 return new Action("submit", new Identifier("task1"));
 	}
 }

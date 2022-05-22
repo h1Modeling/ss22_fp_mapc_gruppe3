@@ -1,13 +1,18 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
+
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
+import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Belief.*;
+import de.feu.massim22.group3.agents.BeliefTypes.*;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class GoRoleZone extends ADesire {
     
-    GoRoleZone(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+	public GoRoleZone(BdiAgentV2 agent, DesireUtilities desireProcessing) {
         super("GoRoleZone", agent, desireProcessing);
     }
 

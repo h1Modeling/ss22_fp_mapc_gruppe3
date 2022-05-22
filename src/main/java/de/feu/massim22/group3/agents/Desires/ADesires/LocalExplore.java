@@ -1,11 +1,13 @@
- package de.feu.massim22.group3.agents;
+ package de.feu.massim22.group3.agents.Desires.ADesires;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.*;
 
     public class LocalExplore extends ADesire {
         
-        LocalExplore(BdiAgentV2 agent, DesireUtilities desireProcessing){
+    	public LocalExplore(BdiAgentV2 agent, DesireUtilities desireProcessing){
             super("LocalExplore", agent, desireProcessing);
         }
 
