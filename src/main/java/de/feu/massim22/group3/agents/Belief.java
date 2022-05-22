@@ -63,6 +63,9 @@ public class Belief {
     private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
     private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
     
+    //Melinda
+    private List<BdiAgent> groupAgents = new ArrayList<>(); 
+    
 
     Belief(String agentName) { 
         this.name = agentName;
@@ -221,6 +224,8 @@ public class Belief {
         reachableDispensers.clear();
         reachableGoalZones.clear();
         reachableRoleZones.clear();
+        //Melinda
+        groupAgents.clear();
 
         for (Parameter p : points) {
             if (!(p instanceof Function)) {
@@ -247,9 +252,15 @@ public class Belief {
                 reachableRoleZones.add(rz);
             }
             // Dispenser
-            if (!isZone) {
+            if (!isZone && detail.equals(Thing.TYPE_DISPENSER )) {
                 ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction);
                 reachableDispensers.add(rd);
+            }
+            //Melinda
+         // agents of a group 
+            if (!isZone && detail.equals(CellType.TEAMMATE)) {
+                //BdiAgent bd = new (pos, CellType.valueOf(detail), distance, direction);
+                //groupAgents.add(bd);
             }
         }
     }
@@ -272,6 +283,11 @@ public class Belief {
     int getTeamSize() {
         return teamSize;
     }
+    
+    public List<BdiAgent> getGroupAgents(){
+        return groupAgents;
+    }
+    
     // Melinda Ende
 
     public Set<Thing> getThings() {

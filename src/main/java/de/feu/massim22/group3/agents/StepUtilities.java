@@ -358,7 +358,7 @@ public class StepUtilities {
      * 
      * 
      */
-    public BdiAgentV2 getAgent(String inAgent) {
+    public static BdiAgentV2 getAgent(String inAgent) {
         BdiAgentV2 result = null;
 
         for (BdiAgentV2 agent : allAgents) {
