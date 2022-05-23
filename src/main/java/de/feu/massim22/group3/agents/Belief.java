@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
+import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
+import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -30,7 +33,7 @@ import massim.protocol.data.Subject.Type;
 public class Belief {
 
     // Start Beliefs
-    private String name;
+    private String name = "";
     private String team;
     private int teamSize;
     private int steps;
@@ -212,6 +215,10 @@ public class Belief {
         updatePosition();
     }
 
+    int getSteps() {
+        return steps;
+    }
+
     void updateFromPathFinding(List<Parameter> points) {
         reachableDispensers.clear();
         reachableGoalZones.clear();
@@ -249,6 +256,10 @@ public class Belief {
         }
     }
 
+    String getTeam() {
+        return team;
+    }
+
     public int getVision() {
         Role r = roles.get(role);
         if (r == null) { throw new IllegalArgumentException("Current role is not in existing roles"); }
@@ -258,12 +269,19 @@ public class Belief {
     public int getStep() {
         return step;
     }
+    
+    // Melinda
+    int getTeamSize() {
+        return teamSize;
+    }
+    // Melinda Ende
 
     public Set<Thing> getThings() {
         return things;
     }
 
     public Set<TaskInfo> getTaskInfo() {
+        taskInfo.removeIf(e -> e.deadline < step);
         return taskInfo;
     }
 
@@ -573,36 +591,6 @@ public class Belief {
         }
     }
 
-    public record ReachableGoalZone(Point position, int distance, int direction) {
-        public String toString() {
-            String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
-        }
-        public String nextDirections() {
-            return DirectionUtil.intToStringDirection(direction);
-        }
-    }
-
-    public record ReachableRoleZone(Point position, int distance, int direction) {
-        public String toString() {
-            String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable Rolezone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
-        }
-        public String nextDirections() {
-            return DirectionUtil.intToStringDirection(direction);
-        }
-    }
-
-    public record ReachableDispenser(Point position, CellType type, int distance, int direction) {
-        public String toString() {
-            String dir = DirectionUtil.intToStringDirection(direction);
-            return "Reachable " + type.name() + " at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
-        }
-        public String nextDirections() {
-            return DirectionUtil.intToStringDirection(direction);
-        }
-    }
-
     private void move(String dir) {
         switch (dir) {
             case "n": position.y -= 1; break;
@@ -612,7 +600,7 @@ public class Belief {
         }
     }
 
-    private static class DirectionUtil {
+   /* private static class DirectionUtil {
         
         static String intToStringDirection(int direction) {
             String s = String.valueOf(direction)
@@ -625,5 +613,5 @@ public class Belief {
                 .reverse()
                 .toString();
         }
-    }
+    }*/
 }

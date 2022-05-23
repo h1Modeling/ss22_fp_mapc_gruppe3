@@ -9,12 +9,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
-import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
+import massim.protocol.data.NormInfo;
+import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
 public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
@@ -81,6 +83,13 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         switch (taskName) {
         case UPDATE:
             updatePercepts();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRole(), belief.getEnergy(), belief.getLastAction(), belief.getLastActionResult());
             break;
         case TO_SUPERVISOR:
             this.supervisor.handleMessage(task, sender);
@@ -114,8 +123,13 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         Point position = belief.getPosition();
         int vision = belief.getVision();
         int step = belief.getStep();
-        Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
-                rolePoints, step);
+        String team = belief.getTeam();
+        int maxSteps = belief.getSteps();
+        int score = (int)belief.getScore();
+        Set<NormInfo> normsInfo = belief.getNormsInfo(); 
+        Set<TaskInfo> taskInfo = belief.getTaskInfo();
+        Navi.<INaviAgentV1>get().updateMapAndPathfind(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
+                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo);
     }
 
     private void setDummyAction() {

@@ -7,7 +7,7 @@ import de.feu.massim22.group3.MailService;
 
 public abstract class BdiAgent extends Agent {
     
-    protected Belief belief;
+    public Belief belief;
     protected DesireHandler desireHandler;
     protected Intention intention;
 
@@ -17,7 +17,7 @@ public abstract class BdiAgent extends Agent {
         intention = new Intention();
         desireHandler = new DesireHandler(this);
     }
-    
+
     public Intention getIntention() {
         // TODO return default if intention == null
         return intention;

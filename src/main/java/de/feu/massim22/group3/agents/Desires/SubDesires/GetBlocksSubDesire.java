@@ -13,9 +13,10 @@ import java.util.ArrayList;
 
 import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.Belief;
-import de.feu.massim22.group3.agents.Belief.ReachableDispenser;
+import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+import de.feu.massim22.group3.agents.DirectionUtil;
 
 public class GetBlocksSubDesire extends SubDesire {
 
@@ -156,7 +157,7 @@ public class GetBlocksSubDesire extends SubDesire {
                 break;
             }
         }
-        String nextDirs = closestDispenser.nextDirections();
+        String nextDirs = DirectionUtil.intToString(closestDispenser.direction());
         return new Action("move", new Identifier(nextDirs.substring(0, 1)));
     }
 }

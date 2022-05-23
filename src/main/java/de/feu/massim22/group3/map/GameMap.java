@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.lwjgl.BufferUtils;
 
@@ -37,8 +38,21 @@ public class GameMap {
         }
     }
 
+    List<Point> getGoalCache() {
+        return goalCache;
+    }
+
+    List<Point> getRoleCache() {
+        return roleCache;
+    }
+
     public boolean mapDiscovered() {
         return size != null;
+    }
+    
+    //Melinda
+    public Point getAgentPosition(String name) {
+        return agentPosition.get(name);
     }
 
     public Point getInternalAgentPosition(String agent) {
@@ -50,6 +64,18 @@ public class GameMap {
         int cellX = getCellX(x);
         int cellY = getCellY(y);
         return new Point(cellX, cellY);
+    }
+
+    CellType[][] getDebugCells() {
+        int ySize = cells.length;
+        int xSize = cells[0].length;
+        CellType[][] types = new CellType[ySize][xSize];
+        for (int y = 0; y < ySize; y++) {
+            for (int x = 0; x < xSize; x++) {
+                types[y][x] = cells[y][x].getCellType();
+            }
+        }
+        return types;
     }
     
     public void addReport(int x, int y, CellType cellType, ZoneType zoneType, int agentId, int step) {		
@@ -67,6 +93,16 @@ public class GameMap {
     
     public Point getTopLeft() {
         return topLeft;
+    }
+
+    Map<Point, String> getDebugAgentPosition() {
+        Map<Point, String> result = new HashMap<>();
+        for (Entry<String, Point> e : agentPosition.entrySet()) {
+            Point agentPoint = e.getValue();
+            Point internalPoint = getInternalCellIndex(agentPoint.x, agentPoint.y);
+            result.put(internalPoint, e.getKey());
+        }
+        return result;
     }
     
     public Point getBottomRight() {
@@ -189,7 +225,8 @@ public class GameMap {
             for (int x = 0; x < curSize.x; x++) {
                 MapCell c = cells[y][x];
                 CellType type = c.getCellType();
-                float v = type.equals(CellType.FREE) || type.equals(CellType.TEAMMATE) ? 0f : 1f;
+                
+                float v = type.equals(CellType.OBSTACLE) || type.equals(CellType.UNKNOWN) ? 1f : 0f;
                 // r-channel
                 data.put(v);
                 // g-channel not used in map
@@ -197,10 +234,12 @@ public class GameMap {
                 
                 // update Cache
                 Point p = new Point(x, y);
-                if (c.getZoneType() == ZoneType.ROLEZONE) {
-                    roleCache.add(p);
-                } else if (c.getZoneType() == ZoneType.GOALZONE) {
-                    goalCache.add(p);
+                if (c.getCellType() != CellType.OBSTACLE) {
+                    if (c.getZoneType() == ZoneType.ROLEZONE) {
+                        roleCache.add(p);
+                    } else if (c.getZoneType() == ZoneType.GOALZONE) {
+                        goalCache.add(p);
+                    }
                 }
                 if (c.getCellType().name().contains("DISPENSER")) {
                     Point size = getMapSize();

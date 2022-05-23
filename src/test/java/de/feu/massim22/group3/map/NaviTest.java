@@ -8,7 +8,7 @@ public class NaviTest {
 
     @Test
 	void getBlankCellArrayTest() {
-        CellType[][] cells = Navi.get().getBlankCellArray(3);
+        CellType[][] cells = Navi.<INavi>get().getBlankCellArray(3);
 
         CellType[] row0 = {CellType.UNKNOWN, CellType.UNKNOWN, CellType.UNKNOWN, CellType.FREE, CellType.UNKNOWN, CellType.UNKNOWN, CellType.UNKNOWN };
         CellType[] row1 = {CellType.UNKNOWN, CellType.UNKNOWN, CellType.FREE, CellType.FREE, CellType.FREE, CellType.UNKNOWN, CellType.UNKNOWN };

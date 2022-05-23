@@ -4,7 +4,8 @@ import java.util.List;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.BdiAgent;
-import de.feu.massim22.group3.agents.Belief.ReachableRoleZone;
+import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
+import de.feu.massim22.group3.agents.DirectionUtil;
 
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
@@ -44,7 +45,7 @@ public class GetRoleSubDesire extends SubDesire {
             return new Action("adopt", new Identifier(requiredRole));
         }
         else {
-            String nextDirs = closestRoleZone.nextDirections();
+            String nextDirs = DirectionUtil.intToString(closestRoleZone.direction());
             return new Action("move", new Identifier(nextDirs.substring(0, 1)));
         }
     }
