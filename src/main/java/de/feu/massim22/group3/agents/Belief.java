@@ -11,6 +11,7 @@ import java.awt.Point;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
+import de.feu.massim22.group3.agents.Reachable.ReachableGroupAgent;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -66,7 +67,7 @@ public class Belief {
     private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
     
     //Melinda
-    private List<BdiAgent> groupAgents = new ArrayList<>(); 
+    private List<ReachableGroupAgent> reachableGroupAgents = new ArrayList<>(); 
     
 
     Belief(String agentName) { 
@@ -227,7 +228,7 @@ public class Belief {
         reachableGoalZones.clear();
         reachableRoleZones.clear();
         //Melinda
-        groupAgents.clear();
+        reachableGroupAgents.clear();
 
         for (Parameter p : points) {
             if (!(p instanceof Function)) {
@@ -261,8 +262,8 @@ public class Belief {
             //Melinda
          // agents of a group 
             if (!isZone && detail.equals(CellType.TEAMMATE)) {
-                //BdiAgent bd = new (pos, CellType.valueOf(detail), distance, direction);
-                //groupAgents.add(bd);
+            	//ReachableGroupAgent rga = new ReachableGroupAgent (pos, CellType.valueOf(detail), distance, direction, agent);
+            	//getAllGroupAgents.add(bd); wie auf Agent kommen?
             }
         }
     }
@@ -286,9 +287,10 @@ public class Belief {
         return teamSize;
     }
     
-    public List<BdiAgent> getGroupAgents(){
-        return groupAgents;
+    public List<ReachableGroupAgent> getReachableGroupAgents(){
+        return reachableGroupAgents;
     }
+
     
     // Melinda Ende
 

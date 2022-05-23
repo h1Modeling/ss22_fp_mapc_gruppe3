@@ -91,7 +91,7 @@ public class DesireUtilities {
 		 * mit wenigsten Blöcken minBlockCount = t.requirements.size(); minTask = t; } }
 		 */
 
-		List<BdiAgent> allGroupAgents = supervisorAgent.belief.getGroupAgents();
+		List<BdiAgent> allGroupAgents = supervisor.getAllGroupAgents();
 		List<BdiAgent> freeGroupAgents = allGroupAgents;
 		List<BdiAgent> busyGroupAgents = new ArrayList<>();
 

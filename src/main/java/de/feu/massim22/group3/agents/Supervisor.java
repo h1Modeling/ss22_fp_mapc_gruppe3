@@ -15,6 +15,9 @@ public class Supervisor implements ISupervisor {
     private List<String> agents = new ArrayList<>();
     private List<ConfirmationData> confirmationData = new ArrayList<>();
     
+    //Melinda
+    private List<BdiAgent> allGroupAgents = new ArrayList<>();
+    
     public Supervisor(Supervisable parent) {
         this.parent = parent;
         this.name = parent.getName();
@@ -120,6 +123,18 @@ public class Supervisor implements ISupervisor {
 
     public List<String> getAgents() {
         return agents;
+    }
+    
+    public void setAgents(List<String> agents) {
+        this.agents = agents;
+    }
+    
+    public void setAllGroupAgents(List<BdiAgent> allGroupAgents) {
+    	 this.allGroupAgents = allGroupAgents;
+    }
+    
+    public List<BdiAgent> getAllGroupAgents() {
+        return this.allGroupAgents;
     }
     // Melinda Betz Ende
 }

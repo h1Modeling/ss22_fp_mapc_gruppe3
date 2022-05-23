@@ -38,7 +38,7 @@ public class GoDispenser extends ADesire {
             List<ReachableDispenser> reachableDispensers = agent.belief.getReachableDispensers();
             
             if(type != null) {
-                // bestimmter Blocktyp wird gesucht
+                // bestimmter Blocktyp wird gesucht (wie findet man Blocktype?)
                 for( ReachableDispenser typeDispenser : reachableDispensers ) {
                     //alle Dispenser vom gesuchten Typ
                     if(typeDispenser.type().toString().equals(type)) {

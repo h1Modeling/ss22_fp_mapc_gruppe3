@@ -212,11 +212,15 @@ public class StepUtilities {
                 Thread.currentThread().getName() + " mergeGroups() Start - Supervisor: " + supervisorGroup.getName()
                         + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + relativOldSupervisor);
         List<String> agentsSupervisorGroup = supervisorGroup.getAgents();
+        List<BdiAgent> agentsSupervisorGroupBdi = supervisorGroup.getAllGroupAgents();
         List<String> agentsSupervisorToMerge = supervisorToMerge.getAgents();
 
         // Agents von agentsSupervisorToMerge in die Liste der Agents von
         // agentsSupervisorGroup
         agentsSupervisorGroup.addAll(agentsSupervisorToMerge);
+        agentsSupervisorGroupBdi.addAll(supervisorToMerge.getAllGroupAgents());
+        supervisorGroup.setAgents(agentsSupervisorGroup);
+        supervisorGroup.setAllGroupAgents(agentsSupervisorGroupBdi);
         Point posNewSupervisor = Navi.<INaviAgentV2>get().getPosition(supervisorGroup.getName(),
                 supervisorGroup.getName());
 
