@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.agents;
 
-import java.util.List;
+import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
@@ -12,13 +12,14 @@ import de.feu.massim22.group3.agents.Desires.ADesires.GoDispenser;
 import de.feu.massim22.group3.agents.Desires.ADesires.GoGoalZone;
 import de.feu.massim22.group3.agents.Desires.ADesires.GoRoleZone;
 import de.feu.massim22.group3.agents.Desires.ADesires.LocalExplore;
-import de.feu.massim22.group3.agents.Desires.ADesires.Submit;
+import de.feu.massim22.group3.agents.Desires.ADesires.GoSubmit;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
 import massim.protocol.data.TaskInfo;
+import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
 public class DesireUtilities {
@@ -40,7 +41,6 @@ public class DesireUtilities {
         doDecision(agent, new GoGoalZone(agent, this));
         doDecision(agent, new GoRoleZone(agent, this));
         doDecision(agent, new GoDispenser(agent, this));
-        doDecision(agent, new Submit(agent, this));
         doDecision(agent, new GetBlock(agent, this));
         doDecision(agent, new AdoptRole(agent, this));
         //doDecision(agent, new RemoveObstacle(agent, this));
@@ -71,34 +71,140 @@ public class DesireUtilities {
      * 
      * @return boolean - the supervisor decisions are done
      */
-    public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor) {
-        boolean result = false;
-        int minBlockCount = 1000;
-        TaskInfo minTask;
-        
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
-                + " , Supervisor: " + supervisor.getName());
-       
-        BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
-        Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
-        
-        //Schleife über alle Tasks
-        for(TaskInfo  t : set) {
-        	if(minBlockCount > t.requirements.size()) {
-        		//Task mit wenigsten Blöcken
-        		minBlockCount = t.requirements.size(); 
-        		minTask = t;
-        	}
-        }
-        
-        //Schleife über alle Tasks
-        for(TaskInfo  task : set) {
-        	
-        }
-        
-        supervisor.setDecisionsDone(true);
-        return result;
-    }
+	public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor) {
+		boolean result = false;
+		int minBlockCount = 1000;
+		TaskInfo minTask;
+
+		AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
+				+ " , Supervisor: " + supervisor.getName());
+
+		BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
+		Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
+		List<Point> attachedPoints;
+		List<Thing> attachedThings = new ArrayList<Thing>();
+		String role = "";
+
+		// Schleife über alle Tasks
+		/*
+		 * for(TaskInfo t : set) { if(minBlockCount > t.requirements.size()) { //Task
+		 * mit wenigsten Blöcken minBlockCount = t.requirements.size(); minTask = t; } }
+		 */
+
+		List<BdiAgent> allGroupAgents = supervisorAgent.belief.getGroupAgents();
+		List<BdiAgent> freeGroupAgents = allGroupAgents;
+		List<BdiAgent> busyGroupAgents = new ArrayList<>();
+
+		// Schleife über alle Tasks
+		for (TaskInfo task : set) {
+			// über alle Agenten einer Gruppe
+			for (BdiAgent agent : freeGroupAgents) {
+				// alle Blöcke die ein Agent hat
+				attachedPoints = agent.belief.getAttachedThings();
+
+				if (attachedPoints.size() > 0) {
+					Set<Thing> things = agent.belief.getThings();
+					for (Point p : attachedPoints) {
+						for (Thing t : things) {
+							if (t.x == p.x && t.y == p.y) {
+								attachedThings.add(t);
+								break;
+							}
+						}
+					}
+
+					// was hat der Agent für eine Rolle
+					// role = agent.getAgentBelief().getRole();
+
+					List<Thing> goodBlocks = new ArrayList<Thing>();
+					List<Thing> badBlocks = new ArrayList<Thing>();
+					List<Thing> goodPositionBlocks = new ArrayList<Thing>();
+					List<Thing> badPositionBlocks = new ArrayList<Thing>();
+					List<Thing> missingBlocks = new ArrayList<Thing>();
+					boolean typeOk = false;
+
+					for (Thing attachedBlock : attachedThings) {
+						if (task.requirements.contains(attachedBlock)) {
+							// Blocktype stimmt
+							// Block ist an der richtigen Stelle
+							goodBlocks.add(attachedBlock);
+							goodPositionBlocks.add(attachedBlock);
+						} else {
+							typeOk = false;
+							for (Thing taskBlock : task.requirements) {
+								if (attachedBlock.details.equals(taskBlock.details)) {
+									// Blocktype stimmt
+									// Block ist an der falschen Stelle
+									goodBlocks.add(attachedBlock);
+									badPositionBlocks.add(attachedBlock);
+									typeOk = true;
+									break;
+								}
+							}
+							if (!typeOk) {
+								// Blocktype stimmt nicht
+								badBlocks.add(attachedBlock);
+							}
+						}
+					}
+
+					for (Thing taskBlock : task.requirements) {
+						if (!attachedThings.contains(taskBlock)) {
+							typeOk = false;
+							for (Thing badPositionBlock : badPositionBlocks) {
+								if (badPositionBlock.details.equals(taskBlock.details)) {
+									// Blocktype vorhanden
+									typeOk = true;
+									break;
+								}
+							}
+							if (!typeOk) {
+								// Blocktype fehlt
+								missingBlocks.add(taskBlock);
+							}
+						}
+					}
+
+					if (goodPositionBlocks.size() > 0 && badPositionBlocks.size() == 0 && badBlocks.size() == 0
+							&& missingBlocks.size() == 0) {
+						// wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
+						// GoSubmit
+						doDecision(((BdiAgentV2) agent), new GoSubmit(((BdiAgentV2) agent), this));
+						busyGroupAgents.add(agent);
+						break; // nächster Agent
+					} else if (goodPositionBlocks.size() > 0 && badPositionBlocks.size() > 0 && badBlocks.size() == 0
+							&& missingBlocks.size() == 0) {
+						// wenn ein Agent alle Blöcke einer Task besitzt (eventuell an der falschen
+						// Stelle)
+						// ArrangeBlocks
+						// doDecision(((BdiAgentV2) agent), new ArrangeBlocks(((BdiAgentV2) agent),
+						// this));
+						busyGroupAgents.add(agent);
+						break; // nächster Agent
+					} else if (goodPositionBlocks.size() > 0 && badPositionBlocks.size() > 0 && badBlocks.size() == 0
+							&& missingBlocks.size() == 0) {
+						// wenn ein Agent Blöcke einer Task besitzt (nicht alle)
+						// GetBlock
+						doDecision(((BdiAgentV2) agent), new GetBlock(((BdiAgentV2) agent), this));
+						busyGroupAgents.add(agent);
+						break; // nächster Agent
+					}
+				} // If blocks attached
+			} // Loop agents
+		} // Loop tasks
+
+		freeGroupAgents.removeAll(busyGroupAgents);
+		busyGroupAgents.clear();
+		
+		// über alle Agenten einer Gruppe
+		for (BdiAgent agent : freeGroupAgents) {
+			
+		}
+		
+		supervisor.setDecisionsDone(true);
+		return result;
+	}
+    
 
     /**
      * The method has a certain priority for every desire.
@@ -113,26 +219,30 @@ public class DesireUtilities {
         switch (desire.name) {
         case "DigFree":
             result = 10;
+        case "GoSubmit":
+            result = 15; 
         case "DodgeClear":
             result = 20;
-        case "LocalHinderEnemy":
-            result = 90;
-        case "LocalGetBlocks":
-            result = 70;
+        case "AdoptRole":
+            result = 30;
+        case "ArrangeBlocks":
+            result = 40;
+        case "GetBlock":
+            result = 50;
+        case "ReactToNorm":
+            result = 40;
         case "GoGoalZone":
             result = 80;
         case "GoRoleZone":
             result = 30;
         case "GoDispenser":
-            result = 30;
-        case "Submit":
-            result = 30;  
-        case "GetBlock":
-            result = 30;
-        case "AdoptRole":
-            result = 30;
-        case "ReactToNorm":
-            result = 40;
+            result = 60;
+        case "LocalGetBlocks":
+            result = 70;
+        case "Explore":
+            result = 85;
+        case "LocalHinderEnemy":
+            result = 95;
         case "LocalExplore":
             result = 100;
         }

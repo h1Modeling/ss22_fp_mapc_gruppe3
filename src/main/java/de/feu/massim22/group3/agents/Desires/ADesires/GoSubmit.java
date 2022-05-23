@@ -7,9 +7,9 @@ import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
 
 //TODO Klassenlogik
-public class Submit extends ADesire {
+public class GoSubmit extends ADesire {
 
-	public Submit(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+	public GoSubmit(BdiAgentV2 agent, DesireUtilities desireProcessing) {
 		super("Submit", agent, desireProcessing);
 	}
 
