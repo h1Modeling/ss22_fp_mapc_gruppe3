@@ -225,7 +225,8 @@ public class GameMap {
             for (int x = 0; x < curSize.x; x++) {
                 MapCell c = cells[y][x];
                 CellType type = c.getCellType();
-                float v = type.equals(CellType.FREE) || type.equals(CellType.TEAMMATE) ? 0f : 1f;
+                
+                float v = type.equals(CellType.OBSTACLE) || type.equals(CellType.UNKNOWN) ? 1f : 0f;
                 // r-channel
                 data.put(v);
                 // g-channel not used in map
