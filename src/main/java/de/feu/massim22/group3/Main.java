@@ -36,8 +36,8 @@ public class Main {
                 }
                 @SuppressWarnings("resource")
 				Scanner in = new Scanner(System.in);
-                //Integer confNum = 0;
-                Integer confNum = null;
+                Integer confNum = 0;
+                //Integer confNum = null;
                 while (confNum == null) {
                     try {
                         confNum = Integer.parseInt(in.next());

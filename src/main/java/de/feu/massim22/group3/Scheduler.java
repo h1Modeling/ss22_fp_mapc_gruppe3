@@ -179,7 +179,6 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
                 ag.setPercepts(addList, delList);
             } catch (PerceiveException ignored) { }
         });
-
         // log
         if (newPerceptAgents.size() > 0) {
             AgentLogger.info("");
@@ -201,7 +200,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
         	// Notify multithreaded agents
         	if (agent instanceof Runnable) {
         		String sender = "Scheduler";
-        		Percept message = new Percept(TaskName.UPDATE.name());
+        		Percept message = new Percept(EventName.UPDATE.name());
         		agent.handleMessage(message, sender);
         	} 
         	// get actions if agent is not multithreaded
