@@ -233,10 +233,12 @@ public class GameMap {
                 
                 // update Cache
                 Point p = new Point(x, y);
-                if (c.getZoneType() == ZoneType.ROLEZONE) {
-                    roleCache.add(p);
-                } else if (c.getZoneType() == ZoneType.GOALZONE) {
-                    goalCache.add(p);
+                if (c.getCellType() != CellType.OBSTACLE) {
+                    if (c.getZoneType() == ZoneType.ROLEZONE) {
+                        roleCache.add(p);
+                    } else if (c.getZoneType() == ZoneType.GOALZONE) {
+                        goalCache.add(p);
+                    }
                 }
                 if (c.getCellType().name().contains("DISPENSER")) {
                     Point size = getMapSize();
