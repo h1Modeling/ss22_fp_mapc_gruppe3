@@ -1,7 +1,10 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
 import eis.iilang.Action;
+import massim.protocol.data.TaskInfo;
+import massim.protocol.data.Thing;
 import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.Belief;
 
 public class ChooseTaskSubDesire extends SubDesire {
 
@@ -11,7 +14,7 @@ public class ChooseTaskSubDesire extends SubDesire {
 
     @Override
     public Action getNextAction() {
-        // TODO Auto-generated method stub
+        // TODO improve algorithm to choose Task
         return null;
     }
 
@@ -23,7 +26,7 @@ public class ChooseTaskSubDesire extends SubDesire {
 
     @Override
     public boolean isDone() {
-        // TODO Auto-generated method stub
+
         return false;
     }
     void setType() {

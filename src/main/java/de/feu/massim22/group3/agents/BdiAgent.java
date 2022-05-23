@@ -18,7 +18,7 @@ public abstract class BdiAgent extends Agent {
         desireHandler = new DesireHandler(this);
     }
     
-    Intention getIntention() {
+    public Intention getIntention() {
         // TODO return default if intention == null
         return intention;
     }

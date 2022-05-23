@@ -377,6 +377,8 @@ public class Belief {
         b.append(System.lineSeparator())
             .append("Step Beliefs:")
             .append(System.lineSeparator())
+            .append("Step: ").append(step)
+            .append(System.lineSeparator())
             .append("Things: ");
         for (Thing t : things) {
             b.append(t.toJSON())
@@ -441,7 +443,7 @@ public class Belief {
         }
         return b.toString();
     }
-    
+
     private void updatePosition() {
         if (lastAction != null && lastAction.equals(Actions.MOVE)) {
             String dir = lastActionParams.get(0);
@@ -571,24 +573,33 @@ public class Belief {
         }
     }
 
-    private record ReachableGoalZone(Point position, int distance, int direction) {
+    public record ReachableGoalZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable Goalzone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
+        public String nextDirections() {
+            return DirectionUtil.intToStringDirection(direction);
+        }
     }
 
-    private record ReachableRoleZone(Point position, int distance, int direction) {
+    public record ReachableRoleZone(Point position, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable Rolezone at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
         }
+        public String nextDirections() {
+            return DirectionUtil.intToStringDirection(direction);
+        }
     }
 
-    private record ReachableDispenser(Point position, CellType type, int distance, int direction) {
+    public record ReachableDispenser(Point position, CellType type, int distance, int direction) {
         public String toString() {
             String dir = DirectionUtil.intToStringDirection(direction);
             return "Reachable " + type.name() + " at (" + position.x + "/" + position.y + ") with distance " + distance + " in direction " + dir;
+        }
+        public String nextDirections() {
+            return DirectionUtil.intToStringDirection(direction);
         }
     }
 

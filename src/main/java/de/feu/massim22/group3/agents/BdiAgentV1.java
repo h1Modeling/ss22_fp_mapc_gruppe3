@@ -81,7 +81,6 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         switch (taskName) {
         case UPDATE:
             updatePercepts();
-            desireHandler.setNextAction();
             break;
         case TO_SUPERVISOR:
             this.supervisor.handleMessage(task, sender);
@@ -89,8 +88,12 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         case PATHFINDER_RESULT:
             List<Parameter> parameters = task.getParameters();
             belief.updateFromPathFinding(parameters);
-            AgentLogger.info(belief.reachablesToString());
-            // TODO Action after receiving Pathfinding infos
+            AgentLogger.info(getName(), belief.reachablesToString());
+            Percept message = new Percept(TaskName.START_DESIRE_HANDLER.name());
+            handleMessage(message, getName());
+            break;
+        case START_DESIRE_HANDLER:
+            desireHandler.setNextAction();
             break;
         default:
             throw new IllegalArgumentException("Message is not handled!");
@@ -102,7 +105,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         // Update Percepts
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
-        AgentLogger.info(belief.toString());
+        AgentLogger.info(getName(), belief.toString());
 
         // Update Navi
         Set<Thing> things = belief.getThings();

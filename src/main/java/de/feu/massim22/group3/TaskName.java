@@ -6,4 +6,5 @@ public enum TaskName {
     FROM_SUPERVISOR,
     MAP_SENT_TO_NAVI,
     PATHFINDER_RESULT,
+    START_DESIRE_HANDLER,
 }
