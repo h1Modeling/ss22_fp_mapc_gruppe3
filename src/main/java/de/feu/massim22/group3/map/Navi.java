@@ -34,7 +34,7 @@ import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
-public class Navi {
+public class Navi implements INaviAgentV1, INaviAgentV2  {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
@@ -56,13 +56,15 @@ public class Navi {
         // TODO At end of application PathFinder must be closed to free resources
     }
 
-    public static synchronized Navi get() {
+    @SuppressWarnings("unchecked")
+    public static synchronized <T extends INavi> T get() {
         if (Navi.instance == null) {
             instance = new Navi();
         }
-        return Navi.instance;
+        return (T) (Navi.instance);
     }
 
+    @Override
     public boolean isWaitingOrBusy() {
         return mergeKeys.size() > 0 || busy;
     }
@@ -84,16 +86,84 @@ public class Navi {
         agentStep.put(name, -1);
         openGlHandler.put(name, PathFinder.createOpenGlContext());
     }
+    
+    // Melinda
+    @Override
+    public void registerSupervisor(String name, String supervisor) {
+        agentSupervisor.put(name, supervisor);
+    }
+    
+    @Override
+    public Point getPosition(String name, String supervisor) {
+        return maps.get(supervisor).getAgentPosition(name);
+    }
+    
+    @Override
+	public List<InterestingPoint> getInterestingPoints(String supervisor, int maxNumberGoals) {
+		GameMap map = maps.get(supervisor);
+		return map.getInterestingPoints(maxNumberGoals);
+	}
+	
+    @Override
+	public Point getTopLeft(String supervisor) {
+		return maps.get(supervisor).getTopLeft();
+    }
+    
+    @Override
+    public Point getInternalAgentPosition(String supervisor, String agent) {
+    	return maps.get(supervisor).getInternalAgentPosition(agent);
+    }
+    
+    @Override
+    public FloatBuffer getMapBuffer(String supervisor) {
+    	return maps.get(supervisor).getMapBuffer();
+    }
 
     public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess) {
         AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess);
         debugger.setAgentData(data);
     }
+    
+    @Override
+    public synchronized void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
+            Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps,
+            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo) {
 
-    public synchronized void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
-        List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
-        Set<TaskInfo> taskInfo) {
-            if (!maps.containsKey(supervisor)) {
+        updateMap(supervisor, agent, agentIndex, position, vision, things, goalPoints, rolePoints, step, team, maxSteps,
+                score, normsInfo, taskInfo);
+
+        // Test if all agents in group have already sent step information
+        boolean allSent = true;
+        for (String agentKey : agentStep.keySet()) {
+            // Get supervisor
+            String aSupervisor = agentSupervisor.get(agentKey);
+            if (aSupervisor.equals(supervisor)) {
+                // Test if agent is in same step
+                Integer aStep = agentStep.get(agentKey);
+                if (aStep < step) {
+                    allSent = false;
+                    break;
+                }
+            }
+        }
+
+        // Start calculation
+        if (allSent) {
+            filterKnownTeamMatesFromGreetData(supervisor);
+            // Check if all Supervisors have sent
+            if (haveAllAgentsSentData(step)) {
+                makeMergeSuggestions();
+            }
+            GameMap map = maps.get(supervisor);
+            startCalculation(supervisor, map);
+        }
+    }
+
+    @Override
+    public synchronized void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
+            Set<TaskInfo> taskInfo) {
+
+        if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
         GameMap map = maps.get(supervisor); 
@@ -163,31 +233,6 @@ public class Navi {
 
         // Update Debugger Tasks
         debugger.setTasks(taskInfo, step);
-
-        // Test if all agents in group have already sent step information
-        boolean allSent = true;
-        for (String agentKey : agentStep.keySet()) {
-            // Get supervisor
-            String aSupervisor = agentSupervisor.get(agentKey);
-            if (aSupervisor.equals(supervisor)) {
-                // Test if agent is in same step
-                Integer aStep = agentStep.get(agentKey);
-                if (aStep < step) {
-                    allSent = false;
-                    break;
-                }
-            }
-        }
-
-        // Start calculation
-        if (allSent) {
-            filterKnownTeamMatesFromGreetData(supervisor);
-            // Check if all Supervisors have sent
-            if (haveAllAgentsSentData(step)) {
-                makeMergeSuggestions();
-            }
-            startCalculation(supervisor, map);
-        }
     }
 
     private void makeMergeSuggestions() {
@@ -223,11 +268,13 @@ public class Navi {
         supervisorGreetData.clear();
     }
 
+    @Override
     public synchronized void rejectMerge(String mergeKey, String name) {
         AgentLogger.info(name + " rejected merge with key " + mergeKey);
         mergeKeys.remove(mergeKey);
     }
 
+    @Override
     public synchronized void acceptMerge(String mergeKey, String name) {
         Map<String, MergeReply> map = mergeKeys.get(mergeKey);
         // Merge was rejected by other party
@@ -241,7 +288,7 @@ public class Navi {
         
         // Check if all have agreed
         for (MergeReply r : map.values()) {
-            if (!r.reply || map.size() < 2) {
+            if (!r.getReply() || map.size() < 2) {
                 return;
             }
         }
@@ -349,7 +396,8 @@ public class Navi {
     }
 
     // Creates array with CellType.FREE in vision and CellType.UNKNOWN outside of vision
-    CellType[][] getBlankCellArray(int vision) {
+    @Override
+    public CellType[][] getBlankCellArray(int vision) {
         int size = 2 * vision + 1;
         CellType[][] cells = new CellType[size][size];
         // Initialize with unknown cells
@@ -530,5 +578,10 @@ public class Navi {
         Point getOffset() {
             return offset;
         }
+    }
+    
+    @Override
+    public synchronized void updateSupervisor(String supervisor) {
+        startCalculation(supervisor, maps.get(supervisor));
     }
 }

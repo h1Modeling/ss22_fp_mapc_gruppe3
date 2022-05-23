@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.EventName;
+import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
@@ -57,7 +58,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 
             // Send Action if already calculated		
             Action nextAction = intention.getNextAction();
-            if (nextAction != null && !Navi.get().isWaitingOrBusy()) {
+            if (nextAction != null && !Navi.<INaviAgentV1>get().isWaitingOrBusy()) {
                 eisSender.send(this, nextAction);
                 intention.clear();
             }
@@ -92,7 +93,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            Navi.get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRole(), belief.getEnergy(), belief.getLastAction(), belief.getLastActionResult());
+                Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRole(), belief.getEnergy(), belief.getLastAction(), belief.getLastActionResult());
             desireHandler.setNextAction();
             break;
         case TO_SUPERVISOR:
@@ -110,9 +111,9 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
             String key = ((Identifier)parameters.get(2)).getValue();
             // Allow only on merge per step
             if (!merging) {
-                Navi.get().acceptMerge(key, getName());
+                Navi.<INaviAgentV1>get().acceptMerge(key, getName());
             } else {
-                Navi.get().rejectMerge(key, getName());
+                Navi.<INaviAgentV1>get().rejectMerge(key, getName());
             }
             merging = true;
             break;
@@ -158,7 +159,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         int score = (int)belief.getScore();
         Set<NormInfo> normsInfo = belief.getNormsInfo(); 
         Set<TaskInfo> taskInfo = belief.getTaskInfo();
-        Navi.get().updateAgent(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
+        Navi.<INaviAgentV1>get().updateMapAndPathfind(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
                 rolePoints, step, team, maxSteps, score, normsInfo, taskInfo);
     }
 

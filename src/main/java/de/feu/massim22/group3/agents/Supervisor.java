@@ -111,4 +111,18 @@ public class Supervisor implements ISupervisor {
     public void addAgent(String name) {
         this.agents.add(name);
     }
+    
+    private boolean decisionsDone;
+    
+    public void setDecisionsDone(boolean decisionsDone) {
+        this.decisionsDone = decisionsDone;
+    }
+
+    public boolean getDecisionsDone() {
+        return this.decisionsDone;
+    }
+
+    public List<String> getAgents() {
+        return agents;
+    }
 }

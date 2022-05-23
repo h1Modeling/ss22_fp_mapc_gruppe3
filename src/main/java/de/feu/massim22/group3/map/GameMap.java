@@ -49,6 +49,11 @@ public class GameMap {
     public boolean mapDiscovered() {
         return size != null;
     }
+    
+    //Melinda
+    public Point getAgentPosition(String name) {
+        return agentPosition.get(name);
+    }
 
     public Point getInternalAgentPosition(String agent) {
         Point agentPos = agentPosition.get(agent);
@@ -221,7 +226,8 @@ public class GameMap {
             for (int x = 0; x < curSize.x; x++) {
                 MapCell c = cells[y][x];
                 CellType type = c.getCellType();
-                float v = type.equals(CellType.FREE) || type.equals(CellType.TEAMMATE) ? 0f : 1f;
+                
+                float v = type.equals(CellType.OBSTACLE) || type.equals(CellType.UNKNOWN) ? 1f : 0f;
                 // r-channel
                 data.put(v);
                 // g-channel not used in map
@@ -229,10 +235,12 @@ public class GameMap {
                 
                 // update Cache
                 Point p = new Point(x, y);
-                if (c.getZoneType() == ZoneType.ROLEZONE) {
-                    roleCache.add(p);
-                } else if (c.getZoneType() == ZoneType.GOALZONE) {
-                    goalCache.add(p);
+                if (c.getCellType() != CellType.OBSTACLE) {
+                    if (c.getZoneType() == ZoneType.ROLEZONE) {
+                        roleCache.add(p);
+                    } else if (c.getZoneType() == ZoneType.GOALZONE) {
+                        goalCache.add(p);
+                    }
                 }
                 if (c.getCellType().name().contains("DISPENSER")) {
                     Point size = getMapSize();

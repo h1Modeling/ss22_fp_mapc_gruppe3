@@ -9,10 +9,10 @@
   "notifications": false,
   "queued": false,
 
-  "entities" : {
-    },
+  "entities" : {},
   
-  "multi-entities": [{
+  "multi-entities": [
+    {
       "name-prefix": "connectionA",
       "username-prefix": "agentA",
       "password": "1",
