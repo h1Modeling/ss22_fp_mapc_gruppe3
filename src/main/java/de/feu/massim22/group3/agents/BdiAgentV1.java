@@ -88,7 +88,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
             merging = false;
             updatePercepts();
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

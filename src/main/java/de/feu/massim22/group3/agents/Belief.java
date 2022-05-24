@@ -589,8 +589,6 @@ public class Belief {
         }
     }
 
-   
-
     private void move(String dir) {
         switch (dir) {
             case "n": position.y -= 1; break;
@@ -599,19 +597,4 @@ public class Belief {
             case "w": position.x -= 1; break;
         }
     }
-
-   /* private static class DirectionUtil {
-        
-        static String intToStringDirection(int direction) {
-            String s = String.valueOf(direction)
-                .replaceAll("1", "n")
-                .replaceAll("2", "e")
-                .replaceAll("3", "s")
-                .replaceAll("4", "w");
-            
-            return new StringBuilder(s)
-                .reverse()
-                .toString();
-        }
-    }*/
 }

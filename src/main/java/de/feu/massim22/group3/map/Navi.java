@@ -247,6 +247,14 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                     String foreignAgent = result.get(0).name();
                     String foreignSupervisor = agentSupervisor.get(foreignAgent);
                     String mergeKey = getMergeKey(supervisor, foreignSupervisor);
+
+                    // Test if this key is already sent to supervisor or if teams have already merged
+                    Map<String, MergeReply> entriesSent = mergeKeys.getOrDefault(mergeKey, new HashMap<>());
+                    if (entriesSent.containsKey(supervisor) || foreignSupervisor.equals(supervisor)) {
+                        continue;
+                    }
+
+                    // Inform supervisor
                     Parameter agentName = new Identifier(agent);
                     Parameter foreignSupervisorPara = new Identifier(foreignSupervisor);
                     Parameter offsetX = new Numeral(g.offset.x);
@@ -257,7 +265,13 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
 
                     Map<String, MergeReply> entries = mergeKeys.getOrDefault(mergeKey, new HashMap<>());
                     if (!entries.containsKey(supervisor)) {
-                        entries.put(supervisor, new MergeReply(g.offset));
+                        // Calculate offset for map merge
+                        GameMap map = maps.get(supervisor);
+                        GameMap foreignMap = maps.get(foreignSupervisor);
+                        Point agentPos = map.getAgentPosition(agent);
+                        Point foreignAgentPos = foreignMap.getAgentPosition(foreignAgent);
+                        Point offset = new Point(foreignAgentPos.x - g.offset.x - agentPos.x, foreignAgentPos.y - g.offset.y - agentPos.y);
+                        entries.put(supervisor, new MergeReply(offset));
                     }
                     mergeKeys.put(mergeKey, entries);
                 }
@@ -327,8 +341,8 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                 String agent = entry.getKey();
                 Parameter supervisorPara = new Identifier(newSupervisor);
                 
-                Parameter posOffsetX = new Numeral(offset.x);
-                Parameter posOffsetY = new Numeral(offset.y);
+                Parameter posOffsetX = new Numeral(-offset.x);
+                Parameter posOffsetY = new Numeral(-offset.y);
                 Percept agentMessage = new Percept(EventName.UPDATE_GROUP.name(), supervisorPara, posOffsetX, posOffsetY);
                 mailService.sendMessage(agentMessage, agent, name);
                 
