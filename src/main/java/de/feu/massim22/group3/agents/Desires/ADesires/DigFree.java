@@ -64,7 +64,7 @@ public class DigFree extends ADesire {
 	 * 
 	 **/
 	
-	//mit Block in Richtung der nächsten GoalZone, ohne Block in Richtung dispenser (?)
+	//TODO mit Block in Richtung der nächsten GoalZone, ohne Block in Richtung dispenser (?)
     @Override
     public Action getNextAction() {
         String direction;

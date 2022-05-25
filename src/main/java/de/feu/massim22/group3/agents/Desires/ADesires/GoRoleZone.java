@@ -40,8 +40,6 @@ public class GoRoleZone extends ADesire {
     public Action getNextAction() {
         // roleZone mit der kürzesten Entfernung zum Agenten
         ReachableRoleZone nearestRoleZone = desireProcessing.getNearestRoleZone(agent.belief.getReachableRoleZones());
-        // Richtung zu roleZone To Do : Hindernissprüfung
-        DirectionUtil.getDirection(agent.belief.getPosition(), nearestRoleZone.position());
         String direction = DirectionUtil.intToString(nearestRoleZone.direction());
         return new Action("move", new Identifier(direction));
     }

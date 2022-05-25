@@ -215,19 +215,20 @@ public class Belief {
                 AgentLogger.warning("Percept not transfered to Belief: " + percept.getName());
             }
         }
-        
-        updatePosition();
-    }
 
-    int getSteps() {
-        return steps;
-    }
+		updatePosition();
+	}
 
-    void updateFromPathFinding(List<Parameter> points) {
-        reachableDispensers.clear();
-        reachableGoalZones.clear();
-        reachableRoleZones.clear();
-        //Melinda
+	
+	 int getSteps() {
+		return steps;
+	}
+
+	void updateFromPathFinding(List<Parameter> points) {
+		reachableDispensers.clear();
+		reachableGoalZones.clear();
+		reachableRoleZones.clear();
+		// Melinda
         reachableGroupAgents.clear();
 
         for (Parameter p : points) {

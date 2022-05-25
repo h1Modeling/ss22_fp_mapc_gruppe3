@@ -40,8 +40,6 @@ public class GoGoalZone extends ADesire {
     public Action getNextAction() {
         // goalZone mit der kürzesten Entfernung zum Agenten
         ReachableGoalZone nearestGoalZone = desireProcessing.getNearestGoalZone(agent.belief.getReachableGoalZones());
-        // Richtung zu goalZone To Do : Hindernissprüfung
-        DirectionUtil.getDirection(agent.belief.getPosition(), nearestGoalZone.position());
         String direction = DirectionUtil.intToString(nearestGoalZone.direction());
         return new Action("move", new Identifier(direction));
     }

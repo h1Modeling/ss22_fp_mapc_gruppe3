@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
-import de.feu.massim22.group3.agents.Desires.ADesires.AdoptRole;
+import de.feu.massim22.group3.agents.Desires.ADesires.GoAdoptRole;
 import de.feu.massim22.group3.agents.Desires.ADesires.DigFree;
 import de.feu.massim22.group3.agents.Desires.ADesires.DodgeClear;
 import de.feu.massim22.group3.agents.Desires.ADesires.GetBlock;
@@ -18,11 +18,15 @@ import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
+import eis.iilang.Action;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
 public class DesireUtilities {
+	
+	public String task;
+	
     /**
      * The method runs the different agent decisions.
      *
@@ -42,7 +46,7 @@ public class DesireUtilities {
         doDecision(agent, new GoRoleZone(agent, this));
         doDecision(agent, new GoDispenser(agent, this));
         doDecision(agent, new GetBlock(agent, this));
-        doDecision(agent, new AdoptRole(agent, this));
+        doDecision(agent, new GoAdoptRole(agent, this));
         //doDecision(agent, new RemoveObstacle(agent, this));
         doDecision(agent, new LocalExplore(agent, this));
         
@@ -169,6 +173,7 @@ public class DesireUtilities {
 							&& missingBlocks.size() == 0) {
 						// wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
 						// GoSubmit
+						this.task = task.name;
 						doDecision(((BdiAgentV2) agent), new GoSubmit(((BdiAgentV2) agent), this));
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
@@ -220,10 +225,14 @@ public class DesireUtilities {
         case "DigFree":
             result = 10;
         case "GoSubmit":
-            result = 15; 
+        	if(desire.getNextAction().getName().equals("submit")) {
+        		result = 15; 
+        	} else {
+        		result = 25;
+        	}         
         case "DodgeClear":
             result = 20;
-        case "AdoptRole":
+        case "GoAdoptRole":
             result = 30;
         case "ArrangeBlocks":
             result = 40;

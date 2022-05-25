@@ -48,7 +48,7 @@ public class DodgeClear extends ADesire {
 	 * 
 	 **/
 	
-	//Norden To Do: richtige Richtung
+	//Norden TODO: richtige Richtung
     @Override
 	public Action getNextAction() {
 		Identifier newDirection = new Identifier("n");

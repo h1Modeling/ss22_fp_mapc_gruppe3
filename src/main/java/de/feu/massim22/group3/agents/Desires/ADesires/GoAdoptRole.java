@@ -6,9 +6,9 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 //TODO Klassenlogik
-public class AdoptRole extends ADesire {
-	public AdoptRole(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-		super("AdoptRole", agent, desireProcessing);
+public class GoAdoptRole extends ADesire {
+	public GoAdoptRole(BdiAgentV2 agent, DesireUtilities desireProcessing) {
+		super("GoAdoptRole", agent, desireProcessing);
 	}
 
 	/**

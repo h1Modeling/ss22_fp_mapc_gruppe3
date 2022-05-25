@@ -39,10 +39,12 @@ public class GoDispenser extends ADesire {
             
             if(type != null) {
                 // bestimmter Blocktyp wird gesucht (wie findet man Blocktype?)
-                for( ReachableDispenser typeDispenser : reachableDispensers ) {
+                for( ReachableDispenser dispenser : reachableDispensers ) {
                     //alle Dispenser vom gesuchten Typ
-                    if(typeDispenser.type().toString().equals(type)) {
-                        typeDispensers.add(typeDispenser);
+                	
+                	String typeDispenser = "b" + dispenser.type().toString().substring(10);
+                    if(typeDispenser.equals(type)) {
+                        typeDispensers.add(dispenser);
                     }
                 }
                 if(typeDispensers.size() > 0) {
@@ -54,7 +56,6 @@ public class GoDispenser extends ADesire {
                 // es wird kein Typ gesucht
                 typeDispensers.addAll(reachableDispensers);
                 result = true;
-                
             }
         }
         return result;
@@ -70,7 +71,7 @@ public class GoDispenser extends ADesire {
     public Action getNextAction() {
         // Dispenser mit der kürzesten Entfernung zum Agenten
         ReachableDispenser nearestDispenser = desireProcessing.getNearestDispenser(typeDispensers);
-        // Richtung zu Dispenser To Do : Hindernissprüfung
+        // Richtung zu Dispenser TODO : Hindernissprüfung
         DirectionUtil.getDirection(agent.belief.getPosition(), nearestDispenser.position());
         String direction = DirectionUtil.intToString(nearestDispenser.direction());
         return new Action("move", new Identifier(direction));
