@@ -5,19 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.swing.SwingUtilities;
 
 import org.lwjgl.BufferUtils;
 
+import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.MailService;
-import de.feu.massim22.group3.TaskName;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
 import de.feu.massim22.group3.utils.debugger.IGraphicalDebugger;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -37,10 +39,13 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     private String name = "Navi";
     private MailService mailService;
     private Map<String, GameMap> maps = new HashMap<>();
-    private Map<String, String> agentSupervisor = new HashMap<>();
+    private Map<String, String> agentSupervisor = new HashMap<>(); // Agent Key, Supervisor Value
     private Map<String, Integer> agentStep = new HashMap<>();
+    private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
     private IGraphicalDebugger debugger = new GraphicalDebugger();
+    private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
+    private boolean busy = false;
     
     private Navi() {
         PathFinder.init();
@@ -51,11 +56,17 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
         // TODO At end of application PathFinder must be closed to free resources
     }
 
+    @SuppressWarnings("unchecked")
     public static synchronized <T extends INavi> T get() {
         if (Navi.instance == null) {
             instance = new Navi();
         }
         return (T) (Navi.instance);
+    }
+
+    @Override
+    public boolean isWaitingOrBusy() {
+        return mergeKeys.size() > 0 || busy;
     }
 
     public void setDebugStepListener(DebugStepListener listener) {
@@ -86,11 +97,6 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     public Point getPosition(String name, String supervisor) {
         return maps.get(supervisor).getAgentPosition(name);
     }
- 
-    /*@Override
-    public GameMap getMap(String supervisor) {
-        return maps.get(supervisor);
-    }*/
     
     @Override
 	public List<InterestingPoint> getInterestingPoints(String supervisor, int maxNumberGoals) {
@@ -112,8 +118,6 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     public FloatBuffer getMapBuffer(String supervisor) {
     	return maps.get(supervisor).getMapBuffer();
     }
-    
-    //Melinda Ende
 
     public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess) {
         AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess);
@@ -121,7 +125,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     }
     
     @Override
-    public void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
+    public synchronized void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
             Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps,
             int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo) {
 
@@ -145,19 +149,21 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
 
         // Start calculation
         if (allSent) {
+            filterKnownTeamMatesFromGreetData(supervisor);
+            // Check if all Supervisors have sent
+            if (haveAllAgentsSentData(step)) {
+                makeMergeSuggestions();
+            }
             GameMap map = maps.get(supervisor);
             startCalculation(supervisor, map);
         }
     }
 
     @Override
-    public void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
+    public synchronized void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
             Set<TaskInfo> taskInfo) {
-    /*public void updateAgent(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
-        List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
-        Set<TaskInfo> taskInfo) {*/
 
-            if (!maps.containsKey(supervisor)) {
+        if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
         }
         GameMap map = maps.get(supervisor); 
@@ -182,7 +188,15 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
         for (Thing t : things) {
             CellType type;
             if (t.type.equals(Thing.TYPE_ENTITY)) {
-                type = t.details.equals(team) ? CellType.TEAMMATE : CellType.ENEMY;
+                boolean isTeamMate = t.details.equals(team);
+                boolean isSelf = t.x == 0 && t.y == 0;
+                type = isTeamMate ? CellType.TEAMMATE : CellType.ENEMY;
+                // Save TeamMember discovery in supervisor data 
+                if (isTeamMate && !isSelf) {
+                    List<AgentGreet> data = supervisorGreetData.getOrDefault(supervisor, new ArrayList<>());
+                    data.add(new AgentGreet(agent, supervisor, position, new Point(t.x, t.y)));
+                    supervisorGreetData.put(supervisor, data);
+                }
             } else {
                 type = Convert.thingToCellType(t);
             }
@@ -219,6 +233,180 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
 
         // Update Debugger Tasks
         debugger.setTasks(taskInfo, step);
+    }
+
+    private void makeMergeSuggestions() {
+        for (List<AgentGreet> greets : supervisorGreetData.values()) {
+            for (AgentGreet g : greets) {
+                Point inverseOffset = new Point(-g.offset.x, -g.offset.y);
+                List<AgentGreet> result = offsetInAgentGreetCount(inverseOffset);
+                // Only make suggestion if count is exactly 1 to be safe
+                if (result.size() == 1) {
+                    String agent = g.name();
+                    String supervisor = agentSupervisor.get(agent);
+                    String foreignAgent = result.get(0).name();
+                    String foreignSupervisor = agentSupervisor.get(foreignAgent);
+                    String mergeKey = getMergeKey(supervisor, foreignSupervisor);
+
+                    // Test if this key is already sent to supervisor or if teams have already merged
+                    Map<String, MergeReply> entriesSent = mergeKeys.getOrDefault(mergeKey, new HashMap<>());
+                    if (entriesSent.containsKey(supervisor) || foreignSupervisor.equals(supervisor)) {
+                        continue;
+                    }
+
+                    // Inform supervisor
+                    Parameter agentName = new Identifier(agent);
+                    Parameter foreignSupervisorPara = new Identifier(foreignSupervisor);
+                    Parameter offsetX = new Numeral(g.offset.x);
+                    Parameter offsetY = new Numeral(g.offset.y);
+                    Parameter mergeKeyPara = new Identifier(mergeKey);
+                    Percept message = new Percept(EventName.MERGE_SUGGESTION.name(), agentName, foreignSupervisorPara, mergeKeyPara, offsetX, offsetY);
+                    mailService.sendMessage(message, supervisor, name);
+
+                    Map<String, MergeReply> entries = mergeKeys.getOrDefault(mergeKey, new HashMap<>());
+                    if (!entries.containsKey(supervisor)) {
+                        // Calculate offset for map merge
+                        GameMap map = maps.get(supervisor);
+                        GameMap foreignMap = maps.get(foreignSupervisor);
+                        Point agentPos = map.getAgentPosition(agent);
+                        Point foreignAgentPos = foreignMap.getAgentPosition(foreignAgent);
+                        Point offset = new Point(foreignAgentPos.x - g.offset.x - agentPos.x, foreignAgentPos.y - g.offset.y - agentPos.y);
+                        entries.put(supervisor, new MergeReply(offset));
+                    }
+                    mergeKeys.put(mergeKey, entries);
+                }
+            }
+        }
+
+        // Clear for next step
+        supervisorGreetData.clear();
+    }
+
+    @Override
+    public synchronized void rejectMerge(String mergeKey, String name) {
+        AgentLogger.info(name + " rejected merge with key " + mergeKey);
+        mergeKeys.remove(mergeKey);
+    }
+
+    @Override
+    public synchronized void acceptMerge(String mergeKey, String name) {
+        Map<String, MergeReply> map = mergeKeys.get(mergeKey);
+        // Merge was rejected by other party
+        if (map == null) { 
+            return;
+        }
+        AgentLogger.info(name + " accepts merge with key " + mergeKey);
+        MergeReply reply = map.get(name);
+        reply.setReply();
+        map.put(name, reply);
+        
+        // Check if all have agreed
+        for (MergeReply r : map.values()) {
+            if (!r.getReply() || map.size() < 2) {
+                return;
+            }
+        }
+        AgentLogger.info("Groupmerge with key " + mergeKey + " is starting");
+
+        // Merge to Group
+        String agents[] = map.keySet().toArray(new String[map.size()]);
+        String a1 = agents[0];
+        String a2 = agents[1];
+        
+        int id1 = Integer.parseInt(a1.substring(1));
+        int id2 = Integer.parseInt(a2.substring(1));
+        
+        GameMap m1 = maps.get(a1);
+        GameMap m2 = maps.get(a2);
+        
+        // Minimum Agent Id will be new Supervisor
+        String newSupervisor = id1 < id2 ? a1 : a2;
+        String oldSupervisor = id1 < id2 ? a2 : a1;
+        GameMap newMap = id1 < id2 ? m1 : m2;
+        GameMap oldMap = id1 < id2 ? m2 : m1; 
+
+        Point offset = map.get(newSupervisor).getOffset();
+        
+        // Merge Map
+        newMap.mergeIntoMap(oldMap, new Point(0,0), offset);
+
+        maps.put(newSupervisor, newMap);
+        
+        // Update Agents in Navi
+        for (Entry<String, String> entry : agentSupervisor.entrySet()) {
+            if (entry.getValue().equals(oldSupervisor)) {
+                // Update in Navi
+                entry.setValue(newSupervisor);
+                // Update Agent
+                String agent = entry.getKey();
+                Parameter supervisorPara = new Identifier(newSupervisor);
+                
+                Parameter posOffsetX = new Numeral(-offset.x);
+                Parameter posOffsetY = new Numeral(-offset.y);
+                Percept agentMessage = new Percept(EventName.UPDATE_GROUP.name(), supervisorPara, posOffsetX, posOffsetY);
+                mailService.sendMessage(agentMessage, agent, name);
+                
+                // Update Supervisor
+                Parameter agentPara = new Identifier(agent);
+                Percept supervisorMessage = new Percept(EventName.ADD_GROUP_MEMBERS.name(), agentPara);
+                mailService.sendMessage(supervisorMessage, newSupervisor, name);
+            }
+        }
+        
+        // Update Debugger
+        debugger.removeSupervisor(oldSupervisor, newSupervisor);
+        mergeKeys.remove(mergeKey);
+    }
+
+    private String getMergeKey(String supervisor1, String supervisor2) {
+        int a = Integer.parseInt(supervisor1.substring(1));
+        int b = Integer.parseInt(supervisor2.substring(1));
+        int min = Math.min(a, b);
+        int max = Math.max(a, b);
+        return "Merge" + min + "-" + max;
+    }
+
+    private List<AgentGreet> offsetInAgentGreetCount(Point offset) {
+        List<AgentGreet> result = new ArrayList<>();
+
+        for (List<AgentGreet> greets : supervisorGreetData.values()) {
+            for (AgentGreet g: greets) {
+                if (g.offset().equals(offset)) {
+                    result.add(g);
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean haveAllAgentsSentData(int step) {
+        for (Entry<String, Integer> e : agentStep.entrySet()) {
+            if (e.getValue() != step) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void filterKnownTeamMatesFromGreetData(String supervisor) {
+        List<AgentGreet> data = supervisorGreetData.get(supervisor);
+        if (data != null) {
+            int i = 0;
+            GameMap map = maps.get(supervisor);
+            // Remove known agents
+            while (i < data.size()) {
+                AgentGreet greet = data.get(i);
+                Point position = greet.agentPosition;
+                Point offset = greet.offset;
+                Point p = new Point(position.x + offset.x, position.y + offset.y);
+                // Remove agent from list because he is a known teammate
+                if (map.isAgentInGroupAtPosition(p)) {
+                    data.remove(i);
+                } else {
+                    i++;
+                }
+            } 
+        }
     }
 
     // Creates array with CellType.FREE in vision and CellType.UNKNOWN outside of vision
@@ -378,13 +566,36 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                 data.add(f);
             }
         }                
-        Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
+        Percept message = new Percept(EventName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
         mailService.sendMessage(message, agent, name);
     }
+
+    private record AgentGreet(String name, String supervisor, Point agentPosition, Point offset) {}
+
+    private class MergeReply {
+        private boolean reply = false;
+        private Point offset;
+
+        MergeReply(Point offset) {
+            this.offset = offset;
+        }
+
+        boolean getReply() {
+            return reply;
+        }
+
+        void setReply() {
+            this.reply = true;
+        }
+
+        Point getOffset() {
+            return offset;
+        }
+    }
     
     @Override
-    public void updateSupervisor(String supervisor) {
+    public synchronized void updateSupervisor(String supervisor) {
         startCalculation(supervisor, maps.get(supervisor));
     }
 }

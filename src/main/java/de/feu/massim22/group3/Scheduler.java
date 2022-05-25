@@ -176,19 +176,13 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
                 ag.setPercepts(addList, delList);
             } catch (PerceiveException ignored) { }
         });
-        
-        
-        
-
-
-
         // log
         if (newPerceptAgents.size() > 0) {
-            //AgentLogger.info("");
-            //AgentLogger.info("------------------------------");
-            //AgentLogger.info("------------ STEP ------------");
-            //AgentLogger.info("------------------------------");
-            //AgentLogger.info("");
+            AgentLogger.info("");
+            AgentLogger.info("------------------------------");
+            AgentLogger.info("------------ STEP ------------");
+            AgentLogger.info("------------------------------");
+            AgentLogger.info("");
         }
 
         // for safety initStep at supervisor first
@@ -198,13 +192,12 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
             }
         });
 
-
         // step all agents which have new percepts
 		newPerceptAgents.forEach(agent -> {
 			// Notify multithreaded agents
 			if (agent instanceof Runnable) {
 				String sender = "Scheduler";
-				Percept message = new Percept(TaskName.UPDATE.name());
+				Percept message = new Percept(EventName.UPDATE.name());
 				agent.handleMessage(message, sender);
 			}
 			// get actions if agent is not multithreaded
@@ -216,7 +209,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 							eis.performAction(agent.getName(), action);
 						} catch (ActException e) {
 							AgentLogger.warning(
-									"Could not perform action " + action.getName() + " for " + agent.getName());
+								"Could not perform action " + action.getName() + " for " + agent.getName());
 						}
 					}
 				};

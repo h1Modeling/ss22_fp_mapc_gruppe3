@@ -3,7 +3,7 @@ package de.feu.massim22.group3.agents;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.TaskName;
+import de.feu.massim22.group3.EventName;
 import eis.iilang.Function;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
@@ -29,7 +29,7 @@ public class Supervisor implements ISupervisor {
         } else {
             Percept data = unpackMessage(message);
             String taskKey = data.getName();
-            TaskName taskName = TaskName.valueOf(taskKey);
+            EventName taskName = EventName.valueOf(taskKey);
             switch (taskName) {
             default:
                 throw new IllegalArgumentException("Supervisor can't handle Message");
@@ -48,7 +48,7 @@ public class Supervisor implements ISupervisor {
     }
 
     @Override
-    public void receiveConfirmation(String agent, TaskName task) {
+    public void receiveConfirmation(String agent, EventName task) {
         // Forward to active Supervisor
         if (!isActive()) {
             Percept message = this.createConfirmationMessage(task);
@@ -64,9 +64,9 @@ public class Supervisor implements ISupervisor {
         return this.name.equals(this.parent.getName());
     }
 
-    private Percept createConfirmationMessage(TaskName task) {
+    private Percept createConfirmationMessage(EventName task) {
         Parameter data = new Function(task.name());
-        return new Percept(TaskName.TO_SUPERVISOR.name(), data);
+        return new Percept(EventName.TO_SUPERVISOR.name(), data);
     }
 
     private Percept unpackMessage(Percept task) {
@@ -106,8 +106,12 @@ public class Supervisor implements ISupervisor {
             this.confirmationData.forEach(d -> d.clear());
         }
     }
+
+    @Override
+    public void addAgent(String name) {
+        this.agents.add(name);
+    }
     
-    //Melinda Betz 
     private boolean decisionsDone;
     
     public void setDecisionsDone(boolean decisionsDone) {
@@ -121,5 +125,4 @@ public class Supervisor implements ISupervisor {
     public List<String> getAgents() {
         return agents;
     }
-    // Melinda Betz Ende
 }

@@ -204,6 +204,7 @@ public class GameMap {
                 }
             }
         }
+
         // Offset for agents of foreign map
         return new Point(offsetX, offsetY);
     }
@@ -372,6 +373,15 @@ public class GameMap {
 
         data.flip();
         return data;
+    }
+
+    boolean isAgentInGroupAtPosition(Point p) {
+        /*
+        System.out.println("Searching for " + p.x + "/" + p.y);
+        for (Point existing : agentPosition.values()) {
+            System.out.println("Existing: " + existing.x + "/" + existing.y);
+        } */
+        return agentPosition.containsValue(p);
     }
 
     private MapCell getCell(int x, int y) {

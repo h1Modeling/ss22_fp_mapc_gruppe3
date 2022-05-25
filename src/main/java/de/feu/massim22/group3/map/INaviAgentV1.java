@@ -3,8 +3,6 @@ package de.feu.massim22.group3.map;
 import java.awt.Point;
 import java.util.List;
 import java.util.Set;
-
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
 import massim.protocol.data.*;
 
 public interface INaviAgentV1 extends INavi {
@@ -13,4 +11,7 @@ public interface INaviAgentV1 extends INavi {
             Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo);
     
     void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess);
+    void acceptMerge(String mergeKey, String name);
+    void rejectMerge(String mergeKey, String name);
+    boolean isWaitingOrBusy();
 }
