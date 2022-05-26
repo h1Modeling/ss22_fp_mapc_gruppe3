@@ -1,14 +1,15 @@
  package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.*;
 
-    public class LocalExplore extends ADesire {
+    public class LocalExplore extends SubDesire {
         
-    	public LocalExplore(BdiAgentV2 agent, DesireUtilities desireProcessing){
-            super("LocalExplore", agent, desireProcessing);
+    	public LocalExplore(BdiAgent agent){
+            super("LocalExplore", agent);
         }
 
         /**
@@ -33,9 +34,19 @@ import eis.iilang.*;
         @Override
         public Action getNextAction() {
             AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName());
-            Identifier newDirection = desireProcessing.walkCircles(agent, 2);
+            Identifier newDirection = agent.desireProcessing.walkCircles(agent, 2);
             AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Action: move, " + newDirection);
             return new Action("move", newDirection);
+        }
+        
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+        
+        @Override
+        public void setType() {
+            //this.subDesireType = SubDesires.DIG_FREE;
         }
     }
 

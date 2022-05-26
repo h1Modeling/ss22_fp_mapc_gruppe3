@@ -1,11 +1,18 @@
 package de.feu.massim22.group3.agents;
 
+import java.util.List;
+
 //import java.util.ArrayList;
 //import java.util.List;
 
 import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
 
 public abstract class BdiAgent extends Agent {
+    // Melinda
+    public DesireUtilities desireProcessing = new DesireUtilities();
+    public List<ADesire> desires;
+    public boolean decisionsDone;
     
     public Belief belief;
     protected DesireHandler desireHandler;

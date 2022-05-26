@@ -2,7 +2,8 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.util.*;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
@@ -13,12 +14,12 @@ public class GoDispenser extends ADesire {
     String type = null;
     List<ReachableDispenser> typeDispensers = new ArrayList<ReachableDispenser>();
     
-    public GoDispenser(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-        super("GoDispenser", agent, desireProcessing);
+    public GoDispenser(BdiAgent agent) {
+        super("GoDispenser", agent);
     }
     
-    public GoDispenser(BdiAgentV2 agent, String type, DesireUtilities desireProcessing) {
-        super("GoDispenser", agent, desireProcessing);
+    public GoDispenser(BdiAgent agent, String type) {
+        super("GoDispenser", agent);
         this.type = type;
     }
     

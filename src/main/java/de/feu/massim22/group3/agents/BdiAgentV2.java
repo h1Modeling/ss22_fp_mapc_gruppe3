@@ -15,19 +15,17 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
     //private Queue<BdiAgentV2.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
-    public DesireUtilities desireProcessing = new DesireUtilities();
+    //public DesireUtilities desireProcessing = new DesireUtilities();
     public StepUtilities stepLogic = new StepUtilities(desireProcessing);
     
     public Supervisor supervisor;
     public int index;
     
-    public List<ADesire> desires;
+    //public List<ADesire> desires;
     public ADesire intention;
-    public boolean decisionsDone;
+    //public boolean decisionsDone;
     public boolean beliefsDone;
 
-    public int directionCounter = 0;
-    public int circleSize = 5;
 
     /**
      * Constructor.

@@ -1,14 +1,15 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 //TODO Klassenlogik
 public class GoAdoptRole extends ADesire {
-	public GoAdoptRole(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-		super("GoAdoptRole", agent, desireProcessing);
+	public GoAdoptRole(BdiAgent agent) {
+		super("GoAdoptRole", agent);
 	}
 
 	/**

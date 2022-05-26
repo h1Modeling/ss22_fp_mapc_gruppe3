@@ -1,16 +1,17 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
 
 //TODO Klassenlogik
-public class ArrangeBlocks extends ADesire {
+public class ArrangeBlocks extends SubDesire {
 
-	public ArrangeBlocks(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-		super("ArrangeBlocks", agent, desireProcessing);
+	public ArrangeBlocks(BdiAgent agent) {
+		super("ArrangeBlocks", agent);
 	}
 
 	/**
@@ -32,7 +33,32 @@ public class ArrangeBlocks extends ADesire {
 	 * 
 	 **/
 	@Override
-	public Action getNextAction() {
-		 return new Action("rotate", new Identifier("b1"));
-	}
+    public Action getNextAction() {
+        Action nextAction = null;
+        
+        //wenn ein Block nur an der falsche Stelle ist, aber  vom Typ her passt
+         nextAction = new Action("rotate", new Identifier("b1"));
+         
+         //wenn ein Block mit einem anderen den Platz tauschen soll
+         //Block lösen
+         nextAction = new Action("detach", new Identifier("b1"));
+         
+         //dann rotieren so das er passt
+         nextAction = new Action("rotate", new Identifier("b1"));
+         
+         //Block an passender Stelle einfügen
+         nextAction = new Action("attach", new Identifier("b1"));
+         
+         return nextAction;
+    }
+	
+    @Override
+    public boolean isDone() {
+        return true;
+    }
+    
+    @Override
+    public void setType() {
+        //this.subDesireType = SubDesires.DIG_FREE;
+    }
 }

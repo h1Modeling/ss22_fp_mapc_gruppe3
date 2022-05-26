@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.*;
 import massim.protocol.data.Thing;
@@ -8,8 +9,8 @@ import massim.protocol.data.Thing;
 
 public class DodgeClear extends ADesire {
 	
-	public DodgeClear(BdiAgentV2 agent, DesireUtilities desireProcessing){
-		super("DodgeClear", agent, desireProcessing);
+	public DodgeClear(BdiAgent agent){
+		super("DodgeClear", agent);
 	}
 
 	/**

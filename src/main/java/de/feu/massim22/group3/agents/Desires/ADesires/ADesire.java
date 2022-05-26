@@ -2,23 +2,22 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.DesireUtilities;
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.*;
 
 public abstract class ADesire {
-    DesireUtilities desireProcessing;
-    
     public String name;
-    public int priority;
+    public BdiAgent agent;
     
-    public BdiAgentV2 agent;
+    public int priority;
     public Action outputAction;
 
-    ADesire(String name, BdiAgentV2 agent, DesireUtilities desireProcessing) {
+    public ADesire(String name, BdiAgent agent) {
         this.name = name;
         this.agent = agent;
-        this.desireProcessing = desireProcessing;
+    }
+    
+    public ADesire() {
     }
     
     public abstract boolean isExecutable();

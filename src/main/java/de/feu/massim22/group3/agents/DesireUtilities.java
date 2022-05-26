@@ -13,6 +13,8 @@ import de.feu.massim22.group3.agents.Desires.ADesires.GoGoalZone;
 import de.feu.massim22.group3.agents.Desires.ADesires.GoRoleZone;
 import de.feu.massim22.group3.agents.Desires.ADesires.LocalExplore;
 import de.feu.massim22.group3.agents.Desires.ADesires.GoSubmit;
+import de.feu.massim22.group3.agents.Desires.ADesires.HinderEnemy;
+import de.feu.massim22.group3.agents.Desires.ADesires.RemoveObstacle;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
@@ -26,6 +28,8 @@ import massim.protocol.messages.scenario.Actions;
 public class DesireUtilities {
 	
 	public String task;
+    public int directionCounter = 0;
+    public int circleSize = 5;
 	
     /**
      * The method runs the different agent decisions.
@@ -34,27 +38,27 @@ public class DesireUtilities {
      * 
      * @return boolean - the agent decisions are done
      */
-    public synchronized boolean runAgentDecisions(int step, BdiAgentV2 agent) {
+    public synchronized boolean runAgentDecisions(int step, BdiAgent agent) {
         boolean result = false;
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
                 + " , Supervisor: " + agent.getName());
 
-        doDecision(agent, new DodgeClear(agent, this));
-        doDecision(agent, new DigFree(agent, this));
-        //doDecision(agent, new HinderEnemy(agent, this));
-        doDecision(agent, new GoGoalZone(agent, this));
-        doDecision(agent, new GoRoleZone(agent, this));
-        doDecision(agent, new GoDispenser(agent, this));
-        doDecision(agent, new GetBlock(agent, this));
-        doDecision(agent, new GoAdoptRole(agent, this));
-        //doDecision(agent, new RemoveObstacle(agent, this));
-        doDecision(agent, new LocalExplore(agent, this));
+        doDecision(agent, new DodgeClear(agent));
+        doDecision(agent, new DigFree(agent));
+        doDecision(agent, new HinderEnemy(agent));
+        doDecision(agent, new GoGoalZone(agent));
+        doDecision(agent, new GoRoleZone(agent));
+        doDecision(agent, new GoDispenser(agent));
+        doDecision(agent, new GetBlock(agent));
+        doDecision(agent, new GoAdoptRole(agent));
+        doDecision(agent, new RemoveObstacle(agent));
+        doDecision(agent, new LocalExplore(agent));
         
         agent.decisionsDone = true;
         return result;
     }
     
-    boolean doDecision(BdiAgentV2 agent, ADesire inDesire) {
+    boolean doDecision(BdiAgent agent, ADesire inDesire) {
         boolean result = false;
         
         if (inDesire.isExecutable()) { // desire ist möglich , hinzufügen
@@ -174,7 +178,7 @@ public class DesireUtilities {
 						// wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
 						// GoSubmit
 						this.task = task.name;
-						doDecision(((BdiAgentV2) agent), new GoSubmit(((BdiAgentV2) agent), this));
+						doDecision(agent, new GoSubmit(agent));
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
 					} else if (goodPositionBlocks.size() > 0 && badPositionBlocks.size() > 0 && badBlocks.size() == 0
@@ -190,7 +194,7 @@ public class DesireUtilities {
 							&& missingBlocks.size() == 0) {
 						// wenn ein Agent Blöcke einer Task besitzt (nicht alle)
 						// GetBlock
-						doDecision(((BdiAgentV2) agent), new GetBlock(((BdiAgentV2) agent), this));
+						doDecision(agent, new GetBlock(agent));
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
 					}
@@ -322,22 +326,22 @@ public class DesireUtilities {
         return result;
     }
     
-    public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
+    public Identifier walkCircles(BdiAgent agent, int stepWidth) {
         Identifier resultDirection = new Identifier("n");
 
         if (agent.belief.getLastAction() != null && agent.belief.getLastAction().equals(Actions.MOVE)) {
-            agent.directionCounter++;
+            directionCounter++;
             resultDirection = new Identifier(agent.belief.getLastActionParams().get(0));
 
-            if (agent.belief.getLastAction().equals("move") && agent.directionCounter >= agent.circleSize) {
+            if (agent.belief.getLastAction().equals("move") && directionCounter >= circleSize) {
                 if (agent.belief.getLastActionParams().get(0).equals("n")) resultDirection = new Identifier("e");
                 if (agent.belief.getLastActionParams().get(0).equals("e")) resultDirection = new Identifier("s");
                 if (agent.belief.getLastActionParams().get(0).equals("s")) resultDirection = new Identifier("w");
                 if (agent.belief.getLastActionParams().get(0).equals("w")) {
                     resultDirection = new Identifier("n");
-                    agent.circleSize = agent.circleSize + stepWidth;
+                    circleSize = circleSize + stepWidth;
                 }
-                agent.directionCounter = 0;
+                directionCounter = 0;
             }
         }
         return resultDirection;
