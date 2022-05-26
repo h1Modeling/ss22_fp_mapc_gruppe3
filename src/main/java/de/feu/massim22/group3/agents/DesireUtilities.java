@@ -15,6 +15,7 @@ import de.feu.massim22.group3.agents.Desires.ADesires.LocalExplore;
 import de.feu.massim22.group3.agents.Desires.ADesires.GoSubmit;
 import de.feu.massim22.group3.agents.Desires.ADesires.HinderEnemy;
 import de.feu.massim22.group3.agents.Desires.ADesires.RemoveObstacle;
+import de.feu.massim22.group3.agents.Desires.ADesires.ArrangeBlocks;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
@@ -27,9 +28,17 @@ import massim.protocol.messages.scenario.Actions;
 
 public class DesireUtilities {
 	
-	public String task;
+	public TaskInfo task;
     public int directionCounter = 0;
     public int circleSize = 5;
+    
+    public List<Thing> goodBlocks = new ArrayList<Thing>();
+    public List<Thing> badBlocks = new ArrayList<Thing>();
+    public List<Thing> goodPositionBlocks = new ArrayList<Thing>();
+    public List<Thing> badPositionBlocks = new ArrayList<Thing>();
+    public List<Thing> missingBlocks = new ArrayList<Thing>();
+	public boolean typeOk = false;
+	public boolean analysisDone = false;
 	
     /**
      * The method runs the different agent decisions.
@@ -104,7 +113,8 @@ public class DesireUtilities {
 		List<BdiAgent> busyGroupAgents = new ArrayList<>();
 
 		// Schleife über alle Tasks
-		for (TaskInfo task : set) {
+		for (TaskInfo loopTask : set) {
+			task = loopTask;
 			// über alle Agenten einer Gruppe
 			for (BdiAgent agent : freeGroupAgents) {
 				// alle Blöcke die ein Agent hat
@@ -124,77 +134,23 @@ public class DesireUtilities {
 					// was hat der Agent für eine Rolle
 					// role = agent.getAgentBelief().getRole();
 
-					List<Thing> goodBlocks = new ArrayList<Thing>();
-					List<Thing> badBlocks = new ArrayList<Thing>();
-					List<Thing> goodPositionBlocks = new ArrayList<Thing>();
-					List<Thing> badPositionBlocks = new ArrayList<Thing>();
-					List<Thing> missingBlocks = new ArrayList<Thing>();
-					boolean typeOk = false;
-
-					for (Thing attachedBlock : attachedThings) {
-						if (task.requirements.contains(attachedBlock)) {
-							// Blocktype stimmt
-							// Block ist an der richtigen Stelle
-							goodBlocks.add(attachedBlock);
-							goodPositionBlocks.add(attachedBlock);
-						} else {
-							typeOk = false;
-							for (Thing taskBlock : task.requirements) {
-								if (attachedBlock.details.equals(taskBlock.details)) {
-									// Blocktype stimmt
-									// Block ist an der falschen Stelle
-									goodBlocks.add(attachedBlock);
-									badPositionBlocks.add(attachedBlock);
-									typeOk = true;
-									break;
-								}
-							}
-							if (!typeOk) {
-								// Blocktype stimmt nicht
-								badBlocks.add(attachedBlock);
-							}
-						}
-					}
-
-					for (Thing taskBlock : task.requirements) {
-						if (!attachedThings.contains(taskBlock)) {
-							typeOk = false;
-							for (Thing badPositionBlock : badPositionBlocks) {
-								if (badPositionBlock.details.equals(taskBlock.details)) {
-									// Blocktype vorhanden
-									typeOk = true;
-									break;
-								}
-							}
-							if (!typeOk) {
-								// Blocktype fehlt
-								missingBlocks.add(taskBlock);
-							}
-						}
-					}
-
-					if (goodPositionBlocks.size() > 0 && badPositionBlocks.size() == 0 && badBlocks.size() == 0
-							&& missingBlocks.size() == 0) {
-						// wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
-						// GoSubmit
-						this.task = task.name;
-						doDecision(agent, new GoSubmit(agent));
+					 goodBlocks = new ArrayList<Thing>();
+					 badBlocks = new ArrayList<Thing>();
+					 goodPositionBlocks = new ArrayList<Thing>();
+					 badPositionBlocks = new ArrayList<Thing>();
+					 missingBlocks = new ArrayList<Thing>();
+					 typeOk = false;
+					 
+					// wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
+					 if (doDecision(agent, new GoSubmit(agent))) {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
-					} else if (goodPositionBlocks.size() > 0 && badPositionBlocks.size() > 0 && badBlocks.size() == 0
-							&& missingBlocks.size() == 0) {
-						// wenn ein Agent alle Blöcke einer Task besitzt (eventuell an der falschen
-						// Stelle)
-						// ArrangeBlocks
-						// doDecision(((BdiAgentV2) agent), new ArrangeBlocks(((BdiAgentV2) agent),
-						// this));
+						// wenn ein Agent alle Blöcke einer Task besitzt (eventuell an der falschen Stelle)
+					} else if (doDecision( agent, new ArrangeBlocks( agent))) {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
-					} else if (goodPositionBlocks.size() > 0 && badPositionBlocks.size() > 0 && badBlocks.size() == 0
-							&& missingBlocks.size() == 0) {
 						// wenn ein Agent Blöcke einer Task besitzt (nicht alle)
-						// GetBlock
-						doDecision(agent, new GetBlock(agent));
+					} else if (doDecision(agent, new GetBlock(agent))) {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
 					}
@@ -205,7 +161,7 @@ public class DesireUtilities {
 		freeGroupAgents.removeAll(busyGroupAgents);
 		busyGroupAgents.clear();
 		
-		// über alle Agenten einer Gruppe
+		// über alle Agenten einer Gruppe z.B, TODO fremde Gegenden erkunden etc.
 		for (BdiAgent agent : freeGroupAgents) {
 			
 		}
@@ -345,6 +301,52 @@ public class DesireUtilities {
             }
         }
         return resultDirection;
+    }
+    
+    public void analyseAttachedThings() {
+		List<Thing> attachedThings = new ArrayList<Thing>();
+		
+		for (Thing attachedBlock : attachedThings) {
+			if (task.requirements.contains(attachedBlock)) {
+				// Blocktype stimmt
+				// Block ist an der richtigen Stelle
+				goodBlocks.add(attachedBlock);
+				goodPositionBlocks.add(attachedBlock);
+			} else {
+				typeOk = false;
+				for (Thing taskBlock : task.requirements) {
+					if (attachedBlock.details.equals(taskBlock.details)) {
+						// Blocktype stimmt
+						// Block ist an der falschen Stelle
+						goodBlocks.add(attachedBlock);
+						badPositionBlocks.add(attachedBlock);
+						typeOk = true;
+						break;
+					}
+				}
+				if (!typeOk) {
+					// Blocktype stimmt nicht
+					badBlocks.add(attachedBlock);
+				}
+			}
+		}
+
+		for (Thing taskBlock : task.requirements) {
+			if (!attachedThings.contains(taskBlock)) {
+				typeOk = false;
+				for (Thing badPositionBlock : badPositionBlocks) {
+					if (badPositionBlock.details.equals(taskBlock.details)) {
+						// Blocktype vorhanden
+						typeOk = true;
+						break;
+					}
+				}
+				if (!typeOk) {
+					// Blocktype fehlt
+					missingBlocks.add(taskBlock);
+				}
+			}
+		}
     }
 }
 

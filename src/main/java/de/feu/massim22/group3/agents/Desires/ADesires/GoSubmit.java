@@ -1,5 +1,6 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +16,6 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import java.awt.Point;
 
-//TODO Klassenlogik
 public class GoSubmit extends SubDesire {
 
 	public GoSubmit(BdiAgent agent) {
@@ -31,7 +31,21 @@ public class GoSubmit extends SubDesire {
 	 */
 	@Override
 	public boolean isExecutable() {
-		return true;
+		
+		if(!agent.desireProcessing.analysisDone) {
+			agent.desireProcessing.analyseAttachedThings();
+			agent.desireProcessing.analysisDone = true;
+		}
+		
+		if (agent.desireProcessing.goodPositionBlocks.size() > 0 
+				&& agent.desireProcessing.badPositionBlocks.size() == 0 
+				&& agent.desireProcessing.badBlocks.size() == 0
+				&& agent.desireProcessing.missingBlocks.size() == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -51,7 +65,7 @@ public class GoSubmit extends SubDesire {
 					+ " , Point GoalZone: " + p);
 			if (agentPos.x == p.x && agentPos.y == p.y) {
 				// Agent steht schon in einer GoalZone
-				nextAction = new Action("submit", new Identifier(agent.desireProcessing.task));
+				nextAction = new Action("submit", new Identifier(agent.desireProcessing.task.name));
 			} 
 		}
 			if(nextAction == null) {

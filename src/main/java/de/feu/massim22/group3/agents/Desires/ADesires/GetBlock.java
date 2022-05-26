@@ -22,8 +22,20 @@ public class GetBlock extends ADesire {
 	 */
 	@Override
 	public boolean isExecutable() {
-		return false;
+
+		if(!agent.desireProcessing.analysisDone) {
+			agent.desireProcessing.analyseAttachedThings();
+			agent.desireProcessing.analysisDone = true;
+		}
 		
+		if (agent.desireProcessing.goodPositionBlocks.size() > 0 
+				&& agent.desireProcessing.badBlocks.size() == 0
+				&& agent.desireProcessing.missingBlocks.size() > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**

@@ -23,7 +23,19 @@ public class ArrangeBlocks extends SubDesire {
 	 */
 	@Override
 	public boolean isExecutable() {
-		return false;
+		if(!agent.desireProcessing.analysisDone) {
+			agent.desireProcessing.analyseAttachedThings();
+			agent.desireProcessing.analysisDone = true;
+		}
+		
+		if (agent.desireProcessing.goodPositionBlocks.size() > 0 
+				&& agent.desireProcessing.badPositionBlocks.size() > 0 
+				&& agent.desireProcessing.missingBlocks.size() == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -48,6 +60,9 @@ public class ArrangeBlocks extends SubDesire {
          
          //Block an passender Stelle einfügen
          nextAction = new Action("attach", new Identifier("b1"));
+         
+         // falschen Block entfernen
+         nextAction = new Action("detach", new Identifier("b1"));
          
          return nextAction;
     }
