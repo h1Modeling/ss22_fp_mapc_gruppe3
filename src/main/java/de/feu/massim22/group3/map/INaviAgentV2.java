@@ -11,9 +11,9 @@ public interface INaviAgentV2 extends INavi {
             List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score,
             Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo);
 
-    void updateSupervisor(String supervisor);
-
     // Melinda
+    List<CalcResult> updateSupervisor(String supervisor);
+
     void registerSupervisor(String name, String supervisor);
 
     Point getPosition(String name, String supervisor);

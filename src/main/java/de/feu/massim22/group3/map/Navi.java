@@ -12,6 +12,7 @@ import org.lwjgl.BufferUtils;
 
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
+import de.feu.massim22.group3.agents.CalcResult;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
@@ -264,7 +265,8 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
         return result;
     }
 
-    private synchronized void startCalculation(String supervisor, GameMap map) {
+    private synchronized List<CalcResult> startCalculation(String supervisor, GameMap map) {
+        List<CalcResult> calcResults = new ArrayList<>();
         FloatBuffer mapBuffer = map.getMapBuffer();
         FloatBuffer agentBuffer = map.getEmptyBuffer();
         List<String> agents = getAgentsFromSupervisor(supervisor);
@@ -351,13 +353,14 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
-                    sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft);
+                    calcResult.add(sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft));
                 }
             }
         }
+        return calcResult;
     }
 
-    private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
         List<Parameter> data = new ArrayList<>();
         // Generate Percept
         for (int j = 0; j < interestingPoints.size(); j++) {
@@ -380,11 +383,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
         }                
         Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
-        mailService.sendMessage(message, agent, name);
+        mailService.sendMessage(message, agent, name);       
+        return message;
     }
     
     @Override
-    public void updateSupervisor(String supervisor) {
-        startCalculation(supervisor, maps.get(supervisor));
+    public List<CalcResult> updateSupervisor(String supervisor) {
+        return startCalculation(supervisor, maps.get(supervisor));
     }
 }

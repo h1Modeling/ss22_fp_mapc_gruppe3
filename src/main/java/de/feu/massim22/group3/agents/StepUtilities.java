@@ -150,10 +150,13 @@ public class StepUtilities {
 
             Runnable runnable = () -> { // Gruppenmap berechnen
                 AgentLogger.info(Thread.currentThread().getName()
-                        + " doGroupProcessing() Before calcGroup() - Supervisor: " + supervisor.getName());
-                List<CalcResult> agentCalcResults = calcGroup(supervisor);
+                        + " doGroupProcessing() Before updateSupervisor() - Supervisor: " + supervisor.getName());
+                
+                //List<CalcResult> agentCalcResults = calcGroup(supervisor);                
+                List<CalcResult> agentCalcResults = Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
+                
                 AgentLogger.info(Thread.currentThread().getName()
-                        + " doGroupProcessing() After calcGroup() - Supervisor: " + supervisor.getName());
+                        + " doGroupProcessing() After updateSupervisor() - Supervisor: " + supervisor.getName());
 
                 for (CalcResult agentCalcResult : agentCalcResults) {
                     AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - agentCalcResult: "
@@ -245,11 +248,11 @@ public class StepUtilities {
      * @return List<CalcResult>
      * 
      */
-    public synchronized List<CalcResult> calcGroup(Supervisor supervisor) {
+    /*public synchronized List<CalcResult> calcGroup(Supervisor supervisor) {
         AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Start - Supervisor: " + supervisor.getName());
         INaviAgentV2 navi = Navi.<INaviAgentV2>get();
         List<String> agents = supervisor.getAgents();
-        List<Percept> percepts = new ArrayList<>();
+        //List<Percept> percepts = new ArrayList<>();
         List<CalcResult> calcResults = new ArrayList<>();
         FloatBuffer mapBuffer = navi.getMapBuffer(supervisor.getName());
 
@@ -283,7 +286,7 @@ public class StepUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " -------------------------");
                 }
 
-                percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));
+                //percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));
                 calcResults.add(new CalcResult(agents.get(i),
                         pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft)));
             }
@@ -353,7 +356,7 @@ public class StepUtilities {
 
         AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept() End - Result: " + data);
         return new Percept("PATHFINDER_RESULT", data);
-    }
+    }*/
 
     /**
      * 
@@ -386,8 +389,8 @@ class AgentMeeting {
     }
 }
 
-record PathFindingResult(int distance, String direction) {
-}
+/*record PathFindingResult(int distance, String direction) {
+}*/
 
-record CalcResult(String agent, Percept percepts) {
-}
+/*record CalcResult(String agent, Percept percepts) {
+}*/
