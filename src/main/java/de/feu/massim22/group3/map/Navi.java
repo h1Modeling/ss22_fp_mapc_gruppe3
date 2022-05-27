@@ -34,7 +34,7 @@ import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
-public class Navi implements INaviAgentV1, INaviAgentV2  {
+public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
@@ -125,12 +125,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     }
     
     @Override
-    public synchronized void updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
+    public synchronized PathFindingResult[][] updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
             Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps,
-            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo) {
+            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedThings) {
 
         updateMap(supervisor, agent, agentIndex, position, vision, things, goalPoints, rolePoints, step, team, maxSteps,
-                score, normsInfo, taskInfo);
+                score, normsInfo, taskInfo, attachedThings);
 
         // Test if all agents in group have already sent step information
         boolean allSent = true;
@@ -155,13 +155,14 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                 makeMergeSuggestions();
             }
             GameMap map = maps.get(supervisor);
-            startCalculation(supervisor, map);
+            return startCalculation(supervisor, map);
         }
+        return null;
     }
 
     @Override
     public synchronized void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
-            Set<TaskInfo> taskInfo) {
+            Set<TaskInfo> taskInfo, List<Point> attachedThings) {
 
         if (!maps.containsKey(supervisor)) {
             throw new IllegalArgumentException("Agent " + supervisor + " is not registered yet");
@@ -170,6 +171,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
 
         // Set agent Position
         map.setAgentPosition(agent, position);
+
+        // Set attached Points
+        map.setAgentAttached(agent, attachedThings);
 
         // create temporary vision array
         CellType[][] thingVision = getBlankCellArray(vision);
@@ -452,7 +456,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
         return result;
     }
 
-    private synchronized void startCalculation(String supervisor, GameMap map) {
+    private synchronized PathFindingResult[][] startCalculation(String supervisor, GameMap map) {
         FloatBuffer mapBuffer = map.getMapBuffer();
         FloatBuffer agentBuffer = map.getEmptyBuffer();
         List<String> agents = getAgentsFromSupervisor(supervisor);
@@ -494,8 +498,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                 } 
                 // Agent Form
                 else if (y == 1 && x < agentSize) {
-                    // TODO Agent Form in PathFinding
-                    dataTextureBuffer.put(0);
+                    String agent = agents.get(x);
+                    int attached = map.getAgentAttached(agent);
+                    dataTextureBuffer.put(attached);
                     dataTextureBuffer.put(0);
                 } 
                 // Interesting Points Position (Path-Finding Goals)
@@ -542,7 +547,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                     sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft);
                 }
             }
+            return result;
         }
+        return null;
     }
 
     private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
@@ -597,5 +604,17 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     @Override
     public synchronized void updateSupervisor(String supervisor) {
         startCalculation(supervisor, maps.get(supervisor));
+    }
+
+    @Override
+    public void dispose() {
+        for (long handler: openGlHandler.values()) {
+            PathFinder.close(handler);
+        }
+    }
+
+    @Override
+    public void clear() {
+        instance = null;
     }
 }
