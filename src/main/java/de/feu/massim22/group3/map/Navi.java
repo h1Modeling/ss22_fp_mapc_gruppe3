@@ -12,13 +12,14 @@ import org.lwjgl.BufferUtils;
 
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.TaskName;
-import de.feu.massim22.group3.agents.CalcResult;
+//import de.feu.massim22.group3.agents.CalcResult;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
 import de.feu.massim22.group3.utils.debugger.IGraphicalDebugger;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -353,11 +354,26 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
-                    calcResult.add(sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft));
+                    
+                    Point agentPos = map.getInternalAgentPosition(agent);;
+                    AgentLogger.info(Thread.currentThread().getName() + " startCalc() - Loop Agent: " + agents.get(i)
+                            + " , Position: " + agentPos);
+
+                    /*for (int j = 0; j < interestingPoints.size(); j++) {
+                        AgentLogger
+                                .info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));
+                        AgentLogger.info(
+                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].distance());
+                        AgentLogger.info(
+                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].direction());
+                        AgentLogger.info(Thread.currentThread().getName() + " -------------------------");
+                    }*/
+                    
+                    calcResults.add(new CalcResult(agent,sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft)));
                 }
             }
         }
-        return calcResult;
+        return calcResults;
     }
 
     private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
@@ -383,7 +399,8 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
         }                
         Percept message = new Percept(TaskName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
-        mailService.sendMessage(message, agent, name);       
+        mailService.sendMessage(message, agent, name); 
+        AgentLogger.info(Thread.currentThread().getName() + " sendPathFindingResultToAgent() End - Result: " + data);
         return message;
     }
     

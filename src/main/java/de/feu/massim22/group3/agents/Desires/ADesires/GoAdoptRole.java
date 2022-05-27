@@ -33,6 +33,7 @@ public class GoAdoptRole extends ADesire {
 	 **/
 	@Override
 	public Action getNextAction() {
+		
 		return new Action("adopt", new Identifier("worker"));
 	}
 }

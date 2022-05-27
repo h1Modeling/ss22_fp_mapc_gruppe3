@@ -14,8 +14,10 @@ public abstract class SubDesire extends ADesire {     // Melinda
         setType();
     }
      
+     //Melinda
      public SubDesire(String name, BdiAgent agent) {
          super(name, agent);
+         this.agent = agent;
      }
 
     @Override
@@ -34,5 +36,5 @@ public abstract class SubDesire extends ADesire {     // Melinda
     // Check post conditions, if true next subgoal in hierarchy is checked
     public abstract boolean isDone();
 
-    public abstract void setType();
+    void setType() {};
 }

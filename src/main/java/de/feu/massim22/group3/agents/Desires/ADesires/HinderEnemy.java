@@ -30,8 +30,5 @@ public class HinderEnemy extends SubDesire {
         return true;
     }
     
-    @Override
-    public void setType() {
-        //this.subDesireType = SubDesires.DIG_FREE;
-    }
+    
 }

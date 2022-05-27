@@ -74,11 +74,11 @@ public class DigFree extends SubDesire {
         if (agent.belief.getAttachedThings().size() > 0) {
             List<ReachableGoalZone> zoneList = agent.belief.getReachableGoalZones();
             ReachableGoalZone nearestZone = agent.desireProcessing.getNearestGoalZone(zoneList);
-            direction = DirectionUtil.intToString(nearestZone.direction());
+            direction = DirectionUtil.firstIntToString(nearestZone.direction());
         } else {
             List<ReachableDispenser> zoneList = agent.belief.getReachableDispensers();
             ReachableDispenser nearestZone = agent.desireProcessing.getNearestDispenser(zoneList);
-            direction = DirectionUtil.intToString(nearestZone.direction());
+            direction = DirectionUtil.firstIntToString(nearestZone.direction());
         }
 
         Point p = DirectionUtil.getCellInDirection(direction);  
@@ -90,8 +90,8 @@ public class DigFree extends SubDesire {
         return true;
     }
     
-    @Override
+    /*@Override
     public void setType() {
         //this.subDesireType = SubDesires.DIG_FREE;
-    }
+    }*/
 }

@@ -71,10 +71,8 @@ public class GoDispenser extends ADesire {
     @Override
     public Action getNextAction() {
         // Dispenser mit der kürzesten Entfernung zum Agenten
-        ReachableDispenser nearestDispenser = desireProcessing.getNearestDispenser(typeDispensers);
-        // Richtung zu Dispenser TODO : Hindernissprüfung
-        DirectionUtil.getDirection(agent.belief.getPosition(), nearestDispenser.position());
-        String direction = DirectionUtil.intToString(nearestDispenser.direction());
+        ReachableDispenser nearestDispenser = agent.desireProcessing.getNearestDispenser(typeDispensers);
+        String direction = DirectionUtil.firstIntToString(nearestDispenser.direction());
         return new Action("move", new Identifier(direction));
     }       
 }

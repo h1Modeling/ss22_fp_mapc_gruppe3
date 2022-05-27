@@ -9,6 +9,12 @@ public class DirectionUtil {
 
         return new StringBuilder(s).reverse().toString();
     }
+	
+	public static String firstIntToString(int direction) {
+        String s = intToString(direction);
+
+        return s.substring(0,1);
+    }
 
 	public static int stringToInt(String direction) {
         String s = String.valueOf(direction).replaceAll("n", "1").replaceAll("e", "2").replaceAll("s", "3")

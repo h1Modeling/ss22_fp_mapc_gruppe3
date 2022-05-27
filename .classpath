@@ -46,7 +46,7 @@
 			<attribute name="m2e-apt" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/eismassim2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/protocol2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eismassim"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/protocol"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

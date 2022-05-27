@@ -48,21 +48,21 @@ public class ArrangeBlocks extends SubDesire {
     public Action getNextAction() {
         Action nextAction = null;
         
-        //wenn ein Block nur an der falsche Stelle ist, aber  vom Typ her passt
-         nextAction = new Action("rotate", new Identifier("b1"));
-         
-         //wenn ein Block mit einem anderen den Platz tauschen soll
-         //Block lösen
-         nextAction = new Action("detach", new Identifier("b1"));
-         
-         //dann rotieren so das er passt
-         nextAction = new Action("rotate", new Identifier("b1"));
-         
-         //Block an passender Stelle einfügen
-         nextAction = new Action("attach", new Identifier("b1"));
-         
-         // falschen Block entfernen
-         nextAction = new Action("detach", new Identifier("b1"));
+		// wenn ein Block nur an der falsche Stelle ist, aber vom Typ her passt
+		nextAction = new Action("rotate", new Identifier("b1"));
+
+		// wenn ein Block mit einem anderen den Platz tauschen soll
+		// Block lösen
+		nextAction = new Action("detach", new Identifier("b1"));
+
+		// dann rotieren so das er passt
+		nextAction = new Action("rotate", new Identifier("b1"));
+
+		// Block an passender Stelle einfügen
+		nextAction = new Action("attach", new Identifier("b1"));
+
+		// falschen Block entfernen
+		nextAction = new Action("detach", new Identifier("b1"));
          
          return nextAction;
     }
@@ -72,8 +72,5 @@ public class ArrangeBlocks extends SubDesire {
         return true;
     }
     
-    @Override
-    public void setType() {
-        //this.subDesireType = SubDesires.DIG_FREE;
-    }
+   
 }

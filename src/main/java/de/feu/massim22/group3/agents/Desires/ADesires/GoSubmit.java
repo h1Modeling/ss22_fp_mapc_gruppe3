@@ -71,7 +71,7 @@ public class GoSubmit extends SubDesire {
 			if(nextAction == null) {
 				// Agent muss noch in die GoalZone laufen
 				ReachableGoalZone nearestGoalZone = agent.desireProcessing.getNearestGoalZone(agent.belief.getReachableGoalZones());
-				String direction = DirectionUtil.intToString(nearestGoalZone.direction());
+				String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());
 				nextAction = new Action("move", new Identifier(direction));
 			}
 		return nextAction;
@@ -82,8 +82,5 @@ public class GoSubmit extends SubDesire {
         return true;
     }
     
-    @Override
-    public void setType() {
-        //this.subDesireType = SubDesires.DIG_FREE;
-    }
+    
 }

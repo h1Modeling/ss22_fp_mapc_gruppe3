@@ -58,7 +58,7 @@ public class DesireUtilities {
         doDecision(agent, new GoGoalZone(agent));
         doDecision(agent, new GoRoleZone(agent));
         doDecision(agent, new GoDispenser(agent));
-        doDecision(agent, new GetBlock(agent));
+        //doDecision(agent, new GetBlock(agent));
         doDecision(agent, new GoAdoptRole(agent));
         doDecision(agent, new RemoveObstacle(agent));
         doDecision(agent, new LocalExplore(agent));
