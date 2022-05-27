@@ -256,7 +256,6 @@ public class Belief {
                 reachableRoleZones.add(rz);
             }
             // Dispenser
-            //if (!isZone && detail.equals(Thing.TYPE_DISPENSER )) {
             if (!isZone && detail.substring(0, 9).equals("DISPENSER")) {
                 ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction);
                 reachableDispensers.add(rd);

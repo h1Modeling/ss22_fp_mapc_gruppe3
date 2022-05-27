@@ -72,7 +72,7 @@ public class DesireUtilities {
         
         if (inDesire.isExecutable()) { // desire ist möglich , hinzufügen
             inDesire.outputAction = inDesire.getNextAction();
-            getPriority(inDesire);
+            inDesire.priority = getPriority(inDesire);
             agent.desires.add(inDesire);
             result = true;
         }
@@ -184,36 +184,50 @@ public class DesireUtilities {
         switch (desire.name) {
         case "DigFree":
             result = 10;
+            break;
         case "GoSubmit":
-        	if(desire.getNextAction().getName().equals("submit")) {
-        		result = 15; 
-        	} else {
-        		result = 25;
-        	}         
+			if (desire.getNextAction().getName().equals("submit")) {
+				result = 15;
+			} else {
+				result = 25;
+			}
+            break;
         case "DodgeClear":
             result = 20;
+            break;
         case "GoAdoptRole":
             result = 30;
+            break;
         case "ArrangeBlocks":
             result = 40;
+            break;
         case "GetBlock":
             result = 50;
+            break;
         case "ReactToNorm":
             result = 40;
+            break;
         case "GoGoalZone":
             result = 80;
+            break;
         case "GoRoleZone":
             result = 30;
+            break;
         case "GoDispenser":
             result = 60;
+            break;
         case "LocalGetBlocks":
             result = 70;
+            break;
         case "Explore":
             result = 85;
+            break;
         case "LocalHinderEnemy":
             result = 95;
+            break;
         case "LocalExplore":
             result = 100;
+            break;
         }
 
         return result;
@@ -231,7 +245,7 @@ public class DesireUtilities {
         int priority = 1000;
         for (ADesire desire : agent.desires) {
             AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , Desire: " + desire.name + " , Action: " + desire.outputAction);
+                    + " , Desire: " + desire.name + " , Action: " + desire.outputAction + " , Prio: " + desire.priority);
             if (desire.priority < priority) {
                 result = desire;
                 priority = desire.priority;
