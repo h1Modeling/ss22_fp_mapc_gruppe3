@@ -150,7 +150,7 @@ public class DesireUtilities {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
 						// wenn ein Agent Blöcke einer Task besitzt (nicht alle)
-					} else if (doDecision(agent, new GetBlock(agent))) {
+					} else if (doDecision(agent, new GoDispenser(agent, missingBlocks.get(0).type))) {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
 					}

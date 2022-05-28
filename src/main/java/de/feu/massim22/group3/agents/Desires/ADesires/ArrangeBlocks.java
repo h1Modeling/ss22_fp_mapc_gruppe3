@@ -1,8 +1,10 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgent;
+import java.awt.Point;
+import java.util.List;
+
+import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
-import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
@@ -48,6 +50,16 @@ public class ArrangeBlocks extends SubDesire {
     public Action getNextAction() {
         Action nextAction = null;
         
+        List<Point> attachedPoints = agent.belief.getAttachedThings();
+        if (attachedPoints.size() == 1) {
+            // task besteht aus einem Block
+            Point taskBlock = new Point(agent.desireProcessing.task.requirements.get(0).x, agent.desireProcessing.task.requirements.get(0).y);
+            Point agentBlock = attachedPoints.get(0);            
+            nextAction = new Action("rotate", new Identifier(DirectionUtil.getClockDirection(agentBlock, taskBlock)));
+        } else {
+
+        
+        
 		// wenn ein Block nur an der falsche Stelle ist, aber vom Typ her passt
 		nextAction = new Action("rotate", new Identifier("b1"));
 
@@ -63,6 +75,7 @@ public class ArrangeBlocks extends SubDesire {
 
 		// falschen Block entfernen
 		nextAction = new Action("detach", new Identifier("b1"));
+        }
          
          return nextAction;
     }

@@ -6,7 +6,7 @@ import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
-//TODO Klassenlogik
+//wird momentan nicht benötigt. Logik wird in GoDispenser abgebildet.
 public class GetBlock extends ADesire {
 
 	public GetBlock(BdiAgent agent) {

@@ -80,4 +80,26 @@ public class DirectionUtil {
 
         return result;
     }
+	
+	//agent a block b  cw clockwise  ccw counter clockwise
+	public static String getClockDirection(Point a, Point b) {
+	    String result = "";
+	    
+	    if (a.x == 0 && b.x == 0 && b.x == 0 || a.y == 0 && b.y == 0) {
+	        result = "cw";
+	    } else if (a.x == 0 && a.y == 1) {
+	        if (b.x == -1 && b.y == 0) result = "cw"; 
+	        if (b.x == 1 && b.y == 0) result = "ccw"; 
+        } else if (a.x == -1 && a.y == 0) {
+            if (b.x == 0 && b.y == -1) result = "cw"; 
+            if (b.x == 0 && b.y == 1) result = "ccw"; 
+        } else if (a.x == 0 && a.y == -1) {
+            if (b.x == 1 && b.y == 0) result = "cw"; 
+            if (b.x == -1 && b.y == 0) result = "ccw";  
+        } else if (a.x == 1 && a.y == 0) {
+            if (b.x == 0 && b.y == 1) result = "cw"; 
+            if (b.x == 0 && b.y == -1) result = "ccw"; 
+        }
+	    return result;
+	}
 }
