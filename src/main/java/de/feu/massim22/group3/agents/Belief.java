@@ -11,7 +11,6 @@ import java.awt.Point;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
-import de.feu.massim22.group3.agents.Reachable.ReachableGroupAgent;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -64,11 +63,7 @@ public class Belief {
     private Set<Thing> thingsAtLastStep = new HashSet<>();
     private List<ReachableDispenser> reachableDispensers = new ArrayList<>();
     private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
-    private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
-    
-    //Melinda
-    private List<ReachableGroupAgent> reachableGroupAgents = new ArrayList<>(); 
-    
+    private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();   
 
     Belief(String agentName) { 
         this.name = agentName;
@@ -228,8 +223,6 @@ public class Belief {
 		reachableDispensers.clear();
 		reachableGoalZones.clear();
 		reachableRoleZones.clear();
-		// Melinda
-        reachableGroupAgents.clear();
 
         for (Parameter p : points) {
             if (!(p instanceof Function)) {
@@ -256,15 +249,9 @@ public class Belief {
                 reachableRoleZones.add(rz);
             }
             // Dispenser
-            if (!isZone && detail.substring(0, 9).equals("DISPENSER")) {
+            if (!isZone) {
                 ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction);
                 reachableDispensers.add(rd);
-            }
-            //Melinda
-         // agents of a group 
-            if (!isZone && detail.equals(CellType.TEAMMATE)) {
-            	//ReachableGroupAgent rga = new ReachableGroupAgent (pos, CellType.valueOf(detail), distance, direction, agent);
-            	//getAllGroupAgents.add(bd); wie auf Agent kommen?
             }
         }
     }
@@ -287,12 +274,6 @@ public class Belief {
     int getTeamSize() {
         return teamSize;
     }
-    
-    public List<ReachableGroupAgent> getReachableGroupAgents(){
-        return reachableGroupAgents;
-    }
-
-    
     // Melinda Ende
 
     public Set<Thing> getThings() {

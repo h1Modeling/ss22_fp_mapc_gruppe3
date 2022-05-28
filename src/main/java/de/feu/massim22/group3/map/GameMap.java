@@ -25,8 +25,6 @@ public class GameMap {
     private List<Point> goalCache = new ArrayList<>();
     private List<Point> roleCache = new ArrayList<>();
     private List<InterestingPoint> dispenserCache = new ArrayList<>();
-    //Melinda
-    private List<InterestingPoint> agentCache = new ArrayList<>();
     
     public GameMap(int x, int y) {
         initialSize = new Point(x, y);
@@ -223,8 +221,6 @@ public class GameMap {
         roleCache.clear();
         goalCache.clear();
         dispenserCache.clear();
-        //Melinda
-        agentCache.clear();
         
         for (int y = 0; y < curSize.y; y++) {
             for (int x = 0; x < curSize.x; x++) {
@@ -274,11 +270,6 @@ public class GameMap {
                         dispenserCache.add(ip);
                     }
                 }
-                //Melinda
-				if (c.getCellType().name().contains(CellType.TEAMMATE.name())) {
-					InterestingPoint ip = new InterestingPoint(p, ZoneType.NONE, c.getCellType());
-					agentCache.add(ip);
-				}
             }
         }
 

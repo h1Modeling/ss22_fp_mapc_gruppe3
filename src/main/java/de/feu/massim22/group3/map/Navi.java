@@ -113,8 +113,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     @Override
     public FloatBuffer getMapBuffer(String supervisor) {
     	return maps.get(supervisor).getMapBuffer();
-    }
-    
+    }    
     //Melinda Ende
 
     public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess) {
