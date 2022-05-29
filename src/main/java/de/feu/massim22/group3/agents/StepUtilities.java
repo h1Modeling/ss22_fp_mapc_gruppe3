@@ -168,7 +168,7 @@ public class StepUtilities {
                     agent.belief.updateFromPathFinding(parameters);
                     agent.beliefsDone = true;
                     
-                    AgentLogger.info(Thread.currentThread().getName() + agent.belief.reachablesToString());
+                    //AgentLogger.info(Thread.currentThread().getName() + agent.belief.reachablesToString());
                 }
                 AgentLogger.info(Thread.currentThread().getName()
                         + " doGroupProcessing() Before runSupervisorDecisions() - Supervisor: " + supervisor.getName());

@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents;
 
 import java.awt.Point;
+import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 
 public class DirectionUtil {
 	public static String intToString(int direction) {
@@ -102,4 +103,52 @@ public class DirectionUtil {
         }
 	    return result;
 	}
+	
+	//inDirection Wert in data bei ReachableDispenser
+	public static String getDirectionDispenser(String inDirection) {
+        String result = " ";
+        
+        switch(inDirection) {
+        case"n":
+        	result = "s";
+        	break;
+        case"e":
+        	result = "w";
+        	break;
+        case"s":
+        	result = "n";
+        	break;
+        case"w":
+        	result = "e";
+        	break;
+        }
+
+        return result;
+    }
+	
+	public static Point getDispenserItself(ReachableDispenser inDispenser) {
+		int x = 0;
+		int y = 0;
+        
+        switch(inDispenser.data()) {
+        case "n":
+        	x = inDispenser.position().x;
+        	y = inDispenser.position().y + 1;
+        	break;
+        case "e":
+        	x = inDispenser.position().x - 1;
+        	y = inDispenser.position().y;
+        	break;
+        case "s":
+        	x = inDispenser.position().x;
+        	y = inDispenser.position().y - 1;
+        	break;
+        case "w":
+        	x = inDispenser.position().x + 1;
+        	y = inDispenser.position().y;
+        	break;
+        }
+
+        return new Point(x, y);
+    }
 }

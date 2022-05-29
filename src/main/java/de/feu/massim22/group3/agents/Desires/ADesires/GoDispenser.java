@@ -1,12 +1,14 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.util.*;
+import java.awt.Point;
 
 import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Subject.Type;
 import massim.protocol.data.Thing;
 import eis.iilang.Action;
@@ -85,16 +87,24 @@ public class GoDispenser extends ADesire {
         boolean attachPossible = false;
         // Dispenser mit der kürzesten Entfernung zum Agenten
         ReachableDispenser nearestDispenser = agent.desireProcessing.getNearestDispenser(typeDispensers);
+        Point dispenserItself = DirectionUtil.getDispenserItself(nearestDispenser);
+        int distance = Math.abs(dispenserItself.x - agent.belief.getPosition().x) + Math.abs(dispenserItself.y - agent.belief.getPosition().y);
         
-        if (nearestDispenser.distance() == 1) {
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName() + " , Pos: " + agent.belief.getPosition());
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - dNearest: " + nearestDispenser.position() + nearestDispenser.data() + " , dItself: " + dispenserItself);
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName() + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
+
+        if (distance == 1) {
+        	AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName() + " , Things: " + agent.belief.getThings());
             for (Thing thing : agent.belief.getThings()) {
-                if (thing.type.equals(Thing.TYPE_BLOCK) && thing.x == nearestDispenser.position().x && thing.y == nearestDispenser.position().y) {  
+                if (thing.type.equals(Thing.TYPE_BLOCK) && thing.x == dispenserItself.x && thing.y == dispenserItself.y) {  
                     attachPossible = true;
                     break;
                 }                
             }
 
-            String direction = DirectionUtil.getDirection(agent.belief.getPosition(), nearestDispenser.position());
+            String direction = DirectionUtil.getDirection(agent.belief.getPosition(), dispenserItself);
+
             if (attachPossible) {
                 return new Action("attach", new Identifier(direction));  
             } else {

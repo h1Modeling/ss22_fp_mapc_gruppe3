@@ -61,8 +61,8 @@ public class GoSubmit extends SubDesire {
 		Action nextAction = null;
 
 		for (Point p : pointsGoalZone) {
-			AgentLogger.info(Thread.currentThread().getName() + " getNextAction() agentPos: " + agentPos
-					+ " , Point GoalZone: " + p);
+			/*AgentLogger.info(Thread.currentThread().getName() + " getNextAction() agentPos: " + agentPos
+					+ " , Point GoalZone: " + p);*/
 			if (agentPos.x == p.x && agentPos.y == p.y) {
 				// Agent steht schon in einer GoalZone
 				nextAction = new Action("submit", new Identifier(agent.desireProcessing.task.name));

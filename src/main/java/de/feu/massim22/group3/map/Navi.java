@@ -626,6 +626,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     
     @Override
     public List<CalcResult> updateSupervisor(String supervisor) {
+    	calcResults = new ArrayList<>();
         startCalculation(supervisor, maps.get(supervisor));
         return calcResults;
     }

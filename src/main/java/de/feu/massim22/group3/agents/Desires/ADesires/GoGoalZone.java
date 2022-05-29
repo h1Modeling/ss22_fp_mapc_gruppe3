@@ -34,8 +34,8 @@ public class GoGoalZone extends ADesire {
 		// es existiert eine goalZone ( die der Agent erreichen kann)und er ist nicht schon drin
 		if (reachableGoalZones.size() > 0) {
 			for (ReachableGoalZone rgz : reachableGoalZones) {
-				AgentLogger.info(Thread.currentThread().getName() + " isExecutable() agentPos: " + agentPos
-						+ " , Point GoalZone: " + rgz.position());
+				/*AgentLogger.info(Thread.currentThread().getName() + " isExecutable() agentPos: " + agentPos
+						+ " , Point GoalZone: " + rgz.position());*/
 				if (agentPos.x == rgz.position().x && agentPos.y == rgz.position().y) {
 					return false;
 				}
