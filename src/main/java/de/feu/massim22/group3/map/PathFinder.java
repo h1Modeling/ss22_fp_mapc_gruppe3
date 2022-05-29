@@ -45,9 +45,11 @@ class PathFinder {
         }
     }
 
-    static void close() {
+    static void close(long context) {
         // Free Resources
-        glfwTerminate(); 
+        glfwMakeContextCurrent(context);
+        glfwTerminate();
+        glfwMakeContextCurrent(0);
     }
 
     static long createOpenGlContext() {

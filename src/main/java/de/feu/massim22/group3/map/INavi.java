@@ -8,4 +8,5 @@ public interface INavi {
     void registerAgent(String name);
     CellType[][] getBlankCellArray(int vision); 
     void setDebugStepListener(DebugStepListener listener);
+    void dispose();
 }

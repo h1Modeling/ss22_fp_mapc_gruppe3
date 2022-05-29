@@ -40,6 +40,7 @@ void main() {
 
     int i; // general iterator
     int j; // general second iterator
+    int k; // general third iterator
     
     // Array Structure to simulate priority queue
     int curMin = 0;
@@ -63,7 +64,8 @@ void main() {
     // position agent
     ivec3 start = ivec3(imageLoad(data, ivec2(agent, 0)).rg, 0);
     // position goal
-    ivec3 end = ivec3(imageLoad(data, ivec2(task, 2)).rg, 0); 
+    ivec3 end = ivec3(imageLoad(data, ivec2(task, 2)).rg, 0);
+    int attached = int(imageLoad(data, ivec2(agent, 1)).r);
     
     distances[0][0] = start;
     visited[start.x][start.y] = true;
@@ -121,9 +123,26 @@ void main() {
                 }
                 ivec3 pixelAgent = ivec3(pixelMap.xy, agentImageId);
                 float pixelAgentValue = imageLoad( map, pixelAgent).r;
+                
+                bool attachedOk = true;
 
+                // Row
+                for (j = 0; j < 5; j++) {
+                    // Column
+                    for (k = 0; k < 5; k++) {
+                        ivec3 testPixel = ivec3(pixelMap.x + k - 2, pixelMap.y + j - 2, 0);
+                        float testPixelValue = imageLoad( map, testPixel).r;
+                        
+                        bool isBlockAttached = ((attached >> (j * 5 + k)) & 0x1) == 0x1;
+
+                        bool isOk = !isBlockAttached || testPixelValue == 0.0;
+                        attachedOk = attachedOk && isOk;
+                    }
+                }
+                
                 // No obstacle
-                if (pixelMapValue == 0.0) {
+                if (pixelMapValue == 0.0 && attachedOk) {
+                    //bool attachedFree
                     // Store Debug Info in Image
                     // imageStore( map, ivec3(pixelMap.xy, pixelAgent.z), vec4( 0, 0.5, 0, 0) );
                     int dist = int(abs(end.x - pixelMap.x) + abs(end.y - pixelMap.y));

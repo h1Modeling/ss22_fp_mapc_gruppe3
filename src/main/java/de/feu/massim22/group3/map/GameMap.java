@@ -20,6 +20,7 @@ public class GameMap {
     private Point topLeft; // top left indices can be negative
     private int mapExtensionSize = 20;
     private Map<String, Point> agentPosition = new HashMap<>(); 
+    private Map<String, Integer> agentAttached = new HashMap<>(); 
     // These hold information relative to the internal array - only use for pathfinding
     private List<Point> goalCache = new ArrayList<>();
     private List<Point> roleCache = new ArrayList<>();
@@ -90,6 +91,48 @@ public class GameMap {
     public void setAgentPosition(String name, Point position) {
         agentPosition.put(name, position);
     }
+
+    public void setAgentAttached(String name, List<Point> attachedThings) {
+        int result = 0; //4096; // Agent Pos
+        for (Point p : attachedThings) {
+            if (p.y == -2) {
+                if (p.x == -2) result += 1;
+                if (p.x == -1) result += 2;
+                if (p.x == 0) result += 4;
+                if (p.x == 1) result += 8;
+                if (p.x == 2) result += 16;
+            } else if (p.y == -1) {
+                if (p.x == -2) result += 32;
+                if (p.x == -1) result += 64;
+                if (p.x == 0) result += 128;
+                if (p.x == 1) result += 256;
+                if (p.x == 2) result += 512;
+            } else if (p.y == 0) {
+                if (p.x == -2) result += 1024;
+                if (p.x == -1) result += 2048;
+                // Agent Pos 
+                if (p.x == 1) result += 8192;
+                if (p.x == 2) result += 16384;
+            } else if (p.y == 1) {
+                if (p.x == -2) result += 32768;
+                if (p.x == -1) result += 65536;
+                if (p.x == 0) result += 131072;
+                if (p.x == 1) result += 262144;
+                if (p.x == 2) result += 524288;
+            } else if (p.y == 2) {
+                if (p.x == -2) result += 1048576;
+                if (p.x == -1) result += 2097152;
+                if (p.x == 0) result += 4194304;
+                if (p.x == 1) result += 8388608;
+                if (p.x == 2) result += 16777216;
+            }
+        }
+        agentAttached.put(name, result);
+    }
+
+    public int getAgentAttached(String agent) {
+        return agentAttached.get(agent);
+    }
     
     public Point getTopLeft() {
         return topLeft;
@@ -138,7 +181,6 @@ public class GameMap {
         cells = newCells;
     }
     
-    // TODO Strategy needed to update Agent Position of foreign group
     // Points are relative to the origin of their map
     public Point mergeIntoMap(GameMap foreignMap, Point foreignPoint, Point thisPoint) {
         int offsetX = thisPoint.x - foreignPoint.x;
