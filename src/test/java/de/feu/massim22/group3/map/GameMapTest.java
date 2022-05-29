@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Point;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -90,4 +92,18 @@ class GameMapTest {
         float[] expected = {1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0};
         assertArrayEquals(expected, actual);
     }
+
+    @Test
+    void setAgentAttached() {
+        GameMap m = new GameMap(3, 3);
+        List<Point> points = new ArrayList<>();
+        for (int y = -2; y < 3; y++) {
+            for (int x = -2; x < 3; x++) {
+                points.add(new Point(x, y));
+            }
+        }
+        m.setAgentAttached("A1", points);
+        int result = m.getAgentAttached("A1");
+        assertEquals(Math.pow(2, 25) - 1, result);
+    } 
 }

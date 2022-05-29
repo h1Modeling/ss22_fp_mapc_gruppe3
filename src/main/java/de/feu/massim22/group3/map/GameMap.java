@@ -21,6 +21,7 @@ public class GameMap {
     private Point topLeft; // top left indices can be negative
     private int mapExtensionSize = 20;
     private Map<String, Point> agentPosition = new HashMap<>(); 
+    private Map<String, Integer> agentAttached = new HashMap<>(); 
     // These hold information relative to the internal array - only use for pathfinding
     private List<Point> goalCache = new ArrayList<>();
     private List<Point> roleCache = new ArrayList<>();
@@ -91,6 +92,48 @@ public class GameMap {
     public void setAgentPosition(String name, Point position) {
         agentPosition.put(name, position);
     }
+
+    public void setAgentAttached(String name, List<Point> attachedThings) {
+        int result = 0; //4096; // Agent Pos
+        for (Point p : attachedThings) {
+            if (p.y == -2) {
+                if (p.x == -2) result += 1;
+                if (p.x == -1) result += 2;
+                if (p.x == 0) result += 4;
+                if (p.x == 1) result += 8;
+                if (p.x == 2) result += 16;
+            } else if (p.y == -1) {
+                if (p.x == -2) result += 32;
+                if (p.x == -1) result += 64;
+                if (p.x == 0) result += 128;
+                if (p.x == 1) result += 256;
+                if (p.x == 2) result += 512;
+            } else if (p.y == 0) {
+                if (p.x == -2) result += 1024;
+                if (p.x == -1) result += 2048;
+                // Agent Pos 
+                if (p.x == 1) result += 8192;
+                if (p.x == 2) result += 16384;
+            } else if (p.y == 1) {
+                if (p.x == -2) result += 32768;
+                if (p.x == -1) result += 65536;
+                if (p.x == 0) result += 131072;
+                if (p.x == 1) result += 262144;
+                if (p.x == 2) result += 524288;
+            } else if (p.y == 2) {
+                if (p.x == -2) result += 1048576;
+                if (p.x == -1) result += 2097152;
+                if (p.x == 0) result += 4194304;
+                if (p.x == 1) result += 8388608;
+                if (p.x == 2) result += 16777216;
+            }
+        }
+        agentAttached.put(name, result);
+    }
+
+    public int getAgentAttached(String agent) {
+        return agentAttached.get(agent);
+    }
     
     public Point getTopLeft() {
         return topLeft;
@@ -139,7 +182,6 @@ public class GameMap {
         cells = newCells;
     }
     
-    // TODO Strategy needed to update Agent Position of foreign group
     // Points are relative to the origin of their map
     public Point mergeIntoMap(GameMap foreignMap, Point foreignPoint, Point thisPoint) {
         int offsetX = thisPoint.x - foreignPoint.x;
@@ -205,6 +247,7 @@ public class GameMap {
                 }
             }
         }
+
         // Offset for agents of foreign map
         return new Point(offsetX, offsetY);
     }
@@ -248,25 +291,25 @@ public class GameMap {
                     // North
                     Point north = new Point(p.x, p.y - 1);
                     if (north.y >= 0 && cells[north.y][north.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(north, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(north, ZoneType.NONE, c.getCellType(), "n");
                         dispenserCache.add(ip);
                     }
                     // East
                     Point east = new Point(p.x + 1, p.y);
                     if (east.x < size.x && cells[east.y][east.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(east, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(east, ZoneType.NONE, c.getCellType(), "e");
                         dispenserCache.add(ip);
                     }
                     // South
                     Point south = new Point(p.x, p.y + 1);
                     if (south.y < size.y && cells[south.y][south.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(south, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(south, ZoneType.NONE, c.getCellType(), "s");
                         dispenserCache.add(ip);
                     }
-                    // South
+                    // West
                     Point west = new Point(p.x - 1, p.y);
                     if (west.x >= 0 && cells[west.y][west.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(west, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(west, ZoneType.NONE, c.getCellType(), "w");
                         dispenserCache.add(ip);
                     }
                 }
@@ -283,6 +326,14 @@ public class GameMap {
             // Dispensers
             result.addAll(dispenserCache);
             int countLeft = maxCount - dispenserCache.size();
+
+            // Agents
+            for (Entry<String, Point> e : agentPosition.entrySet()) {
+                Point p = e.getValue();
+                Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
+                InterestingPoint ip = new InterestingPoint(internal, ZoneType.NONE, CellType.TEAMMATE, e.getKey());
+                result.add(ip);
+            }
             
             // Goal and Role Zones 
             List<List<Point>> goalLists = filterZones(goalCache, 6);
@@ -299,7 +350,7 @@ public class GameMap {
                         List<Point> goalList = goalLists.get(i);
                         if (goalList.size() > 0) {
                             Point p = goalList.get(0);
-                            InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN);
+                            InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN, "");
                             result.add(ip);
                             countLeft -= 1;
                             goalList.remove(0);
@@ -314,7 +365,7 @@ public class GameMap {
                         List<Point> roleList = roleLists.get(i);
                         if (roleList.size() > 0) {
                             Point p = roleList.get(0);
-                            InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN);
+                            InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN, "");
                             result.add(ip);
                             countLeft -= 1;
                             roleList.remove(0);
@@ -373,6 +424,15 @@ public class GameMap {
 
         data.flip();
         return data;
+    }
+
+    boolean isAgentInGroupAtPosition(Point p) {
+        /*
+        System.out.println("Searching for " + p.x + "/" + p.y);
+        for (Point existing : agentPosition.values()) {
+            System.out.println("Existing: " + existing.x + "/" + existing.y);
+        } */
+        return agentPosition.containsValue(p);
     }
 
     private MapCell getCell(int x, int y) {

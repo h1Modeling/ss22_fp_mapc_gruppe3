@@ -4,7 +4,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.feu.massim22.group3.map.CellType;
-import de.feu.massim22.group3.utils.Convert;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import net.miginfocom.swing.MigLayout;

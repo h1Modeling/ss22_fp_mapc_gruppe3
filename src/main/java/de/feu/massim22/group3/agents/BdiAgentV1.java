@@ -8,11 +8,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
-import de.feu.massim22.group3.TaskName;
-import de.feu.massim22.group3.map.*;
+import de.feu.massim22.group3.EventName;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import massim.protocol.data.NormInfo;
@@ -25,6 +27,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
     private EisSender eisSender;
     private ISupervisor supervisor;
     private int index;
+    private boolean merging = false;
     
     public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
         super(name, mailbox);
@@ -55,7 +58,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
 
             // Send Action if already calculated		
             Action nextAction = intention.getNextAction();
-            if (nextAction != null) {
+            if (nextAction != null && !Navi.<INaviAgentV1>get().isWaitingOrBusy()) {
                 eisSender.send(this, nextAction);
                 intention.clear();
             }
@@ -71,20 +74,21 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
             } else {
                 // Perform Task
                 BdiAgentV1.PerceptMessage message = queue.poll();
-                performTask(message.percept, message.sender);
+                performEvent(message.percept, message.sender);
             }	
         }
     }
     
     // TODO Add Agent Logic 
-    private void performTask(Percept task, String sender) {
-        String taskKey = task.getName();
-        TaskName taskName = TaskName.valueOf(taskKey);
+    private void performEvent(Percept event, String sender) {
+        String taskKey = event.getName();
+        EventName taskName = EventName.valueOf(taskKey);
         switch (taskName) {
         case UPDATE:
+            merging = false;
             updatePercepts();
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -93,14 +97,44 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
             desireHandler.setNextAction();
             break;
         case TO_SUPERVISOR:
-            this.supervisor.handleMessage(task, sender);
+            this.supervisor.handleMessage(event, sender);
             break;
-        case PATHFINDER_RESULT:
-            List<Parameter> parameters = task.getParameters();
+        case PATHFINDER_RESULT: {
+            List<Parameter> parameters = event.getParameters();
             belief.updateFromPathFinding(parameters);
-            AgentLogger.info(belief.reachablesToString());
+            AgentLogger.fine(belief.reachablesToString());
             // TODO Action after receiving Pathfinding infos
             break;
+        }
+        case MERGE_SUGGESTION: {
+            List<Parameter> parameters = event.getParameters();
+            String key = ((Identifier)parameters.get(2)).getValue();
+            // Allow only on merge per step
+            if (!merging) {
+                Navi.<INaviAgentV1>get().acceptMerge(key, getName());
+            } else {
+                Navi.<INaviAgentV1>get().rejectMerge(key, getName());
+            }
+            merging = true;
+            break;
+        }
+        case UPDATE_GROUP: {
+            List<Parameter> parameters = event.getParameters();
+            String newSupervisor = ((Identifier)parameters.get(0)).getValue();
+            int offsetX = (int)((Numeral)parameters.get(1)).getValue();
+            int offsetY = (int)((Numeral)parameters.get(2)).getValue();
+            Point oldPosition = belief.getPosition();
+            Point newPosition = new Point(oldPosition.x + offsetX, oldPosition.y + offsetY);
+            belief.setPosition(newPosition);
+            supervisor.setName(newSupervisor);
+            break;
+        }
+        case ADD_GROUP_MEMBERS: {
+            List<Parameter> parameters = event.getParameters();
+            String agent = ((Identifier)parameters.get(0)).getValue();
+            supervisor.addAgent(agent);
+            break;
+        }
         default:
             throw new IllegalArgumentException("Message is not handled!");
         }
@@ -111,7 +145,7 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         // Update Percepts
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
-        AgentLogger.info(belief.toString());
+        AgentLogger.fine(belief.toString());
 
         // Update Navi
         Set<Thing> things = belief.getThings();
@@ -125,8 +159,9 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         int score = (int)belief.getScore();
         Set<NormInfo> normsInfo = belief.getNormsInfo(); 
         Set<TaskInfo> taskInfo = belief.getTaskInfo();
+        List<Point> attachedThings = belief.getAttachedThings();
         Navi.<INaviAgentV1>get().updateMapAndPathfind(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
-                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo);
+                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo, attachedThings);
     }
 
     private void setDummyAction() {

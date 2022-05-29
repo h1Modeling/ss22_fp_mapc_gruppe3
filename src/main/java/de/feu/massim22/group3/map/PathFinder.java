@@ -45,9 +45,11 @@ class PathFinder {
         }
     }
 
-    static void close() {
+    static void close(long context) {
         // Free Resources
-        glfwTerminate(); 
+        glfwMakeContextCurrent(context);
+        glfwTerminate();
+        glfwMakeContextCurrent(0);
     }
 
     static long createOpenGlContext() {
@@ -57,8 +59,7 @@ class PathFinder {
         long win = glfwCreateWindow(200, 200, buf, 0, 0);
         glfwMakeContextCurrent(win);
         GL.createCapabilities();
-        glfwMakeContextCurrent(0);
-        
+
         // Log OpenGL Details
         StringBuilder b = new StringBuilder()
         .append("GL_VENDOR: " + glGetString(GL_VENDOR))
@@ -67,6 +68,8 @@ class PathFinder {
         .append(System.lineSeparator())
         .append("GL_VERSION: " + glGetString(GL_VERSION));
         AgentLogger.fine(b.toString());
+
+        glfwMakeContextCurrent(0);
 
         return win;
     } 
