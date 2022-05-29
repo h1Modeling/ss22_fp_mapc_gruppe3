@@ -8,6 +8,7 @@ import eis.iilang.*;
 public abstract class ADesire {
     public String name;
     public BdiAgent agent;
+    public boolean groupOrder = false;
     
     public int priority;
     public Action outputAction;

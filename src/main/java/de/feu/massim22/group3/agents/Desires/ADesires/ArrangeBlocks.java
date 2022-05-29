@@ -14,6 +14,7 @@ public class ArrangeBlocks extends SubDesire {
 
 	public ArrangeBlocks(BdiAgent agent) {
 		super("ArrangeBlocks", agent);
+        groupOrder = true;
 	}
 
 	/**

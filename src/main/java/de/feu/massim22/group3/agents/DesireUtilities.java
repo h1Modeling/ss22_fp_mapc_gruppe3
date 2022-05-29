@@ -31,7 +31,8 @@ public class DesireUtilities {
 	public TaskInfo task;
     public int directionCounter = 0;
     public int circleSize = 5;
-    
+ 
+	public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
     public List<Thing> badBlocks = new ArrayList<Thing>();
     public List<Thing> goodPositionBlocks = new ArrayList<Thing>();
@@ -58,7 +59,6 @@ public class DesireUtilities {
         doDecision(agent, new GoGoalZone(agent));
         doDecision(agent, new GoRoleZone(agent));
         doDecision(agent, new GoDispenser(agent));
-        //doDecision(agent, new GetBlock(agent));
         doDecision(agent, new GoAdoptRole(agent));
         doDecision(agent, new RemoveObstacle(agent));
         doDecision(agent, new LocalExplore(agent));
@@ -99,14 +99,7 @@ public class DesireUtilities {
 		BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
 		Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
 		List<Point> attachedPoints;
-		List<Thing> attachedThings = new ArrayList<Thing>();
 		String role = "";
-
-		// Schleife über alle Tasks
-		/*
-		 * for(TaskInfo t : set) { if(minBlockCount > t.requirements.size()) { //Task
-		 * mit wenigsten Blöcken minBlockCount = t.requirements.size(); minTask = t; } }
-		 */
 
 		List<BdiAgent> allGroupAgents = supervisor.getAllGroupAgents();
 		List<BdiAgent> freeGroupAgents = allGroupAgents;
@@ -115,12 +108,18 @@ public class DesireUtilities {
 		// Schleife über alle Tasks
 		for (TaskInfo loopTask : set) {
 			task = loopTask;
+			AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name);
 			// über alle Agenten einer Gruppe
 			for (BdiAgent agent : freeGroupAgents) {
+				AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agent.getName());
+				attachedThings = new ArrayList<Thing>();
+				
 				// alle Blöcke die ein Agent hat
 				attachedPoints = agent.belief.getAttachedThings();
 
 				if (attachedPoints.size() > 0) {
+					AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() attachedThings vorhanden");
+					
 					Set<Thing> things = agent.belief.getThings();
 					for (Point p : attachedPoints) {
 						for (Thing t : things) {
@@ -154,7 +153,17 @@ public class DesireUtilities {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
 					}
-				} // If blocks attached
+				} else { // If blocks attached
+					AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() attachedThings nicht vorhanden");
+					// einen Agenten losschicken für Ein-Block-Task
+					if (task.requirements.size() == 1) {
+						AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor GoDispenser Ein-Block-Task");
+						if (doDecision(agent, new GoDispenser(agent, task.requirements.get(0).type))) {
+							busyGroupAgents.add(agent);
+							break; // nächster Agent
+						}
+					}
+				}
 			} // Loop agents
 		} // Loop tasks
 
@@ -201,9 +210,6 @@ public class DesireUtilities {
         case "ArrangeBlocks":
             result = 40;
             break;
-        case "GetBlock":
-            result = 50;
-            break;
         case "ReactToNorm":
             result = 40;
             break;
@@ -214,7 +220,11 @@ public class DesireUtilities {
             result = 30;
             break;
         case "GoDispenser":
-            result = 60;
+        	if (desire.groupOrder) {
+                result = 50;        		
+        	} else {
+                result = 60;       		
+        	}
             break;
         case "LocalGetBlocks":
             result = 70;
@@ -318,7 +328,7 @@ public class DesireUtilities {
     }
     
     public void analyseAttachedThings() {
-		List<Thing> attachedThings = new ArrayList<Thing>();
+		//List<Thing> attachedThings = new ArrayList<Thing>();
 		
 		for (Thing attachedBlock : attachedThings) {
 			if (task.requirements.contains(attachedBlock)) {

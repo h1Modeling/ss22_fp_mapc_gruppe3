@@ -23,6 +23,8 @@ public class Supervisor implements ISupervisor {
         this.name = parent.getName();
         agents.add(name);
         initConfirmationData();
+        //Melinda        
+        allGroupAgents.add((BdiAgent)parent);
     }
     
     public void handleMessage(Percept message, String sender) {

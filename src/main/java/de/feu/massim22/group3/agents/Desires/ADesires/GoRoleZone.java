@@ -40,7 +40,8 @@ public class GoRoleZone extends SubDesire {
 					return false;
 				}
 			}
-			return true;
+			// TODO zu Testzwecken auskommentiert
+			return false;
 
 		} else {
 			return false;

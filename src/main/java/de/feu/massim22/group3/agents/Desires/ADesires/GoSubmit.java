@@ -20,6 +20,7 @@ public class GoSubmit extends SubDesire {
 
 	public GoSubmit(BdiAgent agent) {
 		super("Submit", agent);
+        groupOrder = true;
 	}
 
 	/**

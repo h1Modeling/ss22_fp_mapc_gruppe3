@@ -1,9 +1,7 @@
 package de.feu.massim22.group3.agents;
 
 import java.util.List;
-
-//import java.util.ArrayList;
-//import java.util.List;
+import java.awt.Point;
 
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
@@ -13,6 +11,8 @@ public abstract class BdiAgent extends Agent {
     public DesireUtilities desireProcessing = new DesireUtilities();
     public List<ADesire> desires;
     public boolean decisionsDone;
+    public boolean requestMade = false;
+    public Point lastUsedDispenser;
     
     public Belief belief;
     protected DesireHandler desireHandler;
