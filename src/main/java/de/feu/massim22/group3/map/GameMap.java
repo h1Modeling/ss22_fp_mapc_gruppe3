@@ -290,25 +290,25 @@ public class GameMap {
                     // North
                     Point north = new Point(p.x, p.y - 1);
                     if (north.y >= 0 && cells[north.y][north.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(north, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(north, ZoneType.NONE, c.getCellType(), "n");
                         dispenserCache.add(ip);
                     }
                     // East
                     Point east = new Point(p.x + 1, p.y);
                     if (east.x < size.x && cells[east.y][east.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(east, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(east, ZoneType.NONE, c.getCellType(), "e");
                         dispenserCache.add(ip);
                     }
                     // South
                     Point south = new Point(p.x, p.y + 1);
                     if (south.y < size.y && cells[south.y][south.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(south, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(south, ZoneType.NONE, c.getCellType(), "s");
                         dispenserCache.add(ip);
                     }
-                    // South
+                    // West
                     Point west = new Point(p.x - 1, p.y);
                     if (west.x >= 0 && cells[west.y][west.x].getCellType() == CellType.FREE) {
-                        InterestingPoint ip = new InterestingPoint(west, ZoneType.NONE, c.getCellType());
+                        InterestingPoint ip = new InterestingPoint(west, ZoneType.NONE, c.getCellType(), "w");
                         dispenserCache.add(ip);
                     }
                 }
@@ -325,6 +325,14 @@ public class GameMap {
             // Dispensers
             result.addAll(dispenserCache);
             int countLeft = maxCount - dispenserCache.size();
+
+            // Agents
+            for (Entry<String, Point> e : agentPosition.entrySet()) {
+                Point p = e.getValue();
+                Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
+                InterestingPoint ip = new InterestingPoint(internal, ZoneType.NONE, CellType.TEAMMATE, e.getKey());
+                result.add(ip);
+            }
             
             // Goal and Role Zones 
             List<List<Point>> goalLists = filterZones(goalCache, 6);
@@ -341,7 +349,7 @@ public class GameMap {
                         List<Point> goalList = goalLists.get(i);
                         if (goalList.size() > 0) {
                             Point p = goalList.get(0);
-                            InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN);
+                            InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN, "");
                             result.add(ip);
                             countLeft -= 1;
                             goalList.remove(0);
@@ -356,7 +364,7 @@ public class GameMap {
                         List<Point> roleList = roleLists.get(i);
                         if (roleList.size() > 0) {
                             Point p = roleList.get(0);
-                            InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN);
+                            InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN, "");
                             result.add(ip);
                             countLeft -= 1;
                             roleList.remove(0);

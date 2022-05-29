@@ -480,7 +480,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         // y = 0: Position of agents
         // y = 1: Form of agent (attached blocks)
         // y = 2: Goal Position
-        int maxNumberGoals = 32;
+        int maxNumberGoals = 64;
         int dataY = 3;
         List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals);
         int numberGoals = interestingPoints.size();
@@ -568,8 +568,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 Parameter detail = new Identifier(det);
                 Parameter pointX = new Numeral(ip.point().x + mapTopLeft.x);
                 Parameter pointY = new Numeral(ip.point().y + mapTopLeft.y);
+                Parameter ipData = new Identifier(ip.data());
                 // Generate Data for Point
-                Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction);
+                Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
                 data.add(f);
             }
         }                
