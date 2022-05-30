@@ -30,7 +30,7 @@ import eis.iilang.*;
          * @return Action - the action that is needed
          * 
          **/       
-        // Norden To Do: richtige Richtung
+        // Norden TODO: richtige Richtung
         @Override
         public Action getNextAction() {
             AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName());

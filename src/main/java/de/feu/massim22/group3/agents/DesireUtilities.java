@@ -3,19 +3,8 @@ package de.feu.massim22.group3.agents;
 import java.awt.Point;
 import java.util.*;
 
-import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
-import de.feu.massim22.group3.agents.Desires.ADesires.GoAdoptRole;
-import de.feu.massim22.group3.agents.Desires.ADesires.DigFree;
-import de.feu.massim22.group3.agents.Desires.ADesires.DodgeClear;
-import de.feu.massim22.group3.agents.Desires.ADesires.GetBlock;
-import de.feu.massim22.group3.agents.Desires.ADesires.GoDispenser;
-import de.feu.massim22.group3.agents.Desires.ADesires.GoGoalZone;
-import de.feu.massim22.group3.agents.Desires.ADesires.GoRoleZone;
-import de.feu.massim22.group3.agents.Desires.ADesires.LocalExplore;
-import de.feu.massim22.group3.agents.Desires.ADesires.GoSubmit;
-import de.feu.massim22.group3.agents.Desires.ADesires.HinderEnemy;
-import de.feu.massim22.group3.agents.Desires.ADesires.RemoveObstacle;
-import de.feu.massim22.group3.agents.Desires.ADesires.ArrangeBlocks;
+import de.feu.massim22.group3.agents.Desires.ADesires.*;
+
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
@@ -108,7 +97,7 @@ public class DesireUtilities {
 		// Schleife über alle Tasks
 		for (TaskInfo loopTask : set) {
 			task = loopTask;
-			AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name);
+			AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name + " freie Agents: " + freeGroupAgents);
 			// über alle Agenten einer Gruppe
 			for (BdiAgent agent : freeGroupAgents) {
 				AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agent.getName());
@@ -117,8 +106,7 @@ public class DesireUtilities {
 				// alle Blöcke die ein Agent hat
 				attachedPoints = agent.belief.getAttachedThings();
 
-				if (attachedPoints.size() > 0) {
-					AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() attachedThings vorhanden");
+//				if (attachedPoints.size() > 0) {
 					
 					Set<Thing> things = agent.belief.getThings();
 					for (Point p : attachedPoints) {
@@ -143,11 +131,11 @@ public class DesireUtilities {
 					// wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
 					 if (doDecision(agent, new GoSubmit(agent))) {
 						busyGroupAgents.add(agent);
-						break; // nächster Agent
+						//break; // nächste Task
 						// wenn ein Agent alle Blöcke einer Task besitzt (eventuell an der falschen Stelle)
 					} else if (doDecision( agent, new ArrangeBlocks( agent))) {
 						busyGroupAgents.add(agent);
-						break; // nächster Agent
+						//break; // nächste Task
 						// wenn ein Agent Blöcke einer Task besitzt (nicht alle)
 					} else {
 						String type = "";
@@ -159,10 +147,14 @@ public class DesireUtilities {
 
 						if (doDecision(agent, new GoDispenser(agent, type))) {
 						busyGroupAgents.add(agent);
-						break; // nächster Agent
+						//break; // nächste Task
+						// wenn der gesuchte Dispenser nicht ereichbar ist
+						} else if(doDecision( agent, new Explore(agent))) {
+							busyGroupAgents.add(agent);
+							//break; // nächste Task
 						}
 					}
-				} // If blocks attached
+//				} // If blocks attached
 			} // Loop agents
 		} // Loop tasks
 
@@ -175,6 +167,8 @@ public class DesireUtilities {
 		}
 		
 		supervisor.setDecisionsDone(true);
+		AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() End - Step: " + step
+				+ " , Supervisor: " + supervisor.getName());
 		return result;
 	}
     
@@ -217,7 +211,7 @@ public class DesireUtilities {
             result = 80;
             break;
         case "GoRoleZone":
-            result = 30;
+            result = 90;
             break;
         case "GoDispenser":
         	if (desire.groupOrder) {
@@ -226,11 +220,8 @@ public class DesireUtilities {
                 result = 60;       		
         	}
             break;
-        case "LocalGetBlocks":
-            result = 70;
-            break;
         case "Explore":
-            result = 85;
+            result = 55;
             break;
         case "LocalHinderEnemy":
             result = 95;
@@ -250,7 +241,7 @@ public class DesireUtilities {
      * 
      * @return Desire - the intention
      */
-    public ADesire determineIntention(BdiAgentV2 agent) {
+    public synchronized ADesire determineIntention(BdiAgentV2 agent) {
         ADesire result = null;
         int priority = 1000;
         for (ADesire desire : agent.desires) {
@@ -353,7 +344,7 @@ public class DesireUtilities {
 				}
 			}
 		}
-
+		AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() Task: " + task.name);
 		for (Thing taskBlock : task.requirements) {
 			if (!attachedThings.contains(taskBlock)) {
 				typeOk = false;
