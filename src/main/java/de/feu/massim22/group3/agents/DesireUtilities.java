@@ -149,21 +149,20 @@ public class DesireUtilities {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
 						// wenn ein Agent Blöcke einer Task besitzt (nicht alle)
-					} else if (doDecision(agent, new GoDispenser(agent, missingBlocks.get(0).type))) {
+					} else {
+						String type = "";
+						if (missingBlocks.size() > 0) {
+							type = missingBlocks.get(0).type;
+						} else {
+							type = task.requirements.get(0).type;	
+						}
+
+						if (doDecision(agent, new GoDispenser(agent, type))) {
 						busyGroupAgents.add(agent);
 						break; // nächster Agent
-					}
-				} else { // If blocks attached
-					AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() attachedThings nicht vorhanden");
-					// einen Agenten losschicken für Ein-Block-Task
-					if (task.requirements.size() == 1) {
-						AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor GoDispenser Ein-Block-Task");
-						if (doDecision(agent, new GoDispenser(agent, task.requirements.get(0).type))) {
-							busyGroupAgents.add(agent);
-							break; // nächster Agent
 						}
 					}
-				}
+				} // If blocks attached
 			} // Loop agents
 		} // Loop tasks
 
@@ -187,6 +186,7 @@ public class DesireUtilities {
      * 
      * @return int - the priority
      */
+	// TODO sinnvolle Prioritäten vergeben
     public int getPriority(ADesire desire) {
         int result = 0;
 
@@ -328,7 +328,6 @@ public class DesireUtilities {
     }
     
     public void analyseAttachedThings() {
-		//List<Thing> attachedThings = new ArrayList<Thing>();
 		
 		for (Thing attachedBlock : attachedThings) {
 			if (task.requirements.contains(attachedBlock)) {
