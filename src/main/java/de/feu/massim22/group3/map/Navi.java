@@ -51,7 +51,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     
     private Navi() {
         PathFinder.init();
-
+        //AgentLogger.info(Thread.currentThread().getName() + " Navi() Constructor ");
         // Open Debugger
         SwingUtilities.invokeLater((Runnable)debugger);
 

@@ -40,13 +40,12 @@ public class DesireUtilities {
     public synchronized boolean runAgentDecisions(int step, BdiAgent agent) {
         boolean result = false;
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
-                + " , Supervisor: " + agent.getName());
+                + " , Agent: " + agent.getName());
 
         doDecision(agent, new DodgeClear(agent));
         doDecision(agent, new DigFree(agent));
         doDecision(agent, new HinderEnemy(agent));
         doDecision(agent, new GoGoalZone(agent));
-        doDecision(agent, new GoRoleZone(agent));
         doDecision(agent, new GoDispenser(agent));
         doDecision(agent, new GoAdoptRole(agent));
         doDecision(agent, new RemoveObstacle(agent));
@@ -58,7 +57,7 @@ public class DesireUtilities {
     
     boolean doDecision(BdiAgent agent, ADesire inDesire) {
         boolean result = false;
-        
+      
         if (inDesire.isExecutable()) { // desire ist möglich , hinzufügen
             inDesire.outputAction = inDesire.getNextAction();
             inDesire.priority = getPriority(inDesire);
@@ -83,92 +82,112 @@ public class DesireUtilities {
 		TaskInfo minTask;
 
 		AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
-				+ " , Supervisor: " + supervisor.getName());
+				+ " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
 
 		BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
 		Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
 		List<Point> attachedPoints;
 		String role = "";
 
-		List<BdiAgent> allGroupAgents = supervisor.getAllGroupAgents();
-		List<BdiAgent> freeGroupAgents = allGroupAgents;
-		List<BdiAgent> busyGroupAgents = new ArrayList<>();
+		List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
+		List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
+		List<String> busyGroupAgents = new ArrayList<>();
 
-		// Schleife über alle Tasks
-		for (TaskInfo loopTask : set) {
-			task = loopTask;
-			AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name + " freie Agents: " + freeGroupAgents);
-			// über alle Agenten einer Gruppe
-			for (BdiAgent agent : freeGroupAgents) {
-				AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agent.getName());
-				attachedThings = new ArrayList<Thing>();
-				
-				// alle Blöcke die ein Agent hat
-				attachedPoints = agent.belief.getAttachedThings();
+        // Schleife über alle Tasks
+        for (TaskInfo loopTask : set) {
+            task = loopTask;
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name
+                    + " Agents: " + allGroupAgents + " freie Agents: " + freeGroupAgents);
+            // über alle Agenten einer Gruppe
+            for (String agentStr : allGroupAgents) {
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr);
+                attachedThings = new ArrayList<Thing>();
+                BdiAgent agent = StepUtilities.getAgent(agentStr);
+                agent.desireProcessing.task = task;
 
-//				if (attachedPoints.size() > 0) {
-					
-					Set<Thing> things = agent.belief.getThings();
-					for (Point p : attachedPoints) {
-						for (Thing t : things) {
-							if (t.x == p.x && t.y == p.y) {
-								attachedThings.add(t);
-								break;
-							}
-						}
-					}
+                // alle Blöcke die ein Agent hat
+                attachedPoints = agent.belief.getAttachedThings();
+                AgentLogger.info(Thread.currentThread().getName() + " Agent: " + agentStr + " attachedPoints: "
+                        + attachedPoints);
 
-					// was hat der Agent für eine Rolle
-					// role = agent.getAgentBelief().getRole();
+                Set<Thing> things = agent.belief.getThings();
+                for (Point p : attachedPoints) {
+                    for (Thing t : things) {
+                        if (t.x == p.x && t.y == p.y) {
+                            attachedThings.add(t);
+                            break;
+                        }
+                    }
+                }
 
-					 goodBlocks = new ArrayList<Thing>();
-					 badBlocks = new ArrayList<Thing>();
-					 goodPositionBlocks = new ArrayList<Thing>();
-					 badPositionBlocks = new ArrayList<Thing>();
-					 missingBlocks = new ArrayList<Thing>();
-					 typeOk = false;
-					 
-					// wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
-					 if (doDecision(agent, new GoSubmit(agent))) {
-						busyGroupAgents.add(agent);
-						//break; // nächste Task
-						// wenn ein Agent alle Blöcke einer Task besitzt (eventuell an der falschen Stelle)
-					} else if (doDecision( agent, new ArrangeBlocks( agent))) {
-						busyGroupAgents.add(agent);
-						//break; // nächste Task
-						// wenn ein Agent Blöcke einer Task besitzt (nicht alle)
-					} else {
-						String type = "";
-						if (missingBlocks.size() > 0) {
-							type = missingBlocks.get(0).type;
-						} else {
-							type = task.requirements.get(0).type;	
-						}
+                AgentLogger.info(Thread.currentThread().getName() + " Agent: " + agentStr + " attachedThings: "
+                        + attachedThings);
 
-						if (doDecision(agent, new GoDispenser(agent, type))) {
-						busyGroupAgents.add(agent);
-						//break; // nächste Task
-						// wenn der gesuchte Dispenser nicht ereichbar ist
-						} else if(doDecision( agent, new Explore(agent))) {
-							busyGroupAgents.add(agent);
-							//break; // nächste Task
-						}
-					}
-//				} // If blocks attached
-			} // Loop agents
-		} // Loop tasks
+                // was hat der Agent für eine Rolle
+                role = agent.getAgentBelief().getRole();
+                // Agent hat default Rolle
+                if (role.equals(" default") && doDecision(agent, new GoAdoptRole(agent, "worker"))) {
+                    busyGroupAgents.add(agent.getName());
+                } else {
 
-		freeGroupAgents.removeAll(busyGroupAgents);
-		busyGroupAgents.clear();
-		
-		// über alle Agenten einer Gruppe z.B, TODO fremde Gegenden erkunden etc.
-		for (BdiAgent agent : freeGroupAgents) {
+                    goodBlocks = new ArrayList<Thing>();
+                    badBlocks = new ArrayList<Thing>();
+                    goodPositionBlocks = new ArrayList<Thing>();
+                    badPositionBlocks = new ArrayList<Thing>();
+                    missingBlocks = new ArrayList<Thing>();
+                    typeOk = false;
+
+                    // wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
+                    AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor GoSubmit");
+                    if (doDecision(agent, new GoSubmit(agent))) {
+                        busyGroupAgents.add(agent.getName());
+
+                        // wenn ein Agent alle Blöcke einer Task besitzt (eventuell an der falschen
+                        // Stelle)
+                    } else {
+                        AgentLogger
+                                .info(Thread.currentThread().getName() + " runSupervisorDecisions() vor ArrangeBlocks");
+                        if (doDecision(agent, new ArrangeBlocks(agent))) {
+                            busyGroupAgents.add(agent.getName());
+
+                            // wenn ein Agent Blöcke einer Task besitzt (nicht alle)
+                        } else {
+                            String type = "";
+                            if (missingBlocks.size() > 0) {
+                                type = missingBlocks.get(0).type;
+                            } else {
+                                type = task.requirements.get(0).type;
+                            }
+                            AgentLogger.info(
+                                    Thread.currentThread().getName() + " runSupervisorDecisions() vor GoDispenser");
+                            if (doDecision(agent, new GoDispenser(agent, type))) {
+                                busyGroupAgents.add(agent.getName());
+
+                                // wenn der gesuchte Dispenser nicht ereichbar ist
+                            } else {
+                                AgentLogger.info(
+                                        Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore");
+                                if (doDecision(agent, new Explore(agent))) {
+                                    busyGroupAgents.add(agent.getName());
+                                }
+                            }
+                        }
+                    }//go submit
+                }//adopt role
+            } // Loop agents
+        } // Loop tasks
+
+        freeGroupAgents.removeAll(busyGroupAgents);
+        busyGroupAgents.clear();
+
+        // über alle Agenten einer Gruppe z.B, TODO fremde Gegenden erkunden etc.
+		for (String agentStr : freeGroupAgents) {
 			
 		}
 		
 		supervisor.setDecisionsDone(true);
 		AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() End - Step: " + step
-				+ " , Supervisor: " + supervisor.getName());
+				+ " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
 		return result;
 	}
     
@@ -199,7 +218,11 @@ public class DesireUtilities {
             result = 20;
             break;
         case "GoAdoptRole":
-            result = 30;
+            if (desire.groupOrder) {
+                result = 17 ;               
+            } else {
+                result = 60;            
+            }
             break;
         case "ArrangeBlocks":
             result = 40;
