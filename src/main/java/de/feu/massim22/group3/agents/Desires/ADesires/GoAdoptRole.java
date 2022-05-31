@@ -1,13 +1,18 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
+import java.awt.Point;
+import java.util.List;
+
 import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
+import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.DesireUtilities;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
-//TODO Klassenlogik
+//wird nicht benötigt Logik siehe goRoleZone
 public class GoAdoptRole extends ADesire {
+	
 	public GoAdoptRole(BdiAgent agent) {
 		super("GoAdoptRole", agent);
 	}
@@ -21,7 +26,8 @@ public class GoAdoptRole extends ADesire {
 	 */
 	@Override
 	public boolean isExecutable() {
-		return false;
+			return false;
+		
 		
 	}
 
@@ -33,7 +39,6 @@ public class GoAdoptRole extends ADesire {
 	 **/
 	@Override
 	public Action getNextAction() {
-		
-		return new Action("adopt", new Identifier("worker"));
+		return new Action("adopt", new Identifier("roleTask"));
 	}
 }

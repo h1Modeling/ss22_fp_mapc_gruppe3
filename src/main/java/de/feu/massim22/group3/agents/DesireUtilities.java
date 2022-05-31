@@ -119,7 +119,12 @@ public class DesireUtilities {
 					}
 
 					// was hat der Agent für eine Rolle
-					// role = agent.getAgentBelief().getRole();
+					 role = agent.getAgentBelief().getRole();
+					 //Agenthta default Rolle
+					 if( role.equals(" default")){
+						 if(doDecision(agent, new GoRoleZone( agent, "worker")));
+					 }
+					
 
 					 goodBlocks = new ArrayList<Thing>();
 					 badBlocks = new ArrayList<Thing>();
@@ -208,7 +213,11 @@ public class DesireUtilities {
             result = 40;
             break;
         case "GoGoalZone":
-            result = 80;
+        	if (desire.groupOrder) {
+                result = 17 ;        		
+        	} else {
+                result = 60;       		
+        	}
             break;
         case "GoRoleZone":
             result = 90;
