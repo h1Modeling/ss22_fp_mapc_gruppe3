@@ -598,4 +598,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2  {
     public synchronized void updateSupervisor(String supervisor) {
         startCalculation(supervisor, maps.get(supervisor));
     }
+
+    @Override
+    public String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent) {
+        GameMap map = maps.get(supervisor);
+        return map.getDirectionToNearestUndiscoveredPoint(agent);
+    }
 }

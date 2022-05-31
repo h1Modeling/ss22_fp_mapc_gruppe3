@@ -9,10 +9,12 @@ public class GoalZoneGuardDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         // TODO Auto-generated method stub
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.GOAL_ZONE_GUARD;
     }
 }

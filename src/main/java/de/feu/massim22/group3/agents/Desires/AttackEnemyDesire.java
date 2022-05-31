@@ -9,11 +9,12 @@ public class AttackEnemyDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         // TODO Auto-generated method stub
     }
+    
     @Override
-    void setType() {
+    protected void setType() {
         this.desireType = Desires.ATTACK_ENEMY;
     }
 }

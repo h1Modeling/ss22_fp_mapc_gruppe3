@@ -10,10 +10,12 @@ public class SpontaneousHinderEnemyDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         subDesires.add(SubDesires.SPONTANEOUS_HINDER_ENEMY.getSubDesireObj(agent));
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.SPONTANEOUS_HINDER_ENEMY;
     }
 }

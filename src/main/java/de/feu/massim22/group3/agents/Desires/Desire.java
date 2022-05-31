@@ -23,11 +23,11 @@ public abstract class Desire {
         return desireType.name();
     }
 
-    abstract void defineSubDesires();
+    abstract protected void defineSubDesires();
 
     public List<SubDesire> getSubDesires() {
         return subDesires;
     }
 
-    abstract void setType();
+    abstract protected void setType();
 }

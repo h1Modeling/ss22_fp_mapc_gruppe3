@@ -166,7 +166,11 @@ class PathFinder {
         
         // Attach and link the shader against the compute program.
         glAttachShader(gComputeProgram, mComputeShader);
+        long start = System.currentTimeMillis();
         glLinkProgram(gComputeProgram);
+        long end = System.currentTimeMillis();
+        long diff = end - start;
+        //AgentLogger.info("Linking Duration: " + diff);
         
         // Check if there were any issues linking the shader.
         glGetProgramiv(gComputeProgram, GL_LINK_STATUS, errorBuffer);
@@ -207,6 +211,9 @@ class PathFinder {
 
     public PathFindingResult[][] start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
 
+        // Set Timer
+        long start = System.currentTimeMillis();
+        
         // Create the compute program the compute shader is assigned to
         glfwMakeContextCurrent(this.windowHandler);
         GL.createCapabilities();
@@ -224,9 +231,6 @@ class PathFinder {
         // Data Input Texture
         create2dTexture(dataBuffer, 2, 1, dataSize.x, dataSize.y, true);
         
-        // Set Timer
-        long start = System.currentTimeMillis();
-        
         glDispatchCompute(agentCount, 1, 1);
         
         // Wait until calculation ends
@@ -241,7 +245,7 @@ class PathFinder {
         // Log Time spent
         long end = System.currentTimeMillis();
         long diff = end - start;
-        AgentLogger.fine("Path Finding Duration: " + diff);
+        AgentLogger.info("Path Finding Duration: " + diff);
 
         // Image logging
         // TODO add logging parameter

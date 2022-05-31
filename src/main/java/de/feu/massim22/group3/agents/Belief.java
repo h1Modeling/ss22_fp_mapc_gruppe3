@@ -43,13 +43,16 @@ public class Belief {
     private int step;
     private Set<Thing> things = new HashSet<>();
     private Set<TaskInfo> taskInfo = new HashSet<>();
+    private Set<TaskInfo> taskInfoAtLastStep = new HashSet<>();
+    private List<TaskInfo> newTasks = new ArrayList<>();
     private Set<NormInfo> normsInfo = new HashSet<>();
     private long score;
     private String lastAction;
     private String lastActionResult;
     private List<String> lastActionParams = new ArrayList<>();
     
-    private List<Point> attachedThings = new ArrayList<>();
+    private List<Point> attachedPoints = new ArrayList<>();
+    private List<Thing> attachedThings = new ArrayList<>();
     private int energy;
     private boolean deactivated;
     private String role = "default";
@@ -108,7 +111,7 @@ public class Belief {
             case "attached":
                 int attX = toNumber(p, 0, Integer.class);
                 int attY = toNumber(p, 0, Integer.class);
-                attachedThings.add(new Point(attX, attY));
+                attachedPoints.add(new Point(attX, attY));
                 break;
             case "energy":
                 energy = toNumber(p, 0, Integer.class);
@@ -213,6 +216,8 @@ public class Belief {
         }
         
         updatePosition();
+        updateNewTasks();
+        updateAttachedThings();
     }
 
     int getSteps() {
@@ -253,11 +258,19 @@ public class Belief {
                 ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction);
                 reachableDispensers.add(rd);
             }
+
+            // Sort
+            reachableRoleZones.sort((a, b) -> a.distance() - b.distance());
+            reachableGoalZones.sort((a, b) -> a.distance() - b.distance());
         }
     }
 
     String getTeam() {
         return team;
+    }
+
+    public String getAgentName() {
+        return name;
     }
 
     public int getVision() {
@@ -305,7 +318,7 @@ public class Belief {
         return lastActionParams;
     }
 
-    public List<Point> getAttachedThings() {
+    public List<Thing> getAttachedThings() {
         return attachedThings;
     }
 
@@ -317,8 +330,31 @@ public class Belief {
         return deactivated;
     }
 
-    public String getRole() {
+    public String getRoleName() {
         return role;
+    }
+
+    public Role getRole() {
+        return roles.get(role);
+    }
+
+    public Map<String, Role> getRoles() {
+        return roles;
+    }
+
+    public Role getRoleByActions(String[] actions) {
+        for (Role r : roles.values()) {
+            boolean allFound = true;
+            for (String action : actions) {
+                if (!r.actions().contains(action)) {
+                    allFound = false;
+                }
+            }
+            if (allFound) {
+                return r;
+            }
+        }
+        return null;
     }
 
     public List<StepEvent> getStepEvents() {
@@ -341,16 +377,50 @@ public class Belief {
         return position;
     }
 
-    public List<ReachableDispenser> getReachableDispensers(){
+    public List<ReachableDispenser> getReachableDispensers() {
         return reachableDispensers;
     }
 
-    public List<ReachableGoalZone> getReachableGoalZones(){
+    public List<ReachableGoalZone> getReachableGoalZones() {
         return reachableGoalZones;
     }
 
-    public List<ReachableRoleZone> getReachableRoleZones(){
+    public List<ReachableRoleZone> getReachableRoleZones() {
         return reachableRoleZones;
+    }
+
+    public ReachableRoleZone getNearestRoleZone() {  
+        // Zone is sorted   
+        return reachableRoleZones.get(0);
+    }
+
+    public ReachableGoalZone getNearestGoalZone() {  
+        // Zone is sorted   
+        return reachableGoalZones.get(0);
+    }
+
+    public ReachableDispenser getNearestDispenser(CellType t) {
+        List<ReachableDispenser> rd = new ArrayList<>(reachableDispensers);
+        // Filter
+        rd.removeIf(r -> !r.type().equals(t));
+        // Sort
+        rd.sort((a, b) -> a.distance() - b.distance());
+        
+        return rd.size() > 0 ? rd.get(0) : null;
+    }
+
+    public Thing getThingAt(Point p) {
+        for (Thing t : things) {
+            if (t.x == p.x && t.y == p.y) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public Thing getThingAt(String d) {
+        Point p = DirectionUtil.getCellInDirection(d);
+        return getThingAt(p);
     }
 
     void setPosition(Point position) {
@@ -372,6 +442,10 @@ public class Belief {
             b.append(System.lineSeparator());
         }
         return b.toString();
+    }
+
+    public List<TaskInfo> getNewTasks() {
+        return newTasks;
     }
     
     public String toString() {
@@ -427,7 +501,7 @@ public class Belief {
         }
         b.append(System.lineSeparator())
             .append("Attached Things: ");
-        for (Point t : attachedThings) {
+        for (Point t : attachedPoints) {
             b.append("[" + t.x + ", " + t.y + "] | ");
         }
         b.append(System.lineSeparator())
@@ -459,6 +533,32 @@ public class Belief {
         }
         return b.toString();
     }
+
+    private void updateAttachedThings() {
+        attachedThings.clear();
+        for (Point p : attachedPoints) {
+            // TODO Possibly a bug on the server - investigate if the offset is correct
+            Thing t = getThingAt(new Point(p.x, p.y - 1));
+            attachedThings.add(t);
+        }
+    }
+
+    private void updateNewTasks() {
+        newTasks.clear();
+        // Compare with last step
+        for (TaskInfo n : taskInfo) {
+            boolean isNew = true;
+            for (TaskInfo o : taskInfoAtLastStep) {
+                if (o.name.equals(n.name)) {
+                    isNew = false;
+                    break;
+                }
+            }
+            if (isNew) {
+                newTasks.add(n);
+            }
+        }
+    }
     
     private void updatePosition() {
         if (lastAction != null && lastAction.equals(Actions.MOVE)) {
@@ -484,7 +584,8 @@ public class Belief {
     
     private void clearLists() {
         // copy things
-        thingsAtLastStep = new HashSet<Thing>(things);
+        thingsAtLastStep = new HashSet<>(things);
+        taskInfoAtLastStep = new HashSet<>(taskInfo);
         // clearing
         roles.clear();
         things.clear();
@@ -492,6 +593,7 @@ public class Belief {
         normsInfo.clear();
         lastActionParams.clear();
         attachedThings.clear();
+        attachedPoints.clear();
         stepEvents.clear();
         violations.clear();
         goalZones.clear();

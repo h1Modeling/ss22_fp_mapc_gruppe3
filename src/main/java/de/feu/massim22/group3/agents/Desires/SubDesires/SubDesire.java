@@ -1,9 +1,10 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
 import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.IIntention;
 import eis.iilang.Action;
 
-public abstract class SubDesire {
+public abstract class SubDesire implements IIntention {
 
     protected SubDesires subDesireType;
     BdiAgent agent;
@@ -28,4 +29,8 @@ public abstract class SubDesire {
     public abstract boolean isDone();
 
     abstract void setType();
+
+    public String getName() {
+        return subDesireType.name();
+    }
 }

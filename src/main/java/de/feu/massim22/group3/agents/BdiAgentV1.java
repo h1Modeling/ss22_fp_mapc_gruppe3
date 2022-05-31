@@ -8,6 +8,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.agents.Desires.BDesires.ExploreDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.ProcessEasyTaskDesire;
 import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
@@ -21,19 +24,22 @@ import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
-public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
+public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisable {
     
     private Queue<BdiAgentV1.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
     private EisSender eisSender;
     private ISupervisor supervisor;
     private int index;
     private boolean merging = false;
+    //private DesireHandler desireHandler;
     
     public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
         super(name, mailbox);
+        //desireHandler = new DesireHandler(this);
         this.eisSender = eisSender;
         this.index = index;
         this.supervisor = new Supervisor(this);
+        addBasicDesires();
     }
     
     // Not needed for multi-threaded Agent 
@@ -56,11 +62,14 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
     public void run() {
         while (true) {
 
-            // Send Action if already calculated		
-            Action nextAction = intention.getNextAction();
-            if (nextAction != null && !Navi.<INaviAgentV1>get().isWaitingOrBusy()) {
-                eisSender.send(this, nextAction);
-                intention.clear();
+            // Send Action if already calculated
+            if (intention != null) {
+                Action nextAction = intention.getNextAction();
+                if (nextAction != null && !Navi.<INaviAgentV1>get().isWaitingOrBusy()) {
+                    AgentLogger.info("Next Action for agent " + getName() + "is: " + nextAction);
+                    eisSender.send(this, nextAction);
+                    setIntention(null);
+                }
             }
 
             // Read Messages
@@ -93,8 +102,8 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRole(), belief.getEnergy(), belief.getLastAction(), belief.getLastActionResult());
-            desireHandler.setNextAction();
+                Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(), belief.getLastAction(), belief.getLastActionResult());
+            //desireHandler.setNextAction();
             break;
         case TO_SUPERVISOR:
             this.supervisor.handleMessage(event, sender);
@@ -103,7 +112,8 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
             List<Parameter> parameters = event.getParameters();
             belief.updateFromPathFinding(parameters);
             AgentLogger.fine(belief.reachablesToString());
-            // TODO Action after receiving Pathfinding infos
+            updateDesires();
+            findIntention();
             break;
         }
         case MERGE_SUGGESTION: {
@@ -139,6 +149,41 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
             throw new IllegalArgumentException("Message is not handled!");
         }
     }
+
+    private void addBasicDesires() {
+        desires.add(new ExploreDesire(belief, supervisor.getName(), getName()));
+    }
+
+    private void updateDesires() {
+        // Test if already working on a simple task
+        boolean workingOnSimpleTask = false;
+        for (IDesire d : desires) {
+            if (d.getName().equals(ProcessEasyTaskDesire.class.getSimpleName())) {
+                workingOnSimpleTask = true;
+                break;
+            }
+        }
+        if (!workingOnSimpleTask) {
+            for (TaskInfo info : belief.getTaskInfo()) {
+                // Simple Task
+                if (info.requirements.size() == 1) {
+                    desires.add(new ProcessEasyTaskDesire(belief, info));
+                    break;
+                }
+            }
+        }
+    }
+
+    private void findIntention() {
+        for (int i = desires.size() - 1; i >= 0; i--) {
+            IDesire d = desires.get(i);
+            if (!d.isFullfilled() && d.isExecutable()) {
+                AgentLogger.info("Intention for agent " + getName() + " is " + d.getName());
+                setIntention(d);
+                break;
+            }
+        }
+    }
     
     private void updatePercepts() {
 
@@ -161,28 +206,6 @@ public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
         Set<TaskInfo> taskInfo = belief.getTaskInfo();
         Navi.<INaviAgentV1>get().updateMapAndPathfind(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
                 rolePoints, step, team, maxSteps, score, normsInfo, taskInfo);
-    }
-
-    private void setDummyAction() {
-        // I need to think a lot
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String dir = "n";
-        /*
-         * List<Point> roleZones = belief.getRoleZones(); if (roleZones.size() > 0) {
-         * Point goal = roleZones.get(0); if (goal.x > 0) { dir = "e"; } if (goal.x < 0)
-         * { dir = "w"; } if (goal.y > 0) { dir = "s"; } }
-         */
-        Action a = new Action("move", new Identifier(dir));
-        /*
-         * if (roleZones.contains(new Point(0, 0))) { a = new Action("adopt", new
-         * Identifier("constructor")); if (belief.getRole().equals("constructor")) { a =
-         * new Action("adopt", new Identifier("default")); } }
-         */
-        intention.setNextAction(a);
     }
 
     private record PerceptMessage(String sender, Percept percept) {

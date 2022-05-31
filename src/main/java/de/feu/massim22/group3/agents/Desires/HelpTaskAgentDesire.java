@@ -8,10 +8,12 @@ public class HelpTaskAgentDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         // TODO Auto-generated method stub
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.HELP_TASK_AGENT;
     }
 }

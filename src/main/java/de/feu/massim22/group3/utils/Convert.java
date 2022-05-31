@@ -15,6 +15,17 @@ public class Convert {
         } 
     }
 
+    public static CellType blockNameToDispenser(Thing t) {
+        switch (t.type) {
+            case "b0": return CellType.DISPENSER_0;
+            case "b1": return CellType.DISPENSER_1;
+            case "b2": return CellType.DISPENSER_2;
+            case "b3": return CellType.DISPENSER_3;
+            case "b4": return CellType.DISPENSER_4;
+            default: return CellType.UNKNOWN;
+        }
+    }
+
     private static CellType blockToCellType(String blockDetail) {
         switch (blockDetail) {
             case "b0": return CellType.BLOCK_0;

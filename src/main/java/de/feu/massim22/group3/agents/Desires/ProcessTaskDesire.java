@@ -10,7 +10,7 @@ public class ProcessTaskDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         subDesires.add(SubDesires.GET_ROLE.getSubDesireObj(agent));
         subDesires.add(SubDesires.CHOOSE_TASK.getSubDesireObj(agent));
         subDesires.add(SubDesires.GET_BLOCKS.getSubDesireObj(agent));
@@ -18,7 +18,9 @@ public class ProcessTaskDesire extends Desire {
         subDesires.add(SubDesires.GO_TO_GOAL_AREA.getSubDesireObj(agent));
         subDesires.add(SubDesires.SUBMIT_TASK.getSubDesireObj(agent));
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.PROCESS_TASK;
     }
 }

@@ -13,5 +13,6 @@ public interface INaviAgentV1 extends INavi {
     void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess);
     void acceptMerge(String mergeKey, String name);
     void rejectMerge(String mergeKey, String name);
+    String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent);
     boolean isWaitingOrBusy();
 }

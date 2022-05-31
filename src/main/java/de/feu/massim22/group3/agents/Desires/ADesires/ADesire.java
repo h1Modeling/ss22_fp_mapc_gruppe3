@@ -4,9 +4,10 @@ import java.awt.Point;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DesireUtilities;
+import de.feu.massim22.group3.agents.IIntention;
 import eis.iilang.*;
 
-public abstract class ADesire {
+public abstract class ADesire implements IIntention {
     DesireUtilities desireProcessing;
     
     public String name;
@@ -25,5 +26,9 @@ public abstract class ADesire {
     public abstract Action getNextAction();
     
     record ReachablePoint(Point position, int distance, int direction) {}
+
+    public String getName() {
+        return name;
+    }
 }
 

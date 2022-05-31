@@ -9,10 +9,12 @@ public class ExploreMapDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         // TODO Auto-generated method stub
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.EXPLORE_MAP;
     }
 }

@@ -83,8 +83,12 @@ public class GameMap {
         checkBounds(x, y);
         int cellX = getCellX(x);
         int cellY = getCellY(y);
-        MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step); 
-        cells[cellY][cellX].addReport(report);
+        MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step);
+        CellType current = cells[cellY][cellX].getCellType();
+        // Dispenser don't change during sim and can be overwritten by blocks
+        if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
+            cells[cellY][cellX].addReport(report);
+        }
     }
 
     public void setAgentPosition(String name, Point position) {
@@ -275,6 +279,59 @@ public class GameMap {
 
         data.flip();
         return data;
+    }
+
+    String getDirectionToNearestUndiscoveredPoint(String agent) {
+        Point agentPos = getInternalAgentPosition(agent);
+        int step = 1;
+        while (step < 100) {
+            int top = Math.max(0, -step + agentPos.y);
+            int left = Math.max(0, -step + agentPos.x);
+            int bottom = Math.min(cells.length - 1, step + agentPos.y);
+            int right = Math.min(cells[0].length - 1, step + agentPos.x);
+
+            List<String> possibleDirs = new ArrayList<>();
+            List<String> possibleDirsFree = new ArrayList<>();
+            
+            if (cells[top][agentPos.x].getCellType() == CellType.UNKNOWN) {
+                possibleDirs.add("n");
+                if (cells[agentPos.y - 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("n");
+                }
+            }
+            if (cells[bottom][agentPos.x].getCellType() == CellType.UNKNOWN) {
+                possibleDirs.add("s");
+                if (cells[agentPos.y + 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("s");
+                }
+            }
+            if (cells[agentPos.y][left].getCellType() == CellType.UNKNOWN) {
+                possibleDirs.add("w");
+                if (cells[agentPos.y][agentPos.x - 1].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("w");
+                }
+            }
+            if (cells[agentPos.y][right].getCellType() == CellType.UNKNOWN) {
+                possibleDirs.add("e");
+                if (cells[agentPos.y][agentPos.x + 1].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("e");
+                }
+            }
+
+            // First try directions without obstacles
+            if (possibleDirsFree.size() > 0) {
+                int index = (int)Math.floor(Math.random() * possibleDirsFree.size());
+                return possibleDirsFree.get(index);
+            }
+
+            if (possibleDirs.size() > 0) {
+                int index = (int)Math.floor(Math.random() * possibleDirs.size());
+                return possibleDirs.get(index);
+            }
+
+            step++;
+        }
+        return "n";
     }
 
     public List<InterestingPoint> getInterestingPoints(int maxCount) {

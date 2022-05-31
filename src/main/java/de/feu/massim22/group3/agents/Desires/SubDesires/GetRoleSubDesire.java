@@ -37,6 +37,7 @@ public class GetRoleSubDesire extends SubDesire {
         // TODO Auto-generated method stub
         return false;
     }
+    
     void setType() {
         this.subDesireType = SubDesires.GET_ROLE;
     }
