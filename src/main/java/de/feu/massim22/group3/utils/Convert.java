@@ -8,7 +8,6 @@ public class Convert {
         switch (t.type) {
             case Thing.TYPE_BLOCK: return blockToCellType(t.details);
             case Thing.TYPE_DISPENSER: return dispenserToCellType(t.details);
-            case Thing.TYPE_ENTITY: return CellType.ENTITY;
             case Thing.TYPE_OBSTACLE: return CellType.OBSTACLE;
             case Thing.TYPE_MARKER: return CellType.FREE;
             default: return CellType.UNKNOWN;

@@ -204,8 +204,9 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         int score = (int)belief.getScore();
         Set<NormInfo> normsInfo = belief.getNormsInfo(); 
         Set<TaskInfo> taskInfo = belief.getTaskInfo();
+        List<Point> attachedThings = belief.getAttachedPoints();
         Navi.<INaviAgentV1>get().updateMapAndPathfind(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
-                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo);
+                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo, attachedThings);
     }
 
     private record PerceptMessage(String sender, Percept percept) {

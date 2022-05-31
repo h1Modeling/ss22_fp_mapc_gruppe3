@@ -6,3 +6,4 @@ logs/AgentLogger.log
 *.aux
 *.synctex.gz
 *.toc
+.idea
