@@ -32,7 +32,7 @@ public class GoSubmit extends SubDesire {
 	 */
 	@Override
 	public boolean isExecutable() {
-		
+        AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.isExecutable() Start");	
 		if(!agent.desireProcessing.analysisDone) {
 			agent.desireProcessing.analyseAttachedThings();
 			agent.desireProcessing.analysisDone = true;
@@ -57,6 +57,7 @@ public class GoSubmit extends SubDesire {
 	 **/
 	@Override
 	public Action getNextAction() {
+        AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.getNextAction() Start");     
 		Point agentPos = agent.belief.getPosition();
 		List<Point> pointsGoalZone = agent.belief.getGoalZones();
 		Action nextAction = null;

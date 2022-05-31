@@ -60,7 +60,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         }
 
         // warten auf PATHFINDER_RESULT 
-        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
             if (!beliefsDone) {
                      try {
@@ -69,8 +69,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
                     e.printStackTrace();
                 }
             } else {
-                    AgentLogger.info(Thread.currentThread().getName() + " step() PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
-
+                    AgentLogger.info(Thread.currentThread().getName() + " step() beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
                     Thread t4 = new Thread(() -> desireProcessing.runAgentDecisions(belief.getStep(), this));
                     t4.start();
                     break;
@@ -78,6 +77,8 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         }
 
         // warten auf decisions (agent und supervisor)
+        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for decisionsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        
         while (true) {
             if (!(decisionsDone && supervisor.getDecisionsDone())) {
                 try {
@@ -93,6 +94,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
         }
 
         // nächste Action
+
         AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.name + " , Action: " +  intention.outputAction + " , Params: " +  intention.outputAction.getParameters().get(0));
         return intention.outputAction;
     }

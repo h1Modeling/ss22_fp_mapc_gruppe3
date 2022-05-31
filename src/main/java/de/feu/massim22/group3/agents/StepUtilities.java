@@ -13,12 +13,15 @@ import java.nio.FloatBuffer;
 
 public class StepUtilities {
     DesireUtilities desireProcessing;
+    INaviAgentV2 navi;
     public static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
     public static Set<Supervisor> allSupervisors = new HashSet<Supervisor>();
     private static int countAgent = 0;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
+        //AgentLogger.info(Thread.currentThread().getName() + " StepUtilities() Constructor ");
+        this.navi = Navi.<INaviAgentV2>get();
     }
 
     /**
@@ -59,6 +62,7 @@ public class StepUtilities {
         Set<Supervisor> exSupervisors = new HashSet<Supervisor>();
         Set<Thing> things = new HashSet<>();
         ArrayList<String> allSupervisorNames = new ArrayList<String>();
+        
         for (Supervisor s : allSupervisors) {
             allSupervisorNames.add(s.getName());
         }
@@ -70,6 +74,7 @@ public class StepUtilities {
                 AgentLogger.info(
                         Thread.currentThread().getName() + " doGroupProcessing() Start - Agent: " + agent.getName());
                 things = agent.belief.getThings();
+                
                 for (Thing thing : things) {
                     // Agent hat in seiner Vision einen anderen Agent
                     if (thing.type.equals(Thing.TYPE_ENTITY)) {
@@ -98,6 +103,8 @@ public class StepUtilities {
                             && (foundAgent.get(k).position.y == -foundAgent.get(j).position.y)) {
                         agent1 = foundAgent.get(j).agent;
                         agent2 = foundAgent.get(k).agent;
+                        
+                        AgentLogger.info(Thread.currentThread().getName() + " ############## - Supervisor: " + agent1.supervisor.getName() + " Agents: " + agent1.supervisor.getAgents());
 
                         AgentLogger.info(
                                 Thread.currentThread().getName() + " doGroupProcessing() meeting in vision - Agent1: "
@@ -144,9 +151,9 @@ public class StepUtilities {
             Runnable runnable = () -> { // Gruppenmap berechnen
                 AgentLogger.info(Thread.currentThread().getName()
                         + " doGroupProcessing() Before updateSupervisor() - Supervisor: " + supervisor.getName());
-                
-                //List<CalcResult> agentCalcResults = calcGroup(supervisor);                
-                List<CalcResult> agentCalcResults = Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
+                AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Call - Supervisor: " + supervisor.getName() + " Agents: " + supervisor.getAgents());               
+                List<CalcResult> agentCalcResults = calcGroup(supervisor);                
+                //List<CalcResult> agentCalcResults = Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
                 
                 AgentLogger.info(Thread.currentThread().getName()
                         + " doGroupProcessing() After updateSupervisor() - Supervisor: " + supervisor.getName());
@@ -192,7 +199,7 @@ public class StepUtilities {
     public void updateMap(BdiAgentV2 agent) {
         AgentLogger.info(Thread.currentThread().getName() + " Before updateMap() - Step: " + agent.belief.getStep()
                 + " , Agent: " + agent.getName());
-        Navi.<INaviAgentV2>get().updateMap(agent.supervisor.getName(), agent.getName(), agent.index,
+        navi.updateMap(agent.supervisor.getName(), agent.getName(), agent.index,
                 agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(),
                 agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep(),
                 agent.belief.getTeam(), agent.belief.getSteps(),  (int)agent.belief.getScore(), agent.belief.getNormsInfo(),
@@ -215,24 +222,29 @@ public class StepUtilities {
         AgentLogger.info(
                 Thread.currentThread().getName() + " mergeGroups() Start - Supervisor: " + supervisorGroup.getName()
                         + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + relativOldSupervisor);
+ 
         List<String> agentsSupervisorGroup = supervisorGroup.getAgents();
-        List<BdiAgent> agentsSupervisorGroupBdi = supervisorGroup.getAllGroupAgents();
+       // List<BdiAgent> agentsSupervisorGroupBdi = supervisorGroup.getAllGroupAgents();
+        
         List<String> agentsSupervisorToMerge = supervisorToMerge.getAgents();
-
+        //List<BdiAgent> agentsSupervisorToMergeBdi = supervisorToMerge.getAllGroupAgents();  
+        
         // Agents von agentsSupervisorToMerge in die Liste der Agents von
         // agentsSupervisorGroup
         agentsSupervisorGroup.addAll(agentsSupervisorToMerge);
-        agentsSupervisorGroupBdi.addAll(supervisorToMerge.getAllGroupAgents());
+        //agentsSupervisorGroupBdi.addAll(agentsSupervisorToMergeBdi);
+        
         supervisorGroup.setAgents(agentsSupervisorGroup);
-        supervisorGroup.setAllGroupAgents(agentsSupervisorGroupBdi);
-        Point posNewSupervisor = Navi.<INaviAgentV2>get().getPosition(supervisorGroup.getName(),
+        //supervisorGroup.setAllGroupAgents(agentsSupervisorGroupBdi);
+        
+        Point posNewSupervisor = navi.getPosition(supervisorGroup.getName(),
                 supervisorGroup.getName());
 
         // neuer Supervisor für agents der agentsSupervisorToMerge Liste
         for (BdiAgentV2 agent : allAgents) {
             if (agentsSupervisorToMerge.contains(agent.getName())) {
                 agent.supervisor = supervisorGroup;
-                Navi.<INaviAgentV2>get().registerSupervisor(agent.getName(), supervisorGroup.getName());
+                navi.registerSupervisor(agent.getName(), supervisorGroup.getName());
                 Point oldPosAgent = agent.belief.getPosition();
                 Point newPosAgent = new Point(oldPosAgent.x + relativOldSupervisor.x,
                         oldPosAgent.y + relativOldSupervisor.y);
@@ -250,10 +262,9 @@ public class StepUtilities {
      * 
      */
     public synchronized List<CalcResult> calcGroup(Supervisor supervisor) {
-        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Start - Supervisor: " + supervisor.getName());
-        INaviAgentV2 navi = Navi.<INaviAgentV2>get();
+        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Start - Supervisor: " + supervisor.getName() + " Agents: " + supervisor.getAgents());
         List<String> agents = supervisor.getAgents();
-        //List<Percept> percepts = new ArrayList<>();
+        List<Percept> percepts = new ArrayList<>();
         List<CalcResult> calcResults = new ArrayList<>();
         FloatBuffer mapBuffer = navi.getMapBuffer(supervisor.getName());
 
@@ -275,58 +286,25 @@ public class StepUtilities {
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos = interestingPoints.get(j).point();
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
-                    String direction = getDirection(agentPos, targetPos);
- //                   agentResultData[j] = new PathFindingResult(distance, direction);
+                    String direction = DirectionUtil.getDirection(agentPos, targetPos);
+                    agentResultData[j] = new PathFindingResult(distance, direction);
 
-                    AgentLogger
+                    /*AgentLogger
                             .info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));
                     AgentLogger.info(
                             Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].distance());
                     AgentLogger.info(
                             Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].direction());
-                    AgentLogger.info(Thread.currentThread().getName() + " -------------------------");
+                    AgentLogger.info(Thread.currentThread().getName() + " -------------------------");*/
                 }
 
-                //percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));
+                percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));
                 calcResults.add(new CalcResult(agents.get(i),
                         pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft)));
             }
         }
         AgentLogger.info(Thread.currentThread().getName() + " calcGroup() End - Supervisor: " + supervisor.getName());
         return calcResults;
-    }
-
-    private String getDirection(Point from, Point to) {
-        String result = " ";
-        Point pointTarget = new Point(to.x - from.x, to.y - from.y);
-
-        if (pointTarget.x == 0) {
-            if (pointTarget.y < 0)
-                result = "n";
-            else
-                result = "s";
-        }
-
-        if (pointTarget.y == 0) {
-            if (pointTarget.x < 0)
-                result = "w";
-            else
-                result = "e";
-        }
-
-        if (pointTarget.x != 0 && pointTarget.y != 0) {
-            if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
-                if (pointTarget.x < 0)
-                    result = "w";
-                else
-                    result = "e";
-            else if (pointTarget.y < 0)
-                result = "n";
-            else
-                result = "s";
-        }
-
-        return result;
     }
 
     private Percept pathFindingResultToPercept(String agent, PathFindingResult[] agentResultData,
@@ -342,16 +320,17 @@ public class StepUtilities {
             if (resultData.distance() > 0) {
                 InterestingPoint ip = interestingPoints.get(j);
                 Parameter distance = new Numeral(resultData.distance());
- //               Parameter direction = new Numeral(DirectionUtil.stringToInt(resultData.direction()));
+                Parameter direction = new Numeral(DirectionUtil.stringToInt(resultData.direction()));
                 boolean iZ = ip.cellType().equals(CellType.UNKNOWN);
                 Parameter isZone = new TruthValue(iZ);
                 String det = iZ ? ip.zoneType().name() : ip.cellType().name();
                 Parameter detail = new Identifier(det);
                 Parameter pointX = new Numeral(ip.point().x + mapTopLeft.x);
                 Parameter pointY = new Numeral(ip.point().y + mapTopLeft.y);
+                Parameter ipData = new Identifier(ip.data());
                 // Generate Data for Point
-//                Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction);
-//                data.add(f);
+                Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
+                data.add(f);
             }
         }
 
@@ -390,7 +369,6 @@ class AgentMeeting {
     }
 }
 
-//record PathFindingResult(int distance, String direction) {}
+record PathFindingResult(int distance, String direction) {}
 
-/*record CalcResult(String agent, Percept percepts) {
-}*/
+//record CalcResult(String agent, Percept percepts) {}

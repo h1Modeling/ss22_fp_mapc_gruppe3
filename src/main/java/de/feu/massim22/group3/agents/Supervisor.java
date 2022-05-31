@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.feu.massim22.group3.EventName;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
@@ -16,7 +17,7 @@ public class Supervisor implements ISupervisor {
     private List<ConfirmationData> confirmationData = new ArrayList<>();
     
     //Melinda
-    private List<BdiAgent> allGroupAgents = new ArrayList<>();
+    //private List<BdiAgent> allGroupAgents = new ArrayList<>();
     
     public Supervisor(Supervisable parent) {
         this.parent = parent;
@@ -24,7 +25,7 @@ public class Supervisor implements ISupervisor {
         agents.add(name);
         initConfirmationData();
         //Melinda        
-        allGroupAgents.add((BdiAgent)parent);
+        //allGroupAgents.add((BdiAgent)parent);
     }
     
     public void handleMessage(Percept message, String sender) {
@@ -117,6 +118,7 @@ public class Supervisor implements ISupervisor {
         this.agents.add(name);
     }
     
+    // Melinda Betz     
     private boolean decisionsDone;
     
     public void setDecisionsDone(boolean decisionsDone) {
@@ -135,12 +137,14 @@ public class Supervisor implements ISupervisor {
         this.agents = agents;
     }
     
-    public void setAllGroupAgents(List<BdiAgent> allGroupAgents) {
+    /*public void setAllGroupAgents(List<BdiAgent> allGroupAgents) {
+        AgentLogger.info(Thread.currentThread().getName() + " setAllGroupAgents() ? - supervisor: " + this.name + " , " + this.agents + " , " + this.allGroupAgents + " , in: " + allGroupAgents);
     	 this.allGroupAgents = allGroupAgents;
     }
     
     public List<BdiAgent> getAllGroupAgents() {
+        AgentLogger.info(Thread.currentThread().getName() + " getAllGroupAgents() ? - supervisor: " + this.name + " , " + this.agents + " , " + this.allGroupAgents);
         return this.allGroupAgents;
-    }
+    }*/
     // Melinda Betz Ende
 }
