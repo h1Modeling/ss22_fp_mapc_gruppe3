@@ -46,14 +46,15 @@ public class GoAdoptRole extends SubDesire {
 				if (agentPos.x == rrz.position().x && agentPos.y == rrz.position().y) {
 				    inZone = true;
 				    
-					if(role != null) {
-						result = true;
-					} else {
+					if(role == null) {
 						result = false;
 					}
 				} 
 			}
+		} else {
+		    result = false;
 		}
+		
 		return result;
 	}
     
