@@ -16,7 +16,7 @@ public class GoToGoalZoneDesire extends BeliefDesire {
 
     @Override
     public boolean isFullfilled() {
-        return belief.getRoleZones().contains(new Point(0, 0));
+        return belief.getGoalZones().contains(new Point(0, 0));
     }
 
     @Override

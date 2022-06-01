@@ -14,6 +14,7 @@ import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -110,7 +111,7 @@ public class Belief {
                     break;
                 case "attached":
                     int attX = toNumber(p, 0, Integer.class);
-                    int attY = toNumber(p, 0, Integer.class);
+                    int attY = toNumber(p, 1, Integer.class);
                     attachedPoints.add(new Point(attX, attY));
                     break;
                 case "energy":
@@ -140,8 +141,80 @@ public class Belief {
                         role = toStr(p, 0);
                     }				
                     break;
+                    case "violation" :
+                    violations.add(toStr(p, 0));
+                    break;
+                case "norm":
+                    String normName = toStr(p, 0);
+                    int start = toNumber(p, 1, Integer.class);
+                    int until = toNumber(p, 2, Integer.class);
+                    int punishment = toNumber(p, 4, Integer.class);
+                    Set<Subject> normRequirements = toSubjectSet(p, 3);
+                    normsInfo.add(new NormInfo(normName, start, until, normRequirements, punishment));
+                    break;
+                case "roleZone":
+                    int roleX = toNumber(p, 0, Integer.class);
+                    int roleY = toNumber(p, 1, Integer.class);
+                    roleZones.add(new Point(roleX, roleY));
+                    break;
+                case "goalZone":
+                    int goalX = toNumber(p, 0, Integer.class);
+                    int goalY = toNumber(p, 1, Integer.class);
+                    goalZones.add(new Point(goalX, goalY));
+                    break;
+                case "surveyed":
+                    String surveyType = toStr(p, 0);
+                    if (surveyType.equals("agent")) {
+                        String surveyName = toStr(p, 1);
+                        String surveyRole = toStr(p, 2);
+                        int surveyEnergy = toNumber(p, 3, Integer.class);
+                        StepEvent e = new AgentSurveyStepEvent(surveyName, surveyRole, surveyEnergy);
+                        stepEvents.add(e);
+                    } else {
+                        int distance = toNumber(p, 1, Integer.class);
+                        StepEvent e = new ThingSurveyStepEvent(surveyType, distance);
+                        stepEvents.add(e);
+                    }
+                    break;
+                case "hit":
+                    int hitX = toNumber(p, 0, Integer.class);
+                    int hitY = toNumber(p, 1, Integer.class);
+                    Point hitPoint = new Point(hitX, hitY);
+                    StepEvent ev = new HitStepEvent(hitPoint);
+                    stepEvents.add(ev);
+                    break;
+                case "name":
+                    name = toStr(p, 0);
+                    break;
+                case "team":
+                    team = toStr(p, 0);
+                    break;
+                case "teamSize":
+                    teamSize = toNumber(p, 0, Integer.class);
+                    break;
+                case "steps":
+                    steps = toNumber(p, 0, Integer.class);
+                    break;
+                case "simStart":
+                    break;
+                case "deadline":
+                    break;
+                case "actionID":
+                    break;
+                case "timestamp":
+                    break;
+                case "requestAction":
+                    break;
+                case "ranking":
+                    break;
+                case "time":
+                    break;
+                case "simEnd":
+                    break;
+                default:
+                    AgentLogger.warning("Percept not transfered to Belief: " + percept.getName());
+                }
             }
-        }
         updatePosition();
         updateNewTasks();
         updateAttachedThings();
@@ -283,6 +356,18 @@ public class Belief {
     private record AgentSurveyStepEvent(String name, String role, int energy) implements StepEvent {
         public String toString() {
             return "Agent " + name + " with role " + role + " and energy " + energy;
+        }
+    }
+
+    private record ThingSurveyStepEvent(String name, int distance) implements StepEvent {
+        public String toString() {
+            return name + " " + distance + " cells away";  
+        }
+    }
+
+    private record HitStepEvent(Point position) implements StepEvent {
+        public String toString() {
+            return "Hit at " + position.x + "/" + position.y;  
         }
     }
 
@@ -569,9 +654,9 @@ public class Belief {
 
     private void updateAttachedThings() {
         attachedThings.clear();
+
         for (Point p : attachedPoints) {
-            // TODO Possibly a bug on the server - investigate if the offset is correct
-            Thing t = getThingAt(new Point(p.x, p.y - 1));
+            Thing t = getThingAt(p);
             attachedThings.add(t);
         }
     }

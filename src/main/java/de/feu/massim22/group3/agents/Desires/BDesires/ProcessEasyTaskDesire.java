@@ -17,7 +17,7 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
         precondition.add(new ActionDesire(belief, neededActions));
         precondition.add(new AttachSingleBlockDesire(belief, info.requirements.get(0)));
         precondition.add(new GoToGoalZoneDesire(belief));
-        //precondition.add(new GetBlocksInOrderDesire(belief, info));
+        precondition.add(new GetBlocksInOrderDesire(belief, info));
     }
 
     public Action getNextAction() {

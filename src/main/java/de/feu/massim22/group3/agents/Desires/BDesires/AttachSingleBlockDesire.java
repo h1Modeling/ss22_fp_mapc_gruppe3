@@ -22,10 +22,7 @@ public class AttachSingleBlockDesire extends BeliefDesire {
 
     @Override
     public boolean isFullfilled() {
-        //return belief.getAttachedThings().size() > 0;
-
         for (Thing t : belief.getAttachedThings()) {
-            System.out.println(t.type + " " + t.details + " " + t.x + " " + t.y);
             if (Math.abs(t.x) <= 1 && Math.abs(t.y) <= 1 && t.type.equals(Thing.TYPE_BLOCK)
                 && t.details.equals(block.type)) {
                 return true;
