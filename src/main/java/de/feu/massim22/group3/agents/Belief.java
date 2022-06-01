@@ -108,7 +108,7 @@
                     break;
                 case "attached":
                     int attX = toNumber(p, 0, Integer.class);
-                    int attY = toNumber(p, 0, Integer.class);
+                    int attY = toNumber(p, 1, Integer.class);
                     attachedThings.add(new Point(attX, attY));
                     break;
                 case "energy":
