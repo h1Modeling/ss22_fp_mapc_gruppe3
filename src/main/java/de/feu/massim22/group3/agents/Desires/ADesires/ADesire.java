@@ -10,7 +10,7 @@ public abstract class ADesire {
     public BdiAgent agent;
     public boolean groupOrder = false;
     
-    public int priority;
+    public int priority = 1000;
     public Action outputAction;
 
     public ADesire(String name, BdiAgent agent) {

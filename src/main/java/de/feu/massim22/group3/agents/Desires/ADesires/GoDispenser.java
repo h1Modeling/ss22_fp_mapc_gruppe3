@@ -38,14 +38,14 @@ public class GoDispenser extends ADesire {
     @Override
     public boolean isExecutable() {
         boolean result = false;
-        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".isExecutable() Start");
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".isExecutable() Start - Agent: " + agent.getName());
         if (agent.belief.getReachableDispensers().size() > 0) {
             // es existiert ein Dispenser ( den der Agent erreichen kann)
             List<ReachableDispenser> reachableDispensers = agent.belief.getReachableDispensers();
 
             if (type != null) {
                 AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".isExecutable() Type gesucht: " + type);
-                // bestimmter Blocktyp wird gesucht (wie findet man Blocktype?)
+                // bestimmter Blocktyp wird gesucht
                 if (!agent.desireProcessing.analysisDone) {
                     agent.desireProcessing.analyseAttachedThings();
                     agent.desireProcessing.analysisDone = true;
@@ -54,11 +54,12 @@ public class GoDispenser extends ADesire {
 /*                if (agent.desireProcessing.goodPositionBlocks.size() > 0 
                         && agent.desireProcessing.badBlocks.size() == 0
                         && agent.desireProcessing.missingBlocks.size() > 0) {*/
+                AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".isExecutable() Dispenser: " + reachableDispensers);
 
-                    for (ReachableDispenser dispenser : reachableDispensers) {
+                    for (ReachableDispenser dispenser : reachableDispensers) {                     
                         // alle Dispenser vom gesuchten Typ
-
                         String typeDispenser = "b" + dispenser.type().toString().substring(10);
+                        
                         if (typeDispenser.equals(type)) {
                             typeDispensers.add(dispenser);
                         }
