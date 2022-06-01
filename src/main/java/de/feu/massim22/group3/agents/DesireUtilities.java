@@ -76,22 +76,19 @@ public class DesireUtilities {
      * 
      * @return boolean - the supervisor decisions are done
      */
-	public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor) {
-		boolean result = false;
-		int minBlockCount = 1000;
-		TaskInfo minTask;
+    public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor) {
+        boolean result = false;
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
+                + " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
 
-		AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
-				+ " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
+        BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
+        Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
+        List<Point> attachedPoints;
+        String role = "";
 
-		BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
-		Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
-		List<Point> attachedPoints;
-		String role = "";
-
-		List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
-		List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
-		List<String> busyGroupAgents = new ArrayList<>();
+        List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
+        List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
+        List<String> busyGroupAgents = new ArrayList<>();
 
         // Schleife über alle Tasks
         for (TaskInfo loopTask : set) {
@@ -101,27 +98,25 @@ public class DesireUtilities {
             // über alle Agenten einer Gruppe
             for (String agentStr : allGroupAgents) {
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr);
-                attachedThings = new ArrayList<Thing>();
                 BdiAgent agent = StepUtilities.getAgent(agentStr);
+                agent.desireProcessing.attachedThings = new ArrayList<Thing>();
                 agent.desireProcessing.task = task;
 
                 // alle Blöcke die ein Agent hat
                 attachedPoints = agent.belief.getAttachedThings();
-                AgentLogger.info(Thread.currentThread().getName() + " Agent: " + agentStr + " attachedPoints: "
-                        + attachedPoints);
 
                 Set<Thing> things = agent.belief.getThings();
                 for (Point p : attachedPoints) {
                     for (Thing t : things) {
-                        if (t.x == p.x && t.y == p.y) {
-                            attachedThings.add(t);
+                        if (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) {
+                            agent.desireProcessing.attachedThings.add(t);
                             break;
                         }
                     }
                 }
 
                 AgentLogger.info(Thread.currentThread().getName() + " Agent: " + agentStr + " attachedThings: "
-                        + attachedThings);
+                        + agent.desireProcessing.attachedThings);
 
                 // was hat der Agent für eine Rolle
                 role = agent.getAgentBelief().getRole();
@@ -130,50 +125,67 @@ public class DesireUtilities {
                     busyGroupAgents.add(agent.getName());
                 } else {
 
-                    goodBlocks = new ArrayList<Thing>();
-                    badBlocks = new ArrayList<Thing>();
-                    goodPositionBlocks = new ArrayList<Thing>();
-                    badPositionBlocks = new ArrayList<Thing>();
-                    missingBlocks = new ArrayList<Thing>();
-                    typeOk = false;
+                    agent.desireProcessing.goodBlocks = new ArrayList<Thing>();
+                    agent.desireProcessing.badBlocks = new ArrayList<Thing>();
+                    agent.desireProcessing.goodPositionBlocks = new ArrayList<Thing>();
+                    agent.desireProcessing.badPositionBlocks = new ArrayList<Thing>();
+                    agent.desireProcessing.missingBlocks = new ArrayList<Thing>();
+                    agent.desireProcessing.typeOk = false;
+                    agent.desireProcessing.analysisDone = false;
 
                     // wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
-                    AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor GoSubmit");
-                    if (doDecision(agent, new GoSubmit(agent))) {
-                        busyGroupAgents.add(agent.getName());
-
-                        // wenn ein Agent alle Blöcke einer Task besitzt (eventuell an der falschen
-                        // Stelle)
+                    if (new GoSubmit(agent).isExecutable() && agent.belief.getReachableGoalZones().size() == 0) {
+                        // leider keine GoalZone in Sichtweite
+                        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore");
+                        if (doDecision(agent, new Explore(agent, 45))) {
+                            busyGroupAgents.add(agent.getName());
+                        }
                     } else {
-                        AgentLogger
-                                .info(Thread.currentThread().getName() + " runSupervisorDecisions() vor ArrangeBlocks");
-                        if (doDecision(agent, new ArrangeBlocks(agent))) {
+                        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor GoSubmit");
+                        if (doDecision(agent, new GoSubmit(agent))) {
                             busyGroupAgents.add(agent.getName());
 
-                            // wenn ein Agent Blöcke einer Task besitzt (nicht alle)
+                            // wenn ein Agent alle Blöcke einer Task besitzt (aber an der falschen Stelle)
                         } else {
-                            String type = "";
-                            if (missingBlocks.size() > 0) {
-                                type = missingBlocks.get(0).type;
-                            } else {
-                                type = task.requirements.get(0).type;
-                            }
-                            AgentLogger.info(
-                                    Thread.currentThread().getName() + " runSupervisorDecisions() vor GoDispenser");
-                            if (doDecision(agent, new GoDispenser(agent, type))) {
-                                busyGroupAgents.add(agent.getName());
-
-                                // wenn der gesuchte Dispenser nicht ereichbar ist
-                            } else {
+                            if (new ArrangeBlocks(agent).isExecutable() && agent.belief.getReachableGoalZones().size() == 0) {
+                                // leider keine GoalZone in Sichtweite
                                 AgentLogger.info(
                                         Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore");
-                                if (doDecision(agent, new Explore(agent))) {
+                                if (doDecision(agent, new Explore(agent, 35))) {
                                     busyGroupAgents.add(agent.getName());
+                                }
+                            } else {
+                                AgentLogger.info(Thread.currentThread().getName()
+                                        + " runSupervisorDecisions() vor ArrangeBlocks");
+                                if (doDecision(agent, new ArrangeBlocks(agent))) {
+                                    busyGroupAgents.add(agent.getName());
+
+                                    // wenn ein Agent nicht alle Blöcke einer Task besitzt
+                                } else {
+                                    String type = "";
+                                    if (agent.desireProcessing.missingBlocks.size() > 0) {
+                                        type = agent.desireProcessing.missingBlocks.get(0).details;
+                                    } else {
+                                        type = task.requirements.get(0).type;
+                                    }
+                                    AgentLogger.info(Thread.currentThread().getName()
+                                            + " runSupervisorDecisions() vor GoDispenser");
+                                    if (doDecision(agent, new GoDispenser(agent, type))) {
+                                        busyGroupAgents.add(agent.getName());
+
+                                        // wenn der gesuchte Dispenser nicht ereichbar ist
+                                    } else {
+                                        AgentLogger.info(Thread.currentThread().getName()
+                                                + " runSupervisorDecisions() vor Explore");
+                                        if (doDecision(agent, new Explore(agent))) {
+                                            busyGroupAgents.add(agent.getName());
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }//go submit
-                }//adopt role
+                    } // go submit
+                } // adopt role
             } // Loop agents
         } // Loop tasks
 
@@ -181,15 +193,15 @@ public class DesireUtilities {
         busyGroupAgents.clear();
 
         // über alle Agenten einer Gruppe z.B, TODO fremde Gegenden erkunden etc.
-		for (String agentStr : freeGroupAgents) {
-			
-		}
-		
-		supervisor.setDecisionsDone(true);
-		AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() End - Step: " + step
-				+ " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
-		return result;
-	}
+        for (String agentStr : freeGroupAgents) {
+
+        }
+
+        supervisor.setDecisionsDone(true);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() End - Step: " + step
+                + " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
+        return result;
+    }
     
 
     /**
@@ -244,7 +256,11 @@ public class DesireUtilities {
         	}
             break;
         case "Explore":
-            result = 55;
+            if (desire.priority == 1000) {
+                result = 55;
+            } else {
+                result = desire.priority;
+            }
             break;
         case "LocalHinderEnemy":
             result = 95;
@@ -341,18 +357,23 @@ public class DesireUtilities {
         return resultDirection;
     }
     
-    public void analyseAttachedThings() {
-		
-		for (Thing attachedBlock : attachedThings) {
-			if (task.requirements.contains(attachedBlock)) {
+    public void analyseAttachedThings() {  
+        AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() Task: " + task.name);
+        for (Thing attachedBlock : attachedThings) {
+	        
+			if (blockInTask(task.requirements, attachedBlock)) {
+		        AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block OK");    
 				// Blocktype stimmt
 				// Block ist an der richtigen Stelle
 				goodBlocks.add(attachedBlock);
 				goodPositionBlocks.add(attachedBlock);
 			} else {
+	             AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block nicht OK");  
 				typeOk = false;
+				
 				for (Thing taskBlock : task.requirements) {
-					if (attachedBlock.details.equals(taskBlock.details)) {
+					if (attachedBlock.details.equals(taskBlock.type)) {
+		                AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block OK an falscher Stelle"); 
 						// Blocktype stimmt
 						// Block ist an der falschen Stelle
 						goodBlocks.add(attachedBlock);
@@ -361,29 +382,83 @@ public class DesireUtilities {
 						break;
 					}
 				}
+				
 				if (!typeOk) {
+                    AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block Type falsch"); 
 					// Blocktype stimmt nicht
 					badBlocks.add(attachedBlock);
 				}
 			}
 		}
-		AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() Task: " + task.name);
-		for (Thing taskBlock : task.requirements) {
-			if (!attachedThings.contains(taskBlock)) {
-				typeOk = false;
-				for (Thing badPositionBlock : badPositionBlocks) {
-					if (badPositionBlock.details.equals(taskBlock.details)) {
-						// Blocktype vorhanden
-						typeOk = true;
-						break;
-					}
-				}
-				if (!typeOk) {
-					// Blocktype fehlt
-					missingBlocks.add(taskBlock);
-				}
-			}
-		}
+        
+        /*for (Thing taskBlock : task.requirements) {
+            if (!taskReqInList(attachedThings, taskBlock)) {
+                typeOk = false;
+                for (Thing badPositionBlock : badPositionBlocks) {
+                    if (badPositionBlock.details.equals(taskBlock.type)) {
+                        // Blocktype vorhanden
+                        typeOk = true;
+                        break;
+                    }
+                }
+
+                if (!typeOk) {
+                    // Blocktype fehlt
+                    missingBlocks.add(toThingBlock(taskBlock));
+                }
+            }
+        }*/
+		
+        for (int i = 0; i < 5; i++) {
+            int diff = countBlockType(task.requirements, "b" + i) - countBlockType(attachedThings, "b" + i);
+            
+            if (diff > 0) {
+                for (int j = 0; j < diff; j++) {
+                    missingBlocks.add(new Thing(0, 0, Thing.TYPE_BLOCK, "b" + i));
+                }
+            }
+        }
+        AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() missingBlocks: " + missingBlocks);              
+    }
+    
+    public Thing toTaskBlock(Thing toThingBlock) {           
+        return new Thing(toThingBlock.x, toThingBlock.y, toThingBlock.details, "");
+    }
+    
+    public Thing toThingBlock(Thing toTaskBlock) {           
+        return new Thing(toTaskBlock.x, toTaskBlock.y, Thing.TYPE_BLOCK, toTaskBlock.type);
+    }
+    
+    public boolean blockInTask(List<Thing> inTaskReqs, Thing inBlock) { 
+        for (Thing req : inTaskReqs) {
+            if (req.x == inBlock.x && req.y == inBlock.y && req.type.equals(inBlock.details)) {              
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public boolean taskReqInList(List<Thing> inList, Thing inTaskReq) {     
+        for (Thing block : inList) {
+            if (block.x == inTaskReq.x && block.y == inTaskReq.y && block.details.equals(inTaskReq.type)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public int countBlockType(List<Thing> inList, String inType) {  
+        int count = 0;
+        
+        for (Thing block : inList) {
+            if (block.details.equals(inType) || block.type.equals(inType)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 }
 

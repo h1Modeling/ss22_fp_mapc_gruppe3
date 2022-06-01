@@ -104,8 +104,6 @@ public class StepUtilities {
                         agent1 = foundAgent.get(j).agent;
                         agent2 = foundAgent.get(k).agent;
                         
-                        AgentLogger.info(Thread.currentThread().getName() + " ############## - Supervisor: " + agent1.supervisor.getName() + " Agents: " + agent1.supervisor.getAgents());
-
                         AgentLogger.info(
                                 Thread.currentThread().getName() + " doGroupProcessing() meeting in vision - Agent1: "
                                         + agent1.getName() + " , Agent2: " + agent2.getName());
@@ -148,37 +146,18 @@ public class StepUtilities {
             AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - Supervisor: "
                     + supervisor.getName());
 
-            Runnable runnable = () -> { // Gruppenmap berechnen
-                AgentLogger.info(Thread.currentThread().getName()
-                        + " doGroupProcessing() Before updateSupervisor() - Supervisor: " + supervisor.getName());
-                AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Call - Supervisor: " + supervisor.getName() + " Agents: " + supervisor.getAgents());               
+            Runnable runnable = () -> { // Gruppenmap berechnen             
                 List<CalcResult> agentCalcResults = calcGroup(supervisor);                
                 //List<CalcResult> agentCalcResults = Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
-                
-                AgentLogger.info(Thread.currentThread().getName()
-                        + " doGroupProcessing() After updateSupervisor() - Supervisor: " + supervisor.getName());
 
-                for (CalcResult agentCalcResult : agentCalcResults) {
-                    AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - agentCalcResult: "
-                            + agentCalcResult.agent());
-                    
+                for (CalcResult agentCalcResult : agentCalcResults) {                   
                     BdiAgentV2 agent = getAgent(agentCalcResult.agent());
-                    List<Parameter> parameters = agentCalcResult.percepts().getParameters();
-     
-                    AgentLogger.info(Thread.currentThread().getName()
-                            + " doGroupProcessing() Before updateFromPathFinding() - agentCalcResult: "
-                            + agentCalcResult.agent());
-                    AgentLogger.info(Thread.currentThread().getName()
-                            + " doGroupProcessing() Before updateFromPathFinding() - parameters: "
-                            + parameters);
-                    
+                    List<Parameter> parameters = agentCalcResult.percepts().getParameters();                   
                     agent.belief.updateFromPathFinding(parameters);
                     agent.beliefsDone = true;
                     
                     //AgentLogger.info(Thread.currentThread().getName() + agent.belief.reachablesToString());
                 }
-                AgentLogger.info(Thread.currentThread().getName()
-                        + " doGroupProcessing() Before runSupervisorDecisions() - Supervisor: " + supervisor.getName());
                 
                 desireProcessing.runSupervisorDecisions(step, supervisor);
             };
@@ -197,16 +176,11 @@ public class StepUtilities {
      *
      */
     public void updateMap(BdiAgentV2 agent) {
-        AgentLogger.info(Thread.currentThread().getName() + " Before updateMap() - Step: " + agent.belief.getStep()
-                + " , Agent: " + agent.getName());
         navi.updateMap(agent.supervisor.getName(), agent.getName(), agent.index,
                 agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(),
                 agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep(),
                 agent.belief.getTeam(), agent.belief.getSteps(),  (int)agent.belief.getScore(), agent.belief.getNormsInfo(),
                 agent.belief.getTaskInfo(), agent.belief.getAttachedThings());
-
-        AgentLogger.info(Thread.currentThread().getName() + " After updateMap() - Step: " + agent.belief.getStep()
-                + " , Agent: " + agent.getName());
     }
 
     /**
@@ -270,18 +244,13 @@ public class StepUtilities {
 
         int maxNumberGoals = 32;
         List<InterestingPoint> interestingPoints = navi.getInterestingPoints(supervisor.getName(), maxNumberGoals);
-        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoints.size(): "
-                + interestingPoints.size());
 
         if (interestingPoints.size() > 0) {
             PathFindingResult[] agentResultData = new PathFindingResult[interestingPoints.size()];
             Point mapTopLeft = navi.getTopLeft(supervisor.getName());
-            AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - agents.size(): " + agents.size());
 
             for (int i = 0; i < agents.size(); i++) {
                 Point agentPos = navi.getInternalAgentPosition(supervisor.getName(), agents.get(i));
-                AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - Loop Agent: " + agents.get(i)
-                        + " , Position: " + agentPos);
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos = interestingPoints.get(j).point();
@@ -309,7 +278,6 @@ public class StepUtilities {
 
     private Percept pathFindingResultToPercept(String agent, PathFindingResult[] agentResultData,
             List<InterestingPoint> interestingPoints, Point mapTopLeft) {
-        AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept() Start - Agent: " + agent);
         List<Parameter> data = new ArrayList<>();
 
         // Generate Percept
@@ -334,7 +302,6 @@ public class StepUtilities {
             }
         }
 
-        AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept() End - Result: " + data);
         return new Percept("PATHFINDER_RESULT", data);
     }
 

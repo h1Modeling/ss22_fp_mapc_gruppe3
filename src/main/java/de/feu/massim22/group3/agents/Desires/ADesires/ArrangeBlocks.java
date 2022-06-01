@@ -5,6 +5,7 @@ import java.util.List;
 
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
@@ -26,13 +27,16 @@ public class ArrangeBlocks extends SubDesire {
 	 */
 	@Override
 	public boolean isExecutable() {
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".isExecutable() Start");
 		if(!agent.desireProcessing.analysisDone) {
 			agent.desireProcessing.analyseAttachedThings();
 			agent.desireProcessing.analysisDone = true;
 		}
 		
-		if (agent.desireProcessing.goodPositionBlocks.size() > 0 
-				&& agent.desireProcessing.badPositionBlocks.size() > 0 
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".isExecutable() badPositionBlocks: " + agent.desireProcessing.badPositionBlocks.size() + " , missingBlocks: " + agent.desireProcessing.missingBlocks.size());
+		
+//		if (agent.desireProcessing.goodPositionBlocks.size() > 0 
+		if (agent.desireProcessing.badPositionBlocks.size() > 0 
 				&& agent.desireProcessing.missingBlocks.size() == 0) {
 			return true;
 		}
@@ -49,10 +53,12 @@ public class ArrangeBlocks extends SubDesire {
 	 **/
 	@Override
     public Action getNextAction() {
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() Start");
         Action nextAction = null;
         
         List<Point> attachedPoints = agent.belief.getAttachedThings();
         if (attachedPoints.size() == 1) {
+            AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() Ein-Block-Task");
             // task besteht aus einem Block
             Point taskBlock = new Point(agent.desireProcessing.task.requirements.get(0).x, agent.desireProcessing.task.requirements.get(0).y);
             Point agentBlock = attachedPoints.get(0);            

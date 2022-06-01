@@ -33,6 +33,7 @@ public class GoSubmit extends SubDesire {
 	@Override
 	public boolean isExecutable() {
         AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.isExecutable() Start");	
+
 		if(!agent.desireProcessing.analysisDone) {
 			agent.desireProcessing.analyseAttachedThings();
 			agent.desireProcessing.analysisDone = true;
@@ -55,29 +56,31 @@ public class GoSubmit extends SubDesire {
 	 * @return Action - the action that is needed
 	 * 
 	 **/
-	@Override
-	public Action getNextAction() {
-        AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.getNextAction() Start");     
-		Point agentPos = agent.belief.getPosition();
-		List<Point> pointsGoalZone = agent.belief.getGoalZones();
-		Action nextAction = null;
-
-		for (Point p : pointsGoalZone) {
-			/*AgentLogger.info(Thread.currentThread().getName() + " getNextAction() agentPos: " + agentPos
-					+ " , Point GoalZone: " + p);*/
-			if (agentPos.x == p.x && agentPos.y == p.y) {
-				// Agent steht schon in einer GoalZone
-				nextAction = new Action("submit", new Identifier(agent.desireProcessing.task.name));
-			} 
-		}
-			if(nextAction == null) {
-				// Agent muss noch in die GoalZone laufen
-				ReachableGoalZone nearestGoalZone = agent.desireProcessing.getNearestGoalZone(agent.belief.getReachableGoalZones());
-				String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());
-				nextAction = new Action("move", new Identifier(direction));
-			}
-		return nextAction;
-	}
+    @Override
+    public Action getNextAction() {
+        AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.getNextAction() Start - Agent: " + agent.belief.getPosition() + " ReachableGoalZone: " + agent.belief.getReachableGoalZones());
+        AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.getNextAction() Start - Agent: " + agent.belief.getPosition() + " GoalZone: " + agent.belief.getGoalZones());
+        
+        Action nextAction = null;
+        Point pointAgent = new Point(0, 0);
+        
+        for (Point goalZone : agent.belief.getGoalZones()) {
+            if (goalZone.equals(pointAgent)) {
+                // Agent steht schon in einer GoalZone
+                nextAction = new Action("submit", new Identifier(agent.desireProcessing.task.name));
+                break;
+            }
+        }
+        
+        if (nextAction == null) {
+            // Agent muss noch in die GoalZone laufen
+            ReachableGoalZone nearestGoalZone = agent.desireProcessing
+                    .getNearestGoalZone(agent.belief.getReachableGoalZones());
+            String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());
+            nextAction = new Action("move", new Identifier(direction));
+        }
+        return nextAction;
+    }
 	
     @Override
     public boolean isDone() {
