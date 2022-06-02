@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
 import de.feu.massim22.group3.agents.Desires.ADesires.DesireIntegration;
-import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**

@@ -197,20 +197,14 @@ public class StepUtilities {
                 Thread.currentThread().getName() + " mergeGroups() Start - Supervisor: " + supervisorGroup.getName()
                         + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + relativOldSupervisor);
  
-        List<String> agentsSupervisorGroup = supervisorGroup.getAgents();
-       // List<BdiAgent> agentsSupervisorGroupBdi = supervisorGroup.getAllGroupAgents();
-        
+        List<String> agentsSupervisorGroup = supervisorGroup.getAgents();        
         List<String> agentsSupervisorToMerge = supervisorToMerge.getAgents();
-        //List<BdiAgent> agentsSupervisorToMergeBdi = supervisorToMerge.getAllGroupAgents();  
         
         // Agents von agentsSupervisorToMerge in die Liste der Agents von
         // agentsSupervisorGroup
         agentsSupervisorGroup.addAll(agentsSupervisorToMerge);
-        //agentsSupervisorGroupBdi.addAll(agentsSupervisorToMergeBdi);
-        
-        supervisorGroup.setAgents(agentsSupervisorGroup);
-        //supervisorGroup.setAllGroupAgents(agentsSupervisorGroupBdi);
-        
+       
+        supervisorGroup.setAgents(agentsSupervisorGroup);        
         Point posNewSupervisor = navi.getPosition(supervisorGroup.getName(),
                 supervisorGroup.getName());
 
@@ -257,14 +251,6 @@ public class StepUtilities {
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
-
-                    /*AgentLogger
-                            .info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));
-                    AgentLogger.info(
-                            Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].distance());
-                    AgentLogger.info(
-                            Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].direction());
-                    AgentLogger.info(Thread.currentThread().getName() + " -------------------------");*/
                 }
 
                 percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));

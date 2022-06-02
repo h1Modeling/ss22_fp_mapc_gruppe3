@@ -1,11 +1,9 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import de.feu.massim22.group3.agents.BdiAgent;
-import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
-
 
 public class Explore extends ADesire {
 
@@ -42,8 +40,8 @@ public class Explore extends ADesire {
         AgentLogger.info(
                 Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName());
         Identifier newDirection = agent.desireProcessing.walkCircles(agent, 2);
-        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Action: move, "
-                + newDirection);
-        return new Action("move", newDirection);
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Action: move, " + newDirection);
+        
+        return  agent.desireProcessing.getPossibleActionForMove(agent, newDirection.getValue());  
     }
 }

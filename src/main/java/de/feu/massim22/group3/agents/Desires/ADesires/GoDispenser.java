@@ -2,14 +2,10 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.util.*;
 import java.awt.Point;
-
 import de.feu.massim22.group3.agents.BdiAgent;
-import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
-import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import massim.protocol.data.Subject.Type;
 import massim.protocol.data.Thing;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
@@ -88,55 +84,66 @@ public class GoDispenser extends ADesire {
     @Override
     public Action getNextAction() {
         AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() Start");
+        Action nextAction = null;
         boolean attachPossible = false;
         // Dispenser mit der kürzesten Entfernung zum Agenten
         ReachableDispenser nearestDispenser = agent.desireProcessing.getNearestDispenser(typeDispensers);
         Point dispenserItself = DirectionUtil.getDispenserItself(nearestDispenser);
-        
+
         if (agent.requestMade && agent.lastUsedDispenser != nearestDispenser.position()) {
-        	for (Thing thing : agent.belief.getThings()) {
-                if (thing.type.equals(Thing.TYPE_DISPENSER) 
-                		&& thing.x == agent.lastUsedDispenser.x - agent.belief.getPosition().x 
-                		&& thing.y == agent.lastUsedDispenser.y - agent.belief.getPosition().y) {  
-                	dispenserItself = new Point(agent.lastUsedDispenser.x, agent.lastUsedDispenser.y);
-                	agent.requestMade = false;
+            for (Thing thing : agent.belief.getThings()) {
+                if (thing.type.equals(Thing.TYPE_DISPENSER)
+                        && thing.x == agent.lastUsedDispenser.x - agent.belief.getPosition().x
+                        && thing.y == agent.lastUsedDispenser.y - agent.belief.getPosition().y) {
+                    dispenserItself = new Point(agent.lastUsedDispenser.x, agent.lastUsedDispenser.y);
+                    agent.requestMade = false;
                     break;
-                }                
+                }
             }
         }
-          
+
         agent.lastUsedDispenser = dispenserItself;
-        int distance = Math.abs(dispenserItself.x - agent.belief.getPosition().x) + Math.abs(dispenserItself.y - agent.belief.getPosition().y);
-        
-        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName() + " , Pos: " + agent.belief.getPosition());
-        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - dNearest: " + nearestDispenser.position() + nearestDispenser.data() + " , dItself: " + dispenserItself);
-        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName() + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
+        int distance = Math.abs(dispenserItself.x - agent.belief.getPosition().x)
+                + Math.abs(dispenserItself.y - agent.belief.getPosition().y);
+
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: "
+                + agent.getName() + " , Pos: " + agent.belief.getPosition());
+        AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - dNearest: "
+                + nearestDispenser.position() + nearestDispenser.data() + " , dItself: " + dispenserItself);
+        AgentLogger.info(
+                Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName()
+                        + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
 
         if (distance == 1) {
-        	AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName() + " , Things: " + agent.belief.getThings());
+            // steht neben einem Dispenser
+            AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: "
+                    + agent.getName() + " , Things: " + agent.belief.getThings());
             for (Thing thing : agent.belief.getThings()) {
-                if (thing.type.equals(Thing.TYPE_BLOCK) 
-                		&& thing.x == dispenserItself.x - agent.belief.getPosition().x 
-                		&& thing.y == dispenserItself.y - agent.belief.getPosition().y) {  
-					if (!agent.desireProcessing.attachedThings.contains(thing)) {
-						attachPossible = true;
-						break;
-					}
-                }                
+                if (thing.type.equals(Thing.TYPE_BLOCK) && thing.x == dispenserItself.x - agent.belief.getPosition().x
+                        && thing.y == dispenserItself.y - agent.belief.getPosition().y) {
+                    if (!agent.desireProcessing.attachedThings.contains(thing)) {
+                        attachPossible = true;
+                        break;
+                    }
+                }
             }
 
             String direction = DirectionUtil.getDirection(agent.belief.getPosition(), dispenserItself);
 
             if (attachPossible) {
-                return new Action("attach", new Identifier(direction));  
+                nextAction = new Action("attach", new Identifier(direction));
             } else {
-            	agent.requestMade = true;
-                return new Action("request", new Identifier(direction));                 
+                agent.requestMade = true;
+                nextAction = new Action("request", new Identifier(direction));
             }
+            
         } else {
+         // steht noch nicht neben einem Dispenser
             String direction = DirectionUtil.firstIntToString(nearestDispenser.direction());
-            return new Action("move", new Identifier(direction));         
+            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);  
         }
-    }       
+
+        return nextAction;
+    }
 }
 

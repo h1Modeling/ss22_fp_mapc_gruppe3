@@ -6,7 +6,7 @@ import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 public class DirectionUtil {
 	public static String intToString(int direction) {
         String s = String.valueOf(direction).replaceAll("1", "n").replaceAll("2", "e").replaceAll("3", "s")
-                .replaceAll("4", "w");
+                .replaceAll("4", "w").replaceAll("5", "n");
 
         return new StringBuilder(s).reverse().toString();
     }

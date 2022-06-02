@@ -2,15 +2,10 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 import java.util.List;
-
 import de.feu.massim22.group3.agents.BdiAgent;
-import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
-import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
-import eis.iilang.Identifier;
 
 public class GoGoalZone extends ADesire {
     
@@ -58,6 +53,7 @@ public class GoGoalZone extends ADesire {
         // goalZone mit der kürzesten Entfernung zum Agenten
         ReachableGoalZone nearestGoalZone = agent.desireProcessing.getNearestGoalZone(agent.belief.getReachableGoalZones());
         String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());
-        return new Action("move", new Identifier(direction));
+        
+        return agent.desireProcessing.getPossibleActionForMove(agent, direction);  
     }
 }

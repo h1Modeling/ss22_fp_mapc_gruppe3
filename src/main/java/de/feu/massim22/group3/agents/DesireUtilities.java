@@ -390,24 +390,6 @@ public class DesireUtilities {
 				}
 			}
 		}
-        
-        /*for (Thing taskBlock : task.requirements) {
-            if (!taskReqInList(attachedThings, taskBlock)) {
-                typeOk = false;
-                for (Thing badPositionBlock : badPositionBlocks) {
-                    if (badPositionBlock.details.equals(taskBlock.type)) {
-                        // Blocktype vorhanden
-                        typeOk = true;
-                        break;
-                    }
-                }
-
-                if (!typeOk) {
-                    // Blocktype fehlt
-                    missingBlocks.add(toThingBlock(taskBlock));
-                }
-            }
-        }*/
 		
         for (int i = 0; i < 5; i++) {
             int diff = countBlockType(task.requirements, "b" + i) - countBlockType(attachedThings, "b" + i);
@@ -459,6 +441,52 @@ public class DesireUtilities {
         }
 
         return count;
+    }
+    
+    public Thing getContentInDirection(BdiAgent agent, String direction) {
+        Point cell = DirectionUtil.getCellInDirection(direction);
+        
+        for (Thing thing : agent.belief.getThings()) {
+            if (thing.type.equals(Thing.TYPE_OBSTACLE) || thing.type.equals(Thing.TYPE_ENTITY) || thing.type.equals(Thing.TYPE_BLOCK)) {
+                // an diesem Punkt ist ein Hindernis
+                
+                if (cell == new Point(thing.x, thing.y)) {
+                    // Agent steht vor Hinderniss in Richtung direction
+                    return thing;
+                } 
+            }
+        }
+
+        return null;
+    }
+    
+    public Action getPossibleActionForMove(BdiAgent agent, String direction) {
+        Action nextAction = null;       
+        Thing neighbour = agent.desireProcessing.getContentInDirection(agent, direction);
+       
+        if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
+                && agent.desireProcessing.attachedThings.contains(neighbour))) {
+            // Weg ist frei
+            nextAction = new Action("move", new Identifier(direction));
+ 
+        } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE)) {
+            Point pointCell = DirectionUtil.getCellInDirection(direction);
+            // ein Hindernis wegräumen 
+            nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),
+                    new Identifier(String.valueOf(pointCell.y)));
+
+        } else if (neighbour.type.equals(Thing.TYPE_ENTITY)) {
+            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);          
+            // einem Agenten ausweichen  
+            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction); 
+
+        } else if (neighbour.type.equals(Thing.TYPE_BLOCK)) {
+            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
+            // einem Block ausweichen 
+            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction); 
+        }
+
+        return nextAction;
     }
 }
 

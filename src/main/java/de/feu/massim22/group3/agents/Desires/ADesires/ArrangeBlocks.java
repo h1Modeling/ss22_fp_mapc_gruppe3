@@ -2,15 +2,12 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 import java.util.List;
-
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
-import massim.protocol.data.Thing;
 
-//TODO Klassenlogik
+//TODO Klassenlogik für mehr als einen Block
 public class ArrangeBlocks extends ADesire {
 
 	public ArrangeBlocks(BdiAgent agent) {

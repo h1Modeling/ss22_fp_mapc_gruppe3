@@ -1,19 +1,11 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import de.feu.massim22.group3.agents.BdiAgent;
-import de.feu.massim22.group3.agents.Desires.SubDesires.SubDesire;
-import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
-import massim.protocol.data.TaskInfo;
-import massim.protocol.data.Thing;
 import java.awt.Point;
 
 public class GoSubmit extends ADesire {
@@ -77,8 +69,9 @@ public class GoSubmit extends ADesire {
             ReachableGoalZone nearestGoalZone = agent.desireProcessing
                     .getNearestGoalZone(agent.belief.getReachableGoalZones());
             String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());
-            nextAction = new Action("move", new Identifier(direction));
+            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);  
         }
+        
         return nextAction;
     }
 }
