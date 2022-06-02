@@ -55,12 +55,12 @@ public class DesireUtilities {
         return result;
     }
     
-    boolean doDecision(BdiAgent agent, ADesire inDesire) {
+    boolean doDecision(BdiAgent agent, IDesire inDesire) {
         boolean result = false;
       
         if (inDesire.isExecutable()) { // desire ist möglich , hinzufügen
-            inDesire.outputAction = inDesire.getNextAction();
-            inDesire.priority = getPriority(inDesire);
+            inDesire.setOutputAction(inDesire.getNextAction());
+            inDesire.setPriority(getPriority(inDesire));
             agent.desires.add(inDesire);
             result = true;
         }
@@ -212,10 +212,10 @@ public class DesireUtilities {
      * @return int - the priority
      */
 	// TODO sinnvolle Prioritäten vergeben
-    public int getPriority(ADesire desire) {
+    public int getPriority(IDesire desire) {
         int result = 0;
 
-        switch (desire.name) {
+        switch (desire.getName()) {
         case "DigFree":
             result = 10;
             break;
@@ -230,7 +230,7 @@ public class DesireUtilities {
             result = 20;
             break;
         case "GoAdoptRole":
-            if (desire.groupOrder) {
+            if (desire.getGroupOrder()) {
                 result = 17 ;               
             } else {
                 result = 60;            
@@ -249,17 +249,17 @@ public class DesireUtilities {
             result = 90;
             break;
         case "GoDispenser":
-        	if (desire.groupOrder) {
+        	if (desire.getGroupOrder()) {
                 result = 50;        		
         	} else {
                 result = 60;       		
         	}
             break;
         case "Explore":
-            if (desire.priority == 1000) {
+            if (desire.getPriority() == 1000) {
                 result = 55;
             } else {
-                result = desire.priority;
+                result = desire.getPriority();
             }
             break;
         case "LocalHinderEnemy":
@@ -280,20 +280,20 @@ public class DesireUtilities {
      * 
      * @return Desire - the intention
      */
-    public synchronized ADesire determineIntention(BdiAgentV2 agent) {
-        ADesire result = null;
+    public synchronized IDesire determineIntention(BdiAgentV2 agent) {
+        IDesire result = null;
         int priority = 1000;
-        for (ADesire desire : agent.desires) {
+        for (IDesire desire : agent.desires) {
             AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , Desire: " + desire.name + " , Action: " + desire.outputAction + " , Prio: " + desire.priority);
-            if (desire.priority < priority) {
+                    + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + desire.getPriority());
+            if (desire.getPriority() < priority) {
                 result = desire;
-                priority = desire.priority;
+                priority = desire.getPriority();
             }
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " determineIntention() End - Agent: " + agent.getName()
-                + " , Intention: " + result.name + " , Action: " + result.outputAction);
+                + " , Intention: " + result.getName() + " , Action: " + result.getOutputAction());
         return result;
     }
 

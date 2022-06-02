@@ -6,7 +6,7 @@ import de.feu.massim22.group3.agents.DesireUtilities;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.*;
 
-    public class LocalExplore extends SubDesire {
+    public class LocalExplore extends ADesire {
         
     	public LocalExplore(BdiAgent agent){
             super("LocalExplore", agent);
@@ -37,14 +37,7 @@ import eis.iilang.*;
             Identifier newDirection = agent.desireProcessing.walkCircles(agent, 2);
             AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Action: move, " + newDirection);
             return new Action("move", newDirection);
-        }
-        
-        @Override
-        public boolean isDone() {
-            return true;
-        }
-        
-        
+        }  
     }
 
 

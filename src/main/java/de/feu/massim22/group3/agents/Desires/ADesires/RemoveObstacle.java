@@ -7,7 +7,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 //TODO Klassenlogik
-public class RemoveObstacle extends SubDesire {
+public class RemoveObstacle extends ADesire {
 	public RemoveObstacle(BdiAgent agent) {
         super("RemoveObstacle", agent);
     }
@@ -23,11 +23,5 @@ public class RemoveObstacle extends SubDesire {
         Identifier y = new Identifier("-1");
 
         return new Action(" ", x, y);
-    }
-    
-    @Override
-    public boolean isDone() {
-        return true;
-    }
-    
+    }   
 }

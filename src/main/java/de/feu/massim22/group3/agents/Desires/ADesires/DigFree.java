@@ -14,7 +14,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
 
-public class DigFree extends SubDesire {
+public class DigFree extends ADesire {
 	
 	public DigFree(BdiAgent agent) {
 		super("DigFree", agent);
@@ -84,14 +84,4 @@ public class DigFree extends SubDesire {
         Point p = DirectionUtil.getCellInDirection(direction);  
         return new Action("clear", new Identifier(String.valueOf(p.x)), new Identifier(String.valueOf(p.y)));
     }
-	
-    @Override
-    public boolean isDone() {
-        return true;
-    }
-    
-    /*@Override
-    public void setType() {
-        //this.subDesireType = SubDesires.DIG_FREE;
-    }*/
 }

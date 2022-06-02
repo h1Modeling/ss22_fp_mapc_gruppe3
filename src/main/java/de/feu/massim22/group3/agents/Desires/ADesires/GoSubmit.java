@@ -16,7 +16,7 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import java.awt.Point;
 
-public class GoSubmit extends SubDesire {
+public class GoSubmit extends ADesire {
 
 	public GoSubmit(BdiAgent agent) {
 		super("Submit", agent);
@@ -81,11 +81,4 @@ public class GoSubmit extends SubDesire {
         }
         return nextAction;
     }
-	
-    @Override
-    public boolean isDone() {
-        return true;
-    }
-    
-    
 }
