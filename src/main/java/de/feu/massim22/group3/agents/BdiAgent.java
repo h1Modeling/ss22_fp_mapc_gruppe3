@@ -4,12 +4,12 @@ import java.util.List;
 import java.awt.Point;
 
 import de.feu.massim22.group3.MailService;
-import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
+import de.feu.massim22.group3.agents.Desires.ADesires.DesireIntegration;
 
 public abstract class BdiAgent extends Agent {
     // Melinda
     public DesireUtilities desireProcessing = new DesireUtilities();
-    public List<ADesire> desires;
+    public List<DesireIntegration> desires;
     public boolean decisionsDone;
     public boolean requestMade = false;
     public Point lastUsedDispenser;

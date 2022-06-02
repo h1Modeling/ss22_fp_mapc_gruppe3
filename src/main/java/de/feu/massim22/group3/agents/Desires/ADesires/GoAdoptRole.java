@@ -14,7 +14,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 
-public class GoAdoptRole extends SubDesire {
+public class GoAdoptRole extends ADesire {
     boolean inZone = false;
 	String role = null;
 	Point agentPos = agent.belief.getPosition();
@@ -87,11 +87,4 @@ public class GoAdoptRole extends SubDesire {
 		}
 		return nextAction;
 	}
-    
-    @Override
-    public boolean isDone() {
-        return true;
-    }
-    
-   
 }

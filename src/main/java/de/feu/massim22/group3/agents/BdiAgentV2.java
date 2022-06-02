@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
+import de.feu.massim22.group3.agents.Desires.ADesires.DesireIntegration;
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
@@ -14,16 +15,12 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  */
 public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
-    //private Queue<BdiAgentV2.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
-    //public DesireUtilities desireProcessing = new DesireUtilities();
     public StepUtilities stepLogic = new StepUtilities(desireProcessing);
     
     public Supervisor supervisor;
     public int index;
     
-    //public List<ADesire> desires;
-    public ADesire intention;
-    //public boolean decisionsDone;
+    public DesireIntegration intention;
     public boolean beliefsDone;
 
 
@@ -43,7 +40,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
     @Override
     public Action step() {
-        desires = new ArrayList<ADesire>();
+        desires = new ArrayList<DesireIntegration>();
         updateBeliefs();
         supervisor.setDecisionsDone(false);
         decisionsDone = false; // Agent
@@ -95,8 +92,8 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
         // nächste Action
 
-        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.name + " , Action: " +  intention.outputAction + " , Params: " +  intention.outputAction.getParameters().get(0));
-        return intention.outputAction;
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getOutputAction() + " , Params: " +  intention.getOutputAction().getParameters().get(0));
+        return intention.getOutputAction();
     }
 
     /**

@@ -7,7 +7,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 
-public class Explore extends SubDesire {
+public class Explore extends ADesire {
 
     public Explore(BdiAgent agent) {
         super("Explore", agent);
@@ -45,10 +45,5 @@ public class Explore extends SubDesire {
         AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Action: move, "
                 + newDirection);
         return new Action("move", newDirection);
-    }
-
-    @Override
-    public boolean isDone() {
-        return true;
     }
 }

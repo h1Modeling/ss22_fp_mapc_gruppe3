@@ -11,7 +11,7 @@ import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
 
 //TODO Klassenlogik
-public class ArrangeBlocks extends SubDesire {
+public class ArrangeBlocks extends ADesire {
 
 	public ArrangeBlocks(BdiAgent agent) {
 		super("ArrangeBlocks", agent);
@@ -86,11 +86,4 @@ public class ArrangeBlocks extends SubDesire {
          
          return nextAction;
     }
-	
-    @Override
-    public boolean isDone() {
-        return true;
-    }
-    
-   
 }
