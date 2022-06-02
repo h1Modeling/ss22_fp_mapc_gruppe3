@@ -55,7 +55,7 @@ public class DesireUtilities {
         return result;
     }
     
-    boolean doDecision(BdiAgent agent, IDesire inDesire) {
+    boolean doDecision(BdiAgent agent, DesireIntegration inDesire) {
         boolean result = false;
       
         if (inDesire.isExecutable()) { // desire ist möglich , hinzufügen
@@ -212,7 +212,7 @@ public class DesireUtilities {
      * @return int - the priority
      */
 	// TODO sinnvolle Prioritäten vergeben
-    public int getPriority(IDesire desire) {
+    public int getPriority(DesireIntegration desire) {
         int result = 0;
 
         switch (desire.getName()) {
@@ -280,10 +280,10 @@ public class DesireUtilities {
      * 
      * @return Desire - the intention
      */
-    public synchronized IDesire determineIntention(BdiAgentV2 agent) {
-        IDesire result = null;
+    public synchronized DesireIntegration determineIntention(BdiAgentV2 agent) {
+        DesireIntegration result = null;
         int priority = 1000;
-        for (IDesire desire : agent.desires) {
+        for (DesireIntegration desire : agent.desires) {
             AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
                     + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + desire.getPriority());
             if (desire.getPriority() < priority) {

@@ -3,7 +3,7 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
 
-public interface IDesire {
+public interface DesireIntegration {
     boolean isExecutable();
     Action getNextAction();
     

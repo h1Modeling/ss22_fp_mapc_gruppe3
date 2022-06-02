@@ -1,11 +1,10 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
 import de.feu.massim22.group3.agents.BdiAgent;
-import de.feu.massim22.group3.agents.Desires.ADesires.IDesire;
 import eis.iilang.Action;
 
 public abstract class SubDesire {   
-//public abstract class SubDesire implements IDesire {     // Melinda
+/*public abstract class SubDesire implements DesireIntegration {     // Melinda (zur Benutzung von V2-Desires; bräuchte aber dann die Methoden des Interfaces)*/
 
     protected SubDesires subDesireType;
     protected BdiAgent agent;

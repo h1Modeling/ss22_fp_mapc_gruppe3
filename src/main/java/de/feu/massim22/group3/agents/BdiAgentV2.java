@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
-import de.feu.massim22.group3.agents.Desires.ADesires.IDesire;
+import de.feu.massim22.group3.agents.Desires.ADesires.DesireIntegration;
 import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
@@ -20,7 +20,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public Supervisor supervisor;
     public int index;
     
-    public IDesire intention;
+    public DesireIntegration intention;
     public boolean beliefsDone;
 
 
@@ -40,7 +40,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
     @Override
     public Action step() {
-        desires = new ArrayList<IDesire>();
+        desires = new ArrayList<DesireIntegration>();
         updateBeliefs();
         supervisor.setDecisionsDone(false);
         decisionsDone = false; // Agent

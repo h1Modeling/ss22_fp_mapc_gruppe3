@@ -5,7 +5,7 @@ import java.awt.Point;
 import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.*;
 
-public abstract class ADesire implements IDesire{
+public abstract class ADesire implements DesireIntegration{
     public String name;
     public BdiAgent agent;
     public boolean groupOrder = false;
