@@ -14,10 +14,12 @@ import eis.iilang.Action;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
+import massim.protocol.messages.scenario.ActionResults;
 
 public class DesireUtilities {
 	
 	public TaskInfo task;
+    public String directionCircle = "cw";
     public int directionCounter = 0;
     public int circleSize = 5;
  
@@ -48,7 +50,7 @@ public class DesireUtilities {
         doDecision(agent, new GoGoalZone(agent));
         doDecision(agent, new GoDispenser(agent));
         doDecision(agent, new GoAdoptRole(agent));
-        doDecision(agent, new RemoveObstacle(agent));
+        //doDecision(agent, new RemoveObstacle(agent));
         doDecision(agent, new LocalExplore(agent));
         
         agent.decisionsDone = true;
@@ -115,8 +117,11 @@ public class DesireUtilities {
                     }
                 }
 
-                AgentLogger.info(Thread.currentThread().getName() + " Agent: " + agentStr + " attachedThings: "
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Agent: " + agentStr + " attachedThings: "
                         + agent.desireProcessing.attachedThings);
+                AgentLogger.info(
+                        Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: " + agent.getName()
+                                + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
 
                 // was hat der Agent für eine Rolle
                 role = agent.getAgentBelief().getRole();
@@ -132,14 +137,16 @@ public class DesireUtilities {
                     agent.desireProcessing.missingBlocks = new ArrayList<Thing>();
                     agent.desireProcessing.typeOk = false;
                     agent.desireProcessing.analysisDone = false;
-
-                    // wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
-                    if (new GoSubmit(agent).isExecutable() && agent.belief.getReachableGoalZones().size() == 0) {
+                    
+                    // wenn ein Agent alle Blöcke einer Task besitzt
+                    if ((new ArrangeBlocks(agent).isExecutable() || new GoSubmit(agent).isExecutable()) 
+                            && agent.belief.getReachableGoalZones().size() == 0) {
                         // leider keine GoalZone in Sichtweite
                         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore");
                         if (doDecision(agent, new Explore(agent, 45))) {
                             busyGroupAgents.add(agent.getName());
                         }
+                        // wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
                     } else {
                         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor GoSubmit");
                         if (doDecision(agent, new GoSubmit(agent))) {
@@ -147,14 +154,6 @@ public class DesireUtilities {
 
                             // wenn ein Agent alle Blöcke einer Task besitzt (aber an der falschen Stelle)
                         } else {
-                            if (new ArrangeBlocks(agent).isExecutable() && agent.belief.getReachableGoalZones().size() == 0) {
-                                // leider keine GoalZone in Sichtweite
-                                AgentLogger.info(
-                                        Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore");
-                                if (doDecision(agent, new Explore(agent, 35))) {
-                                    busyGroupAgents.add(agent.getName());
-                                }
-                            } else {
                                 AgentLogger.info(Thread.currentThread().getName()
                                         + " runSupervisorDecisions() vor ArrangeBlocks");
                                 if (doDecision(agent, new ArrangeBlocks(agent))) {
@@ -182,7 +181,6 @@ public class DesireUtilities {
                                         }
                                     }
                                 }
-                            }
                         }
                     } // go submit
                 } // adopt role
@@ -283,17 +281,18 @@ public class DesireUtilities {
     public synchronized DesireIntegration determineIntention(BdiAgentV2 agent) {
         DesireIntegration result = null;
         int priority = 1000;
+        
         for (DesireIntegration desire : agent.desires) {
-            AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + desire.getPriority());
+            /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
+                    + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + desire.getPriority());*/
             if (desire.getPriority() < priority) {
                 result = desire;
                 priority = desire.getPriority();
             }
         }
 
-        AgentLogger.info(Thread.currentThread().getName() + " determineIntention() End - Agent: " + agent.getName()
-                + " , Intention: " + result.getName() + " , Action: " + result.getOutputAction());
+        /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() End - Agent: " + agent.getName()
+                + " , Intention: " + result.getName() + " , Action: " + result.getOutputAction());*/
         return result;
     }
 
@@ -342,16 +341,39 @@ public class DesireUtilities {
         if (agent.belief.getLastAction() != null && agent.belief.getLastAction().equals(Actions.MOVE)) {
             directionCounter++;
             resultDirection = new Identifier(agent.belief.getLastActionParams().get(0));
-
-            if (agent.belief.getLastAction().equals("move") && directionCounter >= circleSize) {
-                if (agent.belief.getLastActionParams().get(0).equals("n")) resultDirection = new Identifier("e");
-                if (agent.belief.getLastActionParams().get(0).equals("e")) resultDirection = new Identifier("s");
-                if (agent.belief.getLastActionParams().get(0).equals("s")) resultDirection = new Identifier("w");
-                if (agent.belief.getLastActionParams().get(0).equals("w")) {
-                    resultDirection = new Identifier("n");
-                    circleSize = circleSize + stepWidth;
+            
+            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
+                if (directionCircle.equals("cw")) {
+                    directionCircle = "ccw";
+                } else {
+                    directionCircle = "cw";
                 }
-                directionCounter = 0;
+            }
+
+            if (directionCircle.equals("cw")) {
+                if (agent.belief.getLastAction().equals("move") && directionCounter >= circleSize) {
+                    if (agent.belief.getLastActionParams().get(0).equals("n")) resultDirection = new Identifier("e");
+                    if (agent.belief.getLastActionParams().get(0).equals("e")) resultDirection = new Identifier("s");
+                    if (agent.belief.getLastActionParams().get(0).equals("s")) resultDirection = new Identifier("w");
+                    if (agent.belief.getLastActionParams().get(0).equals("w")) {
+                        resultDirection = new Identifier("n");
+                        circleSize = circleSize + stepWidth;
+                    }
+                    directionCounter = 0;
+                    directionCircle = "ccw";
+                }
+            } else {
+                if (agent.belief.getLastAction().equals("move") && directionCounter >= circleSize) {
+                    if (agent.belief.getLastActionParams().get(0).equals("n")) resultDirection = new Identifier("w");
+                    if (agent.belief.getLastActionParams().get(0).equals("w")) resultDirection = new Identifier("s");
+                    if (agent.belief.getLastActionParams().get(0).equals("s")) resultDirection = new Identifier("e");
+                    if (agent.belief.getLastActionParams().get(0).equals("e")) {
+                        resultDirection = new Identifier("n");
+                        circleSize = circleSize + stepWidth;
+                    }
+                    directionCounter = 0;
+                    directionCircle = "cw";
+                }
             }
         }
         return resultDirection;
@@ -445,12 +467,19 @@ public class DesireUtilities {
     
     public Thing getContentInDirection(BdiAgent agent, String direction) {
         Point cell = DirectionUtil.getCellInDirection(direction);
+
+        return getContent(agent, cell);
+    }
+    
+    public Thing getContent(BdiAgent agent, Point cell) {      
+        //AgentLogger.info(Thread.currentThread().getName() + " getContent() - Position: " + cell);
         
-        for (Thing thing : agent.belief.getThings()) {
+        for (Thing thing : agent.belief.getThings()) {           
             if (thing.type.equals(Thing.TYPE_OBSTACLE) || thing.type.equals(Thing.TYPE_ENTITY) || thing.type.equals(Thing.TYPE_BLOCK)) {
                 // an diesem Punkt ist ein Hindernis
                 
-                if (cell == new Point(thing.x, thing.y)) {
+                if (cell.equals(new Point(thing.x, thing.y))) {
+                    //AgentLogger.info(Thread.currentThread().getName() + " getContentInDirection() - Vision: " + thing);
                     // Agent steht vor Hinderniss in Richtung direction
                     return thing;
                 } 
@@ -463,15 +492,21 @@ public class DesireUtilities {
     public Action getPossibleActionForMove(BdiAgent agent, String direction) {
         Action nextAction = null;       
         Thing neighbour = agent.desireProcessing.getContentInDirection(agent, direction);
+        
+        //AgentLogger.info(Thread.currentThread().getName() + " getPossibleActionForMove() - Neighbour: " + neighbour);
+
        
         if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
                 && agent.desireProcessing.attachedThings.contains(neighbour))) {
             // Weg ist frei
+            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
+                direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) - 1);
+            }         
             nextAction = new Action("move", new Identifier(direction));
- 
+            
         } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE)) {
             Point pointCell = DirectionUtil.getCellInDirection(direction);
-            // ein Hindernis wegräumen 
+            // ein Hindernis wegräumen
             nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),
                     new Identifier(String.valueOf(pointCell.y)));
 
@@ -485,8 +520,31 @@ public class DesireUtilities {
             // einem Block ausweichen 
             nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction); 
         }
+        //AgentLogger.info(Thread.currentThread().getName() + " getPossibleActionForMove() - Action: " + nextAction.getName() + " , " + direction);
 
         return nextAction;
+    }
+    
+    public int getWidth(BdiAgent agent, String side) {
+        int maxWidth = 0;
+        
+        for (Point cell : agent.belief.getAttachedThings()) {
+            if (side.equals("right")) {
+                if (cell.x > maxWidth) {
+                    maxWidth = maxWidth + cell.x;
+                }         
+            } else {
+                if (cell.x < maxWidth) {
+                    maxWidth = maxWidth + cell.x;
+                }                
+            }
+            
+            if (side.equals("left")) {
+                maxWidth = Math.abs(maxWidth);
+            }
+        }
+        
+        return maxWidth;
     }
 }
 

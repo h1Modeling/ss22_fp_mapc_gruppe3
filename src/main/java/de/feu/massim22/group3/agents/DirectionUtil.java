@@ -5,7 +5,7 @@ import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 
 public class DirectionUtil {
 	public static String intToString(int direction) {
-        String s = String.valueOf(direction).replaceAll("1", "n").replaceAll("2", "e").replaceAll("3", "s")
+        String s = String.valueOf(direction).replaceAll("0", "w").replaceAll("1", "n").replaceAll("2", "e").replaceAll("3", "s")
                 .replaceAll("4", "w").replaceAll("5", "n");
 
         return new StringBuilder(s).reverse().toString();
@@ -82,11 +82,11 @@ public class DirectionUtil {
         return result;
     }
 	
-	//agent a block b  cw clockwise  ccw counter clockwise
+	// ist a soll b  cw clockwise  ccw counter clockwise
 	public static String getClockDirection(Point a, Point b) {
 	    String result = "";
 	    
-	    if (a.x == 0 && b.x == 0 && b.x == 0 || a.y == 0 && b.y == 0) {
+	    if (a.x == 0 && b.x == 0 || a.y == 0 && b.y == 0) {
 	        result = "cw";
 	    } else if (a.x == 0 && a.y == 1) {
 	        if (b.x == -1 && b.y == 0) result = "cw"; 

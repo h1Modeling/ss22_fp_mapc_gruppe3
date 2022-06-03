@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.List;
 import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
@@ -35,22 +36,25 @@ public class GoAdoptRole extends ADesire {
 	@Override
 	public boolean isExecutable() {
 		boolean result = true;
-		// es existiert eine roleZone ( die der Agent erreichen kann)und er ist nicht schon drin
+		// es existiert eine RoleZone ( die der Agent erreichen kann)und er ist nicht schon drin
 		if (reachableRoleZones.size() > 0) {
-			for (ReachableRoleZone rrz : reachableRoleZones) {
-				if (agentPos.x == rrz.position().x && agentPos.y == rrz.position().y) {
-				    inZone = true;
-				    
-					if(role == null) {
-						result = false;
-					}
-				} 
-			}
+            Point pointAgent = new Point(0, 0);
+            
+            for (Point roleZone : agent.belief.getRoleZones()) {
+                if (roleZone.equals(pointAgent)) {
+                    // Agent steht schon in einer RoleZone
+                    inZone = true;
+                    
+                    if(role == null) {
+                        result = false;
+                    }
+                }
+            }
 		} else {
 		    result = false;
 		}
 		
-		return result;
+		return result;		
 	}
     
     /**

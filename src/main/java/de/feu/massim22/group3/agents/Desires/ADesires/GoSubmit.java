@@ -11,7 +11,7 @@ import java.awt.Point;
 public class GoSubmit extends ADesire {
 
 	public GoSubmit(BdiAgent agent) {
-		super("Submit", agent);
+		super("GoSubmit", agent);
         groupOrder = true;
 	}
 
@@ -68,7 +68,7 @@ public class GoSubmit extends ADesire {
             // Agent muss noch in die GoalZone laufen
             ReachableGoalZone nearestGoalZone = agent.desireProcessing
                     .getNearestGoalZone(agent.belief.getReachableGoalZones());
-            String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());
+            String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());            
             nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);  
         }
         

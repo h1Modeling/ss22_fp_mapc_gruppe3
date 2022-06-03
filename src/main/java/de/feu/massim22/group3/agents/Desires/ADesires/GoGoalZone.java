@@ -6,6 +6,7 @@ import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import eis.iilang.Action;
+import eis.iilang.Identifier;
 
 public class GoGoalZone extends ADesire {
     
@@ -22,25 +23,25 @@ public class GoGoalZone extends ADesire {
      */
     @Override
     public boolean isExecutable() {
-    	Point agentPos = agent.belief.getPosition();
-		//List<Point> pointsGoalZone = agent.belief.getGoalZones();
-		List<ReachableGoalZone> reachableGoalZones = agent.belief.getReachableGoalZones();
+        boolean result = true;
+        List<ReachableGoalZone> reachableGoalZones = agent.belief.getReachableGoalZones();
 
-		// es existiert eine goalZone ( die der Agent erreichen kann)und er ist nicht schon drin
-		if (reachableGoalZones.size() > 0) {
-			for (ReachableGoalZone rgz : reachableGoalZones) {
-				/*AgentLogger.info(Thread.currentThread().getName() + " isExecutable() agentPos: " + agentPos
-						+ " , Point GoalZone: " + rgz.position());*/
-				if (agentPos.x == rgz.position().x && agentPos.y == rgz.position().y) {
-					return false;
-				}
-			}
-			return true;
+        // es existiert eine goalZone ( die der Agent erreichen kann) und er ist nicht schon drin
+        if (reachableGoalZones.size() > 0) {
+            Point pointAgent = new Point(0, 0);
 
-		} else {
-			return false;
-		}
-	}
+            for (Point goalZone : agent.belief.getGoalZones()) {
+                if (goalZone.equals(pointAgent)) {
+                    // Agent steht schon in einer GoalZone
+                    result =  false;
+                }
+            }
+        } else {
+            result =  false;
+        }
+        
+        return result;
+    }
     
     /**
      * The method returns the nextAction that is needed.

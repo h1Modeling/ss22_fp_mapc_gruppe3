@@ -61,24 +61,24 @@ public class ArrangeBlocks extends ADesire {
             Point agentBlock = attachedPoints.get(0);            
             nextAction = new Action("rotate", new Identifier(DirectionUtil.getClockDirection(agentBlock, taskBlock)));
         } else {
-
-        
+// TODO 2-Block-Tasks
+        nextAction = new Action("skip");
         
 		// wenn ein Block nur an der falsche Stelle ist, aber vom Typ her passt
-		nextAction = new Action("rotate", new Identifier("b1"));
+		//nextAction = new Action("rotate", new Identifier("b1"));
 
 		// wenn ein Block mit einem anderen den Platz tauschen soll
 		// Block lösen
-		nextAction = new Action("detach", new Identifier("b1"));
+		//nextAction = new Action("detach", new Identifier("b1"));
 
 		// dann rotieren so das er passt
-		nextAction = new Action("rotate", new Identifier("b1"));
+		//nextAction = new Action("rotate", new Identifier("b1"));
 
 		// Block an passender Stelle einfügen
-		nextAction = new Action("attach", new Identifier("b1"));
+		//nextAction = new Action("attach", new Identifier("b1"));
 
 		// falschen Block entfernen
-		nextAction = new Action("detach", new Identifier("b1"));
+		//nextAction = new Action("detach", new Identifier("b1"));
         }
          
          return nextAction;
