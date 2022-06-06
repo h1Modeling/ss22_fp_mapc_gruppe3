@@ -15,7 +15,7 @@ public class ActionDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         for (String a : actions) {
             if (!belief.getRole().actions().contains(a)) {
                 // Add Preconditions
@@ -39,7 +39,7 @@ public class ActionDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isExecutable() {
-        BooleanInfo r = isFullfilled();
+        BooleanInfo r = isFulfilled();
         if (r.value()) {
             return r;
         }

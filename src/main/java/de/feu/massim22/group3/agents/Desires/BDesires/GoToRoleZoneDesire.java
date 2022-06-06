@@ -13,7 +13,7 @@ public class GoToRoleZoneDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         for (Point p : belief.getRoleZones()) {
             if (p.x == 0 && p.y == 0) {
                 return new BooleanInfo(true, "");

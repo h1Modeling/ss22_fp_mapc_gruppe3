@@ -13,6 +13,7 @@ import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
 import de.feu.massim22.group3.agents.Desires.BDesires.DigFreeDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ExploreDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.FreedomDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.LooseWeightDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ProcessEasyTaskDesire;
@@ -170,6 +171,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         desires.add(new ExploreDesire(belief, supervisor.getName(), getName()));
         desires.add(new LooseWeightDesire(belief));
         desires.add(new DigFreeDesire(belief));
+        desires.add(new FreedomDesire(belief));
     }
 
     private void updateDesires() {
@@ -194,7 +196,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         for (int i = desires.size() - 1; i >= 0; i--) {
             IDesire d = desires.get(i);
             d.update(this.supervisor.getName());
-            BooleanInfo isFullfilled = d.isFullfilled();
+            BooleanInfo isFullfilled = d.isFulfilled();
             BooleanInfo isExecutable = d.isExecutable();
             DesireDebugData data = new DesireDebugData(d.getName(), isExecutable);
             debugData.add(data);

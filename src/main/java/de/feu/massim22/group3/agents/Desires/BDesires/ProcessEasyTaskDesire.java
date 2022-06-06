@@ -1,5 +1,7 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
+import java.awt.Point;
+
 import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.TaskInfo;
 
@@ -10,10 +12,14 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
     public ProcessEasyTaskDesire(Belief belief, TaskInfo info, String supervisor) {
         super(belief);
         this.info = info;
+        String blockDetail = info.requirements.get(0).type;
         String[] neededActions = {"submit", "request"};
         precondition.add(new ProcessOnlySubmittableTaskDesire(belief, info));
         precondition.add(new ActionDesire(belief, neededActions));
-        precondition.add(new AttachSingleBlockDesire(belief, info.requirements.get(0), supervisor));
+        precondition.add(new OrDesire(
+            new AttachAbandonedBlockDesire(belief, blockDetail),
+            new AttachSingleBlockFromDispenserDesire(belief, info.requirements.get(0), supervisor))
+        );
         precondition.add(new GoToGoalZoneDesire(belief));
         precondition.add(new GetBlocksInOrderDesire(belief, info));
     }
@@ -27,7 +33,7 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
     }
 
@@ -57,7 +63,11 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
 
     @Override
     public int getPriority() {
-        int taskId = Integer.parseInt(info.name.substring(4));
-        return 100 + taskId;
+        String detail = info.requirements.get(0).type;
+        Point dispenser = belief.getNearestRelativeManhattenDispenser(detail);
+        Point abandoned = belief.getAbandonedBlockPosition(detail);
+        int dispenserDist = dispenser != null ? Math.abs(dispenser.x) + Math.abs(dispenser.y) : 500;
+        int abandonedDist = abandoned != null ? Math.abs(abandoned.x) + Math.abs(abandoned.y) : 500;
+        return 100 + (500 - Math.min(dispenserDist, abandonedDist));
     }
 }

@@ -11,7 +11,7 @@ public class LooseWeightDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         boolean value = belief.getAttachedPoints().size() == 0;
         String info = value ? "" : belief.getAttachedPoints().size() + " Things attached";
         return new BooleanInfo(value, info);

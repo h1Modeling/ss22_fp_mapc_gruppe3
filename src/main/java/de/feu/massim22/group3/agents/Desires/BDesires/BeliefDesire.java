@@ -21,7 +21,7 @@ public abstract class BeliefDesire implements IDesire {
 
     protected ActionInfo fullfillPreconditions() {
         for (IDesire d : precondition) {
-            if (!d.isFullfilled().value()) {
+            if (!d.isFulfilled().value()) {
                 AgentLogger.info("Next action for agent " + belief.getAgentName() + " from " + d.getName());
                 return d.getNextActionInfo();
             }
@@ -33,7 +33,7 @@ public abstract class BeliefDesire implements IDesire {
     public BooleanInfo isExecutable() {
         for (IDesire d : precondition) {
             BooleanInfo r = d.isExecutable();
-            BooleanInfo f = d.isFullfilled();
+            BooleanInfo f = d.isFulfilled();
             if (!r.value() && !f.value()) {
                 AgentLogger.info(d.getName() + " is not executable for " + belief.getAgentName());
                 return r;
@@ -107,9 +107,9 @@ public abstract class BeliefDesire implements IDesire {
         Thing t = belief.getThingAt(dirPoint);
         if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
             return ActionInfo.CLEAR(dirPoint, desire);
-        } else if (t == null || t.type.equals(Thing.TYPE_DISPENSER) || attached.contains(dirPoint)) {
+        } else if (isFree(t)|| attached.contains(dirPoint)) {
             return ActionInfo.MOVE(dir, desire);
-        } else if (t.type.equals(Thing.TYPE_ENTITY)) {
+        } else if (t != null && t.type.equals(Thing.TYPE_ENTITY)) {
             // Try to move around agent
             boolean inDirection = true; // dir.equals("n") || dir.equals("e");
             String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);
@@ -117,11 +117,11 @@ public abstract class BeliefDesire implements IDesire {
             Thing tDir1 = belief.getThingAt(dir1);
             Thing tDir2 = belief.getThingAt(dir2);
 
-            if (isFree(tDir1) || tDir1.type.equals(Thing.TYPE_OBSTACLE)) {
+            if (isFree(tDir1) || isClearable(tDir1)) {
                 return getIteratedActionForMove(dir1, desire);
             }
 
-            if (isFree(tDir2) || tDir2.type.equals(Thing.TYPE_OBSTACLE)) {
+            if (isFree(tDir2) || isClearable(tDir2)) {
                 return getIteratedActionForMove(dir2, desire);
             }
             return ActionInfo.SKIP("Agent is stuck");

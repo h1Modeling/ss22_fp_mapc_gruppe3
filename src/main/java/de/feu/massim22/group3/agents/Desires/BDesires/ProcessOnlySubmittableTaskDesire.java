@@ -14,7 +14,7 @@ class ProcessOnlySubmittableTaskDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         return isExecutable();
     }
 

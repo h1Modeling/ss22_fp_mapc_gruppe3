@@ -11,13 +11,13 @@ import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.Convert;
 import massim.protocol.data.Thing;
 
-public class AttachSingleBlockDesire extends BeliefDesire {
+public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
 
     private Thing block;
     private CellType dispenser;
     private String supervisor;
 
-    public AttachSingleBlockDesire(Belief belief, Thing block, String supervisor) {
+    public AttachSingleBlockFromDispenserDesire(Belief belief, Thing block, String supervisor) {
         super(belief);
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
@@ -25,7 +25,7 @@ public class AttachSingleBlockDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         for (Thing t : belief.getAttachedThings()) {
             if (Math.abs(t.x) <= 1 && Math.abs(t.y) <= 1 && t.type.equals(Thing.TYPE_BLOCK)
                 && t.details.equals(block.type)) {

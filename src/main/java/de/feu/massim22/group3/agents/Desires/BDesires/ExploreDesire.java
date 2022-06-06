@@ -16,7 +16,7 @@ public class ExploreDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
     }
 

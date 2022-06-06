@@ -19,7 +19,7 @@ public class DigFreeDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         boolean value = atSamePosition < limit && dir == null;
         return new BooleanInfo(value, "");
     }

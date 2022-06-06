@@ -13,7 +13,7 @@ public class GoToGoalZoneDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isFullfilled() {
+    public BooleanInfo isFulfilled() {
         boolean result = belief.getGoalZones().contains(new Point(0, 0));
         String info = result ? "" : "not on goal zone";
         return new BooleanInfo(result, info);
