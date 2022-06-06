@@ -15,6 +15,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
@@ -32,6 +33,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     private Map<String, GroupDebugData> groupData = new HashMap<>();
     private Set<String> groups = new HashSet<>();
     private String selectedGroup = "";
+    private String selectedAgent = "";
     private DebugStepListener listener;
 
     public GraphicalDebugger() {
@@ -54,6 +56,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         add(header, BorderLayout.NORTH);
 
         agentPanel = new AgentPanel();
+        agentPanel.setMinimumSize(new Dimension(350, 0));
         add(new JScrollPane(agentPanel), BorderLayout.WEST);
 
         simulationPanel = new SimulationPanel();
@@ -75,6 +78,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     @Override
     public void selectAgent(String agent) {
         AgentDebugData data = agentData.get(agent);
+        selectedAgent = agent;
         agentPanel.setAgentData(data);
     }
 
@@ -89,7 +93,13 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         String role,
         int energy,
         String lastAction,
-        String lastActionSuccess
+        String lastActionSuccess,
+        String lastActionDesire
+    ) {}
+
+    public static record DesireDebugData(
+        String name,
+        BooleanInfo isExecutable
     ) {}
 
     @Override
@@ -159,6 +169,16 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
 
     @Override
     public synchronized void setAgentData(AgentDebugData data) {
-        agentData.put(data.name, data);  
+        agentData.put(data.name, data);
+        if (data.name.equals(selectedAgent)) {
+            selectAgent(data.name);
+        }
+    }
+
+    @Override
+    public void setAgentDesire(List<DesireDebugData> data, String agent) {
+        if (agent.equals(selectedAgent)) {
+            agentPanel.setDesireData(data);
+        }
     }
 }

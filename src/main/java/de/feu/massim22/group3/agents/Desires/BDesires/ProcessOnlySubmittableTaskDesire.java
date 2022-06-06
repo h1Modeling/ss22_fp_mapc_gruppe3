@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 
 import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.TaskInfo;
+import massim.protocol.data.Thing;
 
 class ProcessOnlySubmittableTaskDesire extends BeliefDesire {
 
@@ -13,12 +14,34 @@ class ProcessOnlySubmittableTaskDesire extends BeliefDesire {
     }
 
     @Override
-    public boolean isFullfilled() {
+    public BooleanInfo isFullfilled() {
         return isExecutable();
     }
 
     @Override
-    public boolean isExecutable() {
-        return info.deadline >= belief.getStep() && belief.getReachableGoalZones().size() > 0;
+    public BooleanInfo isExecutable() {
+        boolean zone = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
+        boolean attached = true;
+        String wrongThing = "";
+        for (Thing t : belief.getAttachedThings()) {
+            // Attached Teammates are allowed
+            if (t.type.equals(Thing.TYPE_ENTITY)) {
+                continue;
+            }
+            boolean found = false;
+            for (Thing r : info.requirements) {
+                if (r.type.equals(t.details)) {
+                    found = true;
+                }
+            }
+            if (found == false) {
+                attached = false;
+                wrongThing = t.details;
+                break;
+            }
+        }
+        String zoneInfo = zone ? "" : "No visible Goal zone";
+        String attachedInfo = attached ? "" : "Wrong Block " + wrongThing + " attached";
+        return new BooleanInfo(zone && attached, zoneInfo + attachedInfo);
     }
 }

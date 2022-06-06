@@ -153,8 +153,8 @@ class PathFinder {
             .replaceFirst("VAR1", "1") 	   // local Cores X
             .replaceFirst("VAR2", goalCount + "") 	  // local Cores Y (goal Count)
             .replaceFirst("VAR3", "1") 		// local Cores Z
-            .replaceFirst("VAR4", "300") 	// Queue Size 
-            .replaceFirst("VAR5", "4")		// Max values in Queue list
+            .replaceFirst("VAR4", "100") 	// Queue Size 
+            .replaceFirst("VAR5", "8")		// Max values in Queue list
             .replaceFirst("VAR6", mapSize.x + "")		   // Map size X 
             .replaceFirst("VAR7", mapSize.y + "")        // Map size Y
             .replaceFirst("VAR8", mapDiscovered + "");  // Map discovered

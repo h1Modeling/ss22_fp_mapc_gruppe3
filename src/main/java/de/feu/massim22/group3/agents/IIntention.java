@@ -1,8 +1,8 @@
 package de.feu.massim22.group3.agents;
 
-import eis.iilang.Action;
+import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 
 public interface IIntention {
-    Action getNextAction();
+    ActionInfo getNextActionInfo();
     String getName();
 }

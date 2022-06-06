@@ -1,8 +1,6 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
 import de.feu.massim22.group3.agents.Belief;
-import eis.iilang.Action;
-import eis.iilang.Identifier;
 import massim.protocol.data.Role;
 
 public class ActionDesire extends BeliefDesire {
@@ -17,36 +15,37 @@ public class ActionDesire extends BeliefDesire {
     }
 
     @Override
-    public boolean isFullfilled() {
+    public BooleanInfo isFullfilled() {
         for (String a : actions) {
             if (!belief.getRole().actions().contains(a)) {
                 // Add Preconditions
                 if (precondition.size() == 0) {
                     precondition.add(new GoToRoleZoneDesire(belief));
                 }
-                return false;
+                return new BooleanInfo(false, "No role with Action " + a);
             }
         }
-        return true;
+        return new BooleanInfo(true, "");
     }
 
     @Override
-    public Action getNextAction() {
-        Action a = fullfillPreconditions();
+    public ActionInfo getNextActionInfo() {
+        ActionInfo a = fullfillPreconditions();
         if (a == null) {
-            return new Action("adopt", new Identifier(possibleRole.name()));
+            return ActionInfo.ADOPT(possibleRole.name(), getName());
         }
         return a;
     }
 
     @Override
-    public boolean isExecutable() {
-        if (isFullfilled()) {
-            return true;
+    public BooleanInfo isExecutable() {
+        BooleanInfo r = isFullfilled();
+        if (r.value()) {
+            return r;
         }
         if (possibleRole != null) {
             return super.isExecutable();
         }
-        return false;
+        return r;
     }
 }

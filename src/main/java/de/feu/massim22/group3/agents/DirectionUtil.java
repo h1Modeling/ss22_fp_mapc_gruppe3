@@ -5,7 +5,7 @@ import java.awt.Point;
 public class DirectionUtil {
 	public static String intToString(int direction) {
         String s = String.valueOf(direction).replaceAll("1", "n").replaceAll("2", "e").replaceAll("3", "s")
-                .replaceAll("4", "w");
+                .replaceAll("4", "w").replace("0", "");
 
         return new StringBuilder(s).reverse().toString();
     }
@@ -32,6 +32,14 @@ public class DirectionUtil {
         }
     }
 
+    public static Point rotateCW(Point p) {
+        return new Point(-p.y, p.x);
+    }
+
+    public static Point rotateCCW(Point p) {
+        return new Point(p.y, -p.x);
+    }
+
 	public static String getDirection(Point from, Point to) {
         String result = " ";
         Point pointTarget = new Point(to.x - from.x, to.y - from.y);
@@ -51,7 +59,7 @@ public class DirectionUtil {
         }
 
         if (pointTarget.x != 0 && pointTarget.y != 0) {
-            if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
+            if (Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
                 if (pointTarget.x < 0)
                     result = "w";
                 else

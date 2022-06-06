@@ -75,6 +75,10 @@ void main() {
     int dirFactor = 1;
     while (true) {
         ivec3 shortest = getShortest(distances[curMin], curMin);
+        while (shortest.x == -1 && curMin < queueSize) {
+            curMin += 1;
+            shortest = getShortest(distances[curMin], curMin);
+        }
         ivec3 pixelShortest = ivec3( shortest.xy, agentImageId );
         float pixelShortestValue = imageLoad( map, pixelShortest ).r;
         

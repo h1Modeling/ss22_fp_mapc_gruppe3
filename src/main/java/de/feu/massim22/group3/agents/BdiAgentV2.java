@@ -93,7 +93,7 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
         }
 
         // nächste Action
-        Action action = intention.getNextAction();
+        Action action = intention.getNextActionInfo().value();
         AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  action + " , Params: " +  action.getParameters().get(0));
         return action;
     }

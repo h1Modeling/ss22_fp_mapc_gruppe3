@@ -1,77 +1,142 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
+import java.awt.Point;
+
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.map.CellType;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.Convert;
-import eis.iilang.Action;
-import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
 
 public class AttachSingleBlockDesire extends BeliefDesire {
 
     private Thing block;
     private CellType dispenser;
+    private String supervisor;
 
-    public AttachSingleBlockDesire(Belief belief, Thing block) {
+    public AttachSingleBlockDesire(Belief belief, Thing block, String supervisor) {
         super(belief);
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
+        this.supervisor = supervisor;
     }
 
     @Override
-    public boolean isFullfilled() {
+    public BooleanInfo isFullfilled() {
         for (Thing t : belief.getAttachedThings()) {
             if (Math.abs(t.x) <= 1 && Math.abs(t.y) <= 1 && t.type.equals(Thing.TYPE_BLOCK)
                 && t.details.equals(block.type)) {
-                return true;
+                return new BooleanInfo(true, "");
             }
         }
-        return false;
+        return new BooleanInfo(false, "No block " + block.type + " attached");
     }
 
     @Override
-    public boolean isExecutable() {
-        return belief.getNearestDispenser(dispenser) != null;
+    public BooleanInfo isExecutable() {
+        ReachableDispenser rd = belief.getNearestDispenser(dispenser);
+        Point p = belief.getNearestRelativeManhattenDispenser(block.type);
+        Point abandoned = belief.getAbandonedBlockPosition(block.type);
+        boolean value = rd != null || p != null || abandoned != null;
+        String info = !value ? "No dispenser " + block.type + " visible" : ""; 
+        return new BooleanInfo(value, info);
     }
 
     @Override
-    public Action getNextAction() {
+    public ActionInfo getNextActionInfo() {
+        // Request from Dispenser
+        Thing n = belief.getThingWithTypeAt("n", Thing.TYPE_DISPENSER);
+        Thing e = belief.getThingWithTypeAt("e", Thing.TYPE_DISPENSER);
+        Thing s = belief.getThingWithTypeAt("s", Thing.TYPE_DISPENSER);
+        Thing w = belief.getThingWithTypeAt("w", Thing.TYPE_DISPENSER);
+        Thing nb = belief.getThingWithTypeAt("n", Thing.TYPE_BLOCK);
+        Thing eb = belief.getThingWithTypeAt("e", Thing.TYPE_BLOCK);
+        Thing sb = belief.getThingWithTypeAt("s", Thing.TYPE_BLOCK);
+        Thing wb = belief.getThingWithTypeAt("w", Thing.TYPE_BLOCK);
+
         // Request
-        Thing n = belief.getThingAt("n");
-        Thing e = belief.getThingAt("e");
-        Thing s = belief.getThingAt("s");
-        Thing w = belief.getThingAt("w");
-        if (n != null && n.type.equals(Thing.TYPE_DISPENSER) && n.details.equals(block.type)) {
-            return new Action("request", new Identifier("n"));
+        if (n != null && nb == null && n.details.equals(block.type)) {
+            return ActionInfo.REQUEST("n", getName());
         }
-        if (e != null && e.type.equals(Thing.TYPE_DISPENSER) && e.details.equals(block.type)) {
-            return new Action("request", new Identifier("e"));
+        if (e != null && eb == null && e.details.equals(block.type)) {
+            return ActionInfo.REQUEST("e", getName());
         }
-        if (s != null && s.type.equals(Thing.TYPE_DISPENSER) && s.details.equals(block.type)) {
-            return new Action("request", new Identifier("s"));
+        if (s != null && sb == null && s.details.equals(block.type)) {
+            return ActionInfo.REQUEST("s", getName());
         }
-        if (w != null && w.type.equals(Thing.TYPE_DISPENSER) && w.details.equals(block.type)) {
-            return new Action("request", new Identifier("w"));
+        if (w != null && wb == null && w.details.equals(block.type)) {
+            return ActionInfo.REQUEST("w", getName());
         }
-        // Attach
-        if (n != null && n.type.equals(Thing.TYPE_BLOCK) && n.details.equals(block.type)) {
-            return new Action("attach", new Identifier("n"));
+
+        // Attach (only if no other agent with higher number is present to avoid double connection)
+        Point pos = belief.getPosition();
+        String name = belief.getAgentName();
+        int id = Integer.parseInt(name.substring(1));
+        ActionInfo skip = ActionInfo.SKIP("waiting for other agent");
+
+        // North
+        if (nb != null && n != null && n.details.equals(block.type)) {
+            Point de = new Point(pos.x + 1, pos.y - 1);
+            Point dn = new Point(pos.x, pos.y - 2);
+            Point dw = new Point(pos.x - 1, pos.y - 1);
+            int deId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, de);
+            int dnId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dn);
+            int dwId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dw);
+            return id > deId && id > dnId && id > dwId ? ActionInfo.ATTACH("n", getName()) : skip;
         }
-        if (e != null && e.type.equals(Thing.TYPE_BLOCK) && e.details.equals(block.type)) {
-            return new Action("attach", new Identifier("e"));
+        // East
+        if (eb != null && e != null && e.details.equals(block.type)) {
+            Point dn = new Point(pos.x + 1, pos.y - 1);
+            Point ds = new Point(pos.x + 1, pos.y + 1);
+            Point de = new Point(pos.x + 2, pos.y);
+            int deId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, de);
+            int dsId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, ds);
+            int dnId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dn);
+            return id > deId && id > dnId && id > dsId ? ActionInfo.ATTACH("e", getName()) : skip;
         }
-        if (s != null && s.type.equals(Thing.TYPE_BLOCK) && s.details.equals(block.type)) {
-            return new Action("attach", new Identifier("s"));
+        // South
+        if (sb != null && s != null && s.details.equals(block.type)) {
+            Point de = new Point(pos.x + 1, pos.y - 1);
+            Point ds = new Point(pos.x, pos.y + 2);
+            Point dw = new Point(pos.x - 1, pos.y - 1);
+            int dwId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dw);
+            int dsId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, ds);
+            int deId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, de);
+            return id > dwId && id > deId && id > dsId ? ActionInfo.ATTACH("s", getName()) : skip;
         }
-        if (w != null && w.type.equals(Thing.TYPE_BLOCK) && w.details.equals(block.type)) {
-            return new Action("attach", new Identifier("w"));
+        // West
+        if (wb != null && w != null && w.details.equals(block.type)) {
+            Point dn = new Point(pos.x - 1, pos.y - 1);
+            Point ds = new Point(pos.x - 1, pos.y + 1);
+            Point dw = new Point(pos.x - 2, pos.y);
+            int dwId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dw);
+            int dsId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, ds);
+            int dnId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dn);
+            return id > dwId && id > dnId && id > dsId ? ActionInfo.ATTACH("w", getName()) : skip;
         }
         
         // Move
+        Point p = belief.getNearestRelativeManhattenDispenser(block.type);
+        int manhattenDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
-        String dir = DirectionUtil.intToString(rd.direction());
-        return new Action("move", new Identifier(dir.substring(0, 1)));
+        // From Pathfinding
+        if (rd != null && rd.distance() < 2 * manhattenDistance) {
+            String dir = DirectionUtil.intToString(rd.direction());
+            if (dir.length() > 0) {
+                return getActionForMove(dir.substring(0, 1), getName());
+            }
+        }
+
+        // Manhatten
+        String dir = getDirectionToRelativePoint(p);
+        return getActionForMove(dir, getName());
+    }
+
+    @Override
+    public void update(String supervisor) {
+        this.supervisor = supervisor;
     }
 }

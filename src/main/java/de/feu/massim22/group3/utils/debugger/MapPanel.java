@@ -24,6 +24,8 @@ public class MapPanel extends JPanel {
     private int selectedAgentIndex = -1;
     private String selectedAgentName = "";
     private int selectedInterestingPointIndex = -1;
+    private boolean isPainting = false;
+    private boolean isWritingData = false;
 
     MapPanel(IGraphicalDebugger debugger) {
         this.debugger = debugger;
@@ -41,9 +43,15 @@ public class MapPanel extends JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 mousePos = e.getPoint();
-                repaint();
+                safeRepaint();
             }
         });
+    }
+
+    private void safeRepaint() {
+        if (!isWritingData) {
+            repaint();
+        }
     }
 
     private void selectElement() {
@@ -73,8 +81,7 @@ public class MapPanel extends JPanel {
         if (data != null) {
             selectedInterestingPointIndex = getInterestingPointIndex(selectedCell);
         }
-
-        repaint();
+        safeRepaint();
     }
 
     private int getInterestingPointIndex(Point p) {
@@ -231,7 +238,9 @@ public class MapPanel extends JPanel {
     }
 
     void setData(GroupDebugData data) {
+        isWritingData = true;
         this.data = data;
-        this.repaint();
+        isWritingData = false;
+        this.safeRepaint();
     }
 }

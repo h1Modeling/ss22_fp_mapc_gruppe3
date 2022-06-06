@@ -25,6 +25,17 @@ public class Convert {
         }
     }
 
+    public static String cellTypeToThingDetail(CellType t) {
+        switch (t) {
+            case DISPENSER_0: return "b0";
+            case DISPENSER_1: return "b1";
+            case DISPENSER_2: return "b2";
+            case DISPENSER_3: return "b3";
+            case DISPENSER_4: return "b4";
+            default: return "";
+        }
+    } 
+
     private static CellType blockToCellType(String blockDetail) {
         switch (blockDetail) {
             case "b0": return CellType.BLOCK_0;

@@ -14,6 +14,7 @@ import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
+import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
@@ -51,6 +52,7 @@ public class Belief {
     private String lastAction;
     private String lastActionResult;
     private List<String> lastActionParams = new ArrayList<>();
+    private String lastActionIntention;
 
     private List<Point> attachedPoints = new ArrayList<>();
     private List<Thing> attachedThings = new ArrayList<>();
@@ -230,37 +232,61 @@ public class Belief {
             if (!(p instanceof Function)) {
                 throw new IllegalArgumentException("Path Finding Results must be of Type function");
             }
-            // Data
-            List<Parameter> paras = ((Function) p).getParameters();
-            String detail = toStr(paras, 0);
-            boolean isZone = toBool(paras, 1);
-            int px = toNumber(paras, 2, Integer.class);
-            int py = toNumber(paras, 3, Integer.class);
-            int distance = toNumber(paras, 4, Integer.class);
-            int direction = toNumber(paras, 5, Integer.class);
-            String data = toStr(paras, 6);
-            Point pos = new Point(px, py);
+            // Path Finding Result
+            if (((Function)p).getName().equals("pointResult")) {
+                // Data
+                List<Parameter> paras = ((Function) p).getParameters();
+                String detail = toStr(paras, 0);
+                boolean isZone = toBool(paras, 1);
+                int px = toNumber(paras, 2, Integer.class);
+                int py = toNumber(paras, 3, Integer.class);
+                int distance = toNumber(paras, 4, Integer.class);
+                int direction = toNumber(paras, 5, Integer.class);
+                String data = toStr(paras, 6);
+                Point pos = new Point(px, py);
 
-            // Goal Zones
-            if (isZone && detail.equals(ZoneType.GOALZONE.name())) {
-                ReachableGoalZone gz = new ReachableGoalZone(pos, distance, direction);
-                reachableGoalZones.add(gz);
+                // Goal Zones
+                if (isZone && detail.equals(ZoneType.GOALZONE.name())) {
+                    ReachableGoalZone gz = new ReachableGoalZone(pos, distance, direction);
+                    reachableGoalZones.add(gz);
+                }
+                // Role Zones
+                if (isZone && detail.equals(ZoneType.ROLEZONE.name())) {
+                    ReachableRoleZone rz = new ReachableRoleZone(pos, distance, direction);
+                    reachableRoleZones.add(rz);
+                }
+                // Dispenser
+                if (!isZone && CellType.valueOf(detail).isDispenser()) {
+                    ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction,
+                            data);
+                    reachableDispensers.add(rd);
+                }
+                // Teammate
+                if (!isZone && CellType.valueOf(detail) == CellType.TEAMMATE) {
+                    ReachableTeammate rt = new ReachableTeammate(pos, data, distance, direction);
+                    reachableTeammates.add(rt);
+                }
             }
-            // Role Zones
-            if (isZone && detail.equals(ZoneType.ROLEZONE.name())) {
-                ReachableRoleZone rz = new ReachableRoleZone(pos, distance, direction);
-                reachableRoleZones.add(rz);
-            }
-            // Dispenser
-            if (!isZone && CellType.valueOf(detail).isDispenser()) {
-                ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction,
-                        data);
-                reachableDispensers.add(rd);
-            }
-            // Teammate
-            if (!isZone && CellType.valueOf(detail) == CellType.TEAMMATE) {
-                ReachableTeammate rt = new ReachableTeammate(pos, data, distance, direction);
-                reachableTeammates.add(rt);
+            // Point which is not reachable
+            else {
+                // Data
+                List<Parameter> paras = ((Function) p).getParameters();
+                String detail = toStr(paras, 0);
+                boolean isZone = toBool(paras, 1);
+                int px = toNumber(paras, 2, Integer.class);
+                int py = toNumber(paras, 3, Integer.class);
+
+                // Dispenser
+                if (!isZone && CellType.valueOf(detail).isDispenser()) {
+                    String thingDetail = Convert.cellTypeToThingDetail(CellType.valueOf(detail));
+                    Thing t = new Thing(px - this.position.x, py - this.position.y, Thing.TYPE_DISPENSER, thingDetail);
+                    things.add(t);
+                }
+
+                // Goal Zone
+                if (isZone && ZoneType.valueOf(detail).equals(ZoneType.GOALZONE)) {
+                    goalZones.add(new Point(px - this.position.x, py - this.position.y));
+                }
             }
         }
 
@@ -424,6 +450,22 @@ public class Belief {
         return lastActionResult;
     }
 
+    public String getLastActionDebugString() {
+        String paras = "";
+        for (String s: lastActionParams) {
+            paras += " " + s;
+        }
+        return lastAction + paras;
+    }
+
+    public void setLastActionIntention(String lastActionIntention) {
+        this.lastActionIntention = lastActionIntention;
+    }
+
+    public String getLastActionIntention() {
+        return lastActionIntention;
+    }
+
     public List<String> getLastActionParams() {
         return lastActionParams;
     }
@@ -509,12 +551,17 @@ public class Belief {
 
     public ReachableRoleZone getNearestRoleZone() {
         // Zone is sorted
-        return reachableRoleZones.get(0);
+        return reachableRoleZones.size() > 0 ? reachableRoleZones.get(0) : null;
     }
 
     public ReachableGoalZone getNearestGoalZone() {
         // Zone is sorted
-        return reachableGoalZones.get(0);
+        return reachableGoalZones.size() > 0 ? reachableGoalZones.get(0) : null;
+    }
+
+    public Point getNearestRelativeManhattenGoalZone() {
+        goalZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+        return goalZones.size() > 0 ? goalZones.get(0) : null;
     }
 
     public ReachableDispenser getNearestDispenser(CellType t) {
@@ -527,6 +574,32 @@ public class Belief {
         return rd.size() > 0 ? rd.get(0) : null;
     }
 
+    public Point getNearestRelativeManhattenDispenser(String type) {
+        List<Thing> d = new ArrayList<>(things);
+        // Filter
+        d.removeIf(r -> !r.details.equals(type));
+        // Sort
+        d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+
+        return d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
+    }
+
+    public Point getAbandonedBlockPosition(String detail) {
+        // Test if agent in vision
+        for (Thing t : things) {
+            if (t.type.equals(Thing.TYPE_ENTITY)) {
+                return null;
+            }
+        }
+        // Look for block
+        for (Thing t : things) {
+            if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(detail)) {
+                return new Point(t.x, t.y);
+            }
+        }
+        return null;
+    }
+
     public Thing getThingAt(Point p) {
         for (Thing t : things) {
             if (t.x == p.x && t.y == p.y) {
@@ -536,9 +609,29 @@ public class Belief {
         return null;
     }
 
+    public Thing getThingCRotatedAt(Point p) {
+        Point rotated = new Point(-p.y, p.x);
+        return getThingAt(rotated);
+    }
+
+    public Thing getThingCCRotatedAt(Point p) {
+        Point rotated = new Point(p.y, -p.x);
+        return getThingAt(rotated);
+    }
+
     public Thing getThingAt(String d) {
         Point p = DirectionUtil.getCellInDirection(d);
         return getThingAt(p);
+    }
+
+    public Thing getThingWithTypeAt(String d, String type) {
+        Point p = DirectionUtil.getCellInDirection(d);
+        for (Thing t : things) {
+            if (t.x == p.x && t.y == p.y && t.type.equals(type)) {
+                return t;
+            }
+        }
+        return null;
     }
 
     void setPosition(Point position) {
@@ -564,6 +657,15 @@ public class Belief {
 
     public List<TaskInfo> getNewTasks() {
         return newTasks;
+    }
+
+    public TaskInfo getTask(String name) {
+        for (TaskInfo info : taskInfo) {
+            if (info.name.equals(name)) {
+                return info;
+            }
+        }
+        return null;
     }
 
     public String toString() {
@@ -679,7 +781,7 @@ public class Belief {
     }
 
     private void updatePosition() {
-        if (lastAction != null && lastAction.equals(Actions.MOVE)) {
+        if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
             String dir = lastActionParams.get(0);
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
