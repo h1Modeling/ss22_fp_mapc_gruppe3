@@ -31,6 +31,8 @@ public class DesireUtilities {
     public List<Thing> missingBlocks = new ArrayList<Thing>();
 	public boolean typeOk = false;
 	public boolean analysisDone = false;
+	public boolean dontArrange = false;
+	public String nextTry = "ccw";
 	
     /**
      * The method runs the different agent decisions.
@@ -489,7 +491,7 @@ public class DesireUtilities {
         return null;
     }
     
-    public Action getPossibleActionForMove(BdiAgent agent, String direction) {
+    /*public Action getPossibleActionForMove(BdiAgent agent, String direction) {
         Action nextAction = null;       
         Thing neighbour = agent.desireProcessing.getContentInDirection(agent, direction);
         
@@ -523,7 +525,7 @@ public class DesireUtilities {
         //AgentLogger.info(Thread.currentThread().getName() + " getPossibleActionForMove() - Action: " + nextAction.getName() + " , " + direction);
 
         return nextAction;
-    }
+    }*/
     
     public int getWidth(BdiAgent agent, String side) {
         int maxWidth = 0;
@@ -545,6 +547,53 @@ public class DesireUtilities {
         }
         
         return maxWidth;
+    }
+    
+    public Action getPossibleActionForMove(BdiAgent agent, String direction) {
+        Action nextAction = null;
+        //Thing neighbourOfBlock = null;
+        Thing neighbour = agent.desireProcessing.getContentInDirection(agent, direction);
+        // AgentLogger.info(Thread.currentThread().getName() + "
+        // getPossibleActionForMove() - Neighbour: " + neighbour);
+
+         if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
+                && agent.desireProcessing.attachedThings.contains(neighbour))) {
+            // Weg ist frei (alte Variante)
+            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
+                if (agent.desireProcessing.attachedThings.size() == 1) {
+                    agent.desireProcessing.dontArrange = true;
+                    if(agent.desireProcessing.nextTry == "ccw") {
+                        agent.desireProcessing.nextTry = "cw";
+                    } else {
+                        agent.desireProcessing.nextTry = "ccw";
+                    }
+                    nextAction = new Action("rotate", new Identifier(agent.desireProcessing.nextTry));
+                }
+            }
+            nextAction = new Action("move", new Identifier(direction));
+
+        } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE)) {
+            Point pointCell = DirectionUtil.getCellInDirection(direction);
+            // ein Hindernis wegräumen
+            nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),
+                    new Identifier(String.valueOf(pointCell.y)));
+
+        } else if (neighbour.type.equals(Thing.TYPE_ENTITY)) {
+            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
+            // einem Agenten ausweichen
+            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);
+
+        } else if (neighbour.type.equals(Thing.TYPE_BLOCK)) {
+            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
+            // einem Block ausweichen
+            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);
+        } else
+            AgentLogger.info(Thread.currentThread().getName() + "  90 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ");
+
+        AgentLogger.info(Thread.currentThread().getName() + "  getPossibleActionForMove() - Action: "
+                + nextAction.getName() + " , " + direction);
+
+        return nextAction;
     }
 }
 

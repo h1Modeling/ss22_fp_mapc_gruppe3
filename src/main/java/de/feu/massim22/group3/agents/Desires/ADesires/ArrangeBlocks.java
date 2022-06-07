@@ -55,11 +55,35 @@ public class ArrangeBlocks extends ADesire {
         
         List<Point> attachedPoints = agent.belief.getAttachedThings();
         if (attachedPoints.size() == 1) {
-            AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() Ein-Block-Task");
-            // task besteht aus einem Block
-            Point taskBlock = new Point(agent.desireProcessing.task.requirements.get(0).x, agent.desireProcessing.task.requirements.get(0).y);
-            Point agentBlock = attachedPoints.get(0);            
-            nextAction = new Action("rotate", new Identifier(DirectionUtil.getClockDirection(agentBlock, taskBlock)));
+            boolean isInGoalZone = false;
+            Point pointAgent = new Point(0, 0);
+
+            for (Point goalZone : agent.belief.getGoalZones()) {
+                if (goalZone.equals(pointAgent)) {
+                    // Agent steht schon in einer GoalZone
+                    isInGoalZone = true;
+                    break;
+                }
+            }
+
+            if (!agent.desireProcessing.dontArrange || isInGoalZone) {
+                AgentLogger
+                        .info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() Ein-Block-Task");
+                agent.desireProcessing.dontArrange = false;
+                // task besteht aus einem Block
+                Point taskBlock = new Point(agent.desireProcessing.task.requirements.get(0).x,
+                        agent.desireProcessing.task.requirements.get(0).y);
+                Point agentBlock = attachedPoints.get(0);
+                String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
+
+                if (clockDirection == "") {
+                    nextAction = new Action("skip");
+                } else {
+                    nextAction = new Action("rotate", new Identifier(clockDirection));
+                }
+            } else {
+                nextAction = new Action("skip");
+            }
         } else {
 // TODO 2-Block-Tasks
         nextAction = new Action("skip");

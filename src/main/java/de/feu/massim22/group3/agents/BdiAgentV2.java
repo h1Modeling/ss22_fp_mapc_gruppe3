@@ -91,7 +91,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
         // nächste Action
 
-        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getOutputAction() + " , Params: " +  intention.getOutputAction().getParameters().get(0));
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getOutputAction() + " , Params: " +  intention.getOutputAction().getParameters());
         return intention.getOutputAction();
     }
 
