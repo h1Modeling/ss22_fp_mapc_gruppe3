@@ -21,7 +21,7 @@ public class DesireUtilities {
 	public TaskInfo task;
     public String directionCircle = "cw";
     public int directionCounter = 0;
-    public int circleSize = 5;
+    public int circleSize = 10;
  
 	public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
@@ -33,6 +33,8 @@ public class DesireUtilities {
 	public boolean analysisDone = false;
 	public boolean dontArrange = false;
 	public String nextTry = "ccw";
+	public int nextTryDir = 1;
+	public int failedPath = 0;
 	
     /**
      * The method runs the different agent decisions.
@@ -99,6 +101,12 @@ public class DesireUtilities {
             task = loopTask;
             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name
                     + " Agents: " + allGroupAgents + " freie Agents: " + freeGroupAgents);
+
+            // TODO Mehrblock-Tasks
+           if ( task.requirements.size() > 1) {
+               continue;
+           }
+           
             // über alle Agenten einer Gruppe
             for (String agentStr : allGroupAgents) {
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr);
@@ -144,7 +152,7 @@ public class DesireUtilities {
                     if ((new ArrangeBlocks(agent).isExecutable() || new GoSubmit(agent).isExecutable()) 
                             && agent.belief.getReachableGoalZones().size() == 0) {
                         // leider keine GoalZone in Sichtweite
-                        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore");
+                        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore1");
                         if (doDecision(agent, new Explore(agent, 45))) {
                             busyGroupAgents.add(agent.getName());
                         }
@@ -231,16 +239,20 @@ public class DesireUtilities {
             break;
         case "GoAdoptRole":
             if (desire.getGroupOrder()) {
-                result = 17 ;               
+                result = 60 ;               
             } else {
                 result = 60;            
             }
             break;
         case "ArrangeBlocks":
-            result = 40;
+            if (desire.getNextAction().getName().equals("rotate")) {
+                result = 40;
+            } else {
+                result = 100;
+            }
             break;
         case "ReactToNorm":
-            result = 40;
+            result = 100;
             break;
         case "GoGoalZone":
             result = 80;
@@ -344,13 +356,13 @@ public class DesireUtilities {
             directionCounter++;
             resultDirection = new Identifier(agent.belief.getLastActionParams().get(0));
             
-            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
+           /* if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
                 if (directionCircle.equals("cw")) {
                     directionCircle = "ccw";
                 } else {
                     directionCircle = "cw";
                 }
-            }
+            }*/
 
             if (directionCircle.equals("cw")) {
                 if (agent.belief.getLastAction().equals("move") && directionCounter >= circleSize) {
@@ -473,6 +485,12 @@ public class DesireUtilities {
         return getContent(agent, cell);
     }
     
+    public Thing getContentInDirection(BdiAgent agent, Point from, String direction) {
+        Point cell = DirectionUtil.getCellInDirection(from, direction);
+
+        return getContent(agent, cell);
+    }
+    
     public Thing getContent(BdiAgent agent, Point cell) {      
         //AgentLogger.info(Thread.currentThread().getName() + " getContent() - Position: " + cell);
         
@@ -556,37 +574,59 @@ public class DesireUtilities {
         // AgentLogger.info(Thread.currentThread().getName() + "
         // getPossibleActionForMove() - Neighbour: " + neighbour);
 
-         if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
-                && agent.desireProcessing.attachedThings.contains(neighbour))) {
-            // Weg ist frei (alte Variante)
-            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
+         if (neighbour == null 
+                 || (neighbour.type.equals(Thing.TYPE_BLOCK )
+                 && agent.desireProcessing.attachedThings.contains(neighbour))) {
+             //if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
+                //     && agent.desireProcessing.attachedThings.contains(neighbour) && agent.desireProcessing.getContentInDirection(agent, new Point(neighbour.x, neighbour.y), direction) == null)) {
+             // Weg ist frei (alte Variante)
+            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH) 
+                    || (neighbour != null && neighbour.type.equals(Thing.TYPE_BLOCK )
+                            && !agent.desireProcessing.attachedThings.contains(neighbour))) {
                 if (agent.desireProcessing.attachedThings.size() == 1) {
                     agent.desireProcessing.dontArrange = true;
-                    if(agent.desireProcessing.nextTry == "ccw") {
-                        agent.desireProcessing.nextTry = "cw";
-                    } else {
-                        agent.desireProcessing.nextTry = "ccw";
+                    
+                    if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
+                        agent.desireProcessing.failedPath += 1;
+                        
+                        if ( agent.desireProcessing.failedPath > 2) {
+                            if(agent.desireProcessing.nextTry == "ccw") {
+                                agent.desireProcessing.nextTry = "cw";
+                            } else {
+                                agent.desireProcessing.nextTry = "ccw";
+                            }
+                        }
                     }
                     nextAction = new Action("rotate", new Identifier(agent.desireProcessing.nextTry));
+                } else { 
+                    /**if(agent.desireProcessing.nextTryDir == 1) {
+                        agent.desireProcessing.nextTryDir = -1;
+                    } else {
+                        agent.desireProcessing.nextTryDir = 1;
+                    }
+                    direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + agent.desireProcessing.nextTryDir);*/
+                    agent.desireProcessing.failedPath = 0;
+                    nextAction = new Action("move", new Identifier(direction));
                 }
+            } else {
+                agent.desireProcessing.failedPath = 0;
+                nextAction = new Action("move", new Identifier(direction));
             }
-            nextAction = new Action("move", new Identifier(direction));
 
-        } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE)) {
+        } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE) 
+                || (neighbour.type.equals(Thing.TYPE_BLOCK )
+                        && !agent.desireProcessing.attachedThings.contains(neighbour))) {
             Point pointCell = DirectionUtil.getCellInDirection(direction);
             // ein Hindernis wegräumen
+            agent.desireProcessing.failedPath = 0;
             nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),
                     new Identifier(String.valueOf(pointCell.y)));
 
         } else if (neighbour.type.equals(Thing.TYPE_ENTITY)) {
             direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
-            // einem Agenten ausweichen
+            // einem Agenten oder einem Block ausweichen
             nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);
 
-        } else if (neighbour.type.equals(Thing.TYPE_BLOCK)) {
-            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
-            // einem Block ausweichen
-            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);
         } else
             AgentLogger.info(Thread.currentThread().getName() + "  90 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ");
 

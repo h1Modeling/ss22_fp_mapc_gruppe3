@@ -39,7 +39,7 @@ public class Explore extends ADesire {
     public Action getNextAction() {
         AgentLogger.info(
                 Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Agent: " + agent.getName());
-        Identifier newDirection = agent.desireProcessing.walkCircles(agent, 2);
+        Identifier newDirection = agent.desireProcessing.walkCircles(agent, 10);
         AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() - Action: move, " + newDirection);
         
         return  agent.desireProcessing.getPossibleActionForMove(agent, newDirection.getValue());  

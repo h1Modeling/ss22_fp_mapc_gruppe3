@@ -66,9 +66,14 @@ public class GoSubmit extends ADesire {
         
         if (nextAction == null) {
             // Agent muss noch in die GoalZone laufen
+            AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.getNextAction() GoGoalZone - Agent: " + agent.belief.getPosition() + " GoalZone: " + agent.belief.getGoalZones());
             ReachableGoalZone nearestGoalZone = agent.desireProcessing
                     .getNearestGoalZone(agent.belief.getReachableGoalZones());
+
+            AgentLogger.info(Thread.currentThread().getName() + " GoSubmit.getNextAction() GoGoalZone - Agent: " + agent.belief.getPosition() + " nearestGoalZone: " + nearestGoalZone);
+
             String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction()); 
+            agent.desireProcessing.dontArrange = true;
             nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);  
         }
         

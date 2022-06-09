@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 import java.awt.Point;
 import java.util.List;
 import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
@@ -82,7 +83,19 @@ public class ArrangeBlocks extends ADesire {
                     nextAction = new Action("rotate", new Identifier(clockDirection));
                 }
             } else {
-                nextAction = new Action("skip");
+                if (agent.desireProcessing.dontArrange) {
+                    // Agent muss noch in die GoalZone laufen
+                    AgentLogger.info(Thread.currentThread().getName() + " ArrangeBlocks.getNextAction() GoGoalZone - Agent: " + agent.belief.getPosition() + " GoalZone: " + agent.belief.getGoalZones());
+                    ReachableGoalZone nearestGoalZone = agent.desireProcessing
+                            .getNearestGoalZone(agent.belief.getReachableGoalZones());
+
+                    AgentLogger.info(Thread.currentThread().getName() + " ArrangeBlocks.getNextAction() GoGoalZone - Agent: " + agent.belief.getPosition() + " nearestGoalZone: " + nearestGoalZone);
+
+                    String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction()); 
+                    nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);  
+                } else {
+                    nextAction = new Action("skip");
+                }
             }
         } else {
 // TODO 2-Block-Tasks

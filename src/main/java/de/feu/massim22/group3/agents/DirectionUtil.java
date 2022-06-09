@@ -27,7 +27,6 @@ public class DirectionUtil {
 	public static Point getCellInDirection(String direction) {
         int x = 0;
         int y = 0;
-        ;
 
         switch (direction) {
         case "n":
@@ -48,6 +47,30 @@ public class DirectionUtil {
         }
         return new Point(x, y);
     }
+	
+	   public static Point getCellInDirection(Point point, String direction) {
+	        int x = point.x;
+	        int y = point.y;
+
+	        switch (direction) {
+	        case "n":
+	            x += 0;
+	            y += -1;
+	            break;
+	        case "e":
+	            x += 1;
+	            y += 0;
+	            break;
+	        case "s":
+	            x += 0;
+	            y += 1;
+	            break;
+	        case "w":
+	            x += -1;
+	            y += 0;
+	        }
+	        return new Point(x, y);
+	    }
 
 	public static String getDirection(Point from, Point to) {
         String result = " ";
