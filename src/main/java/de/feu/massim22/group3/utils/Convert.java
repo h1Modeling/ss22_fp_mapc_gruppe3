@@ -14,6 +14,28 @@ public class Convert {
         } 
     }
 
+    public static CellType blockNameToDispenser(Thing t) {
+        switch (t.type) {
+            case "b0": return CellType.DISPENSER_0;
+            case "b1": return CellType.DISPENSER_1;
+            case "b2": return CellType.DISPENSER_2;
+            case "b3": return CellType.DISPENSER_3;
+            case "b4": return CellType.DISPENSER_4;
+            default: return CellType.UNKNOWN;
+        }
+    }
+
+    public static String cellTypeToThingDetail(CellType t) {
+        switch (t) {
+            case DISPENSER_0: return "b0";
+            case DISPENSER_1: return "b1";
+            case DISPENSER_2: return "b2";
+            case DISPENSER_3: return "b3";
+            case DISPENSER_4: return "b4";
+            default: return "";
+        }
+    } 
+
     private static CellType blockToCellType(String blockDetail) {
         switch (blockDetail) {
             case "b0": return CellType.BLOCK_0;

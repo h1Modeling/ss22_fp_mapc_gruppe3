@@ -10,10 +10,12 @@ public class DigFreeDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         subDesires.add(SubDesires.DIG_FREE.getSubDesireObj(agent));
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.DIG_FREE;
     }
 }

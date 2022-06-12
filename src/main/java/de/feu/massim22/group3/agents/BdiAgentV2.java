@@ -12,7 +12,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 /**
  * An agent that uses the step()-Method.
  */
-public class BdiAgentV2 extends BdiAgent implements Supervisable {
+public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
 
     //private Queue<BdiAgentV2.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
     public DesireUtilities desireProcessing = new DesireUtilities();
@@ -21,8 +21,6 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
     public Supervisor supervisor;
     public int index;
     
-    public List<ADesire> desires;
-    public ADesire intention;
     public boolean decisionsDone;
     public boolean beliefsDone;
 
@@ -89,14 +87,15 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
                 }
             } else {
                 // Intention ermitteln (Desire mit höchster Priorität)
-                intention = desireProcessing.determineIntention(this);
+                setIntention(desireProcessing.determineIntention(this));
                 break;
             }
         }
 
         // nächste Action
-        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.name + " , Action: " +  intention.outputAction + " , Params: " +  intention.outputAction.getParameters().get(0));
-        return intention.outputAction;
+        Action action = intention.getNextActionInfo().value();
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  action + " , Params: " +  action.getParameters().get(0));
+        return action;
     }
 
     /**

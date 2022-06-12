@@ -10,10 +10,12 @@ public class ReactToNormDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         subDesires.add(SubDesires.REACT_TO_NORM.getSubDesireObj(agent));
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.REACT_TO_NORM;
     }
 }

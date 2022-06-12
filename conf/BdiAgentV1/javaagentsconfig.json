@@ -1,11 +1,11 @@
 {
   "agents" : [
     {
-      "count":  3,
+      "count":  7,
       "start-index":  1,
-      "agent-prefix":  "A",
-      "entity-prefix":  "connectionA",
-      "team":  "A",
+      "agent-prefix":  "3",
+      "entity-prefix":  "Connection3",
+      "team":  "3",
       "class": "BdiAgentV1"
     }
   ],

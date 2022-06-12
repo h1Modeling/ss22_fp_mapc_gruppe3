@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import org.lwjgl.BufferUtils;
@@ -61,6 +62,16 @@ public class GameMap {
         return getInternalCellIndex(agentPos.x, agentPos.y);
     }
 
+    public int getAgentIdAtPoint(Point p) {
+        for (Entry<String, Point> e : agentPosition.entrySet()) {
+            if (e.getValue().equals(p)) {
+                String agent = e.getKey();
+                return Integer.parseInt(agent.substring(1));
+            }
+        }
+        return 0;
+    }
+
     public Point getInternalCellIndex(int x, int y) {
         int cellX = getCellX(x);
         int cellY = getCellY(y);
@@ -84,8 +95,12 @@ public class GameMap {
         checkBounds(x, y);
         int cellX = getCellX(x);
         int cellY = getCellY(y);
-        MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step); 
-        cells[cellY][cellX].addReport(report);
+        MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step);
+        CellType current = cells[cellY][cellX].getCellType();
+        // Dispenser don't change during sim and can be overwritten by blocks
+        if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
+            cells[cellY][cellX].addReport(report);
+        }
     }
 
     public void setAgentPosition(String name, Point position) {
@@ -231,7 +246,6 @@ public class GameMap {
             cells = merge;
             initialSize = new Point(sizeX, sizeY);
             topLeft = newTopLeft;
-
         }
 
         // Map size already discovered
@@ -319,67 +333,131 @@ public class GameMap {
         return data;
     }
 
-    public List<InterestingPoint> getInterestingPoints(int maxCount) {
-        List<InterestingPoint> result = new ArrayList<>();
-        if (dispenserCache.size() <= maxCount) {
-            // Dispensers
-            result.addAll(dispenserCache);
-            int countLeft = maxCount - dispenserCache.size();
+    String getDirectionToNearestUndiscoveredPoint(String agent) {
+        Point agentPos = getInternalAgentPosition(agent);
+        int step = 1;
+        while (step < Math.max(cells.length, cells[0].length)) {
+            int top = Math.max(0, -step + agentPos.y);
+            int left = Math.max(0, -step + agentPos.x);
+            int bottom = Math.min(cells.length - 1, step + agentPos.y);
+            int right = Math.min(cells[0].length - 1, step + agentPos.x);
 
-            // Agents
-            for (Entry<String, Point> e : agentPosition.entrySet()) {
-                Point p = e.getValue();
-                Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
-                InterestingPoint ip = new InterestingPoint(internal, ZoneType.NONE, CellType.TEAMMATE, e.getKey());
-                result.add(ip);
+            List<String> possibleDirs = new ArrayList<>();
+            List<String> possibleDirsFree = new ArrayList<>();
+
+            if (agentPos.x < 0 || agentPos.y < 0 || agentPos.x >= cells[0].length || agentPos.y >= cells.length) {
+                break;
+            }
+
+            if (cells[top][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y > 5) {
+                possibleDirs.add("n");
+                if (cells[agentPos.y - 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("n");
+                }
+            }
+            if (cells[bottom][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y < cells.length - 6) {
+                possibleDirs.add("s");
+                if (cells[agentPos.y + 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("s");
+                }
+            }
+            if (cells[agentPos.y][left].getCellType() == CellType.UNKNOWN && agentPos.x > 5) {
+                possibleDirs.add("w");
+                if (cells[agentPos.y][agentPos.x - 1].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("w");
+                }
             }
             
-            // Goal and Role Zones 
-            List<List<Point>> goalLists = filterZones(goalCache, 6);
-            List<List<Point>> roleLists = filterZones(roleCache, 6);
+            if (cells[agentPos.y][right].getCellType() == CellType.UNKNOWN && agentPos.x < cells[0].length - 6) {
+                possibleDirs.add("e");
+                if (cells[agentPos.y][agentPos.x + 1].getCellType() != CellType.OBSTACLE) {
+                    possibleDirsFree.add("e");
+                }
+            }
 
-            // Alternate between goal and role
-            while (countLeft > 0 && (goalLists.size() != 0 || roleLists.size() != 0)) {
-                int goalListSize = goalLists.size();
-                int roleListSize = roleLists.size();
-                int maxSize = Math.max(goalListSize, roleListSize);
+            // First try directions without obstacles
+            if (possibleDirsFree.size() > 0) {
+                int index = (int)Math.floor(Math.random() * possibleDirsFree.size());
+                return possibleDirsFree.get(index);
+            }
 
-                for (int i = 0; i < maxSize; i++) {
-                    if (i < goalListSize) {
-                        List<Point> goalList = goalLists.get(i);
-                        if (goalList.size() > 0) {
-                            Point p = goalList.get(0);
-                            InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN, "");
-                            result.add(ip);
-                            countLeft -= 1;
-                            goalList.remove(0);
-                            // Remove Empty List
-                            if (goalList.size() == 0) {
-                                goalLists.remove(goalList);
-                                goalListSize = goalLists.size();
-                            }
+            if (possibleDirs.size() > 0) {
+                int index = (int)Math.floor(Math.random() * possibleDirs.size());
+                return possibleDirs.get(index);
+            }
+            step++;
+        }
+        float random = new Random().nextFloat();
+        if (random < 0.25) {
+            return "n";
+        } else if (random < 0.5) {
+            return "e";
+        } else if (random < 0.75) {
+            return "w";
+        } else {
+            return "s";
+        }
+    }
+
+    public List<InterestingPoint> getInterestingPoints(int maxCount, boolean useRoleZones) {
+        List<InterestingPoint> result = new ArrayList<>();
+        // Dispensers
+        result.addAll(dispenserCache);
+        int countLeft = maxCount; //- dispenserCache.size();
+        
+        // Agents
+        for (Entry<String, Point> e : agentPosition.entrySet()) {
+            Point p = e.getValue();
+            Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
+            InterestingPoint ip = new InterestingPoint(internal, ZoneType.NONE, CellType.TEAMMATE, e.getKey());
+            result.add(ip);
+        }
+        
+        // Goal and Role Zones 
+        List<List<Point>> goalLists = filterZones(goalCache, 6);
+        List<List<Point>> roleLists = new ArrayList<>();
+        if (useRoleZones) {
+            roleLists = filterZones(roleCache, 6);
+        }
+        
+        // Alternate between goal and role
+        while (countLeft > 0 && (goalLists.size() != 0 || roleLists.size() != 0)) {
+            int goalListSize = goalLists.size();
+            int roleListSize = roleLists.size();
+            int maxSize = Math.max(goalListSize, roleListSize);
+            
+            for (int i = 0; i < maxSize; i++) {
+                if (i < goalListSize) {
+                    List<Point> goalList = goalLists.get(i);
+                    if (goalList.size() > 0) {
+                        Point p = goalList.get(0);
+                        InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN, "");
+                        result.add(ip);
+                        countLeft -= 1;
+                        goalList.remove(0);
+                        // Remove Empty List
+                        if (goalList.size() == 0) {
+                            goalLists.remove(goalList);
+                            goalListSize = goalLists.size();
                         }
                     }
-                    if (i < roleListSize) {
-                        List<Point> roleList = roleLists.get(i);
-                        if (roleList.size() > 0) {
-                            Point p = roleList.get(0);
-                            InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN, "");
-                            result.add(ip);
-                            countLeft -= 1;
-                            roleList.remove(0);
-                            // Remove Empty List
-                            if (roleList.size() == 0) {
-                                roleLists.remove(roleList);
-                                roleListSize = roleLists.size();
-                            }
+                }
+                if (i < roleListSize && useRoleZones) {
+                    List<Point> roleList = roleLists.get(i);
+                    if (roleList.size() > 0) {
+                        Point p = roleList.get(0);
+                        InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN, "");
+                        result.add(ip);
+                        countLeft -= 1;
+                        roleList.remove(0);
+                        // Remove Empty List
+                        if (roleList.size() == 0) {
+                            roleLists.remove(roleList);
+                            roleListSize = roleLists.size();
                         }
                     }
                 }
             }
-
-        } else {
-            // TODO add strategy if maxCount should be increased
         }
         return result;
     }
@@ -426,11 +504,6 @@ public class GameMap {
     }
 
     boolean isAgentInGroupAtPosition(Point p) {
-        /*
-        System.out.println("Searching for " + p.x + "/" + p.y);
-        for (Point existing : agentPosition.values()) {
-            System.out.println("Existing: " + existing.x + "/" + existing.y);
-        } */
         return agentPosition.containsValue(p);
     }
 

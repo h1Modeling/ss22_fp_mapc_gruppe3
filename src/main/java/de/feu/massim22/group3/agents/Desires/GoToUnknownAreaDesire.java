@@ -10,10 +10,12 @@ public class GoToUnknownAreaDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         subDesires.add(SubDesires.GO_TO_UNKNOWN_AREA.getSubDesireObj(agent));
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.GO_TO_UNKNOWN_AREA;
     }
 }

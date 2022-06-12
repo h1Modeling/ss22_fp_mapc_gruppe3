@@ -1,9 +1,11 @@
 package de.feu.massim22.group3.agents.Desires.SubDesires;
 
 import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.IIntention;
+import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 import eis.iilang.Action;
 
-public abstract class SubDesire {
+public abstract class SubDesire implements IIntention {
 
     protected SubDesires subDesireType;
     BdiAgent agent;
@@ -18,8 +20,12 @@ public abstract class SubDesire {
         return subDesireType.name();
     }
 
+    public ActionInfo getNextActionInfo() {
+        return new ActionInfo(getNextAction(), "");
+    }
+
     // Whole logic of the subgoal is implemented in this method (in each subclass)
-    public abstract Action getNextAction();
+    protected abstract Action getNextAction();
 
     // Check preconditions, if false next subgoal in hierarchy is checked
     public abstract boolean isExecutable();
@@ -28,4 +34,8 @@ public abstract class SubDesire {
     public abstract boolean isDone();
 
     abstract void setType();
+
+    public String getName() {
+        return subDesireType.name();
+    }
 }

@@ -12,16 +12,17 @@
   "entities" : {
     },
   
-  "multi-entities": [{
-      "name-prefix": "connectionA",
-      "username-prefix": "agentA",
-      "password": "1",
-      "print-iilang": false,
-      "print-json": false,
-      "start-index": 1,
-      "count": -1
-    }
-  ],
+    "multi-entities": [
+      {
+        "name-prefix": "Connection3",
+        "username-prefix": "Team3",
+        "password": "Team3",
+        "print-iilang": false,
+        "print-json": false,
+        "start-index": 1,
+        "count": -1
+      }
+    ],
 
   "status-entity": {
     "name": "statusConnection"

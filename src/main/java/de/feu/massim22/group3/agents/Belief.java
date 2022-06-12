@@ -1,81 +1,86 @@
-    package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents;
 
-    import java.util.ArrayList;
-    import java.util.HashMap;
-    import java.util.HashSet;
-    import java.util.List;
-    import java.util.Map;
-    import java.util.Set;
-    import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.awt.Point;
 
-    import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
-    import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
-    import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
-    import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
-    import de.feu.massim22.group3.map.CellType;
-    import de.feu.massim22.group3.map.ZoneType;
-    import de.feu.massim22.group3.utils.logging.AgentLogger;
-    import eis.iilang.Function;
-    import eis.iilang.Identifier;
-    import eis.iilang.Numeral;
-    import eis.iilang.Parameter;
-    import eis.iilang.ParameterList;
-    import eis.iilang.Percept;
-    import eis.iilang.TruthValue;
-    import massim.protocol.data.NormInfo;
-    import massim.protocol.data.Role;
-    import massim.protocol.data.Subject;
-    import massim.protocol.data.TaskInfo;
-    import massim.protocol.data.Thing;
-    import massim.protocol.messages.scenario.ActionResults;
-    import massim.protocol.messages.scenario.Actions;
-    import massim.protocol.data.Subject.Type;
+import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
+import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
+import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
+import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
+import de.feu.massim22.group3.map.CellType;
+import de.feu.massim22.group3.map.ZoneType;
+import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
+import eis.iilang.Function;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
+import eis.iilang.Parameter;
+import eis.iilang.ParameterList;
+import eis.iilang.Percept;
+import eis.iilang.TruthValue;
+import massim.protocol.data.NormInfo;
+import massim.protocol.data.Role;
+import massim.protocol.data.Subject;
+import massim.protocol.data.TaskInfo;
+import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.ActionResults;
+import massim.protocol.messages.scenario.Actions;
+import massim.protocol.data.Subject.Type;
 
-    public class Belief {
+public class Belief {
 
-        // Start Beliefs
-        private String name = "";
-        private String team;
-        private int teamSize;
-        private int steps;
-        private Map<String, Role> roles = new HashMap<>();
-        
-        // Step Beliefs
-        private int step;
-        private Set<Thing> things = new HashSet<>();
-        private Set<TaskInfo> taskInfo = new HashSet<>();
-        private Set<NormInfo> normsInfo = new HashSet<>();
-        private long score;
-        private String lastAction;
-        private String lastActionResult;
-        private List<String> lastActionParams = new ArrayList<>();
-        
-        private List<Point> attachedThings = new ArrayList<>();
-        private int energy;
-        private boolean deactivated;
-        private String role = "default";
-        private List<StepEvent> stepEvents = new ArrayList<>();
-        private List<String> violations = new ArrayList<>();
-        private List<Point> goalZones = new ArrayList<>();
-        private List<Point> roleZones = new ArrayList<>();
-        
-        // Group 3 Beliefs
-        private Point position = new Point(0, 0);
-        private Set<Thing> thingsAtLastStep = new HashSet<>();
-        private List<ReachableDispenser> reachableDispensers = new ArrayList<>();
-        private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
-        private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
-        private List<ReachableTeammate> reachableTeammates = new ArrayList<>();
+    // Start Beliefs
+    private String name = "";
+    private String team;
+    private int teamSize;
+    private int steps;
+    private Map<String, Role> roles = new HashMap<>();
 
-        Belief(String agentName) { 
-            this.name = agentName;
-        }
-        
-        void update(List<Percept> percepts) {
-            clearLists();
-            for (Percept percept : percepts) {
-                List<Parameter> p = percept.getParameters();
-                switch (percept.getName()) {
+    // Step Beliefs
+    private int step;
+    private Set<Thing> things = new HashSet<>();
+    private Set<TaskInfo> taskInfo = new HashSet<>();
+    private Set<TaskInfo> taskInfoAtLastStep = new HashSet<>();
+    private List<TaskInfo> newTasks = new ArrayList<>();
+    private Set<NormInfo> normsInfo = new HashSet<>();
+    private long score;
+    private String lastAction;
+    private String lastActionResult;
+    private List<String> lastActionParams = new ArrayList<>();
+    private String lastActionIntention;
+
+    private List<Point> attachedPoints = new ArrayList<>();
+    private List<Thing> attachedThings = new ArrayList<>();
+    private int energy;
+    private boolean deactivated;
+    private String role = "default";
+    private List<StepEvent> stepEvents = new ArrayList<>();
+    private List<String> violations = new ArrayList<>();
+    private List<Point> goalZones = new ArrayList<>();
+    private List<Point> roleZones = new ArrayList<>();
+
+    // Group 3 Beliefs
+    private Point position = new Point(0, 0);
+    private Set<Thing> thingsAtLastStep = new HashSet<>();
+    private List<ReachableDispenser> reachableDispensers = new ArrayList<>();
+    private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
+    private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
+    private List<ReachableTeammate> reachableTeammates = new ArrayList<>();
+
+    Belief(String agentName) {
+        this.name = agentName;
+    }
+
+    void update(List<Percept> percepts) {
+        clearLists();
+        for (Percept percept : percepts) {
+            List<Parameter> p = percept.getParameters();
+            switch (percept.getName()) {
                 case "step":
                     step = toNumber(p, 0, Integer.class);
                     break;
@@ -87,7 +92,7 @@
                     break;
                 case "lastActionParams":
                     lastActionParams = toStrList(p, 0);
-                    break;	
+                    break;
                 case "score":
                     score = toNumber(p, 0, Long.class);
                     break;
@@ -108,8 +113,8 @@
                     break;
                 case "attached":
                     int attX = toNumber(p, 0, Integer.class);
-                    int attY = toNumber(p, 0, Integer.class);
-                    attachedThings.add(new Point(attX, attY));
+                    int attY = toNumber(p, 1, Integer.class);
+                    attachedPoints.add(new Point(attX, attY));
                     break;
                 case "energy":
                     energy = toNumber(p, 0, Integer.class);
@@ -138,7 +143,7 @@
                         role = toStr(p, 0);
                     }				
                     break;
-                case "violation" :
+                    case "violation" :
                     violations.add(toStr(p, 0));
                     break;
                 case "norm":
@@ -212,26 +217,25 @@
                     AgentLogger.warning("Percept not transfered to Belief: " + percept.getName());
                 }
             }
-            
-            updatePosition();
-        }
+        updatePosition();
+        updateNewTasks();
+        updateAttachedThings();
+    }
 
-        int getSteps() {
-            return steps;
-        }
+    void updateFromPathFinding(List<Parameter> points) {
+        reachableDispensers.clear();
+        reachableGoalZones.clear();
+        reachableRoleZones.clear();
+        reachableTeammates.clear();
 
-        void updateFromPathFinding(List<Parameter> points) {
-            reachableDispensers.clear();
-            reachableGoalZones.clear();
-            reachableRoleZones.clear();
-            reachableTeammates.clear();
-
-            for (Parameter p : points) {
-                if (!(p instanceof Function)) {
-                    throw new IllegalArgumentException("Path Finding Results must be of Type function");
-                }
+        for (Parameter p : points) {
+            if (!(p instanceof Function)) {
+                throw new IllegalArgumentException("Path Finding Results must be of Type function");
+            }
+            // Path Finding Result
+            if (((Function)p).getName().equals("pointResult")) {
                 // Data
-                List<Parameter> paras = ((Function)p).getParameters();
+                List<Parameter> paras = ((Function) p).getParameters();
                 String detail = toStr(paras, 0);
                 boolean isZone = toBool(paras, 1);
                 int px = toNumber(paras, 2, Integer.class);
@@ -253,7 +257,8 @@
                 }
                 // Dispenser
                 if (!isZone && CellType.valueOf(detail).isDispenser()) {
-                    ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction, data);
+                    ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction,
+                            data);
                     reachableDispensers.add(rd);
                 }
                 // Teammate
@@ -262,136 +267,409 @@
                     reachableTeammates.add(rt);
                 }
             }
-        }
+            // Point which is not reachable
+            else {
+                // Data
+                List<Parameter> paras = ((Function) p).getParameters();
+                String detail = toStr(paras, 0);
+                boolean isZone = toBool(paras, 1);
+                int px = toNumber(paras, 2, Integer.class);
+                int py = toNumber(paras, 3, Integer.class);
 
-        String getTeam() {
-            return team;
-        }
+                // Dispenser
+                if (!isZone && CellType.valueOf(detail).isDispenser()) {
+                    String thingDetail = Convert.cellTypeToThingDetail(CellType.valueOf(detail));
+                    Thing t = new Thing(px - this.position.x, py - this.position.y, Thing.TYPE_DISPENSER, thingDetail);
+                    things.add(t);
+                }
 
-        public int getVision() {
-            Role r = roles.get(role);
-            if (r == null) { throw new IllegalArgumentException("Current role is not in existing roles"); }
-            return r.vision();
-        }
-        
-        public int getStep() {
-            return step;
-        }
-        
-        // Melinda
-        int getTeamSize() {
-            return teamSize;
-        }
-        // Melinda Ende
-
-        public Set<Thing> getThings() {
-            return things;
-        }
-
-        public Set<TaskInfo> getTaskInfo() {
-            taskInfo.removeIf(e -> e.deadline < step);
-            return taskInfo;
-        }
-
-        public Set<NormInfo> getNormsInfo() {
-            return normsInfo;
-        }
-
-        public long getScore() {
-            return score;
-        }
-
-        public String getLastAction() {
-            return lastAction;
-        }
-
-        public String getLastActionResult() {
-            return lastActionResult;
-        }
-
-        public List<String> getLastActionParams() {
-            return lastActionParams;
-        }
-
-        public List<Point> getAttachedThings() {
-            return attachedThings;
-        }
-
-        public int getEnergy() {
-            return energy;
-        }
-
-        public boolean isDeactivated() {
-            return deactivated;
-        }
-
-        public String getRole() {
-            return role;
-        }
-
-        public List<StepEvent> getStepEvents() {
-            return stepEvents;
-        }
-
-        public List<String> getViolations() {
-            return violations;
-        }
-
-        public List<Point> getGoalZones() {
-            return goalZones;
-        }
-
-        public List<Point> getRoleZones() {
-            return roleZones;
-        }
-
-        public Point getPosition() {
-            return position;
-        }
-
-        public List<ReachableDispenser> getReachableDispensers(){
-            return reachableDispensers;
-        }
-
-        public List<ReachableGoalZone> getReachableGoalZones(){
-            return reachableGoalZones;
-        }
-
-        public List<ReachableRoleZone> getReachableRoleZones(){
-            return reachableRoleZones;
-        }
-
-        public List<ReachableTeammate> getReachableTeammates(){
-            return reachableTeammates;
-        }
-
-        void setPosition(Point position) {
-            this.position = position;
-        }
-
-        String reachablesToString() {
-            StringBuilder b = new StringBuilder();
-            for (ReachableDispenser d : reachableDispensers) {
-                b.append(d);
-                b.append(System.lineSeparator());
+                // Goal Zone
+                if (isZone && ZoneType.valueOf(detail).equals(ZoneType.GOALZONE)) {
+                    goalZones.add(new Point(px - this.position.x, py - this.position.y));
+                }
             }
-            for (ReachableGoalZone d : reachableGoalZones) {
-                b.append(d);
-                b.append(System.lineSeparator());
-            }
-            for (ReachableRoleZone d : reachableRoleZones) {
-                b.append(d);
-                b.append(System.lineSeparator());
-            }
-            for (ReachableTeammate d : reachableTeammates) {
-                b.append(d);
-                b.append(System.lineSeparator());
-            }
-            return b.toString();
         }
-        
+
+        // Sort
+        reachableRoleZones.sort((a, b) -> a.distance() - b.distance());
+        reachableGoalZones.sort((a, b) -> a.distance() - b.distance());
+    }
+
+    private <T extends Number> T toNumber(List<Parameter> parameters, int index, Class<T> type) {
+        Parameter p = parameters.get(index);
+        if (!(p instanceof Numeral))
+            throw new IllegalArgumentException("Parameter is no Number");
+        return type.cast(((Numeral) p).getValue());
+    }
+
+    private String toStr(List<Parameter> parameters, int index) {
+        Parameter p = parameters.get(index);
+        if (!(p instanceof Identifier))
+            throw new IllegalArgumentException("Parameter is no String");
+        return (String) ((Identifier) p).getValue();
+    }
+
+    private boolean toBool(List<Parameter> parameters, int index) {
+        Parameter p = parameters.get(index);
+        if (!(p instanceof TruthValue))
+            throw new IllegalArgumentException("Parameter is no Bool");
+        return ((TruthValue) p).getValue() == "true";
+    }
+
+    private List<String> toStrList(List<Parameter> parameters, int index) {
+        Parameter p = parameters.get(index);
+        if (!(p instanceof ParameterList))
+            throw new IllegalArgumentException();
+        List<String> result = new ArrayList<>();
+        for (Parameter para : (ParameterList) p) {
+            if (!(para instanceof Identifier))
+                throw new IllegalArgumentException();
+            String s = (String) ((Identifier) para).getValue();
+            result.add(s);
+        }
+        return result;
+    }
+
+    private List<Integer> toIntList(List<Parameter> parameters, int index) {
+        Parameter p = parameters.get(index);
+        if (!(p instanceof ParameterList))
+            throw new IllegalArgumentException();
+        List<Integer> result = new ArrayList<>();
+        for (Parameter para : (ParameterList) p) {
+            if (!(para instanceof Numeral))
+                throw new IllegalArgumentException();
+            int s = (int) ((Numeral) para).getValue();
+            result.add(s);
+        }
+        return result;
+    }
+
+    private Set<Thing> toThingSet(List<Parameter> parameters, int index) {
+        Parameter p = parameters.get(index);
+        if (!(p instanceof ParameterList))
+            throw new IllegalArgumentException();
+        Set<Thing> result = new HashSet<>();
+        for (Parameter para : (ParameterList) p) {
+            if (!(para instanceof Function))
+                throw new IllegalArgumentException();
+            List<Parameter> funcParameter = ((Function) para).getParameters();
+            int x = toNumber(funcParameter, 0, Integer.class);
+            int y = toNumber(funcParameter, 1, Integer.class);
+            String type = toStr(funcParameter, 2);
+            result.add(new Thing(x, y, type, ""));
+        }
+        return result;
+    }
+
+    private Set<Subject> toSubjectSet(List<Parameter> parameters, int index) {
+        Parameter p = parameters.get(index);
+        if (!(p instanceof ParameterList))
+            throw new IllegalArgumentException();
+        Set<Subject> result = new HashSet<>();
+        for (Parameter para : (ParameterList) p) {
+            if (!(para instanceof Function))
+                throw new IllegalArgumentException();
+            List<Parameter> funcParameter = ((Function) para).getParameters();
+            Type type = toStr(funcParameter, 0).equals("block") ? Type.BLOCK : Type.ROLE;
+            String name = toStr(funcParameter, 1);
+            int quantity = toNumber(funcParameter, 2, Integer.class);
+            String details = toStr(funcParameter, 3);
+            result.add(new Subject(type, name, quantity, details));
+        }
+        return result;
+    }
+
+    private record AgentSurveyStepEvent(String name, String role, int energy) implements StepEvent {
         public String toString() {
-            StringBuilder b = new StringBuilder()
+            return "Agent " + name + " with role " + role + " and energy " + energy;
+        }
+    }
+
+    private record ThingSurveyStepEvent(String name, int distance) implements StepEvent {
+        public String toString() {
+            return name + " " + distance + " cells away";  
+        }
+    }
+
+    private record HitStepEvent(Point position) implements StepEvent {
+        public String toString() {
+            return "Hit at " + position.x + "/" + position.y;  
+        }
+    }
+
+    String getTeam() {
+        return team;
+    }
+
+    public String getAgentName() {
+        return name;
+    }
+
+    public int getVision() {
+        Role r = roles.get(role);
+        if (r == null) {
+            throw new IllegalArgumentException("Current role is not in existing roles");
+        }
+        return r.vision();
+    }
+
+    public int getStep() {
+        return step;
+    }
+
+    int getSteps() {
+        return steps;
+    }
+
+    int getTeamSize() {
+        return teamSize;
+    }
+
+    public Set<Thing> getThings() {
+        return things;
+    }
+
+    public Set<TaskInfo> getTaskInfo() {
+        taskInfo.removeIf(e -> e.deadline < step);
+        return taskInfo;
+    }
+
+    public Set<NormInfo> getNormsInfo() {
+        return normsInfo;
+    }
+
+    public long getScore() {
+        return score;
+    }
+
+    public String getLastAction() {
+        return lastAction;
+    }
+
+    public String getLastActionResult() {
+        return lastActionResult;
+    }
+
+    public String getLastActionDebugString() {
+        String paras = "";
+        for (String s: lastActionParams) {
+            paras += " " + s;
+        }
+        return lastAction + paras;
+    }
+
+    public void setLastActionIntention(String lastActionIntention) {
+        this.lastActionIntention = lastActionIntention;
+    }
+
+    public String getLastActionIntention() {
+        return lastActionIntention;
+    }
+
+    public List<String> getLastActionParams() {
+        return lastActionParams;
+    }
+
+    public List<Thing> getAttachedThings() {
+        return attachedThings;
+    }
+
+    public List<Point> getAttachedPoints() {
+        return attachedPoints;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public boolean isDeactivated() {
+        return deactivated;
+    }
+
+    public String getRoleName() {
+        return role;
+    }
+
+    public Role getRole() {
+        return roles.get(role);
+    }
+
+    public Map<String, Role> getRoles() {
+        return roles;
+    }
+
+    public Role getRoleByActions(String[] actions) {
+        for (Role r : roles.values()) {
+            boolean allFound = true;
+            for (String action : actions) {
+                if (!r.actions().contains(action)) {
+                    allFound = false;
+                }
+            }
+            if (allFound) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public List<StepEvent> getStepEvents() {
+        return stepEvents;
+    }
+
+    public List<String> getViolations() {
+        return violations;
+    }
+
+    public List<Point> getGoalZones() {
+        return goalZones;
+    }
+
+    public List<Point> getRoleZones() {
+        return roleZones;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public List<ReachableDispenser> getReachableDispensers() {
+        return reachableDispensers;
+    }
+
+    public List<ReachableGoalZone> getReachableGoalZones() {
+        return reachableGoalZones;
+    }
+
+    public List<ReachableRoleZone> getReachableRoleZones() {
+        return reachableRoleZones;
+    }
+
+    public List<ReachableTeammate> getReachableTeammates() {
+        return reachableTeammates;
+    }
+
+    public ReachableRoleZone getNearestRoleZone() {
+        // Zone is sorted
+        return reachableRoleZones.size() > 0 ? reachableRoleZones.get(0) : null;
+    }
+
+    public ReachableGoalZone getNearestGoalZone() {
+        // Zone is sorted
+        return reachableGoalZones.size() > 0 ? reachableGoalZones.get(0) : null;
+    }
+
+    public Point getNearestRelativeManhattenGoalZone() {
+        goalZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+        return goalZones.size() > 0 ? goalZones.get(0) : null;
+    }
+
+    public ReachableDispenser getNearestDispenser(CellType t) {
+        List<ReachableDispenser> rd = new ArrayList<>(reachableDispensers);
+        // Filter
+        rd.removeIf(r -> !r.type().equals(t));
+        // Sort
+        rd.sort((a, b) -> a.distance() - b.distance());
+
+        return rd.size() > 0 ? rd.get(0) : null;
+    }
+
+    public Point getNearestRelativeManhattenDispenser(String type) {
+        List<Thing> d = new ArrayList<>(things);
+        // Filter
+        d.removeIf(r -> !r.details.equals(type));
+        // Sort
+        d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+
+        return d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
+    }
+
+    public Point getAbandonedBlockPosition(String detail) {
+        // Test if agent in vision
+        for (Thing t : things) {
+            if (t.type.equals(Thing.TYPE_ENTITY)) {
+                return null;
+            }
+        }
+        // Look for block
+        for (Thing t : things) {
+            if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(detail)) {
+                return new Point(t.x, t.y);
+            }
+        }
+        return null;
+    }
+
+    public Thing getThingAt(Point p) {
+        for (Thing t : things) {
+            if (t.x == p.x && t.y == p.y) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public Thing getThingCRotatedAt(Point p) {
+        Point rotated = new Point(-p.y, p.x);
+        return getThingAt(rotated);
+    }
+
+    public Thing getThingCCRotatedAt(Point p) {
+        Point rotated = new Point(p.y, -p.x);
+        return getThingAt(rotated);
+    }
+
+    public Thing getThingAt(String d) {
+        Point p = DirectionUtil.getCellInDirection(d);
+        return getThingAt(p);
+    }
+
+    public Thing getThingWithTypeAt(String d, String type) {
+        Point p = DirectionUtil.getCellInDirection(d);
+        for (Thing t : things) {
+            if (t.x == p.x && t.y == p.y && t.type.equals(type)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    void setPosition(Point position) {
+        this.position = position;
+    }
+
+    String reachablesToString() {
+        StringBuilder b = new StringBuilder();
+        for (ReachableDispenser d : reachableDispensers) {
+            b.append(d);
+            b.append(System.lineSeparator());
+        }
+        for (ReachableGoalZone d : reachableGoalZones) {
+            b.append(d);
+            b.append(System.lineSeparator());
+        }
+        for (ReachableRoleZone d : reachableRoleZones) {
+            b.append(d);
+            b.append(System.lineSeparator());
+        }
+        return b.toString();
+    }
+
+    public List<TaskInfo> getNewTasks() {
+        return newTasks;
+    }
+
+    public TaskInfo getTask(String name) {
+        for (TaskInfo info : taskInfo) {
+            if (info.name.equals(name)) {
+                return info;
+            }
+        }
+        return null;
+    }
+
+    public String toString() {
+        StringBuilder b = new StringBuilder()
                 .append("Simulation Beliefs:")
                 .append(System.lineSeparator())
                 .append("Name: ").append(name)
@@ -404,49 +682,49 @@
                 .append(System.lineSeparator())
                 .append("Roles: ")
                 .append(System.lineSeparator());
-            for (Role r : roles.values()) {
-                b.append(r.toJSON())
-                .append(System.lineSeparator());
-            }
-            b.append(System.lineSeparator())
+        for (Role r : roles.values()) {
+            b.append(r.toJSON())
+                    .append(System.lineSeparator());
+        }
+        b.append(System.lineSeparator())
                 .append("Step Beliefs:")
                 .append(System.lineSeparator())
                 .append("Things: ");
-            for (Thing t : things) {
-                b.append(t.toJSON())
+        for (Thing t : things) {
+            b.append(t.toJSON())
+                    .append(System.lineSeparator());
+        }
+        if (things.isEmpty()) {
+            b.append(System.lineSeparator());
+        }
+        b.append("Tasks: ")
                 .append(System.lineSeparator());
-            }
-            if (things.isEmpty()) { 
-                b.append(System.lineSeparator());
-            }
-            b.append("Tasks: ")
-            .append(System.lineSeparator());
-            for (TaskInfo t : taskInfo) {
-                b.append(t.toJSON())
+        for (TaskInfo t : taskInfo) {
+            b.append(t.toJSON())
+                    .append(System.lineSeparator());
+        }
+        b.append("Norms: ")
                 .append(System.lineSeparator());
-            }
-            b.append("Norms: ")
-            .append(System.lineSeparator());
-            for (NormInfo t : normsInfo) {
-                b.append(t.toJSON())
-                .append(System.lineSeparator());
-            }
-            b.append("Score: ").append(score)
+        for (NormInfo t : normsInfo) {
+            b.append(t.toJSON())
+                    .append(System.lineSeparator());
+        }
+        b.append("Score: ").append(score)
                 .append(System.lineSeparator())
                 .append("Last Action: ").append(lastAction)
                 .append(System.lineSeparator())
                 .append("Last Action Result: ").append(lastActionResult)
                 .append(System.lineSeparator());
-            b.append("Last Action Parameter: ");
-            for (String t : lastActionParams) {
-                b.append(t + " | ");
-            }
-            b.append(System.lineSeparator())
+        b.append("Last Action Parameter: ");
+        for (String t : lastActionParams) {
+            b.append(t + " | ");
+        }
+        b.append(System.lineSeparator())
                 .append("Attached Things: ");
-            for (Point t : attachedThings) {
-                b.append("[" + t.x + ", " + t.y + "] | ");
-            }
-            b.append(System.lineSeparator())
+        for (Point t : attachedPoints) {
+            b.append("[" + t.x + ", " + t.y + "] | ");
+        }
+        b.append(System.lineSeparator())
                 .append("Energy: ").append(energy)
                 .append(System.lineSeparator())
                 .append("Deactivated: ").append(deactivated)
@@ -455,162 +733,107 @@
                 .append(System.lineSeparator())
                 .append("Step Events: ")
                 .append(System.lineSeparator());
-            for (StepEvent t : stepEvents) {
-                b.append(t.toString())
-                .append(System.lineSeparator());
-            }
-            b.append("Violations: ");
-            for (String t : violations) {
-                b.append(t + " | ");
-            }
-            b.append(System.lineSeparator())
+        for (StepEvent t : stepEvents) {
+            b.append(t.toString())
+                    .append(System.lineSeparator());
+        }
+        b.append("Violations: ");
+        for (String t : violations) {
+            b.append(t + " | ");
+        }
+        b.append(System.lineSeparator())
                 .append("Goal Zones: ");
-            for (Point t : goalZones) {
-                b.append("[" + t.x + ", " + t.y + "] | ");
-            }
-            b.append(System.lineSeparator())
-            .append("Role Zones: ");
-            for (Point t : roleZones) {
-                b.append("[" + t.x + ", " + t.y + "] | ");
-            }
-            return b.toString();
+        for (Point t : goalZones) {
+            b.append("[" + t.x + ", " + t.y + "] | ");
         }
-        
-        private void updatePosition() {
-            if (lastAction != null && lastAction.equals(Actions.MOVE)) {
-                String dir = lastActionParams.get(0);
-                // Success
-                if (lastActionResult.equals(ActionResults.SUCCESS)) {
-                    move(dir);
+        b.append(System.lineSeparator())
+                .append("Role Zones: ");
+        for (Point t : roleZones) {
+            b.append("[" + t.x + ", " + t.y + "] | ");
+        }
+        return b.toString();
+    }
+
+    private void updateAttachedThings() {
+        attachedThings.clear();
+
+        for (Point p : attachedPoints) {
+            Thing t = getThingAt(p);
+            attachedThings.add(t);
+        }
+    }
+
+    private void updateNewTasks() {
+        newTasks.clear();
+        // Compare with last step
+        for (TaskInfo n : taskInfo) {
+            boolean isNew = true;
+            for (TaskInfo o : taskInfoAtLastStep) {
+                if (o.name.equals(n.name)) {
+                    isNew = false;
+                    break;
                 }
-                // Partial Success
-                if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                    Role currentRole = roles.get(role);
-                    // With max speed 2 we can be sure that agent moved one cell
-                    if (currentRole != null && currentRole.speed()[1] < 3) {
-                        move(dir);
-                    } 
-                    // TODO Partial Success with speed > 2
-                    else {
-                        // Try to guess the position with information from last step
-                    }
-                }
             }
-        }
-        
-        private void clearLists() {
-            // copy things
-            thingsAtLastStep = new HashSet<Thing>(things);
-            // clearing
-            roles.clear();
-            things.clear();
-            taskInfo.clear();
-            normsInfo.clear();
-            lastActionParams.clear();
-            attachedThings.clear();
-            stepEvents.clear();
-            violations.clear();
-            goalZones.clear();
-            roleZones.clear();
-        }
-
-        private <T extends Number> T toNumber(List<Parameter> parameters, int index, Class<T> type) {
-            Parameter p = parameters.get(index);
-            if (!(p instanceof Numeral)) throw new IllegalArgumentException("Parameter is no Number");
-            return type.cast(((Numeral)p).getValue());
-        }
-        
-        private String toStr(List<Parameter> parameters, int index) {
-            Parameter p = parameters.get(index);
-            if (!(p instanceof Identifier)) throw new IllegalArgumentException("Parameter is no String");
-            return (String)((Identifier)p).getValue();
-        }
-
-        private boolean toBool(List<Parameter> parameters, int index) {
-            Parameter p = parameters.get(index);
-            if (!(p instanceof TruthValue)) throw new IllegalArgumentException("Parameter is no Bool");
-            return ((TruthValue)p).getValue() == "true";
-        }
-        
-        private List<String> toStrList(List<Parameter> parameters, int index) {
-            Parameter p = parameters.get(index);
-            if (!(p instanceof ParameterList)) throw new IllegalArgumentException();
-            List<String> result = new ArrayList<>();
-            for (Parameter para : (ParameterList)p) {
-                if (!(para instanceof Identifier)) throw new IllegalArgumentException();
-                String s = (String)((Identifier)para).getValue();
-                result.add(s);
-            }
-            return result;
-        }
-        
-        private List<Integer> toIntList(List<Parameter> parameters, int index) {
-            Parameter p = parameters.get(index);
-            if (!(p instanceof ParameterList)) throw new IllegalArgumentException();
-            List<Integer> result = new ArrayList<>();
-            for (Parameter para : (ParameterList)p) {
-                if (!(para instanceof Numeral)) throw new IllegalArgumentException();
-                int s = (int)((Numeral)para).getValue();
-                result.add(s);
-            }
-            return result;
-        }
-        
-        private Set<Thing> toThingSet(List<Parameter> parameters, int index) {
-            Parameter p = parameters.get(index);
-            if (!(p instanceof ParameterList)) throw new IllegalArgumentException();
-            Set<Thing> result = new HashSet<>();
-            for (Parameter para : (ParameterList)p) {
-                if (!(para instanceof Function)) throw new IllegalArgumentException();
-                List<Parameter> funcParameter = ((Function)para).getParameters();
-                int x = toNumber(funcParameter, 0, Integer.class);
-                int y = toNumber(funcParameter, 1, Integer.class);
-                String type = toStr(funcParameter, 2);
-                result.add(new Thing(x, y, type, ""));
-            }
-            return result;
-        }
-        
-        private Set<Subject> toSubjectSet(List<Parameter> parameters, int index) {
-            Parameter p = parameters.get(index);
-            if (!(p instanceof ParameterList)) throw new IllegalArgumentException();
-            Set<Subject> result = new HashSet<>();
-            for (Parameter para : (ParameterList)p) {
-                if (!(para instanceof Function)) throw new IllegalArgumentException();
-                List<Parameter> funcParameter = ((Function)para).getParameters();
-                Type type = toStr(funcParameter, 0).equals("block") ? Type.BLOCK : Type.ROLE;
-                String name = toStr(funcParameter, 1);
-                int quantity = toNumber(funcParameter, 2, Integer.class);
-                String details = toStr(funcParameter, 3);
-                result.add(new Subject(type, name, quantity, details));
-            }
-            return result;
-        }
-        
-        private record AgentSurveyStepEvent(String name, String role, int energy) implements StepEvent {
-            public String toString() {
-                return "Agent " + name + " with role " + role + " and energy " + energy;  
-            }
-        }
-        
-        private record ThingSurveyStepEvent(String name, int distance) implements StepEvent {
-            public String toString() {
-                return name + " " + distance + " cells away";  
-            }
-        }
-        
-        private record HitStepEvent(Point position) implements StepEvent {
-            public String toString() {
-                return "Hit at " + position.x + "/" + position.y;  
-            }
-        }
-
-        private void move(String dir) {
-            switch (dir) {
-                case "n": position.y -= 1; break;
-                case "e": position.x += 1; break;
-                case "s": position.y += 1; break;
-                case "w": position.x -= 1; break;
+            if (isNew) {
+                newTasks.add(n);
             }
         }
     }
+
+    private void updatePosition() {
+        if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
+            String dir = lastActionParams.get(0);
+            // Success
+            if (lastActionResult.equals(ActionResults.SUCCESS)) {
+                move(dir);
+            }
+            // Partial Success
+            if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
+                Role currentRole = roles.get(role);
+                // With max speed 2 we can be sure that agent moved one cell
+                if (currentRole != null && currentRole.speed()[1] < 3) {
+                    move(dir);
+                }
+                // TODO Partial Success with speed > 2
+                else {
+                    // Try to guess the position with information from last step
+                }
+            }
+        }
+    }
+
+    private void clearLists() {
+        // copy things
+        thingsAtLastStep = new HashSet<>(things);
+        taskInfoAtLastStep = new HashSet<>(taskInfo);
+        // clearing
+        roles.clear();
+        things.clear();
+        taskInfo.clear();
+        normsInfo.clear();
+        lastActionParams.clear();
+        attachedThings.clear();
+        attachedPoints.clear();
+        stepEvents.clear();
+        violations.clear();
+        goalZones.clear();
+        roleZones.clear();
+    }
+
+    private void move(String dir) {
+        switch (dir) {
+            case "n":
+                position.y -= 1;
+                break;
+            case "e":
+                position.x += 1;
+                break;
+            case "s":
+                position.y += 1;
+                break;
+            case "w":
+                position.x -= 1;
+                break;
+        }
+    }
+}

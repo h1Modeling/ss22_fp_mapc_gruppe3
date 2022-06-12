@@ -10,10 +10,12 @@ public class DogeClearDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         subDesires.add(SubDesires.DODGE_CLEAR.getSubDesireObj(agent));
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.DODGE_CLEAR;
     }
 }

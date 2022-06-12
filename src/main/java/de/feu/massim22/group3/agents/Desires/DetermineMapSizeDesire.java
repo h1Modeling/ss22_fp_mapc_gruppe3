@@ -9,10 +9,12 @@ public class DetermineMapSizeDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         // TODO Auto-generated method stub
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.DETERMINE_MAP_SIZE;
     }
 }

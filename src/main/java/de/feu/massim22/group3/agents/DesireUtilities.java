@@ -52,7 +52,7 @@ public class DesireUtilities {
         boolean result = false;
         
         if (inDesire.isExecutable()) { // desire ist möglich , hinzufügen
-            inDesire.outputAction = inDesire.getNextAction();
+            // inDesire.outputAction = inDesire.getNextAction();
             getPriority(inDesire);
             agent.desires.add(inDesire);
             result = true;

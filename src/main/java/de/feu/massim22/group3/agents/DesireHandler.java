@@ -27,7 +27,7 @@ class DesireHandler {
 
     public void setNextAction() {
         // Create List with all Desires
-        LinkedList<Desire> allGoalsList = new LinkedList<Desire>();
+        List<Desire> allGoalsList = new LinkedList<Desire>();
         allGoalsList.addAll(highPrioAgentGoals);
         if (currentTeamGoal != null) {
             allGoalsList.add(currentTeamGoal);
@@ -62,7 +62,7 @@ class DesireHandler {
                 else if (isExecuteable && !isDone) {
                     AgentLogger.info(agent.getName(), String.format("Exectung SubDesire %s of Desire %s",
                             subDesire.toString(), desire.toString()));
-                    agent.intention.setNextAction(subDesire.getNextAction());
+                    agent.setIntention(subDesire);
                     return;
                 }
             }

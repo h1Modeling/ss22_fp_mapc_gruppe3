@@ -10,10 +10,12 @@ public class DogeOtherAgentDesire extends Desire {
     }
 
     @Override
-    void defineSubDesires() {
+    protected void defineSubDesires() {
         subDesires.add(SubDesires.DODGE_OTHER_AGENT.getSubDesireObj(agent));
     }
-    void setType() {
+
+    @Override
+    protected void setType() {
         this.desireType = Desires.DODGE_OTHER_AGENT;
     }
 }
