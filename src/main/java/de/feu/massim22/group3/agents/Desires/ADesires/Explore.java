@@ -1,17 +1,17 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 public class Explore extends ADesire {
 
-    public Explore(BdiAgent agent) {
+    public Explore(BdiAgentV2 agent) {
         super("Explore", agent);
     }
 
-    public Explore(BdiAgent agent, int prio) {
+    public Explore(BdiAgentV2 agent, int prio) {
         super("Explore", agent);
         priority = prio;
     }

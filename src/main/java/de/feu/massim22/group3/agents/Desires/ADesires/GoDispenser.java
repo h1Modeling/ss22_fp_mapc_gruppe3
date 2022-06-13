@@ -2,7 +2,7 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.util.*;
 import java.awt.Point;
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -14,11 +14,11 @@ public class GoDispenser extends ADesire {
     String type = null;
     List<ReachableDispenser> typeDispensers = new ArrayList<ReachableDispenser>();
     
-    public GoDispenser(BdiAgent agent) {
+    public GoDispenser(BdiAgentV2 agent) {
         super("GoDispenser", agent);
     }
     
-    public GoDispenser(BdiAgent agent, String type) {
+    public GoDispenser(BdiAgentV2 agent, String type) {
         super("GoDispenser", agent);
         this.type = type;
         groupOrder = true;

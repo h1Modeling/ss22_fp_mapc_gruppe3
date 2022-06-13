@@ -2,7 +2,7 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 import java.util.List;
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
@@ -12,7 +12,7 @@ import massim.protocol.data.Thing;
 
 public class DigFree extends ADesire {
 	
-	public DigFree(BdiAgent agent) {
+	public DigFree(BdiAgentV2 agent) {
 		super("DigFree", agent);
 	}
 	

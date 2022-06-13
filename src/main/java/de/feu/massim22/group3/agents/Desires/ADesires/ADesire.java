@@ -2,18 +2,18 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import eis.iilang.*;
 
 public abstract class ADesire implements DesireIntegration{
     public String name;
-    public BdiAgent agent;
+    public BdiAgentV2 agent;
     public boolean groupOrder = false;
     
     public int priority = 1000;
     public Action outputAction;
 
-    public ADesire(String name, BdiAgent agent) {
+    public ADesire(String name, BdiAgentV2 agent) {
         this.name = name;
         this.agent = agent;
     }
@@ -45,7 +45,7 @@ public abstract class ADesire implements DesireIntegration{
      return this.name;
  }
  @Override
- public BdiAgent getAgent() {
+ public BdiAgentV2 getAgent() {
      return this.agent;
  }
  @Override   

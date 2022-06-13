@@ -2,7 +2,7 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 import java.util.List;
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
@@ -16,11 +16,11 @@ public class GoAdoptRole extends ADesire {
 	Point agentPos = agent.belief.getPosition();
 	List<ReachableRoleZone> reachableRoleZones = agent.belief.getReachableRoleZones();
     
-	public GoAdoptRole(BdiAgent agent) {
+	public GoAdoptRole(BdiAgentV2 agent) {
         super("GoAdoptRole", agent);
     }
 	
-	 public GoAdoptRole(BdiAgent agent, String role) {
+	 public GoAdoptRole(BdiAgentV2 agent, String role) {
 	        super("GoAdoptRole", agent);
 	        this.role = role;
 	        groupOrder = true;

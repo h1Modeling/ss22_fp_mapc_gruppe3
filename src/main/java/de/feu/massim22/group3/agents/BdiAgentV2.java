@@ -1,25 +1,31 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
-
+import java.awt.Point;
 import java.util.List;
 import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
 import de.feu.massim22.group3.agents.Desires.ADesires.DesireIntegration;
+import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
  * An agent that uses the step()-Method.
  */
-public class BdiAgentV2 extends BdiAgent implements Supervisable {
+public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
 
+    public DesireUtilities desireProcessing = new DesireUtilities();
     public StepUtilities stepLogic = new StepUtilities(desireProcessing);
+    
+    public boolean decisionsDone;
+    public boolean requestMade = false;
+    public Point lastUsedDispenser;
     
     public Supervisor supervisor;
     public int index;
     
-    public DesireIntegration intention;
+    public IDesire intention;
     public boolean beliefsDone;
 
 
@@ -39,7 +45,7 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
     @Override
     public Action step() {
-        desires = new ArrayList<DesireIntegration>();
+        desires = new ArrayList<IDesire>();
         updateBeliefs();
         supervisor.setDecisionsDone(false);
         decisionsDone = false; // Agent
@@ -83,6 +89,10 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
                     e.printStackTrace();
                 }
             } else {
+                // Delete expired Desires
+                desires.removeIf(d -> d.isUnfulfillable().value());
+                // Sort Desires
+                //desires.sort((a, b) -> a.getPriority() - b.getPriority());
                 // Intention ermitteln (Desire mit höchster Priorität)
                 intention = desireProcessing.determineIntention(this);
                 break;
@@ -91,8 +101,8 @@ public class BdiAgentV2 extends BdiAgent implements Supervisable {
 
         // nächste Action
 
-        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getOutputAction() + " , Params: " +  intention.getOutputAction().getParameters());
-        return intention.getOutputAction();
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getNextActionInfo() + " , Params: " +  intention.getNextActionInfo().value().getParameters());
+        return intention.getNextActionInfo().value();
     }
 
     /**

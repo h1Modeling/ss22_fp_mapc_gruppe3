@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.awt.Point;
 
@@ -10,6 +11,7 @@ public class GoToGoalZoneDesire extends BeliefDesire {
 
     public GoToGoalZoneDesire(Belief belief) {
         super(belief);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoToGoalZoneDesire");
     }
 
     @Override

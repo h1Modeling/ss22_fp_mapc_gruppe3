@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -10,7 +10,7 @@ import java.awt.Point;
 
 public class GoSubmit extends ADesire {
 
-	public GoSubmit(BdiAgent agent) {
+	public GoSubmit(BdiAgentV2 agent) {
 		super("GoSubmit", agent);
         groupOrder = true;
 	}

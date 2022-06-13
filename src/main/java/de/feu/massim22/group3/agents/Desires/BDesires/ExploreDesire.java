@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 public class ExploreDesire extends BeliefDesire {
 
@@ -11,6 +12,7 @@ public class ExploreDesire extends BeliefDesire {
 
     public ExploreDesire(Belief belief, String supervisor, String agent) {
         super(belief);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ExploreDesire");
         this.agent = agent;
         this.supervisor = supervisor;
     }

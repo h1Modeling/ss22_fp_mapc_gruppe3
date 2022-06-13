@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.Thing;
@@ -10,7 +10,7 @@ import java.awt.Point;
 public class RemoveObstacle extends ADesire {
 	Point obstacle = null;
 
-	public RemoveObstacle(BdiAgent agent) {
+	public RemoveObstacle(BdiAgentV2 agent) {
 		super("RemoveObstacle", agent);
 	}
 

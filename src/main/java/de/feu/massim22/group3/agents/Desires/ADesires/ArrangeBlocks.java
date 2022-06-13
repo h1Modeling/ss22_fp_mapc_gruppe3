@@ -11,7 +11,7 @@ import eis.iilang.Identifier;
 //TODO Klassenlogik für mehr als einen Block
 public class ArrangeBlocks extends ADesire {
 
-	public ArrangeBlocks(BdiAgent agent) {
+	public ArrangeBlocks(BdiAgentV2 agent) {
 		super("ArrangeBlocks", agent);
         groupOrder = true;
 	}
@@ -54,7 +54,7 @@ public class ArrangeBlocks extends ADesire {
         AgentLogger.info(Thread.currentThread().getName() + " " + this.name + ".getNextAction() Start");
         Action nextAction = null;
         
-        List<Point> attachedPoints = agent.belief.getAttachedThings();
+        List<Point> attachedPoints = agent.belief.getAttachedPoints();
         if (attachedPoints.size() == 1) {
             boolean isInGoalZone = false;
             Point pointAgent = new Point(0, 0);

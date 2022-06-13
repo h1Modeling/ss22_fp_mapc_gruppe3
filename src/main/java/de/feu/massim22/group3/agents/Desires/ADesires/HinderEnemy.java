@@ -1,12 +1,12 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 
 //TODO Klassenlogik
 public class HinderEnemy extends ADesire {
-	public HinderEnemy(BdiAgent agent) {
+	public HinderEnemy(BdiAgentV2 agent) {
         super("HinderEnemy", agent);
     }
 

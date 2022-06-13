@@ -2,7 +2,7 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 import java.util.List;
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import eis.iilang.Action;
@@ -10,7 +10,7 @@ import eis.iilang.Identifier;
 
 public class GoGoalZone extends ADesire {
     
-	public GoGoalZone(BdiAgent agent) {
+	public GoGoalZone(BdiAgentV2 agent) {
         super("GoGoalZone", agent);
     }
 

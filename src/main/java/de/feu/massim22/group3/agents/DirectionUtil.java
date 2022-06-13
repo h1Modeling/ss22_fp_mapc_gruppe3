@@ -25,27 +25,26 @@ public class DirectionUtil {
     }
 
 	public static Point getCellInDirection(String direction) {
-        int x = 0;
-        int y = 0;
-
         switch (direction) {
         case "n":
-            x = 0;
-            y = -1;
-            break;
+            return new Point(0, -1);
         case "e":
-            x = 1;
-            y = 0;
-            break;
+            return new Point(1, 0);
         case "s":
-            x = 0;
-            y = 1;
-            break;
+            return new Point(0, 1);
         case "w":
-            x = -1;
-            y = 0;
+            return new Point(-1, 0);
+        default:
+            return new Point(0, 0);
         }
-        return new Point(x, y);
+    }
+
+    public static Point rotateCW(Point p) {
+        return new Point(-p.y, p.x);
+    }
+
+    public static Point rotateCCW(Point p) {
+        return new Point(p.y, -p.x);
     }
 	
 	   public static Point getCellInDirection(Point point, String direction) {

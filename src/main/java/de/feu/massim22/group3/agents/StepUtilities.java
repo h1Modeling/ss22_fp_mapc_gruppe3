@@ -180,7 +180,7 @@ public class StepUtilities {
                 agent.belief.getPosition(), agent.belief.getVision(), agent.belief.getThings(),
                 agent.belief.getGoalZones(), agent.belief.getRoleZones(), agent.belief.getStep(),
                 agent.belief.getTeam(), agent.belief.getSteps(),  (int)agent.belief.getScore(), agent.belief.getNormsInfo(),
-                agent.belief.getTaskInfo(), agent.belief.getAttachedThings());
+                agent.belief.getTaskInfo(), agent.belief.getAttachedPoints());
     }
 
     /**
