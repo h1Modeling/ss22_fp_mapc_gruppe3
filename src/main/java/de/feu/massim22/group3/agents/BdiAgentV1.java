@@ -110,7 +110,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             merging = false;
             updatePercepts();
                 Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(), belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention());
-            //desireHandler.setNextAction();
             /*
             try {
                 Thread.sleep(500);

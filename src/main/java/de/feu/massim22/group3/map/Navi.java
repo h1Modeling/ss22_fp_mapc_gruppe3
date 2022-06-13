@@ -44,6 +44,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private Map<String, Integer> agentStep = new HashMap<>();
     private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
+    private Map<String, PathFinder> pathFinder = new HashMap<>();
     private IGraphicalDebugger debugger = new GraphicalDebugger();
     private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
     private boolean busy = false;
@@ -85,7 +86,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         maps.put(name, new GameMap(30, 30));
         agentSupervisor.put(name, name);
         agentStep.put(name, -1);
-        openGlHandler.put(name, PathFinder.createOpenGlContext());
+        long context = PathFinder.createOpenGlContext();
+        openGlHandler.put(name, context);
+        pathFinder.put(name, new PathFinder(context));
     }
     
     // Melinda
@@ -524,8 +527,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }
         dataTextureBuffer.flip();
 
-        long handler = openGlHandler.get(supervisor);
-        PathFinder finder = new PathFinder(handler);
+        PathFinder finder = pathFinder.get(supervisor);
         boolean mapDiscovered = map.mapDiscovered();
         
         if (numberGoals > 0) {
