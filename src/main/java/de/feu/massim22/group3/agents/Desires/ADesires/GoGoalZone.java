@@ -1,7 +1,8 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.DesireUtilities;
+import java.awt.Point;
+import java.util.List;
+import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import eis.iilang.Action;
@@ -9,8 +10,8 @@ import eis.iilang.Identifier;
 
 public class GoGoalZone extends ADesire {
     
-	public GoGoalZone(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-        super("GoGoalZone", agent, desireProcessing);
+	public GoGoalZone(BdiAgent agent) {
+        super("GoGoalZone", agent);
     }
 
     /**
@@ -22,12 +23,24 @@ public class GoGoalZone extends ADesire {
      */
     @Override
     public boolean isExecutable() {
-        //es existiert eine goalZone ( die der Agent erreichen kann)
-        if (agent.belief.getReachableGoalZones().size() > 0)
-            return true;
-        else {
-            return false;
+        boolean result = true;
+        List<ReachableGoalZone> reachableGoalZones = agent.belief.getReachableGoalZones();
+
+        // es existiert eine goalZone ( die der Agent erreichen kann) und er ist nicht schon drin
+        if (reachableGoalZones.size() > 0) {
+            Point pointAgent = new Point(0, 0);
+
+            for (Point goalZone : agent.belief.getGoalZones()) {
+                if (goalZone.equals(pointAgent)) {
+                    // Agent steht schon in einer GoalZone
+                    result =  false;
+                }
+            }
+        } else {
+            result =  false;
         }
+        
+        return result;
     }
     
     /**
@@ -39,10 +52,9 @@ public class GoGoalZone extends ADesire {
     @Override
     public Action getNextAction() {
         // goalZone mit der kürzesten Entfernung zum Agenten
-        ReachableGoalZone nearestGoalZone = desireProcessing.getNearestGoalZone(agent.belief.getReachableGoalZones());
-        // Richtung zu goalZone To Do : Hindernissprüfung
-        DirectionUtil.getDirection(agent.belief.getPosition(), nearestGoalZone.position());
-        String direction = DirectionUtil.intToString(nearestGoalZone.direction());
-        return new Action("move", new Identifier(direction));
+        ReachableGoalZone nearestGoalZone = agent.desireProcessing.getNearestGoalZone(agent.belief.getReachableGoalZones());
+        String direction = DirectionUtil.firstIntToString(nearestGoalZone.direction());
+        
+        return agent.desireProcessing.getPossibleActionForMove(agent, direction);  
     }
 }

@@ -1,15 +1,13 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.DesireUtilities;
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.*;
 import massim.protocol.data.Thing;
 
-
 public class DodgeClear extends ADesire {
 	
-	public DodgeClear(BdiAgentV2 agent, DesireUtilities desireProcessing){
-		super("DodgeClear", agent, desireProcessing);
+	public DodgeClear(BdiAgent agent){
+		super("DodgeClear", agent);
 	}
 
 	/**
@@ -48,7 +46,7 @@ public class DodgeClear extends ADesire {
 	 * 
 	 **/
 	
-	//Norden To Do: richtige Richtung
+	//Norden TODO: richtige Richtung
     @Override
 	public Action getNextAction() {
 		Identifier newDirection = new Identifier("n");

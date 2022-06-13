@@ -2,38 +2,57 @@ package de.feu.massim22.group3.agents.Desires.ADesires;
 
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.DesireUtilities;
-import de.feu.massim22.group3.agents.IIntention;
-import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.*;
 
-public abstract class ADesire implements IIntention {
-    DesireUtilities desireProcessing;
-    
+public abstract class ADesire implements DesireIntegration{
     public String name;
-    public int priority;
+    public BdiAgent agent;
+    public boolean groupOrder = false;
     
-    public BdiAgentV2 agent;
+    public int priority = 1000;
     public Action outputAction;
 
-    ADesire(String name, BdiAgentV2 agent, DesireUtilities desireProcessing) {
+    public ADesire(String name, BdiAgent agent) {
         this.name = name;
         this.agent = agent;
-        this.desireProcessing = desireProcessing;
+    }
+    
+    public ADesire() {
     }
     
     public abstract boolean isExecutable();
     public abstract Action getNextAction();
 
-    public ActionInfo getNextActionInfo() {
-        return new ActionInfo(getNextAction(), "");
+ @Override   
+    public Action getOutputAction() {
+     return this.outputAction;
     }
+ @Override     
+    public void setOutputAction(Action outputAction) {
+     this.outputAction = outputAction;
+ }
+ @Override    
+    public int getPriority() {
+     return this.priority;
+ }
+ @Override
+    public void setPriority(int priority) {
+     this.priority = priority;
+ }
+ @Override
+ public String getName() {
+     return this.name;
+ }
+ @Override
+ public BdiAgent getAgent() {
+     return this.agent;
+ }
+ @Override   
+    public boolean getGroupOrder() {
+     return this.groupOrder;
+ }
     
-    record ReachablePoint(Point position, int distance, int direction) {}
-
-    public String getName() {
-        return name;
-    }
+    record ReachablePoint(Point position, int distance, int direction) {};
 }
 

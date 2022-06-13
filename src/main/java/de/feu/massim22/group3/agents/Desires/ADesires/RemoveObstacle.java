@@ -1,26 +1,43 @@
 package de.feu.massim22.group3.agents.Desires.ADesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.DesireUtilities;
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
+import massim.protocol.data.Thing;
+import java.awt.Point;
 
 //TODO Klassenlogik
 public class RemoveObstacle extends ADesire {
-	public RemoveObstacle(BdiAgentV2 agent, DesireUtilities desireProcessing) {
-        super("RemoveObstacle", agent, desireProcessing);
-    }
+	Point obstacle = null;
 
-    @Override
-    public boolean isExecutable() {
-        return false;
-    }
+	public RemoveObstacle(BdiAgent agent) {
+		super("RemoveObstacle", agent);
+	}
 
-    @Override
-    public Action getNextAction() {
-        Identifier x = new Identifier("0");
-        Identifier y = new Identifier("-1");
+	@Override
+	public boolean isExecutable() {
+		for (Thing thing : agent.belief.getThings()) {
+			if (thing.type.equals(Thing.TYPE_OBSTACLE)) {
+				// an diesem Punkt ist das Hindernis
+				obstacle = new Point(thing.x, thing.y);
+				if (agent.belief.getPosition() != obstacle) {
+					// Agent steht vor Hinderniss
+					return true;
+				} else {
+					return false;
+				}
 
-        return new Action(" ", x, y);
-    }
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public Action getNextAction() {
+
+		return new Action("clear", new Identifier(String.valueOf(obstacle.x)),
+				new Identifier(String.valueOf(obstacle.y)));
+
+	}
 }
