@@ -1,12 +1,18 @@
 package de.feu.massim22.group3.agents;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import de.feu.massim22.group3.EventName;
+import de.feu.massim22.group3.SupervisorEventName;
 import eis.iilang.Function;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
+import massim.protocol.data.TaskInfo;
 
 public class Supervisor implements ISupervisor {
     
@@ -14,6 +20,8 @@ public class Supervisor implements ISupervisor {
     private Supervisable parent;
     private List<String> agents = new ArrayList<>();
     private List<ConfirmationData> confirmationData = new ArrayList<>();
+    private Set<TaskInfo> tasks = new HashSet<>();
+    private Map<String, AgentReport> reports = new HashMap<>();
     
     public Supervisor(Supervisable parent) {
         this.parent = parent;
@@ -29,10 +37,14 @@ public class Supervisor implements ISupervisor {
         } else {
             Percept data = unpackMessage(message);
             String taskKey = data.getName();
-            EventName taskName = EventName.valueOf(taskKey);
+            SupervisorEventName taskName = SupervisorEventName.valueOf(taskKey);
             switch (taskName) {
+            case REPORT:
+                AgentReport report = AgentReport.fromPercept(data);
+                reports.put(sender, report);
+                break;
             default:
-                throw new IllegalArgumentException("Supervisor can't handle Message");
+                throw new IllegalArgumentException("Supervisor can't handle Message " + taskName);
             }
         }
     }
@@ -65,8 +77,8 @@ public class Supervisor implements ISupervisor {
     }
 
     private Percept createConfirmationMessage(EventName task) {
-        Parameter data = new Function(task.name());
-        return new Percept(EventName.TO_SUPERVISOR.name(), data);
+        Function data = new Function(task.name());
+        return packMessage(data);
     }
 
     private Percept unpackMessage(Percept task) {
@@ -81,6 +93,10 @@ public class Supervisor implements ISupervisor {
             return new Percept(name, f.getParameters());
         }
         return null;
+    }
+
+    private Percept packMessage(Function message) {
+        return new Percept(EventName.TO_SUPERVISOR.name(), message);
     }
 
     private class ConfirmationData {
@@ -124,5 +140,21 @@ public class Supervisor implements ISupervisor {
 
     public List<String> getAgents() {
         return agents;
+    }
+
+    @Override
+    public void reportAgentData(String agent, AgentReport report) {
+        if (isActive()) {
+            reports.put(agent, report);
+        } else {
+            Function f = report.createMessage();
+            Percept message = packMessage(f);
+            parent.forwardMessageFromSupervisor(message, name, agent);
+        }
+    }
+
+    @Override
+    public void reportTasks(Set<TaskInfo> tasks) {
+        this.tasks = tasks;
     }
 }

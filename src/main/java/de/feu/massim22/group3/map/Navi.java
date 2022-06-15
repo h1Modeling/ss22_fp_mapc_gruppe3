@@ -509,7 +509,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     String agent = agents.get(x);
                     int attached = map.getAgentAttached(agent);
                     dataTextureBuffer.put(attached);
-                    dataTextureBuffer.put(0);
+                    // Distance of exterior block
+                    int distance = map.getAgentAttachedDistance(agent);
+                    dataTextureBuffer.put(distance);
                 } 
                 // Interesting Points Position (Path-Finding Goals)
                 else if (y == 2 && x < numberGoals) {

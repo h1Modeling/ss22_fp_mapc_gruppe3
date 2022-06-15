@@ -109,7 +109,11 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         case UPDATE:
             merging = false;
             updatePercepts();
-                Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(), belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention());
+            // Send Agent Report
+            AgentReport report = belief.getAgentReport();
+            supervisor.reportAgentData(getName(), report);
+            supervisor.reportTasks(belief.getTaskInfo());
+            Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(), belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention());
             /*
             try {
                 Thread.sleep(500);

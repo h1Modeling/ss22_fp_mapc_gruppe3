@@ -21,7 +21,8 @@ public class GameMap {
     private Point topLeft; // top left indices can be negative
     private int mapExtensionSize = 20;
     private Map<String, Point> agentPosition = new HashMap<>(); 
-    private Map<String, Integer> agentAttached = new HashMap<>(); 
+    private Map<String, Integer> agentAttached = new HashMap<>();
+    private Map<String, Integer> agentAttachedDistance = new HashMap<>(); 
     // These hold information relative to the internal array - only use for pathfinding
     private List<Point> goalCache = new ArrayList<>();
     private List<Point> roleCache = new ArrayList<>();
@@ -109,6 +110,7 @@ public class GameMap {
 
     public void setAgentAttached(String name, List<Point> attachedThings) {
         int result = 0; //4096; // Agent Pos
+        int dist = 0;
         for (Point p : attachedThings) {
             if (p.y == -2) {
                 if (p.x == -2) result += 1;
@@ -141,12 +143,19 @@ public class GameMap {
                 if (p.x == 1) result += 8388608;
                 if (p.x == 2) result += 16777216;
             }
+            // Calculate biggest distance
+            dist = Math.max(dist, Math.max(Math.abs(p.x), Math.abs(p.y)));
         }
         agentAttached.put(name, result);
+        agentAttachedDistance.put(name, dist);
     }
 
     public int getAgentAttached(String agent) {
         return agentAttached.get(agent);
+    }
+
+    public int getAgentAttachedDistance(String agent) {
+        return agentAttachedDistance.get(agent);
     }
     
     public Point getTopLeft() {

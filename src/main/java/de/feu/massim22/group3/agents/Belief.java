@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
@@ -15,6 +16,7 @@ import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
@@ -71,6 +73,7 @@ public class Belief {
     private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
     private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
     private List<ReachableTeammate> reachableTeammates = new ArrayList<>();
+    private String groupDesireType = GroupDesireTypes.NONE;
 
     Belief(String agentName) {
         this.name = agentName;
@@ -296,69 +299,27 @@ public class Belief {
     }
 
     private <T extends Number> T toNumber(List<Parameter> parameters, int index, Class<T> type) {
-        Parameter p = parameters.get(index);
-        if (!(p instanceof Numeral))
-            throw new IllegalArgumentException("Parameter is no Number");
-        return type.cast(((Numeral) p).getValue());
+        return PerceptUtil.toNumber(parameters, index, type);
     }
 
     private String toStr(List<Parameter> parameters, int index) {
-        Parameter p = parameters.get(index);
-        if (!(p instanceof Identifier))
-            throw new IllegalArgumentException("Parameter is no String");
-        return (String) ((Identifier) p).getValue();
+        return PerceptUtil.toStr(parameters, index);
     }
 
     private boolean toBool(List<Parameter> parameters, int index) {
-        Parameter p = parameters.get(index);
-        if (!(p instanceof TruthValue))
-            throw new IllegalArgumentException("Parameter is no Bool");
-        return ((TruthValue) p).getValue() == "true";
+        return PerceptUtil.toBool(parameters, index);
     }
 
     private List<String> toStrList(List<Parameter> parameters, int index) {
-        Parameter p = parameters.get(index);
-        if (!(p instanceof ParameterList))
-            throw new IllegalArgumentException();
-        List<String> result = new ArrayList<>();
-        for (Parameter para : (ParameterList) p) {
-            if (!(para instanceof Identifier))
-                throw new IllegalArgumentException();
-            String s = (String) ((Identifier) para).getValue();
-            result.add(s);
-        }
-        return result;
+        return PerceptUtil.toStrList(parameters, index);
     }
 
     private List<Integer> toIntList(List<Parameter> parameters, int index) {
-        Parameter p = parameters.get(index);
-        if (!(p instanceof ParameterList))
-            throw new IllegalArgumentException();
-        List<Integer> result = new ArrayList<>();
-        for (Parameter para : (ParameterList) p) {
-            if (!(para instanceof Numeral))
-                throw new IllegalArgumentException();
-            int s = (int) ((Numeral) para).getValue();
-            result.add(s);
-        }
-        return result;
+        return PerceptUtil.toIntList(parameters, index);
     }
 
     private Set<Thing> toThingSet(List<Parameter> parameters, int index) {
-        Parameter p = parameters.get(index);
-        if (!(p instanceof ParameterList))
-            throw new IllegalArgumentException();
-        Set<Thing> result = new HashSet<>();
-        for (Parameter para : (ParameterList) p) {
-            if (!(para instanceof Function))
-                throw new IllegalArgumentException();
-            List<Parameter> funcParameter = ((Function) para).getParameters();
-            int x = toNumber(funcParameter, 0, Integer.class);
-            int y = toNumber(funcParameter, 1, Integer.class);
-            String type = toStr(funcParameter, 2);
-            result.add(new Thing(x, y, type, ""));
-        }
-        return result;
+        return PerceptUtil.toThingSet(parameters, index);
     }
 
     private Set<Subject> toSubjectSet(List<Parameter> parameters, int index) {
@@ -653,6 +614,30 @@ public class Belief {
             b.append(System.lineSeparator());
         }
         return b.toString();
+    }
+
+    AgentReport getAgentReport() {
+        // Calculate available Actions
+        Set<String> availableActions = new HashSet<>();
+        Role d = roles.get("default");
+        if (d != null) {
+            availableActions.addAll(d.actions());
+        }
+        Role r = roles.get(role);
+        if (r != null) {
+            availableActions.addAll(r.actions());
+        }
+        // Calculate dispenser
+        int[] distanceDispenser = {999, 999, 999, 999, 999};
+        for (ReachableDispenser dispenser : reachableDispensers) {
+            int i = Integer.parseInt(dispenser.type().name().substring(10));
+            distanceDispenser[i] = Math.min(distanceDispenser[i], dispenser.distance());
+        }
+        return new AgentReport(attachedThings, energy, deactivated, availableActions, position, distanceDispenser, groupDesireType);
+    }
+
+    public void setGroupDesireType(String groupDesireType) {
+        this.groupDesireType = groupDesireType;
     }
 
     public List<TaskInfo> getNewTasks() {
