@@ -12,7 +12,6 @@ public class ExploreDesire extends BeliefDesire {
 
     public ExploreDesire(Belief belief, String supervisor, String agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ExploreDesire");
         this.agent = agent;
         this.supervisor = supervisor;
     }

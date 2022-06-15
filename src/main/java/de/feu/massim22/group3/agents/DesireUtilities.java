@@ -3,17 +3,14 @@ package de.feu.massim22.group3.agents;
 import java.awt.Point;
 import java.util.*;
 
-import de.feu.massim22.group3.agents.Desires.ADesires.*;
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
 
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
 import eis.iilang.Action;
-import massim.protocol.data.Role;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
@@ -24,7 +21,7 @@ public class DesireUtilities {
 	public TaskInfo task;
     public String directionCircle = "cw";
     public int directionCounter = 0;
-    public int circleSize = 10;
+    public int circleSize = 40;
  
 	public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
@@ -52,13 +49,7 @@ public class DesireUtilities {
                 + " , Agent: " + agent.getName());
 
         doDecision(agent, new DigFreeDesire(agent.belief));
-        doDecision(agent, new ExploreDesire(agent.belief, agent.supervisor.getName(), agent.getName()));
-        //doDecision(agent, new GoToGoalZoneDesire(agent.belief));
-        //doDecision(agent, new DodgeClear(agent));
-        //doDecision(agent, new HinderEnemy(agent));
-        //doDecision(agent, new GoDispenser(agent));
-        //doDecision(agent, new GoAdoptRole(agent));
-        //doDecision(agent, new RemoveObstacle(agent));
+        doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent));
         
         agent.decisionsDone = true;
         return result;
@@ -110,7 +101,7 @@ public class DesireUtilities {
 
             // TODO Mehrblock-Tasks
            if ( task.requirements.size() > 1) {
-               continue;
+//               continue;
            }
            
             // über alle Agenten einer Gruppe
@@ -119,7 +110,7 @@ public class DesireUtilities {
                 BdiAgentV2 agent = StepUtilities.getAgent(agentStr);               
                 agent.desireProcessing.attachedThings = new ArrayList<Thing>();
                 agent.desireProcessing.task = task;
-                attachedThings = agent.belief.getAttachedThings();
+                agent.desireProcessing.attachedThings = agent.belief.getAttachedThings();
 
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Agent: " + agentStr + " attachedThings: "
                         + agent.desireProcessing.attachedThings);
@@ -129,27 +120,27 @@ public class DesireUtilities {
                 
                 //doDecision(agent, new ProcessEasyTaskDesire(agent.belief, task, agent.getName())); 
                 
-                if (attachedThings.size() == 0
-                        && doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief,
-                                task.requirements.get(0), supervisor.getName()))) {
+                if (agent.desireProcessing.attachedThings.size() == 0
+                    && doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName()))) {
+                    //&& doDecision(agent, new GoDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName(), agent))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , AttachSingleBlockFromDispenserDesire");
 
-                if (attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(new Point(0, 0)))
+                if (agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(new Point(0, 0)))
                     if (doDecision(agent, new GoToGoalZoneDesire(agent.belief))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoToGoalZoneDesire");
 
-                if (attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0)))
-                    //if (doDecision(agent, new GetBlocksInOrderDesire(agent.belief, task))) {
-                    if (doDecision(agent, new ArrangeBlocksDesire(agent.belief, task))) {
+                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0)))
+                    if (doDecision(agent, new GetBlocksInOrderDesire(agent.belief, task))) {
+                    //if (doDecision(agent, new ArrangeBlocksDesire(agent.belief, task))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GetBlocksInOrderDesire");
 
-                if (attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0)))
+                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0)))
                     if (doDecision(agent, new SubmitDesire(agent.belief, task))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
@@ -167,70 +158,12 @@ public class DesireUtilities {
                     busyGroupAgents.add(agent.getName());
                 } else {
 
-                    agent.desireProcessing.goodBlocks = new ArrayList<Thing>();
-                    agent.desireProcessing.badBlocks = new ArrayList<Thing>();
-                    agent.desireProcessing.goodPositionBlocks = new ArrayList<Thing>();
-                    agent.desireProcessing.badPositionBlocks = new ArrayList<Thing>();
-                    agent.desireProcessing.missingBlocks = new ArrayList<Thing>();
-                    agent.desireProcessing.typeOk = false;
-                    agent.desireProcessing.analysisDone = false;
-                    
-                    // wenn ein Agent alle Blöcke einer Task besitzt
-                    if ((new ArrangeBlocks(agent).isExecutable() || new GoSubmit(agent).isExecutable()) 
-                            && agent.belief.getReachableGoalZones().size() == 0) {
-                        // leider keine GoalZone in Sichtweite
-                        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor Explore1");
-                        if (doDecision(agent, new Explore(agent, 45))) {
-                            busyGroupAgents.add(agent.getName());
-                        }
-                        // wenn ein Agent alle Blöcke einer Task an der richtigen Stelle besitzt
-                    } else {
-                        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() vor GoSubmit");
-                        if (doDecision(agent, new GoSubmit(agent))) {
-                            busyGroupAgents.add(agent.getName());
-
-                            // wenn ein Agent alle Blöcke einer Task besitzt (aber an der falschen Stelle)
-                        } else {
-                                AgentLogger.info(Thread.currentThread().getName()
-                                        + " runSupervisorDecisions() vor ArrangeBlocks");
-                                if (doDecision(agent, new ArrangeBlocks(agent))) {
-                                    busyGroupAgents.add(agent.getName());
-
-                                    // wenn ein Agent nicht alle Blöcke einer Task besitzt
-                                } else {
-                                    String type = "";
-                                    if (agent.desireProcessing.missingBlocks.size() > 0) {
-                                        type = agent.desireProcessing.missingBlocks.get(0).details;
-                                    } else {
-                                        type = task.requirements.get(0).type;
-                                    }
-                                    AgentLogger.info(Thread.currentThread().getName()
-                                            + " runSupervisorDecisions() vor GoDispenser");
-                                    if (doDecision(agent, new GoDispenser(agent, type))) {
-                                        busyGroupAgents.add(agent.getName());
-
-                                        // wenn der gesuchte Dispenser nicht ereichbar ist
-                                    } else {
-                                        AgentLogger.info(Thread.currentThread().getName()
-                                                + " runSupervisorDecisions() vor Explore");
-                                        if (doDecision(agent, new Explore(agent))) {
-                                            busyGroupAgents.add(agent.getName());
-                                        }
-                                    }
-                                }
-                        }
-                    } // go submit
-                } // adopt role*/
+ */
             } // Loop agents
         } // Loop tasks
 
         freeGroupAgents.removeAll(busyGroupAgents);
         busyGroupAgents.clear();
-
-        // über alle Agenten einer Gruppe z.B, TODO fremde Gegenden erkunden etc.
-        for (String agentStr : freeGroupAgents) {
-
-        }
 
         supervisor.setDecisionsDone(true);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() End - Step: " + step
@@ -255,78 +188,30 @@ public class DesireUtilities {
         case "DigFreeDesire":
             result = 1000;
             break;
-        case "ExploreDesire":
+        case "LocalExploreDesire":
             result = 10;
             break;
+        case "ExploreDesire":
+            result = 20;
+            break;
         case "AttachSingleBlockFromDispenserDesire":
-            result = 50;
+            result = 200;
+            break;
+        case "GoDispenserDesire":
+            result = 200 - desire.getPriority();
             break;
         case "GoToGoalZoneDesire":
-            result = 100;
+            result = 300;
             break;
         case "GetBlocksInOrderDesire":
-            result = 150;
+            result = 400;
+            break;
+        case "ArrangeBlocksDesire":
+            result = 400;
             break;
         case "SubmitDesire":
             result = 500;
             break;
-        
-        /*case "DigFree":
-            result = 10;
-            break;
-        case "GoSubmit":
-			if (desire.getOutputAction().getName().equals("submit")) {
-				result = 15;
-			} else {
-				result = 25;
-			}
-            break;
-        case "DodgeClear":
-            result = 20;
-            break;
-        case "GoAdoptRole":
-            if (desire.getGroupOrder()) {
-                result = 60 ;               
-            } else {
-                result = 60;            
-            }
-            break;
-        case "ArrangeBlocks":
-            if (desire.getOutputAction().getName().equals("rotate")) {
-                result = 40;
-            } else {
-                result = 100;
-            }
-            break;
-        case "ReactToNorm":
-            result = 100;
-            break;
-        case "GoGoalZone":
-            result = 80;
-            break;
-        case "GoRoleZone":
-            result = 90;
-            break;
-        case "GoDispenser":
-        	if (desire.getGroupOrder()) {
-                result = 50;        		
-        	} else {
-                result = 60;       		
-        	}
-            break;
-        case "Explore":
-            if (desire.getPriority() == 1000) {
-                result = 55;
-            } else {
-                result = desire.getPriority();
-            }
-            break;
-        case "LocalHinderEnemy":
-            result = 95;
-            break;
-        case "LocalExplore":
-            result = 100;
-            break;*/
         }
 
         return result;
@@ -407,7 +292,18 @@ public class DesireUtilities {
     }
     
     public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
-        Identifier resultDirection = new Identifier("n");
+        String startDirection = "";
+        float random = new Random().nextFloat();
+        if (random < 0.25) {
+            startDirection = "n";
+        } else if (random < 0.5) {
+            startDirection = "e";
+        } else if (random < 0.75) {
+            startDirection = "w";
+        } else {
+            startDirection = "s";
+        }
+        Identifier resultDirection = new Identifier(startDirection);
 
         if (agent.belief.getLastAction() != null && agent.belief.getLastAction().equals(Actions.MOVE)) {
             directionCounter++;
@@ -566,63 +462,6 @@ public class DesireUtilities {
         return null;
     }
     
-    /*public Action getPossibleActionForMove(BdiAgent agent, String direction) {
-        Action nextAction = null;       
-        Thing neighbour = agent.desireProcessing.getContentInDirection(agent, direction);
-        
-        //AgentLogger.info(Thread.currentThread().getName() + " getPossibleActionForMove() - Neighbour: " + neighbour);
-
-       
-        if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
-                && agent.desireProcessing.attachedThings.contains(neighbour))) {
-            // Weg ist frei
-            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
-                direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) - 1);
-            }         
-            nextAction = new Action("move", new Identifier(direction));
-            
-        } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE)) {
-            Point pointCell = DirectionUtil.getCellInDirection(direction);
-            // ein Hindernis wegräumen
-            nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),
-                    new Identifier(String.valueOf(pointCell.y)));
-
-        } else if (neighbour.type.equals(Thing.TYPE_ENTITY)) {
-            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);          
-            // einem Agenten ausweichen  
-            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction); 
-
-        } else if (neighbour.type.equals(Thing.TYPE_BLOCK)) {
-            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
-            // einem Block ausweichen 
-            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction); 
-        }
-        //AgentLogger.info(Thread.currentThread().getName() + " getPossibleActionForMove() - Action: " + nextAction.getName() + " , " + direction);
-
-        return nextAction;
-    }*/
-    
-    /*public int getWidth(BdiAgentV2 agent, String side) {
-        int maxWidth = 0;
-        
-        for (Point cell : agent.belief.getAttachedThings()) {
-            if (side.equals("right")) {
-                if (cell.x > maxWidth) {
-                    maxWidth = maxWidth + cell.x;
-                }         
-            } else {
-                if (cell.x < maxWidth) {
-                    maxWidth = maxWidth + cell.x;
-                }                
-            }
-            
-            if (side.equals("left")) {
-                maxWidth = Math.abs(maxWidth);
-            }
-        }
-        
-        return maxWidth;
-    }*/
     
     public Action getPossibleActionForMove(BdiAgentV2 agent, String direction) {
         Action nextAction = null;

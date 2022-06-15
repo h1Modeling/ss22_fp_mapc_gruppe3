@@ -42,10 +42,11 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 
         if (clockDirection == "") {
             return ActionInfo.SKIP(getName());
-        } else if (clockDirection == "cw") {
+        } else if (clockDirection == "cw"  && !(belief.getLastAction().equals("rotate") && belief.getLastActionParams().get(0).equals("cw"))) {
             return ActionInfo.ROTATE_CW(getName());
-        } else {
+        } else if (clockDirection == "ccw"  && !(belief.getLastAction().equals("rotate") && belief.getLastActionParams().get(0).equals("ccw"))) {
             return ActionInfo.ROTATE_CCW(getName());
-        }
+        } else             
+            return ActionInfo.ROTATE_CW(getName());
     }
 }

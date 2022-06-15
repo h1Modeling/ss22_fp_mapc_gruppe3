@@ -112,12 +112,9 @@ public abstract class BeliefDesire implements IDesire {
                 if (isFree(cw)) {
                     return ActionInfo.ROTATE_CW(desire);
                 }
-                //Melinda
-                if (!(belief.getLastAction().equals("rotate") && belief.getLastActionParams().get(0).equals("cw")) 
-                //Melinda Ende        
-                        && isFree(ccw)) {
+                if (isFree(ccw)) {
                     return ActionInfo.ROTATE_CCW(desire);
-                }
+                } 
                 if (cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
                     Point target = DirectionUtil.rotateCW(p);
                     return ActionInfo.CLEAR(target, desire);
