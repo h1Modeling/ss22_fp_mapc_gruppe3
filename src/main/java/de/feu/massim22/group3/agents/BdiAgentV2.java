@@ -112,14 +112,14 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
         
-        /*for (Percept percept : percepts) {
+        for (Percept percept : percepts) {
             if (percept.getName() == "attached"){
             AgentLogger.info(this.getName(),
-                    "Percept " +
+                    "Percept - attached: " +
                     String.format("%s - %s", percept.getName(), percept.getParameters()));
             }
-        }*/
-        //AgentLogger.info(belief.toString());
+        }
+        AgentLogger.info(belief.toString());
     }
 
     //private record PerceptMessage(String sender, Percept percept) {}

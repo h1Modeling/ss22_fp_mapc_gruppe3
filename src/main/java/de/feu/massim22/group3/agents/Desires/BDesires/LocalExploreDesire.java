@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
 import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
@@ -30,10 +31,11 @@ public class LocalExploreDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName());
-        Identifier newDirection = agent.desireProcessing.walkCircles(agent, 10);
-        AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - Action: move, " + newDirection);
+       // Identifier newDirection = agent.desireProcessing.walkCircles(agent, 10);
+        Integer direction = agent.index % 4 ;
+        AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - Action: move, " +  DirectionUtil.intToString(direction));
 
-        return getActionForMove(newDirection.getValue(), getName());
+        return getActionForMove(DirectionUtil.intToString(direction), getName());
     }
 
     @Override

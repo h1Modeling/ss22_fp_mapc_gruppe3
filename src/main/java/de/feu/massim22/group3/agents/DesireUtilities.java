@@ -239,8 +239,8 @@ public class DesireUtilities {
         }*/
         
         for (IDesire desire : agent.desires) {
-            AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + getPriority(desire));
+            /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
+                    + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + getPriority(desire));*/
             if (getPriority(desire) > priority) {
                 result = desire;
                 priority = getPriority(desire);

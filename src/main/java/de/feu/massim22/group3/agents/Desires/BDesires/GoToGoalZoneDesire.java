@@ -24,17 +24,22 @@ public class GoToGoalZoneDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         ReachableGoalZone zone = belief.getNearestGoalZone();
+        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - AgentPosition: " + belief.getPosition());
+        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - reachableGoalZones: " + belief.getReachableGoalZones());
+        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - GoalZones: " + belief.getGoalZones());
         Point p = belief.getNearestRelativeManhattenGoalZone();
         int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
         // Data from Pathfinding
         if (zone != null && zone.distance() < 2 * manhattenDistance) {
             String direction = DirectionUtil.intToString(zone.direction());
             if (direction.length() > 0) {
+            	 AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - nextActionDirectionPathfinding: " + direction);
                 return getActionForMove(direction.substring(0, 1), getName());
             }
         }
         // Manhatten
         String dir = getDirectionToRelativePoint(p);
+        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - nextActionDirection: " + dir);
         return getActionForMove(dir, getName());
     }
     

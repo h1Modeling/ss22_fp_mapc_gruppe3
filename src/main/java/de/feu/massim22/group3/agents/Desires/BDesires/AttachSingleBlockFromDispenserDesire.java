@@ -20,7 +20,7 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
 
     public AttachSingleBlockFromDispenserDesire(Belief belief, Thing block, String supervisor) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start AttachSingleBlockFromDispenserDesire");
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start AttachSingleBlockFromDispenserDesire");
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
         this.supervisor = supervisor;
