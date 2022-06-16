@@ -77,4 +77,13 @@ public class OrDesire implements IDesire {
     public int getPriority() {
         return Math.max(d1.getPriority(), d2.getPriority());
     }
+    
+    //Melinda   
+    /*@Override
+    public void setPriority(int priority) {}
+    @Override
+    public void setOutputAction(Action action) {}
+    @Override
+    public Action getOutputAction() {return null;}*/
+    //Melinda Ende
 }

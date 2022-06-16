@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
 import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
@@ -10,6 +11,7 @@ class ProcessOnlySubmittableTaskDesire extends BeliefDesire {
 
     public ProcessOnlySubmittableTaskDesire(Belief belief, TaskInfo info) {
         super(belief);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ProcessOnlySubmittableTaskDesire");
         this.info = info;
     }
 

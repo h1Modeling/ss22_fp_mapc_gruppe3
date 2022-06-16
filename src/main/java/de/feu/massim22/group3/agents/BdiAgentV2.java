@@ -1,31 +1,32 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
-
+import java.awt.Point;
 import java.util.List;
 import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
-import de.feu.massim22.group3.agents.Desires.ADesires.ADesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
  * An agent that uses the step()-Method.
  */
-public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
+public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
 
-    //private Queue<BdiAgentV2.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
     public DesireUtilities desireProcessing = new DesireUtilities();
     public StepUtilities stepLogic = new StepUtilities(desireProcessing);
+    
+    public boolean decisionsDone;
+    public boolean requestMade = false;
+    public Point lastUsedDispenser;
     
     public Supervisor supervisor;
     public int index;
     
-    public boolean decisionsDone;
+    //public IDesire intention;
     public boolean beliefsDone;
 
-    public int directionCounter = 0;
-    public int circleSize = 5;
 
     /**
      * Constructor.
@@ -43,7 +44,7 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
 
     @Override
     public Action step() {
-        desires = new ArrayList<ADesire>();
+        desires = new ArrayList<IDesire>();
         updateBeliefs();
         supervisor.setDecisionsDone(false);
         decisionsDone = false; // Agent
@@ -60,7 +61,7 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
         }
 
         // warten auf PATHFINDER_RESULT 
-        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
             if (!beliefsDone) {
                      try {
@@ -69,8 +70,7 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
                     e.printStackTrace();
                 }
             } else {
-                    AgentLogger.info(Thread.currentThread().getName() + " step() PATHFINDER_RESULT - Step: " + belief.getStep() + " , Agent: " + this.getName());
-
+                    AgentLogger.info(Thread.currentThread().getName() + " step() beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
                     Thread t4 = new Thread(() -> desireProcessing.runAgentDecisions(belief.getStep(), this));
                     t4.start();
                     break;
@@ -78,6 +78,8 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
         }
 
         // warten auf decisions (agent und supervisor)
+        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for decisionsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        
         while (true) {
             if (!(decisionsDone && supervisor.getDecisionsDone())) {
                 try {
@@ -86,16 +88,19 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
                     e.printStackTrace();
                 }
             } else {
+                // Delete expired Desires
+                desires.removeIf(d -> d.isUnfulfillable().value());
+                // Sort Desires
+                //desires.sort((a, b) -> a.getPriority() - b.getPriority());
                 // Intention ermitteln (Desire mit höchster Priorität)
-                setIntention(desireProcessing.determineIntention(this));
+                intention = desireProcessing.determineIntention(this);
                 break;
             }
         }
 
         // nächste Action
-        Action action = intention.getNextActionInfo().value();
-        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  action + " , Params: " +  action.getParameters().get(0));
-        return action;
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getNextActionInfo() + " , Params: " +  intention.getNextActionInfo().value().getParameters());
+        return intention.getNextActionInfo().value();
     }
 
     /**
@@ -105,7 +110,15 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
     private void updateBeliefs() {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
-        //AgentLogger.info(belief.toString());
+        
+        for (Percept percept : percepts) {
+            if (percept.getName() == "attached"){
+            AgentLogger.info(this.getName(),
+                    "Percept - attached: " +
+                    String.format("%s - %s", percept.getName(), percept.getParameters()));
+            }
+        }
+        AgentLogger.info(belief.toString());
     }
 
     //private record PerceptMessage(String sender, Percept percept) {}

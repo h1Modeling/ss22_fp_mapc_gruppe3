@@ -9,6 +9,7 @@ import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
 
 public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
@@ -19,6 +20,7 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
 
     public AttachSingleBlockFromDispenserDesire(Belief belief, Thing block, String supervisor) {
         super(belief);
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start AttachSingleBlockFromDispenserDesire");
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
         this.supervisor = supervisor;

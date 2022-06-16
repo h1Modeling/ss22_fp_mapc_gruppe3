@@ -14,7 +14,25 @@ public abstract class BeliefDesire implements IDesire {
     protected Belief belief;
     protected List<IDesire> precondition = new ArrayList<>();
     private int moveIteration = 0;
-
+ 
+    //Melinda
+    //public int priority = 1000;
+    //public Action outputAction;
+    
+    /*@Override
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+    @Override
+    public void setOutputAction(Action action){
+        this.outputAction = action;
+    }
+    @Override
+    public Action getOutputAction(){
+        return this.outputAction;
+    }*/
+    //Melinda Ende
+    
     public BeliefDesire(Belief belief) {
         this.belief = belief;
     }
@@ -81,18 +99,21 @@ public abstract class BeliefDesire implements IDesire {
         for (Point p : attached) {
             Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
             Thing t = belief.getThingAt(testPoint);
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - Direction: " + dir + " , Block attached: " + p + " , in Richtung: " + testPoint);
             if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
                 // Can be rotated
                 Thing cw = belief.getThingCRotatedAt(p);
                 Thing ccw = belief.getThingCCRotatedAt(p);
                 Point cwP = getCRotatedPoint(p);
                 Point ccwP = getCCRotatedPoint(p);
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
+                
                 if (isFree(cw)) {
                     return ActionInfo.ROTATE_CW(desire);
                 }
                 if (isFree(ccw)) {
                     return ActionInfo.ROTATE_CCW(desire);
-                }
+                } 
                 if (cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
                     Point target = DirectionUtil.rotateCW(p);
                     return ActionInfo.CLEAR(target, desire);

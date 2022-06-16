@@ -8,4 +8,9 @@ public interface IDesire extends IIntention {
     BooleanInfo isUnfulfillable();
     void update(String supervisor);
     int getPriority();
+    //Melinda
+    /*void setPriority(int priority);
+    void setOutputAction(Action action);
+    Action getOutputAction();*/
+    //Melinda Ende
 }
