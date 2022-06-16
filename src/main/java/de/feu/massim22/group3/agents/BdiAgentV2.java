@@ -24,7 +24,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public Supervisor supervisor;
     public int index;
     
-    public IDesire intention;
+    //public IDesire intention;
     public boolean beliefsDone;
 
 
@@ -99,7 +99,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
 
         // nächste Action
-
         AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getNextActionInfo() + " , Params: " +  intention.getNextActionInfo().value().getParameters());
         return intention.getNextActionInfo().value();
     }

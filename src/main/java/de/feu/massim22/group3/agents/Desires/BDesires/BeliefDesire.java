@@ -6,7 +6,6 @@ import java.util.List;
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import eis.iilang.Action;
 import massim.protocol.data.Thing;
 
 import java.awt.Point;
@@ -17,10 +16,10 @@ public abstract class BeliefDesire implements IDesire {
     private int moveIteration = 0;
  
     //Melinda
-    public int priority = 1000;
-    public Action outputAction;
+    //public int priority = 1000;
+    //public Action outputAction;
     
-    @Override
+    /*@Override
     public void setPriority(int priority) {
         this.priority = priority;
     }
@@ -31,7 +30,7 @@ public abstract class BeliefDesire implements IDesire {
     @Override
     public Action getOutputAction(){
         return this.outputAction;
-    }
+    }*/
     //Melinda Ende
     
     public BeliefDesire(Belief belief) {

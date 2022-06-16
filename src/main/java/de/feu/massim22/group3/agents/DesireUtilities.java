@@ -61,8 +61,8 @@ public class DesireUtilities {
         if (!inDesire.isFulfilled().value() 
                 && !inDesire.isUnfulfillable().value() 
                 && inDesire.isExecutable().value()) { // desire ist möglich , hinzufügen
-            inDesire.setOutputAction(inDesire.getNextActionInfo().value());
-            inDesire.setPriority(getPriority(inDesire));
+            //inDesire.setOutputAction(inDesire.getNextActionInfo().value());
+            //inDesire.setPriority(getPriority(inDesire));
             agent.desires.add(inDesire);
             result = true;
         }
@@ -146,10 +146,10 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , SubmitDesire");
               
-                for (int i = agent.desires.size() - 1; i >= 0; i--) {
+                /*for (int i = agent.desires.size() - 1; i >= 0; i--) {
                     AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
                     + " , " + agent.desires.get(i).getName() + " , Action: " + agent.desires.get(i).getOutputAction() + " , Prio: " + agent.desires.get(i).getPriority());
-                }
+                }*/
                 
                 // was hat der Agent für eine Rolle
 /*                role = agent.getAgentBelief().getRole();
