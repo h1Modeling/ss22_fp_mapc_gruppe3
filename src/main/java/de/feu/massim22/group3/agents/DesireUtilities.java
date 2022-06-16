@@ -35,6 +35,7 @@ public class DesireUtilities {
 	public String nextTry = "ccw";
 	public int nextTryDir = 1;
 	public int failedPath = 0;
+	public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
 	
     /**
      * The method runs the different agent decisions.
@@ -536,5 +537,7 @@ public class DesireUtilities {
         AgentLogger.info(Thread.currentThread().getName() + " addDesire() Agent: " + agent.getName() + " , Desire: " + inDesire.getName());
         agent.desires.add(inDesire);
     }
+    
+    public record DispenserFlag(Point position, Boolean attachMade) {}
 }
 

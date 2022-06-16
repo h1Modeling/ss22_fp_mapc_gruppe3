@@ -14,24 +14,6 @@ public abstract class BeliefDesire implements IDesire {
     protected Belief belief;
     protected List<IDesire> precondition = new ArrayList<>();
     private int moveIteration = 0;
- 
-    //Melinda
-    //public int priority = 1000;
-    //public Action outputAction;
-    
-    /*@Override
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-    @Override
-    public void setOutputAction(Action action){
-        this.outputAction = action;
-    }
-    @Override
-    public Action getOutputAction(){
-        return this.outputAction;
-    }*/
-    //Melinda Ende
     
     public BeliefDesire(Belief belief) {
         this.belief = belief;

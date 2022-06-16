@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.DesireUtilities.DispenserFlag;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.map.CellType;
@@ -50,6 +51,7 @@ public class GoDispenserDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Start - Agent: " + agent.getName());
         if (belief.getReachableDispensers().size() > 0) {
             // es existiert ein Dispenser ( den der Agent erreichen kann)
+        	//TODO in Vision nach Dispenser suchen
             List<ReachableDispenser> reachableDispensers = belief.getReachableDispensers();
 
             AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block.type);
@@ -122,11 +124,14 @@ public class GoDispenserDesire extends BeliefDesire {
             String direction = DirectionUtil.getDirection(agent.belief.getPosition(), dispenserItself);
 
             if (attachPossible) {
-                //nextAction = new Action("attach", new Identifier(direction));
-                return ActionInfo.ATTACH(direction, getName());
+            	if(!attachMade(dispenserItself)) {
+            		agent.desireProcessing.dFlags.add(new DispenserFlag(dispenserItself,true));
+                    return ActionInfo.ATTACH(direction, getName());
+            	}else {
+            		return ActionInfo.SKIP(getName());
+            	}
             } else {
                 agent.requestMade = true;
-                //nextAction = new Action("request", new Identifier(direction));
                 return ActionInfo.REQUEST(direction, getName());
             }
             
@@ -138,6 +143,16 @@ public class GoDispenserDesire extends BeliefDesire {
         }
     }
     
+    private boolean attachMade(Point dispenser) {
+    	boolean result = false;
+    	for(DispenserFlag dFlag : agent.desireProcessing.dFlags ) {
+    		if((dFlag.position().equals(dispenser) && dFlag.attachMade())) {
+    			result = true;
+    			break;
+    		}
+    	}
+    	return result;
+    }
     @Override
     public int getPriority() {
         return distance - 1;
