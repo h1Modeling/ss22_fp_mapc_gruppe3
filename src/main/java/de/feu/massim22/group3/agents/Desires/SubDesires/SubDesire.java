@@ -38,4 +38,9 @@ public abstract class SubDesire implements IIntention {
     public String getName() {
         return subDesireType.name();
     }
+    
+    @Override
+    public void setOutputAction(Action action) {}
+    @Override
+    public Action getOutputAction() {return null;}
 }

@@ -20,8 +20,16 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         this.info = info;
     }
 
+
+    @Override
+    public BooleanInfo isExecutable() {
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
+        return new BooleanInfo(true, "");
+    }
+    
     @Override
     public BooleanInfo isFulfilled() {
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
         for (Thing t : info.requirements) {
             Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
             if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
@@ -36,17 +44,39 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
+        AgentLogger.info(
+                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo");
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
         Point agentBlock = belief.getAttachedPoints().get(0);
         String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
 
         if (clockDirection == "") {
             return ActionInfo.SKIP(getName());
-        } else if (clockDirection == "cw"  && !(belief.getLastAction().equals("rotate") && belief.getLastActionParams().get(0).equals("cw"))) {
-            return ActionInfo.ROTATE_CW(getName());
-        } else if (clockDirection == "ccw"  && !(belief.getLastAction().equals("rotate") && belief.getLastActionParams().get(0).equals("ccw"))) {
-            return ActionInfo.ROTATE_CCW(getName());
-        } else             
-            return ActionInfo.ROTATE_CW(getName());
+        } else {
+            Thing cw = belief.getThingCRotatedAt(agentBlock);
+            Thing ccw = belief.getThingCCRotatedAt(agentBlock);
+
+            if (clockDirection == "cw") {
+                if (isFree(cw)) {
+                    return ActionInfo.ROTATE_CW(getName());
+                } else {
+                    if (cw.type.equals(Thing.TYPE_OBSTACLE)) {
+                        Point target = DirectionUtil.rotateCW(agentBlock);
+                        return ActionInfo.CLEAR(target, getName());
+                    }
+                }
+            }
+            if (clockDirection == "ccw") {
+                if (isFree(ccw)) {
+                    return ActionInfo.ROTATE_CCW(getName());
+                } else {
+                    if (ccw.type.equals(Thing.TYPE_OBSTACLE)) {
+                        Point target = DirectionUtil.rotateCCW(agentBlock);
+                        return ActionInfo.CLEAR(target, getName());
+                    }
+                }
+            }
+            return ActionInfo.SKIP(getName());
+        }
     }
 }

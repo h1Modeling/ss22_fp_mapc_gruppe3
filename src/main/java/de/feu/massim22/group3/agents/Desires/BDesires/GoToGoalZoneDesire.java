@@ -11,11 +11,12 @@ public class GoToGoalZoneDesire extends BeliefDesire {
 
     public GoToGoalZoneDesire(Belief belief) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoToGoalZoneDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoToGoalZoneDesire, Step: " + belief.getStep());
     }
 
     @Override
     public BooleanInfo isFulfilled() {
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoToGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
         boolean result = belief.getGoalZones().contains(new Point(0, 0));
         String info = result ? "" : "not on goal zone";
         return new BooleanInfo(result, info);
@@ -23,6 +24,7 @@ public class GoToGoalZoneDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoToGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
         ReachableGoalZone zone = belief.getNearestGoalZone();
         AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - AgentPosition: " + belief.getPosition());
         AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - reachableGoalZones: " + belief.getReachableGoalZones());
@@ -45,6 +47,7 @@ public class GoToGoalZoneDesire extends BeliefDesire {
     
     @Override
     public BooleanInfo isExecutable() {
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoToGoalZoneDesire.isExecutable, Step: " + belief.getStep());
         boolean result = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
         String info = result ? "" : "no reachable goal zones";
         return new BooleanInfo(result, info);

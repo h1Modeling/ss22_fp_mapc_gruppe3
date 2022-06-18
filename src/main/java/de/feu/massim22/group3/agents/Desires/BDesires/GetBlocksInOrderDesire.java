@@ -13,7 +13,7 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
     
     public GetBlocksInOrderDesire(Belief belief, TaskInfo info) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GetBlocksInOrderDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GetBlocksInOrderDesire, Step: " + belief.getStep());
         this.info = info;
     }
 

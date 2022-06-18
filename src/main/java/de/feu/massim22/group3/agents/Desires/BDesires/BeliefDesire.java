@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 
 import java.util.ArrayList;
 import java.util.List;
+import eis.iilang.Action;
 
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
@@ -18,6 +19,18 @@ public abstract class BeliefDesire implements IDesire {
     public BeliefDesire(Belief belief) {
         this.belief = belief;
     }
+
+    //Melinda
+    private Action outputAction;
+    @Override
+    public void setOutputAction(Action action) {
+        this.outputAction = action;
+    }
+    @Override
+    public Action getOutputAction() {
+        return this.outputAction;
+    }
+    //Melinda Ende
 
     protected ActionInfo fullfillPreconditions() {
         for (IDesire d : precondition) {

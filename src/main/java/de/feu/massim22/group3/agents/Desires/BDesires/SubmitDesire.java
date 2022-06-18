@@ -13,7 +13,7 @@ public class SubmitDesire extends BeliefDesire {
     
     public SubmitDesire(Belief belief, TaskInfo info) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
         this.info = info;
     }
   

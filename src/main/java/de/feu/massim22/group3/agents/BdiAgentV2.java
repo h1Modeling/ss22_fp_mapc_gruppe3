@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
+import de.feu.massim22.group3.map.INaviAgentV2;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
@@ -15,7 +17,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
 
     public DesireUtilities desireProcessing = new DesireUtilities();
-    public StepUtilities stepLogic = new StepUtilities(desireProcessing);
+    //public StepUtilities stepLogic = new StepUtilities(desireProcessing);
     
     public boolean decisionsDone;
     public boolean requestMade = false;
@@ -52,11 +54,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
 
         AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
         // Mapupdate über updateAgent (wenn möglich, ohne startCalculation auszulösen?)
-        stepLogic.updateMap(this);
+        updateMap();
 
         // Wenn es der letzte Agent war kommt die Gruppenverarbeitung
         if (StepUtilities.reportMapUpdate(this, belief.getStep(), belief.getTeamSize())) {
-           Thread t2 = new Thread(() -> stepLogic.doGroupProcessing(belief.getStep()));
+           Thread t2 = new Thread(() -> new StepUtilities(new DesireUtilities()).doGroupProcessing(belief.getStep()));
             t2.start();
         }
 
@@ -99,8 +101,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
 
         // nächste Action
-        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getNextActionInfo() + " , Params: " +  intention.getNextActionInfo().value().getParameters());
-        return intention.getNextActionInfo().value();
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() + " , Intention: " + intention.getName() + " , Action: " +  intention.getOutputAction().getName() + " , Params: " +  intention.getOutputAction().getParameters());
+        return intention.getOutputAction();
     }
 
     /**
@@ -117,11 +119,29 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     "Percept - attached: " +
                     String.format("%s - %s", percept.getName(), percept.getParameters()));
             }
+            
+            if (percept.getName() == "goalZone"){
+                AgentLogger.info(this.getName(),
+                        "Percept - GoalZone: " +
+                        String.format("%s - %s", percept.getName(), percept.getParameters()));
+                }
         }
-        AgentLogger.info(belief.toString());
+        //AgentLogger.info(belief.toString());
     }
 
-    //private record PerceptMessage(String sender, Percept percept) {}
+    /**
+     * Update the Map.
+     * 
+     * @param agent - the Agent that wants to update the map
+     *
+     */
+    public void updateMap() {
+        Navi.<INaviAgentV2>get().updateMap(supervisor.getName(), getName(), index,
+                belief.getPosition(), belief.getVision(), belief.getThings(),
+                belief.getGoalZones(), belief.getRoleZones(), belief.getStep(),
+                belief.getTeam(), belief.getSteps(),  (int)belief.getScore(), belief.getNormsInfo(),
+                belief.getTaskInfo(), belief.getAttachedPoints());
+    }
 
     @Override
     public void initSupervisorStep() {
