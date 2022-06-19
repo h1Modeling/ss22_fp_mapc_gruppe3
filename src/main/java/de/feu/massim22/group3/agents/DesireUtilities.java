@@ -99,6 +99,10 @@ public class DesireUtilities {
         // Schleife über alle Tasks
         //for (TaskInfo loopTask : supervisorAgent.belief.getNewTasks()) {
         for (TaskInfo loopTask : supervisorAgent.belief.getTaskInfo()) {
+        	//Task Deadline erreicht
+        	if(taskReachedDeadline ( supervisorAgent, loopTask)) {
+        		 continue;
+        	}
             task = loopTask;
             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name
                     + " Agents: " + allGroupAgents + " freie Agents: " + freeGroupAgents);
@@ -530,7 +534,7 @@ public class DesireUtilities {
             nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);
 
         } else
-            AgentLogger.info(Thread.currentThread().getName() + "  90 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ");
+            AgentLogger.info(Thread.currentThread().getName() + "  90");
 
         AgentLogger.info(Thread.currentThread().getName() + "  getPossibleActionForMove() - Action: "
                 + nextAction.getName() + " , " + direction);
@@ -541,6 +545,15 @@ public class DesireUtilities {
     public synchronized void addDesire(BdiAgentV2 agent, IDesire inDesire) {
         AgentLogger.info(Thread.currentThread().getName() + " addDesire() Agent: " + agent.getName() + " , Desire: " + inDesire.getName());
         agent.desires.add(inDesire);
+    }
+    
+    public boolean taskReachedDeadline (BdiAgentV2 agent,TaskInfo task) {
+    	boolean result = false;
+    	if (agent.belief.getStep() > task.deadline) {
+    		//Task ist abgelaufen 
+    		result = true;
+    	}
+    	return result;
     }
 }
 
