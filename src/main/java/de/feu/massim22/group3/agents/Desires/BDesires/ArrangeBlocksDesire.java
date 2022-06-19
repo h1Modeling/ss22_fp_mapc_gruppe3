@@ -48,6 +48,15 @@ public class ArrangeBlocksDesire extends BeliefDesire {
                 Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo");
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
         Point agentBlock = belief.getAttachedPoints().get(0);
+        Thing agentThing = belief.getAttachedThings().get(0);
+        
+        AgentLogger.info(
+                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
+        
+        if (!agentThing.details.equals(info.requirements.get(0).type)) {
+            return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());
+        }
+        
         String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
 
         if (clockDirection == "") {

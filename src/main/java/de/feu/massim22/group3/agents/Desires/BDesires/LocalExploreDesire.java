@@ -13,7 +13,7 @@ public class LocalExploreDesire extends BeliefDesire {
 
     public LocalExploreDesire(Belief belief, String supervisor, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start ExploreDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start LocalExploreDesire");
         this.agent = agent;
         this.supervisor = supervisor;
     }
@@ -30,10 +30,10 @@ public class LocalExploreDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName());
+        AgentLogger.info(Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());
        // Identifier newDirection = agent.desireProcessing.walkCircles(agent, 10);
         Integer direction = agent.index % 4 ;
-        AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - Action: move, " +  DirectionUtil.intToString(direction));
+        AgentLogger.info(Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Action: move, " +  DirectionUtil.intToString(direction));
 
         return getActionForMove(DirectionUtil.intToString(direction), getName());
     }

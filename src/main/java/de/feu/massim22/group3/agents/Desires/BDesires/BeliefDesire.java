@@ -102,30 +102,47 @@ public abstract class BeliefDesire implements IDesire {
                 Point cwP = getCRotatedPoint(p);
                 Point ccwP = getCCRotatedPoint(p);
                 AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
+ 
+                //Melinda
+                if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
+                    if (isFree(cw)) {
+                        return ActionInfo.ROTATE_CW(desire);
+                    } else {
+                        if (isFree(ccw)) {
+                            return ActionInfo.ROTATE_CCW(desire);
+                        }
+                    }
+                } else {
+                    if (isFree(ccw)) {
+                        return ActionInfo.ROTATE_CCW(desire);
+                    } else {
+                        if (isFree(cw)) {
+                            return ActionInfo.ROTATE_CW(desire);
+                        }
+                    }                    
+                }
                 
-                if (isFree(cw)) {
-                    return ActionInfo.ROTATE_CW(desire);
-                }
-                if (isFree(ccw)) {
-                    return ActionInfo.ROTATE_CCW(desire);
-                } 
-                if (cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
+                if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
                     Point target = DirectionUtil.rotateCW(p);
                     return ActionInfo.CLEAR(target, desire);
                 }
-                if (ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
+                if (ccw != null && ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
                     Point target = DirectionUtil.rotateCW(p);
                     return ActionInfo.CLEAR(target, desire);
                 }
+                //Melinda Ende
             }
         }
         // Test Agent
         Thing t = belief.getThingAt(dirPoint);
         if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
             return ActionInfo.CLEAR(dirPoint, desire);
-        } else if (isFree(t)|| attached.contains(dirPoint)) {
+        } else if (isFree(t) || attached.contains(dirPoint)) {
             return ActionInfo.MOVE(dir, desire);
-        } else if (t != null && t.type.equals(Thing.TYPE_ENTITY)) {
+        } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)
+                //Melinda
+                || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
+            //Melinda Ende
             // Try to move around agent
             boolean inDirection = true; // dir.equals("n") || dir.equals("e");
             String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);

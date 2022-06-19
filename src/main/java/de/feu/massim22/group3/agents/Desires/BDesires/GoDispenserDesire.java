@@ -53,9 +53,9 @@ public class GoDispenserDesire extends BeliefDesire {
         	//TODO in Vision nach Dispenser suchen
             List<ReachableDispenser> reachableDispensers = belief.getReachableDispensers();
 
-            /*AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block.type);
+            AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block.type);
             // bestimmter Blocktyp wird gesucht
-            AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Dispenser: " + reachableDispensers);*/
+            //AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Dispenser: " + reachableDispensers);
 
             for (ReachableDispenser reachableDispenser : reachableDispensers) {
                 // alle Dispenser vom gesuchten Typ
@@ -65,7 +65,7 @@ public class GoDispenserDesire extends BeliefDesire {
                     typeDispensers.add(reachableDispenser);
                 }
             }
-            //AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
+            AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
             if (typeDispensers.size() > 0) {
                 // es wurde ein Dispenser vom gesuchten Typ gefunden
                 return new BooleanInfo(true, "");
@@ -76,7 +76,7 @@ public class GoDispenserDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
-        //AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.getNextAction() Start");
+        AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.getNextAction() Start");
 
         boolean attachPossible = false;
         Point dispenserItself = null;

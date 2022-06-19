@@ -65,26 +65,15 @@ public class GoGoalZoneDesire extends BeliefDesire {
     private String proofDirection(String inDirection) {
         String outDirection = inDirection;
  
-        if (!this.agent.desireProcessing.lastWishDirection.equals(null)) {
+        if (this.agent.desireProcessing.lastWishDirection != null) {
             if (belief.getLastAction().equals("move") && belief.getLastActionResult().equals("success")) {
                 if (!belief.getLastActionParams().get(0).equals(this.agent.desireProcessing.lastWishDirection)) {
-                    if (belief.getLastActionParams().get(0).equals(oppositeDirection(inDirection))) {
+                    if (belief.getLastActionParams().get(0).equals(DirectionUtil.oppositeDirection(inDirection))) {
                         outDirection = this.agent.desireProcessing.lastWishDirection;
                     }
                 }
             }
         }
-        
-        return outDirection;
-    }
-    
-    private String oppositeDirection(String inDirection) {
-        String outDirection = inDirection;
-        
-        if (inDirection.equals("n")) outDirection = "s";
-        if (inDirection.equals("e")) outDirection = "w";
-        if (inDirection.equals("s")) outDirection = "n";
-        if (inDirection.equals("w")) outDirection = "e";
         
         return outDirection;
     }

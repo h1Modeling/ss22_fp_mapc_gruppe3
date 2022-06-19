@@ -77,7 +77,7 @@ public class StepUtilities {
         }
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() allSupervisors: " + allSupervisorNames);
 
-        if (allSupervisors.size() > 1) {
+        if (false && allSupervisors.size() > 1) {
             // Noch gibt es mehr als einen Supervisor
             for (BdiAgentV2 agent : allAgents) {
                 AgentLogger.info(

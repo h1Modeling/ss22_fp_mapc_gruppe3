@@ -49,8 +49,18 @@ public class DesireUtilities {
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
                 + " , Agent: " + agent.getName());
 
-        doDecision(agent, new DigFreeDesire(agent.belief));
-        doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent));
+        if (doDecision(agent, new DigFreeDesire(agent.belief))) {
+        } else
+            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , DigFreeDesire");
+        if (doDecision(agent, new FreedomDesire(agent.belief))) {
+        } else
+            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , FreedomDesire");
+        if (doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent))) {
+        } else
+            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , LocalExploreDesire");
         
         agent.decisionsDone = true;
         return result;
@@ -109,7 +119,7 @@ public class DesireUtilities {
 
             // TODO Mehrblock-Tasks
            if ( task.requirements.size() > 1) {
-//               continue;
+               continue;
            }
            
             // über alle Agenten einer Gruppe
@@ -138,27 +148,32 @@ public class DesireUtilities {
                         + " , in Zone: "+ agent.belief.getGoalZones().contains(new Point(0, 0)) + " , att. Size: "
                         + agent.desireProcessing.attachedThings.size());
                 
-                //doDecision(agent, new ProcessEasyTaskDesire(agent.belief, task, agent.getName())); 
+                if (agent.desireProcessing.attachedThings.size() > 1 
+                    && doDecision(agent, new LooseWeightDesire(agent.belief))) {
+                } else
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                    + " , LooseWeightDesire");
                 
                 if (agent.desireProcessing.attachedThings.size() == 0
                     //&& doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName()))) {
                     && doDecision(agent, new GoDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName(), agent, stepUtilities))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , AttachSingleBlockFromDispenserDesire");
+                            + " , GoDispenserDesire");
 
                 if (agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(new Point(0, 0)) 
-                    && doDecision(agent, new GoToGoalZoneDesire(agent.belief))) {
+                    //&& doDecision(agent, new GoToGoalZoneDesire(agent.belief))) {
+                    && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , GoToGoalZoneDesire");
+                            + " , GoGoalZoneDesire");
 
                 if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
                     //&& doDecision(agent, new GetBlocksInOrderDesire(agent.belief, task))) {
                     && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , GetBlocksInOrderDesire");
+                            + " , ArrangeBlocksDesire");
 
                 if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
                     && doDecision(agent, new SubmitDesire(agent.belief, task))) {
@@ -208,6 +223,9 @@ public class DesireUtilities {
         case "DigFreeDesire":
             result = 1000;
             break;
+        case "FreedomDesire":
+            result = 2000;
+            break;
         case "LocalExploreDesire":
             result = 10;
             break;
@@ -223,6 +241,9 @@ public class DesireUtilities {
         case "GoToGoalZoneDesire":
             result = 300;
             break;
+        case "GoGoalZoneDesire":
+            result = 300;
+            break;
         case "GetBlocksInOrderDesire":
             result = 400;
             break;
@@ -231,6 +252,9 @@ public class DesireUtilities {
             break;
         case "SubmitDesire":
             result = 500;
+            break;
+        case "LooseWeightDesire":
+            result = 600;
             break;
         }
 

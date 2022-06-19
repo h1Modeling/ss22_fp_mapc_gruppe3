@@ -38,6 +38,19 @@ public class DirectionUtil {
             return new Point(0, 0);
         }
     }
+	
+	   public static int getDirectionForCell(Point inCell) {
+           if (inCell.equals(new Point(0, -1)))
+               return 1;
+           else if (inCell.equals(new Point(1, 0)))
+               return 2;
+           else if (inCell.equals(new Point(0, 1)))
+               return 3;
+           else if (inCell.equals(new Point(-1, 0))) 
+               return 4;
+
+           return 0;
+	    }
 
     public static Point rotateCW(Point p) {
         return new Point(-p.y, p.x);
@@ -172,5 +185,16 @@ public class DirectionUtil {
         }
 
         return new Point(x, y);
+    }
+	
+    public static String oppositeDirection(String inDirection) {
+        String outDirection = inDirection;
+        
+        if (inDirection.equals("n")) outDirection = "s";
+        if (inDirection.equals("e")) outDirection = "w";
+        if (inDirection.equals("s")) outDirection = "n";
+        if (inDirection.equals("w")) outDirection = "e";
+        
+        return outDirection;
     }
 }
