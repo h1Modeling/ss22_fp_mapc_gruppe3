@@ -24,35 +24,6 @@ public class GoGoalZoneDesire extends BeliefDesire {
         String info = result ? "" : "not on goal zone";
         return new BooleanInfo(result, info);
     }
-
-    @Override
-    public ActionInfo getNextActionInfo() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
-        ReachableGoalZone zone = belief.getNearestGoalZone();
-        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - AgentPosition: " + belief.getPosition());
-        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - reachableGoalZones: " + belief.getReachableGoalZones());
-        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZones: " + belief.getGoalZones());
-        Point p = belief.getNearestRelativeManhattenGoalZone();
-        int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
-        // Data from Pathfinding
-        if (zone != null && zone.distance() < 2 * manhattenDistance) {
-            String direction = DirectionUtil.intToString(zone.direction());
-            if (direction.length() > 0) {                
-                AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - nextActionDirectionPathfinding: " + direction);
-                direction = proofDirection(direction);
-                this.agent.desireProcessing.lastWishDirection =  direction;
-                AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - after proofDirection: " + direction);
-                return getActionForMove(direction.substring(0, 1), getName());
-            }
-        }
-        // Manhatten
-        String direction = getDirectionToRelativePoint(p);
-        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - nextActionDirection: " + direction);
-        direction = proofDirection(direction);
-        this.agent.desireProcessing.lastWishDirection =  direction;
-        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - after proofDirection: " + direction);
-        return getActionForMove(direction, getName());
-    }
     
     @Override
     public BooleanInfo isExecutable() {
@@ -60,6 +31,58 @@ public class GoGoalZoneDesire extends BeliefDesire {
         boolean result = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
         String info = result ? "" : "no reachable goal zones";
         return new BooleanInfo(result, info);
+    }
+    
+    @Override
+    public ActionInfo getNextActionInfo() {
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
+        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - AgentPosition: " + belief.getPosition());
+        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - reachableGoalZones: " + belief.getReachableGoalZones());
+        AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZones: " + belief.getGoalZones());
+        
+        Point p = belief.getNearestRelativeManhattenGoalZone();
+        int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
+        
+        if (manhattenDistance < 1000) {
+            // Manhatten
+            String direction = getDirectionToRelativePoint(p);
+            String dirAlt = "";
+            
+            for (int i = 1; i < belief.getGoalZones().size(); i++) {
+                dirAlt = getDirectionToRelativePoint(belief.getGoalZones().get(i));
+                
+                if (!dirAlt.equals(direction)) {
+                    break;
+                }
+            }
+            
+            AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - nextActionDirectionManhatten: " + direction);
+            direction = proofDirection(direction);
+            this.agent.desireProcessing.lastWishDirection = direction;
+            AgentLogger
+                    .info(Thread.currentThread().getName() + "GoGoalZoneDesire - after proofDirection: " + direction);
+            
+            if (dirAlt.equals(""))
+                return getActionForMove(direction, getName());
+            else
+                return getActionForMoveWithAlternate(direction, dirAlt, getName());
+        }
+        
+        // Data from Pathfinding
+        ReachableGoalZone zone = belief.getNearestGoalZone();
+        String direction = DirectionUtil.intToString(zone.direction());
+
+        if (direction.length() > 0) {
+            AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - nextActionDirectionPathfinding: "
+                    + direction);
+            direction = proofDirection(direction);
+            this.agent.desireProcessing.lastWishDirection = direction;
+            AgentLogger
+                    .info(Thread.currentThread().getName() + "GoGoalZoneDesire - after proofDirection: " + direction);
+            return getActionForMove(direction.substring(0, 1), getName());
+        } 
+        
+        return ActionInfo.SKIP(getName());
     }
     
     private String proofDirection(String inDirection) {

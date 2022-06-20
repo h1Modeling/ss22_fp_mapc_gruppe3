@@ -197,4 +197,20 @@ public class DirectionUtil {
         
         return outDirection;
     }
+    
+    public static String proofDirection(String inDirection, BdiAgentV2 agent) {
+        String outDirection = inDirection;
+ 
+        if (agent.desireProcessing.lastWishDirection != null) {
+            if (agent.belief.getLastAction().equals("move") && agent.belief.getLastActionResult().equals("success")) {
+                if (!agent.belief.getLastActionParams().get(0).equals(agent.desireProcessing.lastWishDirection)) {
+                    if (agent.belief.getLastActionParams().get(0).equals(DirectionUtil.oppositeDirection(inDirection))) {
+                        outDirection = agent.desireProcessing.lastWishDirection;
+                    }
+                }
+            }
+        }
+        
+        return outDirection;
+    }
 }

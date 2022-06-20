@@ -8,6 +8,7 @@ import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.Actions;
 
 import java.awt.Point;
 
@@ -86,6 +87,25 @@ public abstract class BeliefDesire implements IDesire {
         // TODO AGENT is STuck
         return ActionInfo.SKIP("Agent is Stuck");
     }
+  
+    //Melinda
+    protected ActionInfo getActionForMoveWithAlternate(String dir, String dirAlt, String desire) {
+        ActionInfo firstTry = getActionForMove(dir, desire);
+        
+        if ((firstTry.value().getName().equals(Actions.MOVE) 
+                && !firstTry.value().getParameters().get(0).toString().equals(dir)  
+                && !firstTry.value().getParameters().get(0).toString().equals(dirAlt))
+                || ((firstTry.value().getName().equals(Actions.ROTATE) 
+                && (firstTry.value().getParameters().get(0).toString().equals("cw")
+                && belief.getLastActionParams().get(0).equals("ccw")) 
+                || (firstTry.value().getParameters().get(0).toString().equals("ccw")
+                && belief.getLastActionParams().get(0).equals("cw"))))) {
+            return getActionForMove(dirAlt, desire);
+        }
+        
+        return firstTry;
+    }
+    //Melinda Ende
 
     protected ActionInfo getActionForMove(String dir, String desire) {
         Point dirPoint = DirectionUtil.getCellInDirection(dir);
@@ -102,21 +122,29 @@ public abstract class BeliefDesire implements IDesire {
                 Point cwP = getCRotatedPoint(p);
                 Point ccwP = getCCRotatedPoint(p);
                 AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
- 
-                //Melinda
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - oppositeD: " + DirectionUtil.oppositeDirection(dir) + " , Cell: " + DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)));
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cw + " , Free?: " + isFree(cw));
+                
+                //Melinda (nur zu Testzwecken; wird später wieder zurückgesetzt auf den ursprünglichen Code)
                 if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
                     if (isFree(cw)) {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
                         return ActionInfo.ROTATE_CW(desire);
                     } else {
                         if (isFree(ccw)) {
+                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
                             return ActionInfo.ROTATE_CCW(desire);
                         }
                     }
                 } else {
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
                     if (isFree(ccw)) {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
                         return ActionInfo.ROTATE_CCW(desire);
                     } else {
                         if (isFree(cw)) {
+                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
                             return ActionInfo.ROTATE_CW(desire);
                         }
                     }                    
@@ -135,14 +163,18 @@ public abstract class BeliefDesire implements IDesire {
         }
         // Test Agent
         Thing t = belief.getThingAt(dirPoint);
+        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t);
         if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if2");
             return ActionInfo.CLEAR(dirPoint, desire);
         } else if (isFree(t) || attached.contains(dirPoint)) {
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
             return ActionInfo.MOVE(dir, desire);
-        } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)
+        } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)                
                 //Melinda
                 || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
             //Melinda Ende
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if4");
             // Try to move around agent
             boolean inDirection = true; // dir.equals("n") || dir.equals("e");
             String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);

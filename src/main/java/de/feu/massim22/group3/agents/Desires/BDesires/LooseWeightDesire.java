@@ -17,6 +17,7 @@ public class LooseWeightDesire extends BeliefDesire {
         return new BooleanInfo(value, info);
     }
 
+    @Override
     public ActionInfo getNextActionInfo() {
         for (Point p: belief.getAttachedPoints()) {
             if (p.x == 0 &&  p.y == 1) {
@@ -32,7 +33,10 @@ public class LooseWeightDesire extends BeliefDesire {
                 return ActionInfo.DETACH("w", getName());
             }
         }
-        return null;
+        //Melinda (da "return null"  2-3 Sekunden Wartezeit des Schedulers kosten kann)
+        //return null;
+        return ActionInfo.SKIP(getName());
+        //Melinda Ende
     }
 
     @Override

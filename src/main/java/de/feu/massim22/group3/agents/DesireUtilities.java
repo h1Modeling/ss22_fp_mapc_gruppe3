@@ -3,6 +3,8 @@ package de.feu.massim22.group3.agents;
 import java.awt.Point;
 import java.util.*;
 
+import javax.management.relation.RoleStatus;
+
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
 
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
@@ -13,6 +15,7 @@ import eis.iilang.Identifier;
 import eis.iilang.Action;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
+import massim.protocol.data.Role;
 import massim.protocol.messages.scenario.Actions;
 import massim.protocol.messages.scenario.ActionResults;
 
@@ -96,9 +99,6 @@ public class DesireUtilities {
                 + " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
 
         BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
-        //Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
-        //List<Point> attachedPoints;
-        //Role role = null;
         
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.belief.getReachableDispensers());
 
@@ -107,7 +107,6 @@ public class DesireUtilities {
         List<String> busyGroupAgents = new ArrayList<>();
 
         // Schleife über alle Tasks
-        //for (TaskInfo loopTask : supervisorAgent.belief.getNewTasks()) {
         for (TaskInfo loopTask : supervisorAgent.belief.getTaskInfo()) {
         	//Task Deadline erreicht
         	if(taskReachedDeadline ( supervisorAgent, loopTask)) {
@@ -152,48 +151,40 @@ public class DesireUtilities {
                     && doDecision(agent, new LooseWeightDesire(agent.belief))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                    + " , LooseWeightDesire");
+                            + " , LooseWeightDesire");
                 
-                if (agent.desireProcessing.attachedThings.size() == 0
+                if (agent.belief.getRole().name().equals("default") 
+                    && doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "worker"))) {
+                } else 
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                            + " , GoAdoptRoleDesire - worker");
+                
+                if (agent.belief.getRole().name().equals("worker") && agent.desireProcessing.attachedThings.size() == 0
                     //&& doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName()))) {
                     && doDecision(agent, new GoDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName(), agent, stepUtilities))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(new Point(0, 0)) 
+                if (agent.belief.getRole().name().equals("worker") && agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(new Point(0, 0)) 
                     //&& doDecision(agent, new GoToGoalZoneDesire(agent.belief))) {
                     && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoGoalZoneDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
+                if (agent.belief.getRole().name().equals("worker") && agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
                     //&& doDecision(agent, new GetBlocksInOrderDesire(agent.belief, task))) {
                     && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , ArrangeBlocksDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
+                if (agent.belief.getRole().name().equals("worker") && agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
                     && doDecision(agent, new SubmitDesire(agent.belief, task))) {
                     } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , SubmitDesire");
-              
-                /*for (int i = agent.desires.size() - 1; i >= 0; i--) {
-                    AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , " + agent.desires.get(i).getName() + " , Action: " + agent.desires.get(i).getOutputAction() + " , Prio: " + agent.desires.get(i).getPriority());
-                }*/
-                
-                // was hat der Agent für eine Rolle
-/*                role = agent.getAgentBelief().getRole();
-                // Agent hat default Rolle
-                if (role.equals(" default") && doDecision(agent, new GoAdoptRole(agent, "worker"))) {
-                    busyGroupAgents.add(agent.getName());
-                } else {
-
- */
             } // Loop agents
         } // Loop tasks
 
@@ -220,32 +211,42 @@ public class DesireUtilities {
 
         switch (desire.getName()) {
         
+        case "GoAdoptRoleDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 0;
+            else
+                result = 1000;
+            break;
         case "DigFreeDesire":
-            result = 1000;
+            result = 1500;
             break;
         case "FreedomDesire":
             result = 2000;
             break;
         case "LocalExploreDesire":
-            result = 10;
+            result = 100;
             break;
+
+            //Heinz Desires (nicht genutzt)
         case "ExploreDesire":
             result = 20;
             break;
         case "AttachSingleBlockFromDispenserDesire":
             result = 200;
             break;
-        case "GoDispenserDesire":
-            result = 200 - desire.getPriority();
-            break;
         case "GoToGoalZoneDesire":
-            result = 300;
-            break;
-        case "GoGoalZoneDesire":
             result = 300;
             break;
         case "GetBlocksInOrderDesire":
             result = 400;
+            break;
+            //Heinz Desires (nicht genutzt) Ende
+            
+        case "GoDispenserDesire":
+            result = 200 - desire.getPriority();           
+            break;
+        case "GoGoalZoneDesire":
+            result = 300;
             break;
         case "ArrangeBlocksDesire":
             result = 400;
@@ -578,6 +579,24 @@ public class DesireUtilities {
     		result = true;
     	}
     	return result;
+    }
+    
+    public void manageAgentRoles() {
+        for (BdiAgentV2 agent : StepUtilities.allAgents) {
+            if (agent.belief.getRole().name().equals("default")) {
+                if (agent.index <= 1) 
+                    if (doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "explorer"))) {
+                    } else 
+                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                                + " , GoAdoptRoleDesire - explorer");
+                
+                if (agent.index > 2) 
+                    if (doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "worker"))) {
+                    } else 
+                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                                + " , GoAdoptRoleDesire - worker");
+            }
+        }
     }
 }
 

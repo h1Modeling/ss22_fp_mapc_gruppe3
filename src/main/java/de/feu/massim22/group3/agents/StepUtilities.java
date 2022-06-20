@@ -172,6 +172,12 @@ public class StepUtilities {
                 }
             });
         }
+        
+        /*
+         * loop for all agents about roles to adopt
+         */
+        //desireProcessing.manageAgentRoles();
+        
         /*
          * loop for all groups (after merge) with map update and group gecisions
          */

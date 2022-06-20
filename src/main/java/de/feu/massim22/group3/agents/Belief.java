@@ -553,7 +553,12 @@ public class Belief {
         // Zone is sorted
         return reachableRoleZones.size() > 0 ? reachableRoleZones.get(0) : null;
     }
-
+ //Melinda   
+    public Point getNearestRelativeManhattenRoleZone() {
+        roleZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+        return roleZones.size() > 0 ? roleZones.get(0) : null;
+    }
+    //Melinda Ende  
     public ReachableGoalZone getNearestGoalZone() {
         // Zone is sorted
         return reachableGoalZones.size() > 0 ? reachableGoalZones.get(0) : null;
