@@ -14,6 +14,7 @@ import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.Actions;
 
 public class GoDispenserDesire extends BeliefDesire {
     private List<ReachableDispenser> typeDispensers = new ArrayList<ReachableDispenser>();
@@ -46,33 +47,39 @@ public class GoDispenserDesire extends BeliefDesire {
     }
 
     @Override
-    public BooleanInfo isExecutable() {
-        AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.isExecutable() Start - Agent: " + agent.getName());
-        if (belief.getReachableDispensers().size() > 0) {
-            // es existiert ein Dispenser ( den der Agent erreichen kann)
-        	//TODO in Vision nach Dispenser suchen
-            List<ReachableDispenser> reachableDispensers = belief.getReachableDispensers();
+	public BooleanInfo isExecutable() {
+		AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.isExecutable() Start - Agent: "
+				+ agent.getName());
+		if (agent.belief.getRole().actions().contains(Actions.REQUEST)
+				&& agent.belief.getRole().actions().contains(Actions.ATTACH)) {
+			if (belief.getReachableDispensers().size() > 0) {
+				// es existiert ein Dispenser ( den der Agent erreichen kann)
+				// TODO in Vision nach Dispenser suchen
+				List<ReachableDispenser> reachableDispensers = belief.getReachableDispensers();
 
-            AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block.type);
-            // bestimmter Blocktyp wird gesucht
-            //AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Dispenser: " + reachableDispensers);
+				AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block.type);
+				// bestimmter Blocktyp wird gesucht
+				// AgentLogger.info(Thread.currentThread().getName() + ".isExecutable()
+				// Dispenser: " + reachableDispensers);
 
-            for (ReachableDispenser reachableDispenser : reachableDispensers) {
-                // alle Dispenser vom gesuchten Typ
-                String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
+				for (ReachableDispenser reachableDispenser : reachableDispensers) {
+					// alle Dispenser vom gesuchten Typ
+					String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
 
-                if (typeDispenser.equals(block.type)) {
-                    typeDispensers.add(reachableDispenser);
-                }
-            }
-            AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
-            if (typeDispensers.size() > 0) {
-                // es wurde ein Dispenser vom gesuchten Typ gefunden
-                return new BooleanInfo(true, "");
-            }
-        }
-        return new BooleanInfo(false, "");
-    }
+					if (typeDispenser.equals(block.type)) {
+						typeDispensers.add(reachableDispenser);
+					}
+				}
+				AgentLogger
+						.info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
+				if (typeDispensers.size() > 0) {
+					// es wurde ein Dispenser vom gesuchten Typ gefunden
+					return new BooleanInfo(true, "");
+				}
+			}
+		}
+		return new BooleanInfo(false, "");
+	}
 
     @Override
     public ActionInfo getNextActionInfo() {

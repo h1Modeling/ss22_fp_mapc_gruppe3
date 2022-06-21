@@ -5,6 +5,7 @@ import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+import massim.protocol.messages.scenario.Actions;
 
 import java.awt.Point;
 
@@ -25,13 +26,19 @@ public class GoGoalZoneDesire extends BeliefDesire {
         return new BooleanInfo(result, info);
     }
     
-    @Override
-    public BooleanInfo isExecutable() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire.isExecutable, Step: " + belief.getStep());
-        boolean result = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
-        String info = result ? "" : "no reachable goal zones";
-        return new BooleanInfo(result, info);
-    }
+	@Override
+	public BooleanInfo isExecutable() {
+		AgentLogger.info(Thread.currentThread().getName()
+				+ " runSupervisorDecisions - GoGoalZoneDesire.isExecutable, Step: " + belief.getStep());
+		BooleanInfo resultBack = null;
+		if (belief.getRole().actions().contains(Actions.DETACH)
+				&& belief.getRole().actions().contains(Actions.ATTACH)) {
+			boolean result = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
+			String info = result ? "" : "no reachable goal zones";
+			resultBack = new BooleanInfo(result, info);
+		}
+		return resultBack;
+	}
     
     @Override
     public ActionInfo getNextActionInfo() {

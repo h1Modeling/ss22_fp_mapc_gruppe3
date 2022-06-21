@@ -9,6 +9,7 @@ import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.Actions;
 
 public class ArrangeBlocksDesire extends BeliefDesire {
 
@@ -21,12 +22,17 @@ public class ArrangeBlocksDesire extends BeliefDesire {
     }
 
 
-    @Override
-    public BooleanInfo isExecutable() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
-        return new BooleanInfo(true, "");
-    }
-    
+	@Override
+	public BooleanInfo isExecutable() {
+		AgentLogger
+				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
+		if (belief.getRole().actions().contains(Actions.DETACH)
+				&& belief.getRole().actions().contains(Actions.ATTACH)) {
+			return new BooleanInfo(true, "");
+		}
+		return new BooleanInfo(false, "");
+	}
+
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
