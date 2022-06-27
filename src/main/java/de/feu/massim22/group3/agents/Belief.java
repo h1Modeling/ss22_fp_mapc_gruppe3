@@ -579,13 +579,16 @@ public class Belief {
         return rd.size() > 0 ? rd.get(0) : null;
     }
 
+    // Hier kommen auch Blöcke des gesuchen Typs, nicht nur Dispenser ?!
     public Point getNearestRelativeManhattenDispenser(String type) {
         List<Thing> d = new ArrayList<>(things);
+        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 1 : " + d);
         // Filter
         d.removeIf(r -> !r.details.equals(type));
         // Sort
         d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
-
+        Point test = d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
+        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 2 : " + test);
         return d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
     }
 

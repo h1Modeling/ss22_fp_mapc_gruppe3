@@ -1,14 +1,16 @@
 package de.feu.massim22.group3.agents;
 
+//import java.awt.Point;
 import java.util.*;
-import java.util.List;
 
+import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.*;
 import massim.protocol.data.*;
 
-import java.awt.*;
+//import java.awt.*;
 import java.nio.FloatBuffer;
 
 public class StepUtilities {
@@ -77,7 +79,7 @@ public class StepUtilities {
         }
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() allSupervisors: " + allSupervisorNames);
 
-        if (false && allSupervisors.size() > 1) {
+        if (allSupervisors.size() > 1) {
             // Noch gibt es mehr als einen Supervisor
             for (BdiAgentV2 agent : allAgents) {
                 AgentLogger.info(
@@ -118,8 +120,11 @@ public class StepUtilities {
 
                         // Agents sind eindeutig zu identifizieren ?
                         if (countMeetings(foundAgent, foundAgent.get(j).position) == 1) {
+                            recordAgentMeeting( agent1, agent2, foundAgent.get(j).position);
+                            recordAgentMeeting( agent2, agent1, foundAgent.get(k).position);
+                        }
                             // Agents sind aus unterschiedlichen Gruppen ?
-                            if (!(agent1.supervisor == agent2.supervisor)) {
+                            /*if (!(agent1.supervisor == agent2.supervisor)) {
                                 // dann die kleinere in die größere Gruppe mergen
                                 if (agent1.supervisor.getAgents().size() >= agent2.supervisor.getAgents().size()) {
                                     AgentLogger.info(Thread.currentThread().getName()
@@ -158,12 +163,12 @@ public class StepUtilities {
                         } else
                             AgentLogger.info(Thread.currentThread().getName()
                                     + " doGroupProcessing() no merge, more than one possibility - Supervisor1: "
-                                    + agent1.supervisor.getName() + " , Supervisor2: " + agent2.supervisor.getName());
+                                    + agent1.supervisor.getName() + " , Supervisor2: " + agent2.supervisor.getName());*/
                     }
                 }
             }
 
-            allSupervisors.removeAll(exSupervisors);
+            //allSupervisors.removeAll(exSupervisors);
             Collections.sort(allSupervisors, new Comparator<Supervisor>() {
                 @Override
                 public int compare(Supervisor a, Supervisor b)
@@ -191,10 +196,11 @@ public class StepUtilities {
 
                 for (CalcResult agentCalcResult : agentCalcResults) {                   
                     BdiAgentV2 agent = getAgent(agentCalcResult.agent());
-                    List<Parameter> parameters = agentCalcResult.percepts().getParameters();                   
+                    List<Parameter> parameters = agentCalcResult.percepts().getParameters(); 
+                    AgentLogger.info(Thread.currentThread().getName() + " vor updateFromPathFinding: " + agent.getName());
                     agent.belief.updateFromPathFinding(parameters);
                     agent.beliefsDone = true;
-                    
+                    AgentLogger.info(Thread.currentThread().getName() + " nach updateFromPathFinding: " + agent.getName());
                     //AgentLogger.info(Thread.currentThread().getName() + agent.belief.reachablesToString());
                 }
                 
@@ -206,6 +212,10 @@ public class StepUtilities {
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Step: " + step);
+    }
+    
+    private void recordAgentMeeting( BdiAgentV2 agent1, BdiAgentV2 agent2, Point realtivePositionAgent2) {
+        AgentMeetings.add(new AgentMeetings.Meeting(agent1, Point.zero(), Point.castToPoint(agent1.belief.getPosition()), agent2, realtivePositionAgent2,  Point.castToPoint(agent2.belief.getPosition())));
     }
     
     private int countMeetings(ArrayList<AgentMeeting> foundAgent, Point reverseFound) {
@@ -304,13 +314,13 @@ public class StepUtilities {
 
         if (interestingPoints.size() > 0) {
             PathFindingResult[] agentResultData = new PathFindingResult[interestingPoints.size()];
-            Point mapTopLeft = navi.getTopLeft(supervisor.getName());
+           Point mapTopLeft = Point.castToPoint(navi.getTopLeft(supervisor.getName()));
 
             for (int i = 0; i < agents.size(); i++) {
-                Point agentPos = navi.getInternalAgentPosition(supervisor.getName(), agents.get(i));
+                Point agentPos = Point.castToPoint(navi.getInternalAgentPosition(supervisor.getName(), agents.get(i)));
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
-                    Point targetPos = interestingPoints.get(j).point();
+                    Point targetPos = Point.castToPoint(interestingPoints.get(j).point());
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
@@ -326,7 +336,7 @@ public class StepUtilities {
     }
 
     private Percept pathFindingResultToPercept(String agent, PathFindingResult[] agentResultData,
-            List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+            List<InterestingPoint> interestingPoints,  Point mapTopLeft) {
         List<Parameter> data = new ArrayList<>();
 
         // Generate Percept

@@ -1,12 +1,13 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
 import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
-import java.awt.Point;
+//import java.awt.Point;
 
 public class GoAdoptRoleDesire extends BeliefDesire {
     BdiAgentV2 agent;
@@ -43,13 +44,13 @@ public class GoAdoptRoleDesire extends BeliefDesire {
                 + belief.getReachableRoleZones());
         AgentLogger.info(Thread.currentThread().getName() + "GoAdoptRoleDesire - RoleZones: " + belief.getRoleZones());
 
-        if (belief.getRoleZones().contains(new Point(0, 0))) {
+        if (belief.getRoleZones().contains(Point.zero())) {
             // already in rolezone
             return ActionInfo.ADOPT(role, getName());
         } else {
             // not yet in rolezone
             if (belief.getReachableRoleZones().size() > 0 || belief.getRoleZones().size() > 0) {
-                Point p = belief.getNearestRelativeManhattenRoleZone();
+                Point p = Point.castToPoint(belief.getNearestRelativeManhattenRoleZone());
                 int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
 
                 if (manhattenDistance < 1000) {

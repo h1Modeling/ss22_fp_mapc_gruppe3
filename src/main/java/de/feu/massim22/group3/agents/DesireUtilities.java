@@ -1,10 +1,10 @@
 package de.feu.massim22.group3.agents;
 
-import java.awt.Point;
+//import java.awt.Point;
 import java.util.*;
 
 import javax.management.relation.RoleStatus;
-
+import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
 
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
@@ -143,8 +143,8 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , ReachableGoalZones: " + agent.belief.getReachableGoalZones());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
-                        + agent.getName() + " , nicht in Zone: " + !agent.belief.getGoalZones().contains(new Point(0, 0)) 
-                        + " , in Zone: "+ agent.belief.getGoalZones().contains(new Point(0, 0)) + " , att. Size: "
+                        + agent.getName() + " , nicht in Zone: " + !agent.belief.getGoalZones().contains(Point.zero()) 
+                        + " , in Zone: "+ agent.belief.getGoalZones().contains(Point.zero()) + " , att. Size: "
                         + agent.desireProcessing.attachedThings.size());
                 
                 if (agent.desireProcessing.attachedThings.size() > 1 
@@ -160,27 +160,33 @@ public class DesireUtilities {
                             + " , GoAdoptRoleDesire - worker");
                 
                 if (agent.desireProcessing.attachedThings.size() == 0
+                && doDecision(agent, new AttachAbandonedBlockDesire(agent.belief, task.requirements.get(0).type))) {
+                } else
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                            + " , AttachAbandonedBlockDesire");
+                
+                if (agent.desireProcessing.attachedThings.size() == 0
                     //&& doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName()))) {
                     && doDecision(agent, new GoDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName(), agent, stepUtilities))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(new Point(0, 0)) 
+                if (agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(Point.zero()) 
                     //&& doDecision(agent, new GoToGoalZoneDesire(agent.belief))) {
                     && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoGoalZoneDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
+                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
                     //&& doDecision(agent, new GetBlocksInOrderDesire(agent.belief, task))) {
                     && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , ArrangeBlocksDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0))
+                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
                     && doDecision(agent, new SubmitDesire(agent.belief, task))) {
                     } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
@@ -240,22 +246,38 @@ public class DesireUtilities {
         case "GetBlocksInOrderDesire":
             result = 400;
             break;
-            //Heinz Desires (nicht genutzt) Ende
+            //Heinz Desires (nicht genutzt) Ende 
             
+        case "AttachAbandonedBlockDesire":
+            if (desire.getOutputAction().getName().equals(Actions.ATTACH))
+                result = 290;
+            else
+                result = 250;        
+            break;
         case "GoDispenserDesire":
-            result = 200 - desire.getPriority();           
+            if (desire.getOutputAction().getName().equals(Actions.ATTACH))
+                result = 300;
+                else if (desire.getOutputAction().getName().equals(Actions.REQUEST))
+                    result = 280;
+            else
+                result = 250 - desire.getPriority();           
             break;
         case "GoGoalZoneDesire":
-            result = 300;
-            break;
-        case "ArrangeBlocksDesire":
             result = 400;
             break;
+        case "ArrangeBlocksDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+                else if (desire.getOutputAction().getName().equals(Actions.DETACH))
+                    result = 450;
+            else
+                result = 500;        
+            break;
         case "SubmitDesire":
-            result = 500;
+            result = 600;
             break;
         case "LooseWeightDesire":
-            result = 600;
+            result = 700;
             break;
         }
 
@@ -468,13 +490,13 @@ public class DesireUtilities {
     }
     
     public Thing getContentInDirection(BdiAgentV2 agent, String direction) {
-        Point cell = DirectionUtil.getCellInDirection(direction);
+        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(direction));
 
         return getContent(agent, cell);
     }
     
     public Thing getContentInDirection(BdiAgentV2 agent, Point from, String direction) {
-        Point cell = DirectionUtil.getCellInDirection(from, direction);
+        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(from, direction));
 
         return getContent(agent, cell);
     }
@@ -547,7 +569,7 @@ public class DesireUtilities {
         } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE) 
                 || (neighbour.type.equals(Thing.TYPE_BLOCK )
                         && !agent.desireProcessing.attachedThings.contains(neighbour))) {
-            Point pointCell = DirectionUtil.getCellInDirection(direction);
+            Point pointCell = Point.castToPoint(DirectionUtil.getCellInDirection(direction));
             // ein Hindernis wegräumen
             agent.desireProcessing.failedPath = 0;
             nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),

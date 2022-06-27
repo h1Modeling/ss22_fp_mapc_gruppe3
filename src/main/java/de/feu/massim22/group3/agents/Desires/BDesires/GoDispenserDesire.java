@@ -1,14 +1,12 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
-import java.awt.Point;
+//import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.Belief;
-import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.StepUtilities.DispenserFlag;
-import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.StepUtilities;
+import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.utils.Convert;
@@ -89,17 +87,21 @@ public class GoDispenserDesire extends BeliefDesire {
         Point dispenserItself = null;
         ReachableDispenser nearestDispenser = null;
         // Dispenser mit der kürzesten Entfernung zum Agenten
-        Point visionDispenser = belief.getNearestRelativeManhattenDispenser(block.type);
-
+        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,1");
+        Point visionDispenser = Point.castToPoint(belief.getNearestRelativeManhattenDispenser(block.type));
+        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,2");
+        
         if (visionDispenser != null) {
+            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 1");
             distance = Math.abs(visionDispenser.x) + Math.abs(visionDispenser.y);
             dispenserItself = new Point(belief.getPosition().x + visionDispenser.x, belief.getPosition().y + visionDispenser.y);
         } else {
+            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 2");
             nearestDispenser = agent.desireProcessing.getNearestDispenser(typeDispensers);
-            dispenserItself = DirectionUtil.getDispenserItself(nearestDispenser);
+            dispenserItself = Point.castToPoint(DirectionUtil.getDispenserItself(nearestDispenser));
 
             if (agent.requestMade && agent.lastUsedDispenser != nearestDispenser.position()) {
-
+                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 3");
                 for (Thing thing : agent.belief.getThings()) {
                     if (thing.type.equals(Thing.TYPE_DISPENSER)
                             && thing.x == agent.lastUsedDispenser.x - agent.belief.getPosition().x
@@ -110,7 +112,7 @@ public class GoDispenserDesire extends BeliefDesire {
                     }
                 }
             }
-
+            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 4");
             agent.lastUsedDispenser = dispenserItself;
             distance = Math.abs(dispenserItself.x - agent.belief.getPosition().x)
                     + Math.abs(dispenserItself.y - agent.belief.getPosition().y);
@@ -120,10 +122,11 @@ public class GoDispenserDesire extends BeliefDesire {
             AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - dNearest: "
                     + nearestDispenser.position() + nearestDispenser.data() + " , dItself: " + dispenserItself);*/
         }
-
+        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 5");
+        
         if (distance == 1) {
             // steht neben einem Dispenser
-           
+            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 6");           
             for (Thing thing : agent.belief.getThings()) {
                 if (thing.type.equals(Thing.TYPE_BLOCK) && thing.x == visionDispenser.x
                         && thing.y == visionDispenser.y) {
@@ -133,31 +136,85 @@ public class GoDispenserDesire extends BeliefDesire {
                     }
                 }
             }
-
-            String direction = DirectionUtil.getDirection(new Point(0, 0), visionDispenser);
+            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 7");
+            String direction = DirectionUtil.getDirection(Point.zero(), visionDispenser);
 
             if (attachPossible) {
-            	if(!attachMade(dispenserItself)) {
-            	    stepUtilities.dFlags.add(new DispenserFlag(dispenserItself,true));
+                Point pos = Point.castToPoint(agent.belief.getPosition());
+                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8: " + pos + " , " + direction);               
+                
+                Point d1 = new Point(0, 0);
+                Point d2 = new Point(0, 0);
+                Point d3 = new Point(0, 0);
+                
+                if (direction.equals("n")) {
+                    d1 = new Point(pos.x + 1, pos.y - 1);
+                    d2 = new Point(pos.x, pos.y - 2);
+                    d3 = new Point(pos.x - 1, pos.y - 1);
+                }
+                if (direction.equals("e")) {
+                    d1 = new Point(pos.x + 1, pos.y - 1);
+                    d2 = new Point(pos.x + 1, pos.y + 1);
+                    d3 = new Point(pos.x + 2, pos.y);
+                }
+                if (direction.equals("s")) {
+                    d1 = new Point(pos.x + 1, pos.y - 1);
+                    d2 = new Point(pos.x, pos.y + 2);
+                    d3 = new Point(pos.x - 1, pos.y - 1);
+                }
+                if (direction.equals("w")) {
+                    d1 = new Point(pos.x - 1, pos.y - 1);
+                    d2 = new Point(pos.x - 1, pos.y + 1);
+                    d3 = new Point(pos.x - 2, pos.y);
+                }
+                
+                int[] met =  {0, 0, 0};
+                int i = 0;
+                    
+                for (Meeting meeting : AgentMeetings.find(agent)) {
+                    Point p1 = new Point(meeting.posAgent1());
+                    Point p2 = new Point(meeting.posAgent2());
+                    Point p3 = new Point(meeting.relAgent2());
+                    AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8.1: " + meeting.agent2().getName() + " , " + Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))));      
+                    
+                    if (d1 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))
+                            || d2 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))
+                            || d3 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))) {
+                        met[i] = meeting.agent2().index;
+                        i++;
+                    }
+                }
+                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8.1: " + agent.index + " , " + met[0] + " , " + met[1] + " , " + met[2]);      
+                
+                if(agent.index > met[0] && agent.index > met[1] && agent.index > met[2]) {
+                    return ActionInfo.ATTACH(direction, getName());
+                }else {
+                    return ActionInfo.SKIP(getName());
+                }               
+                
+            	/*if(!attachMade(dispenserItself)) {
+            	    stepUtilities.dFlags.add(new DispenserFlag(dispenserItself, true));
                     return ActionInfo.ATTACH(direction, getName());
             	}else {
             		return ActionInfo.SKIP(getName());
-            	}
+            	}*/
             } else {
+                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 9");
                 agent.requestMade = true;
                 return ActionInfo.REQUEST(direction, getName());
             }
-            
+         
         } else {
              // steht noch nicht neben einem Dispenser
             String direction = "";
-                    
+            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 10");                    
             if (visionDispenser != null) {
-                direction = DirectionUtil.getDirection(new Point(0, 0), visionDispenser);
+                direction = DirectionUtil.getDirection(Point.zero(), visionDispenser);
             } else {
+                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 11");  
                 direction = DirectionUtil.firstIntToString(nearestDispenser.direction());
             }
-            
+            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 12");            
             return getActionForMove(direction, getName());
         }
     }

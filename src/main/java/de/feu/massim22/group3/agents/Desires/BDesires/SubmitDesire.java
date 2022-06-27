@@ -19,27 +19,30 @@ public class SubmitDesire extends BeliefDesire {
     }
   
 	@Override
-	public BooleanInfo isExecutable() {
-		boolean result = belief.getGoalZones().size() > 0 && belief.getGoalZones().contains(new Point(0, 0));
-		String info = result ? "" : "not in goal zone";
+    public BooleanInfo isExecutable() {
+        boolean result = false;
+        String info = "";
 
-		if (belief.getRole().actions().contains(Actions.SUBMIT)){
-			if (result == true) {
-				for (Thing t : this.info.requirements) {
-					Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
-					if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
-						String ea = atAgent == null ? t.details + " not at agent" : "";
-						String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ? "Attached is no block"
-								: "";
-						String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
-						return new BooleanInfo(false, ea + et + ed);
-					}
-				}
-			}
-		}
+        if (belief.getRole().actions().contains(Actions.SUBMIT)) {
+            result = belief.getGoalZones().size() > 0 && belief.getGoalZones().contains(new Point(0, 0));
+            info = result ? "" : "not in goal zone";
 
-		return new BooleanInfo(result, info);
-	}
+            if (result == true) {
+                for (Thing t : this.info.requirements) {
+                    Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
+                    if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
+                        String ea = atAgent == null ? t.details + " not at agent" : "";
+                        String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ? "Attached is no block"
+                                : "";
+                        String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
+                        return new BooleanInfo(false, ea + et + ed);
+                    }
+                }
+            }
+        }
+
+        return new BooleanInfo(result, info);
+    }
  
     @Override
     public ActionInfo getNextActionInfo() {
