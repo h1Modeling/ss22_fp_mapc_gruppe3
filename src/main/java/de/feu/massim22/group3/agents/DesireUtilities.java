@@ -263,7 +263,10 @@ public class DesireUtilities {
                 result = 250 - desire.getPriority();           
             break;
         case "GoGoalZoneDesire":
-            result = 400;
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+            else
+                result = 400;        
             break;
         case "ArrangeBlocksDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))

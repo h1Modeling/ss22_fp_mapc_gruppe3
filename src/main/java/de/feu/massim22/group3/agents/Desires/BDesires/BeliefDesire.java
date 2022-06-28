@@ -126,24 +126,27 @@ public abstract class BeliefDesire implements IDesire {
                 AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cw + " , Free?: " + isFree(cw));
                 
                 //Melinda (nur zu Testzwecken; wird später wieder zurückgesetzt auf den ursprünglichen Code)
+                // um Schwanzwedeln zu vermeiden
+                String lastRotation = belief.getLastActionParams().get(0);
+                
                 if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
                     AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
-                    if (isFree(cw)) {
+                    if (isFree(cw) && !lastRotation.equals("ccw")) {
                         AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
                         return ActionInfo.ROTATE_CW(desire);
                     } else {
-                        if (isFree(ccw)) {
+                        if (isFree(ccw) && !lastRotation.equals("cw")) {
                             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
                             return ActionInfo.ROTATE_CCW(desire);
                         }
                     }
                 } else {
                     AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
-                    if (isFree(ccw)) {
+                    if (isFree(ccw) && !lastRotation.equals("cw")) {
                         AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
                         return ActionInfo.ROTATE_CCW(desire);
                     } else {
-                        if (isFree(cw)) {
+                        if (isFree(cw) && !lastRotation.equals("ccw")) {
                             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
                             return ActionInfo.ROTATE_CW(desire);
                         }

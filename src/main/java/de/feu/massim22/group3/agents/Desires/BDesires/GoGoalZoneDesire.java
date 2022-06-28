@@ -146,9 +146,12 @@ public class GoGoalZoneDesire extends BeliefDesire {
             Point nearestGoalZoneAgentNew = nearestGoalZoneGoalZoneAgentNew
                     .add(posAgentOld.add(realtiveGoalZoneAgentOld.sub(posGoalZoneAgentOld)));
             String direction = DirectionUtil.getDirection(agent.belief.getPosition(), nearestGoalZoneAgentNew);
+            int distance = Point.distance(Point.castToPoint(agent.belief.getPosition()), nearestGoalZoneAgentNew);
             AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZone from strange agent: "
-                    + nearestGoalZoneAgentNew + " , dir: " + direction);
-            return getActionForMove(direction, getName());
+                    + nearestGoalZoneAgentNew + " , dir: " + direction + " , dist: " + distance);
+            
+            if (distance < 30)
+                return getActionForMove(direction, getName());
         }
 
         return ActionInfo.SKIP(getName());
