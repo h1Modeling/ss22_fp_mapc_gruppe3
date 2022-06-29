@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.management.relation.RoleStatus;
 import de.feu.massim22.group3.agents.Point;
+import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
 
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
@@ -167,7 +168,7 @@ public class DesireUtilities {
                 
                 if (agent.desireProcessing.attachedThings.size() == 0
                     //&& doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName()))) {
-                    && doDecision(agent, new GoDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName(), agent, stepUtilities))) {
+                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock( agent, task), supervisor.getName(), agent, stepUtilities))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
@@ -623,5 +624,23 @@ public class DesireUtilities {
             }
         }
     }
+    
+	public Thing getTaskBlock(BdiAgentV2 agent, TaskInfo task) {
+		Thing result = task.requirements.get(0);
+		// ein Block Task
+		if (task.requirements.size() > 1) {
+			for (Meeting meeting : AgentMeetings.find(agent)) {
+				if (!meeting.agent2().belief.getAttachedThings().isEmpty()) {
+					for (Thing attachedThing : meeting.agent2().belief.getAttachedThings()) {
+						// Kenn ich einen Agenten mit get(0)?
+						if (attachedThing.details.equals(task.requirements.get(0).type)) {
+							result = task.requirements.get(1);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 }
-
