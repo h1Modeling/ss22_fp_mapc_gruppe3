@@ -104,7 +104,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     @Override
 	public List<InterestingPoint> getInterestingPoints(String supervisor, int maxNumberGoals) {
 		GameMap map = maps.get(supervisor);
-		return map.getInterestingPoints(maxNumberGoals, false);
+		return map.getInterestingPoints(maxNumberGoals, true);
 	}
 	
     @Override

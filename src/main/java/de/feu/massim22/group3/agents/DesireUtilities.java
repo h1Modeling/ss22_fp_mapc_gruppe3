@@ -57,10 +57,12 @@ public class DesireUtilities {
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , DigFreeDesire");
+        
         if (doDecision(agent, new FreedomDesire(agent.belief))) {
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , FreedomDesire");
+        
         if (doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent))) {
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
@@ -161,14 +163,14 @@ public class DesireUtilities {
                             + " , GoAdoptRoleDesire - worker");
                 
                 if (agent.desireProcessing.attachedThings.size() == 0
-                && doDecision(agent, new AttachAbandonedBlockDesire(agent.belief, task.requirements.get(0).type))) {
+                && doDecision(agent, new AttachAbandonedBlockDesire(agent.belief, getTaskBlock(agent, task).type))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , AttachAbandonedBlockDesire");
                 
                 if (agent.desireProcessing.attachedThings.size() == 0
                     //&& doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName()))) {
-                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock( agent, task), supervisor.getName(), agent, stepUtilities))) {
+                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock(agent, task), supervisor.getName(), agent, stepUtilities))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
@@ -220,7 +222,7 @@ public class DesireUtilities {
         
         case "GoAdoptRoleDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
-                result = 0;
+                result = 10;
             else
                 result = 1000;
             break;

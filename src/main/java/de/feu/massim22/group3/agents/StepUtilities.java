@@ -20,6 +20,7 @@ public class StepUtilities {
     public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
     private static int countAgent = 0;
     public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
+    boolean mergeGroups = true;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
@@ -122,9 +123,9 @@ public class StepUtilities {
                         if (countMeetings(foundAgent, foundAgent.get(j).position) == 1) {
                             recordAgentMeeting( agent1, agent2, foundAgent.get(j).position);
                             recordAgentMeeting( agent2, agent1, foundAgent.get(k).position);
-                        }
+                        //}
                             // Agents sind aus unterschiedlichen Gruppen ?
-                            /*if (!(agent1.supervisor == agent2.supervisor)) {
+                            if (mergeGroups && !(agent1.supervisor == agent2.supervisor)) {
                                 // dann die kleinere in die größere Gruppe mergen
                                 if (agent1.supervisor.getAgents().size() >= agent2.supervisor.getAgents().size()) {
                                     AgentLogger.info(Thread.currentThread().getName()
@@ -133,7 +134,7 @@ public class StepUtilities {
                                             + agent2.supervisor.getName());
                                     // Gruppe von agent2 in Gruppe von agent1 mergen
                                     exSupervisors.add(agent2.supervisor);
-                                    Point posOld = agent2.belief.getPosition();
+                                    Point posOld = Point.castToPoint(agent2.belief.getPosition());
                                     mergeGroups(agent1.supervisor, agent2.supervisor, agent1, agent2, foundAgent.get(j).position);
                                     AgentLogger.info(Thread.currentThread().getName()
                                             + " doGroupProcessing() Agent2: "
@@ -147,7 +148,7 @@ public class StepUtilities {
                                             + agent2.supervisor.getName());
                                     // Gruppe von agent1 in Gruppe von agent2 mergen
                                     exSupervisors.add(agent1.supervisor);
-                                    Point posOld = agent1.belief.getPosition();
+                                    Point posOld = Point.castToPoint(agent1.belief.getPosition());
                                     mergeGroups(agent2.supervisor, agent1.supervisor, agent2, agent1, foundAgent.get(k).position);
                                     AgentLogger.info(Thread.currentThread().getName()
                                             + " doGroupProcessing() Agent1: "
@@ -163,12 +164,12 @@ public class StepUtilities {
                         } else
                             AgentLogger.info(Thread.currentThread().getName()
                                     + " doGroupProcessing() no merge, more than one possibility - Supervisor1: "
-                                    + agent1.supervisor.getName() + " , Supervisor2: " + agent2.supervisor.getName());*/
+                                    + agent1.supervisor.getName() + " , Supervisor2: " + agent2.supervisor.getName());
                     }
                 }
             }
 
-            //allSupervisors.removeAll(exSupervisors);
+            if (mergeGroups) allSupervisors.removeAll(exSupervisors);
             Collections.sort(allSupervisors, new Comparator<Supervisor>() {
                 @Override
                 public int compare(Supervisor a, Supervisor b)

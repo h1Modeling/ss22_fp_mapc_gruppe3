@@ -46,10 +46,12 @@ public class GoAdoptRoleDesire extends BeliefDesire {
 
         if (belief.getRoleZones().contains(Point.zero())) {
             // already in rolezone
+            AgentLogger.info(Thread.currentThread().getName() + "GoAdoptRoleDesire - Adopt Role");
             return ActionInfo.ADOPT(role, getName());
         } else {
             // not yet in rolezone
             if (belief.getReachableRoleZones().size() > 0 || belief.getRoleZones().size() > 0) {
+                AgentLogger.info(Thread.currentThread().getName() + "GoAdoptRoleDesire - RoleZone visible");
                 Point p = Point.castToPoint(belief.getNearestRelativeManhattenRoleZone());
                 int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
 

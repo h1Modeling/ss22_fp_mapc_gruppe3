@@ -91,15 +91,16 @@ public abstract class BeliefDesire implements IDesire {
     //Melinda
     protected ActionInfo getActionForMoveWithAlternate(String dir, String dirAlt, String desire) {
         ActionInfo firstTry = getActionForMove(dir, desire);
+        String lastRotation = belief.getLastActionParams().size() > 0 ? belief.getLastActionParams().get(0) : "";
         
         if ((firstTry.value().getName().equals(Actions.MOVE) 
                 && !firstTry.value().getParameters().get(0).toString().equals(dir)  
                 && !firstTry.value().getParameters().get(0).toString().equals(dirAlt))
                 || ((firstTry.value().getName().equals(Actions.ROTATE) 
                 && (firstTry.value().getParameters().get(0).toString().equals("cw")
-                && belief.getLastActionParams().get(0).equals("ccw")) 
+                && lastRotation.equals("ccw")) 
                 || (firstTry.value().getParameters().get(0).toString().equals("ccw")
-                && belief.getLastActionParams().get(0).equals("cw"))))) {
+                && lastRotation.equals("cw"))))) {
             return getActionForMove(dirAlt, desire);
         }
         
@@ -127,7 +128,7 @@ public abstract class BeliefDesire implements IDesire {
                 
                 //Melinda (nur zu Testzwecken; wird später wieder zurückgesetzt auf den ursprünglichen Code)
                 // um Schwanzwedeln zu vermeiden
-                String lastRotation = belief.getLastActionParams().get(0);
+                String lastRotation = belief.getLastActionParams().size() > 0 ? belief.getLastActionParams().get(0) : "";
                 
                 if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
                     AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");

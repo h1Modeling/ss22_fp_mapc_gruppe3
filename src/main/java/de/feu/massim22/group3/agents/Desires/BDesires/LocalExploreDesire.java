@@ -45,6 +45,6 @@ public class LocalExploreDesire extends BeliefDesire {
 
     @Override
     public int getPriority() {
-        return 10;
+        return 100;
     }
 }

@@ -100,7 +100,7 @@ public class GoDispenserDesire extends BeliefDesire {
             nearestDispenser = agent.desireProcessing.getNearestDispenser(typeDispensers);
             dispenserItself = Point.castToPoint(DirectionUtil.getDispenserItself(nearestDispenser));
 
-            if (agent.requestMade && agent.lastUsedDispenser != nearestDispenser.position()) {
+            if (agent.requestMade && agent.lastUsedDispenser != null && agent.lastUsedDispenser != nearestDispenser.position()) {
                 AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 3");
                 for (Thing thing : agent.belief.getThings()) {
                     AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 3.1: " + thing.type + " , " + agent.lastUsedDispenser);
