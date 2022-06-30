@@ -31,6 +31,16 @@ public class AgentMeetings {
         return result;
     }
     
+    public static int getDistance(Meeting meeting) {
+        int distance = 0;
+        Point nowAgent1 = Point.castToPoint(meeting.agent1().belief.getPosition());
+        Point nowAgent2 = new Point(Point.castToPoint(meeting.agent2().belief.getPosition()))
+        		.add(new Point(meeting.posAgent1()).add(new Point(meeting.relAgent2()).sub(meeting.posAgent2())));
+        distance = Point.distance(nowAgent1, nowAgent2);
+        
+        return distance;
+    }
+    
     public static List<Meeting> find(BdiAgentV2 agent) {
         List<Meeting> resultList = new ArrayList<Meeting>(); 
         
