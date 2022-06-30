@@ -45,15 +45,19 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
     private Map<String, PathFinder> pathFinder = new HashMap<>();
-    private IGraphicalDebugger debugger = new GraphicalDebugger();
+    private IGraphicalDebugger debugger;
     private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
     private boolean busy = false;
+    private static boolean debug = true;
     
     private Navi() {
         PathFinder.init();
 
         // Open Debugger
-        SwingUtilities.invokeLater((Runnable)debugger);
+        if (debug) {
+            debugger = new GraphicalDebugger();
+            SwingUtilities.invokeLater((Runnable)debugger);
+        }
 
         // TODO At end of application PathFinder must be closed to free resources
     }
@@ -72,7 +76,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     }
 
     public void setDebugStepListener(DebugStepListener listener) {
-        debugger.setDebugStepListener(listener);
+        if (debug) {
+            debugger.setDebugStepListener(listener);
+        }
     }
 
     public void setMailService(MailService mailService) {
@@ -123,9 +129,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     	return maps.get(supervisor).getMapBuffer();
     }
 
-    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention) {
-        AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention);
-        debugger.setAgentData(data);
+    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType) {
+        if (debug) {
+            AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention, groupDesireType);
+            debugger.setAgentData(data);
+        }
     }
     
     @Override
@@ -237,14 +245,16 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         // Update internal step
         agentStep.put(agent, step);
 
-        // Update Debugger simulation data
-        debugger.setSimInfo(step, maxSteps, score);
+        if (debug) {
+            // Update Debugger simulation data
+            debugger.setSimInfo(step, maxSteps, score);
 
-        // Update Debugger Norms
-        debugger.setNorms(normsInfo, step);
+            // Update Debugger Norms
+            debugger.setNorms(normsInfo, step);
 
-        // Update Debugger Tasks
-        debugger.setTasks(taskInfo, step);
+            // Update Debugger Tasks
+            debugger.setTasks(taskInfo, step);
+        }
     }
 
     private void makeMergeSuggestions() {
@@ -366,7 +376,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }
         
         // Update Debugger
-        debugger.removeSupervisor(oldSupervisor, newSupervisor);
+        if (debug) {
+            debugger.removeSupervisor(oldSupervisor, newSupervisor);
+        }
         mergeKeys.remove(mergeKey);
     }
 
@@ -544,8 +556,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             List<Point> goalZones = map.getGoalCache();
 
             // Update debugger
-            GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
-            debugger.setGroupData(debugData);
+            if (debug) {
+                GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
+                debugger.setGroupData(debugData);
+            }
             
             // Send Result to Agents
             if (mailService != null) {
@@ -650,12 +664,31 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
     @Override
     public void updateDesireDebugData(List<DesireDebugData> data, String agent) {
-        debugger.setAgentDesire(data, agent);
+        if (debug) {
+            debugger.setAgentDesire(data, agent);
+        }
     }
 
     @Override
     public int getAgentIdAtPoint(String supervisor, Point p) {
         GameMap map = maps.get(supervisor);
         return map.getAgentIdAtPoint(p);
+    }
+
+    @Override
+    public boolean isBlockAttached(String supervisor, Point p) {
+        GameMap map = maps.get(supervisor);
+        return map.isBlockAttached(p);
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        Navi.debug = debug;
+    }
+
+    @Override
+    public List<Point> getMeetingPoints(String supervisor) {
+        GameMap map = maps.get(supervisor);
+        return map.getMeetingPoints();
     }
 }

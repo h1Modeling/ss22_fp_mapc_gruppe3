@@ -20,7 +20,7 @@ public class AgentLogger {
     // Level for console output and main log file
     // To print all messages: Level.ALL
     // Also sets max. Level for the separate files!
-    private static Level MAIN_LOG_LEVEL = Level.INFO;
+    private static Level MAIN_LOG_LEVEL = Level.OFF;
     // Level for separate (filtered) log files
     private static Level FILES_LOG_LEVEL = Level.ALL;
 

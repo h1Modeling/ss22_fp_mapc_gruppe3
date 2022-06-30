@@ -20,4 +20,5 @@ public interface IGraphicalDebugger {
     void setSelectedGroup(String name);
     void makeStep();
     void setDebugStepListener(DebugStepListener listener);
+    String getAgentGroupDesireType(String agent);
 }

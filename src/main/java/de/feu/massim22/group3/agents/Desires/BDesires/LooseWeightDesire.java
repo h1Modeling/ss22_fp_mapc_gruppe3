@@ -3,6 +3,8 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.Belief;
+import massim.protocol.data.TaskInfo;
+import massim.protocol.data.Thing;
 
 public class LooseWeightDesire extends BeliefDesire {
 
@@ -12,9 +14,23 @@ public class LooseWeightDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        boolean value = belief.getAttachedPoints().size() == 0;
-        String info = value ? "" : belief.getAttachedPoints().size() + " Things attached";
-        return new BooleanInfo(value, info);
+        int attached = belief.getAttachedPoints().size();
+        if (attached == 0) {
+            return new BooleanInfo(true, getName());
+        }
+        if (attached == 1) {
+            // Test if block is usefull
+            Thing block = belief.getAttachedThings().get(0);
+            for (TaskInfo ti : belief.getTaskInfo()) {
+                for (Thing t : ti.requirements) {
+                    if (t.type.equals(block.details)) {
+                        return new BooleanInfo(true, getName());
+                    }
+                }
+            }
+        }
+        String info = belief.getAttachedPoints().size() + " Things attached";
+        return new BooleanInfo(false, info);
     }
 
     public ActionInfo getNextActionInfo() {

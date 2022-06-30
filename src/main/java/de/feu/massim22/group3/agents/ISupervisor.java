@@ -12,7 +12,7 @@ public interface ISupervisor {
     void setName(String name);
     String getName();
     void receiveConfirmation(String agent, EventName task);
-    void initStep();
+    void initStep(int step);
     void addAgent(String name);
     void reportAgentData(String agent, AgentReport report);
     void reportTasks(Set<TaskInfo> tasks);

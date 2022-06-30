@@ -5,6 +5,7 @@ import java.util.List;
 
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
 
@@ -13,6 +14,7 @@ import java.awt.Point;
 public abstract class BeliefDesire implements IDesire {
     protected Belief belief;
     protected List<IDesire> precondition = new ArrayList<>();
+
     private int moveIteration = 0;
 
     public BeliefDesire(Belief belief) {
@@ -65,13 +67,18 @@ public abstract class BeliefDesire implements IDesire {
         return 0;
     }
 
+    @Override
+    public boolean isGroupDesire() {
+        return false;
+    }
+
     private ActionInfo getIteratedActionForMove(String dir, String desire) {
         moveIteration++;
         if (moveIteration < 4) {
             return getActionForMove(dir, desire);
         }
         // TODO AGENT is STuck
-        return ActionInfo.SKIP("Agent is Stuck");
+        return ActionInfo.SKIP("Agent is Stuck in getInteratedActionForMove");
     }
 
     protected ActionInfo getActionForMove(String dir, String desire) {
@@ -87,20 +94,35 @@ public abstract class BeliefDesire implements IDesire {
                 Thing ccw = belief.getThingCCRotatedAt(p);
                 Point cwP = getCRotatedPoint(p);
                 Point ccwP = getCCRotatedPoint(p);
+                Point cwP2 = new Point(cwP.x + dirPoint.x, cwP.y + dirPoint.y);
+                Point ccwP2 = new Point(ccwP.x + dirPoint.x, ccwP.y + dirPoint.y);
+                Thing cw2 = belief.getThingAt(cwP2);
+                Thing ccw2 = belief.getThingAt(ccwP2);
+                // Move away from direction if possible
+                if (isFree(cw) && isFree(ccw)) {
+                    if (isFree(cw) && !cwP.equals(dirPoint)) {
+                        return ActionInfo.ROTATE_CW(desire);
+                    }
+                    if (isFree(ccw) && !ccwP.equals(dirPoint)) {
+                        return ActionInfo.ROTATE_CCW(desire);
+                    }
+                }
                 if (isFree(cw)) {
                     return ActionInfo.ROTATE_CW(desire);
                 }
                 if (isFree(ccw)) {
                     return ActionInfo.ROTATE_CCW(desire);
                 }
-                if (cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
+                if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
                     Point target = DirectionUtil.rotateCW(p);
                     return ActionInfo.CLEAR(target, desire);
                 }
-                if (ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
-                    Point target = DirectionUtil.rotateCW(p);
+                if (ccw != null && ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
+                    Point target = DirectionUtil.rotateCCW(p);
                     return ActionInfo.CLEAR(target, desire);
                 }
+
+                return ActionInfo.SKIP(desire);
             }
         }
         // Test Agent
@@ -124,11 +146,100 @@ public abstract class BeliefDesire implements IDesire {
             if (isFree(tDir2) || isClearable(tDir2)) {
                 return getIteratedActionForMove(dir2, desire);
             }
-            return ActionInfo.SKIP("Agent is stuck");
+            return ActionInfo.SKIP("Agent is stuck in getActionForMove avoiding Agent");
 
         } else {
-            return ActionInfo.SKIP("Agent is stuck");
+            // Try to move in different direction to improve situation
+            if (attached.size() > 0) {
+                // Move in oposite direction of attached block
+                Point p = attached.get(0);
+                Point newDir = new Point(-p.x, -p.y);
+                String newDirString = getDirectionFromPoint(newDir);
+                return getIteratedActionForMove(newDirString, desire);
+            }
+            return ActionInfo.SKIP("Agent is stuck in getActionForMove");
         }
+    }
+
+/*     protected boolean getActionForMove2(String dir, String desire) {
+        Point dirPoint = DirectionUtil.getCellInDirection(dir);
+        List<Point> attached = belief.getAttachedPoints();
+        // Rotate attached
+        for (Point p : attached) {
+            Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
+            
+            Thing t = belief.getThingAt(testPoint);
+            //if (t.type.equals(Thing.TYPE_OBSTACLE)) return false;
+            if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
+                return false;
+            }
+        }
+        return true;
+    } */
+
+    protected ActionInfo getActionForMove(Point absolutePoint, String desire) {
+        Point position = belief.getPosition();
+        Point relativePoint = new Point(absolutePoint.x - position.x, absolutePoint.y - position.y);
+        String dir = getDirectionToRelativePoint(relativePoint);
+        return getActionForMove(dir, desire);
+    }
+
+    protected ActionInfo getActionForCWRotation(String desire) {
+        var things = belief.getAttachedThings();
+        if (things.size() > 0) {
+            Thing t = things.get(0);
+            Point p = getCRotatedPoint(new Point(t.x, t.y));
+            // Rotate CW
+            if (isFreeInVision(p)) {
+                return ActionInfo.ROTATE_CW(desire);
+            }
+            Thing atP = belief.getThingAt(p);
+            // Clear
+            if (atP.type.equals(Thing.TYPE_OBSTACLE)) {
+                return ActionInfo.CLEAR(p, desire);
+            }
+            // Rotate CCW
+            Point ccP = getCCRotatedPoint(new Point(t.x, t.y));
+            if (isFreeInVision(ccP)) {
+                return ActionInfo.ROTATE_CCW(desire);
+            }
+            Thing atCcP = belief.getThingAt(ccP);
+            // Clear
+            if (atCcP.type.equals(Thing.TYPE_OBSTACLE)) {
+                return ActionInfo.CLEAR(ccP, desire);
+            }
+            return ActionInfo.SKIP(desire);
+        }
+        return ActionInfo.ROTATE_CW(desire);
+    }
+
+    protected ActionInfo getActionForCCWRotation(String desire) {
+        var things = belief.getAttachedThings();
+        if (things.size() > 0) {
+            Thing t = things.get(0);
+            Point p = getCCRotatedPoint(new Point(t.x, t.y));
+            // Rotate CCW
+            if (isFreeInVision(p)) {
+                return ActionInfo.ROTATE_CCW(desire);
+            }
+            Thing atP = belief.getThingAt(p);
+            // Clear
+            if (atP.type.equals(Thing.TYPE_OBSTACLE)) {
+                return ActionInfo.CLEAR(p, desire);
+            }
+            // Rotate CW
+            Point cP = getCRotatedPoint(new Point(t.x, t.y));
+            if (isFreeInVision(cP)) {
+                return ActionInfo.ROTATE_CW(desire);
+            }
+            Thing atCP = belief.getThingAt(cP);
+            // Clear
+            if (atCP.type.equals(Thing.TYPE_OBSTACLE)) {
+                return ActionInfo.CLEAR(cP, desire);
+            }
+            return ActionInfo.SKIP(desire);
+        }
+        return ActionInfo.ROTATE_CW(desire);
     }
 
     protected String getDirectionToRelativePoint(Point p) {
@@ -175,11 +286,25 @@ public abstract class BeliefDesire implements IDesire {
         return t == null || t.type.equals(Thing.TYPE_DISPENSER);
     }
 
+    protected boolean isFreeInVision(Point p) {
+        for (Thing t: belief.getThings()) {
+            if (t.x == p.x && t.y == p.y && !isFree(t)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected boolean isClearable(Thing t) {
         return t != null && (t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_OBSTACLE));
     }
 
     public BooleanInfo isUnfulfillable() {
+        for (IDesire d : precondition) {
+            if (d.isUnfulfillable().value()) {
+                return d.isUnfulfillable();
+            }
+        }
         return new BooleanInfo(false, "");
     }
 
@@ -221,7 +346,33 @@ public abstract class BeliefDesire implements IDesire {
         }
     }
 
+    protected int getDistance(Point a, Point b) {
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    }
+
+    protected int getDistanceToAgent(String agent) {
+        List<ReachableTeammate> mates = belief.getReachableTeammates();
+        for (ReachableTeammate m : mates) {
+            if (m.name().equals(agent)) {
+                return m.distance();
+            }
+        }
+        return 0;
+    }
+
+    protected Point getAgentPosition(String agent) {
+        List<ReachableTeammate> mates = belief.getReachableTeammates();
+        for (ReachableTeammate m : mates) {
+            if (m.name().equals(agent)) {
+                return m.position();
+            }
+        }
+        return null;
+    }
+
     public Point getCCRotatedPoint(Point p) {
         return new Point(p.y, -p.x);
     }
+
+
 }

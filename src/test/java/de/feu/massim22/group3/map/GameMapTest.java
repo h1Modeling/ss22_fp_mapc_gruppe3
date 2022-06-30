@@ -104,6 +104,30 @@ class GameMapTest {
         }
         m.setAgentAttached("A1", points);
         int result = m.getAgentAttached("A1");
-        assertEquals(Math.pow(2, 25) - 1, result);
-    } 
+        assertEquals(Math.pow(2, 25) - 4097, result);
+    }
+
+    @Test
+    void attachedAtRelativePoint() {
+        GameMap m = new GameMap(10, 10);
+        boolean result1 = m.attachedAtRelativePoint(new Point(0, -1), 141440);
+        boolean result2 = m.attachedAtRelativePoint(new Point(0, 1), 141440);
+        boolean result3 = m.attachedAtRelativePoint(new Point(-1, 0), 141440);
+        boolean result4 = m.attachedAtRelativePoint(new Point(1, 0), 141440);
+        assertEquals(true, result1 && result2 && result3 && result4);
+        boolean result5 = m.attachedAtRelativePoint(new Point(0, -1), 64);
+        assertEquals(false, result5);
+    }
+
+    @Test
+    void isBlockAttachedTest() {
+        GameMap map = new GameMap(20, 20);
+        map.addReport(0, 0, CellType.FREE, ZoneType.NONE, 0, 0);
+        map.setAgentPosition("a1", new Point(2,3));
+        List<Point> attachedThings = new ArrayList<>();
+        attachedThings.add(new Point(0, -1));
+        map.setAgentAttached("a1", attachedThings);
+        boolean result = map.isBlockAttached(new Point(2, 2));
+        assertEquals(true, result);
+    }
 }

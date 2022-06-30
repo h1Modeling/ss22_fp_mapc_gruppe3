@@ -19,12 +19,9 @@ import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
-import eis.iilang.Identifier;
-import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.ParameterList;
 import eis.iilang.Percept;
-import eis.iilang.TruthValue;
 import massim.protocol.data.NormInfo;
 import massim.protocol.data.Role;
 import massim.protocol.data.Subject;
@@ -73,19 +70,22 @@ public class Belief {
     private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
     private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
     private List<ReachableTeammate> reachableTeammates = new ArrayList<>();
+    private List<ForbiddenThing> forbiddenThings = new ArrayList<>();
     private String groupDesireType = GroupDesireTypes.NONE;
 
-    Belief(String agentName) {
+    public Belief(String agentName) {
         this.name = agentName;
     }
 
-    void update(List<Percept> percepts) {
+    public void update(List<Percept> percepts) {
         clearLists();
         for (Percept percept : percepts) {
             List<Parameter> p = percept.getParameters();
             switch (percept.getName()) {
                 case "step":
                     step = toNumber(p, 0, Integer.class);
+                    // Update Forbidden Things
+                    forbiddenThings.removeIf(t -> t.stepDiscovered + t.duration < step);
                     break;
                 case "lastAction":
                     lastAction = toStr(p, 0);
@@ -358,7 +358,7 @@ public class Belief {
         }
     }
 
-    String getTeam() {
+    public String getTeam() {
         return team;
     }
 
@@ -538,7 +538,7 @@ public class Belief {
     public Point getNearestRelativeManhattenDispenser(String type) {
         List<Thing> d = new ArrayList<>(things);
         // Filter
-        d.removeIf(r -> !r.details.equals(type));
+        d.removeIf(r -> !r.details.equals(type) || !r.type.equals(Thing.TYPE_DISPENSER));
         // Sort
         d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
 
@@ -595,6 +595,30 @@ public class Belief {
         return null;
     }
 
+    public Thing getThingWithTypeAndDetailAt(String d, String type, String detail) {
+        Point p = DirectionUtil.getCellInDirection(d);
+        for (Thing t : things) {
+            if (t.x == p.x && t.y == p.y && t.type.equals(type) && t.details.equals(detail)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public boolean isForbidden(Point p) {
+        for (ForbiddenThing t : forbiddenThings) {
+            if (t.position().equals(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addForbiddenThing(Point p, int duration) {
+        ForbiddenThing t = new ForbiddenThing(p, this.step, duration);
+        forbiddenThings.add(t);
+    }
+
     void setPosition(Point position) {
         this.position = position;
     }
@@ -633,11 +657,19 @@ public class Belief {
             int i = Integer.parseInt(dispenser.type().name().substring(10));
             distanceDispenser[i] = Math.min(distanceDispenser[i], dispenser.distance());
         }
-        return new AgentReport(attachedThings, energy, deactivated, availableActions, position, distanceDispenser, groupDesireType);
+        int distGoalZone = 999;
+        for (ReachableGoalZone goalZone : reachableGoalZones) {
+            distGoalZone = Math.min(distGoalZone, goalZone.distance());
+        }
+        return new AgentReport(attachedThings, energy, deactivated, availableActions, position, distanceDispenser, distGoalZone, groupDesireType, step);
     }
 
     public void setGroupDesireType(String groupDesireType) {
         this.groupDesireType = groupDesireType;
+    }
+
+    public String getGroupDesireType() {
+        return groupDesireType;
     }
 
     public List<TaskInfo> getNewTasks() {
@@ -767,6 +799,7 @@ public class Belief {
 
     private void updatePosition() {
         if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
+            if (lastActionParams.size() == 0) return;
             String dir = lastActionParams.get(0);
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
@@ -820,5 +853,8 @@ public class Belief {
                 position.x -= 1;
                 break;
         }
+    }
+
+    private static record ForbiddenThing(Point position, int stepDiscovered, int duration) {
     }
 }

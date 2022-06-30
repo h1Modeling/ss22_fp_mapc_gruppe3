@@ -77,4 +77,9 @@ public class OrDesire implements IDesire {
     public int getPriority() {
         return Math.max(d1.getPriority(), d2.getPriority());
     }
+
+    @Override
+    public boolean isGroupDesire() {
+        return d1.isGroupDesire() && d2.isGroupDesire();
+    }
 }

@@ -11,15 +11,22 @@ import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
+import de.feu.massim22.group3.agents.Desires.BDesires.DeliverAndAttachBlockDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.DeliverBlockDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.DigFreeDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ExploreDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.FreedomDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.GetBlockDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.LooseWeightDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ProcessEasyTaskDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.ReceiveAndAttachBlockDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.ReceiveBlockDesire;
 import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
@@ -38,13 +45,9 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     private ISupervisor supervisor;
     private int index;
     private boolean merging = false;
-    //private DesireHandler desireHandler;
-
-    private boolean test = false;
     
     public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
         super(name, mailbox);
-        //desireHandler = new DesireHandler(this);
         this.eisSender = eisSender;
         this.index = index;
         this.supervisor = new Supervisor(this);
@@ -89,7 +92,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             if (queue.isEmpty()) {
                 // Take a break
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -113,14 +116,15 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             AgentReport report = belief.getAgentReport();
             supervisor.reportAgentData(getName(), report);
             supervisor.reportTasks(belief.getTaskInfo());
-            Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(), belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention());
-            /*
+            Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(),
+                    belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention(), belief.getGroupDesireType());
+/*             
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-             */  
+               */
             break;
         case TO_SUPERVISOR:
             this.supervisor.handleMessage(event, sender);
@@ -138,8 +142,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             List<Parameter> parameters = event.getParameters();
             String key = ((Identifier)parameters.get(2)).getValue();
             // Allow only on merge per step
-            if (!merging && !test) {
-                //if (supervisor)
+            if (!merging) {
                 Navi.<INaviAgentV1>get().acceptMerge(key, getName());
                 merging = true;
             } else {
@@ -162,11 +165,62 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             List<Parameter> parameters = event.getParameters();
             String agent = ((Identifier)parameters.get(0)).getValue();
             supervisor.addAgent(agent);
-            test = false;
             break;
         }
+        case SUPERVISOR_PERCEPT_DELIVER_BLOCK: {
+            belief.setGroupDesireType(GroupDesireTypes.TASK);
+            List<Parameter> parameters = event.getParameters();
+            String task = PerceptUtil.toStr(parameters, 0);
+            String agent = PerceptUtil.toStr(parameters, 1);
+            TaskInfo taskInfo = belief.getTask(task);
+            Thing block = taskInfo.requirements.get(0);
+            desires.add(new DeliverBlockDesire(belief, block, supervisor.getName(), agent, this));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_DELIVER_BLOCK_DONE: {
+            // Remove group desire if teammate has finished or canceled their group desire
+            String desireName = ReceiveBlockDesire.class.getSimpleName();
+            desires.removeIf(d -> d.getName().equals(desireName));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_RECEIVE_BLOCK: {
+            belief.setGroupDesireType(GroupDesireTypes.TASK);
+            List<Parameter> parameters = event.getParameters();
+            String task = PerceptUtil.toStr(parameters, 0);
+            String agent = PerceptUtil.toStr(parameters, 1);
+            TaskInfo taskInfo = belief.getTask(task);
+            desires.add(new ReceiveBlockDesire(belief, taskInfo, agent, getName(), supervisor.getName()));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_DELIVER_SAME_TWO_BLOCK: {
+            belief.setGroupDesireType(GroupDesireTypes.DELIVER_ATTACH);
+            System.out.println("111111111111111111111111111111111111");
+            List<Parameter> parameters = event.getParameters();
+            String task = PerceptUtil.toStr(parameters, 0);
+            String agent = PerceptUtil.toStr(parameters, 1);
+            TaskInfo taskInfo = belief.getTask(task);
+            Thing block = taskInfo.requirements.get(0);
+            desires.add(new DeliverAndAttachBlockDesire(belief, taskInfo, agent, supervisor.getName(), block, this));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_RECEIVE_SAME_TWO_BLOCK: {
+            belief.setGroupDesireType(GroupDesireTypes.RECEIVE_ATTACH);
+            List<Parameter> parameters = event.getParameters();
+            String task = PerceptUtil.toStr(parameters, 0);
+            String agent = PerceptUtil.toStr(parameters, 1);
+            TaskInfo taskInfo = belief.getTask(task);
+            desires.add(new ReceiveAndAttachBlockDesire(belief, taskInfo, agent, supervisor.getName()));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_GET_BLOCK: {
+            belief.setGroupDesireType(GroupDesireTypes.TASK);
+            List<Parameter> parameters = event.getParameters();
+            String block = PerceptUtil.toStr(parameters, 0);
+            desires.add(new GetBlockDesire(belief, block, supervisor.getName()));
+            break;         
+        }
         default:
-            throw new IllegalArgumentException("Message is not handled!");
+            throw new IllegalArgumentException("Message is not handled: " + taskName);
         }
     }
 
@@ -188,10 +242,24 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         }
 
         // Delete expired Desires
-        desires.removeIf(d -> d.isUnfulfillable().value());
+        desires.removeIf(d -> d.isUnfulfillable().value() || (d.isGroupDesire() && d.isFulfilled().value()));
 
         // Sort Desires
         desires.sort((a, b) -> a.getPriority() - b.getPriority());
+
+        // Set group Desire flag
+        if (!hasGroupDesire()) {
+            belief.setGroupDesireType(GroupDesireTypes.NONE);
+        }
+    }
+
+    private boolean hasGroupDesire() {
+        for (IDesire d : desires) {
+            if (d.isGroupDesire()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void findIntention() {
@@ -240,12 +308,13 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     }
 
     @Override
-    public void forwardMessageFromSupervisor(Percept message, String receiver, String sender) {
+    public synchronized void forwardMessage(Percept message, String receiver, String sender) {
         this.sendMessage(message, receiver, sender);
     }
 
     @Override
     public void initSupervisorStep() {
-        this.supervisor.initStep();
+        int step = belief.getStep();
+        this.supervisor.initStep(step);
     }
 }

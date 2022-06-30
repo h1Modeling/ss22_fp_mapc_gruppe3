@@ -27,6 +27,7 @@ public class GameMap {
     private List<Point> goalCache = new ArrayList<>();
     private List<Point> roleCache = new ArrayList<>();
     private List<InterestingPoint> dispenserCache = new ArrayList<>();
+    private List<Point> meetingPoints = null;
     
     public GameMap(int x, int y) {
         initialSize = new Point(x, y);
@@ -60,7 +61,7 @@ public class GameMap {
 
     public Point getInternalAgentPosition(String agent) {
         Point agentPos = agentPosition.get(agent);
-        return getInternalCellIndex(agentPos.x, agentPos.y);
+        return agentPos == null ? new Point(0, 0) : getInternalCellIndex(agentPos.x, agentPos.y);
     }
 
     public int getAgentIdAtPoint(Point p) {
@@ -71,6 +72,46 @@ public class GameMap {
             }
         }
         return 0;
+    }
+
+    public boolean isBlockAttached(Point p) {
+        for (Entry<String, Point> entry : agentPosition.entrySet()) {
+            Point n = new Point(p.x, p.y - 1);
+            Point e = new Point(p.x + 1, p.y);
+            Point s = new Point(p.x, p.y + 1);
+            Point w = new Point(p.x - 1, p.y);
+            String agent = entry.getKey();
+            int attached = agentAttached.get(agent);
+            if (entry.getValue().equals(n)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(0, 1), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+            if (entry.getValue().equals(s)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(0, -1), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+            if (entry.getValue().equals(e)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(-1, 0), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+            if (entry.getValue().equals(w)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(1, 0), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    boolean attachedAtRelativePoint(Point p, int value) {
+        return ((value >> ((p.y + 2) * 5 + p.x + 2)) & 0x1) == 0x1;
     }
 
     public Point getInternalCellIndex(int x, int y) {
@@ -106,6 +147,39 @@ public class GameMap {
 
     public void setAgentPosition(String name, Point position) {
         agentPosition.put(name, position);
+    }
+
+    public List<Point> getMeetingPoints() {
+        if (meetingPoints == null) {
+            calcMeetingPoints();
+        }
+        return meetingPoints;
+    }
+
+    public void calcMeetingPoints() {
+        meetingPoints = new ArrayList<>();
+        for (int y = 2; y < cells.length - 2; y++) {
+            for (int x = 2; x < cells[0].length - 2; x++) {
+                if (meetingPoints.size() > 9) {
+                    return;
+                }
+                MapCell c = cells[y][x];
+                if (c.getZoneType() == ZoneType.GOALZONE) {
+                    boolean found = true;
+                    for (int oy = -2; oy <= 2; oy++) {
+                        for (int ox = -2; ox <= 2; ox++) {
+                            MapCell cell = cells[y+oy][x+ox];
+                            if (cell.getCellType() == CellType.OBSTACLE) {
+                                found = false;
+                            }
+                        }
+                    }
+                    if (found) {
+                        meetingPoints.add(new Point(x + topLeft.x, y + topLeft.y));
+                    }
+                }
+            }
+        }
     }
 
     public void setAgentAttached(String name, List<Point> attachedThings) {
@@ -151,11 +225,13 @@ public class GameMap {
     }
 
     public int getAgentAttached(String agent) {
-        return agentAttached.get(agent);
+        Integer result = agentAttached.get(agent);
+        return result == null ? 0 : result;
     }
 
     public int getAgentAttachedDistance(String agent) {
-        return agentAttachedDistance.get(agent);
+        Integer result = agentAttachedDistance.get(agent);
+        return result == null ? 0 : result;
     }
     
     public Point getTopLeft() {
@@ -286,6 +362,7 @@ public class GameMap {
         roleCache.clear();
         goalCache.clear();
         dispenserCache.clear();
+        calcMeetingPoints();
         
         for (int y = 0; y < curSize.y; y++) {
             for (int x = 0; x < curSize.x; x++) {
@@ -420,6 +497,17 @@ public class GameMap {
             Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
             InterestingPoint ip = new InterestingPoint(internal, ZoneType.NONE, CellType.TEAMMATE, e.getKey());
             result.add(ip);
+        }
+
+        // Meeting Points in goal Zone
+        for (Point p : meetingPoints) {
+            if (countLeft == 0) {
+                break;
+            }
+            Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
+            InterestingPoint ip = new InterestingPoint(internal, ZoneType.GOALZONE, CellType.UNKNOWN, "");
+            result.add(ip);
+            countLeft -= 1;
         }
         
         // Goal and Role Zones 

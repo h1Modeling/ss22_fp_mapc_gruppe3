@@ -20,13 +20,13 @@ public class DigFreeDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        boolean value = atSamePosition < limit && dir == null;
+        boolean value = (atSamePosition < limit && dir == null);
         return new BooleanInfo(value, "");
     }
 
     @Override
     public BooleanInfo isExecutable() {
-        boolean value = atSamePosition >= limit || dir != null;
+        boolean value = (atSamePosition >= limit || dir != null);
         return new BooleanInfo(value, "");
     }
 
@@ -61,7 +61,8 @@ public class DigFreeDesire extends BeliefDesire {
             Thing t = belief.getThingAt(dir);
             if (isFree(t)) {
                 String dir2 = dir;
-                dir = null;
+                // Make random decision to avoid similar behaviour between agents in stuck group
+                dir = Math.random() > 0.5 ? null : dir2;
                 return ActionInfo.MOVE(dir2, "");
             }
             if (isClearable(t)) {

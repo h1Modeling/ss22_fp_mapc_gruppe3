@@ -125,18 +125,19 @@ void main() {
     		bool attachedOk = true;
             
             // Row
+			/*
             for (int j = -attachedCount; j < attachedCount; j++) {
             	// Column
                 for (int k = -attachedCount; k < attachedCount; k++) {
                     ivec3 testPixel = ivec3(pos.x + k, pos.y + j, 0);
                     float testPixelValue = imageLoad( map, testPixel).r;
                         
-                    bool isBlockAttached = ((attached >> (j * 5 + k)) & 0x1) == 0x1;
+                    bool isBlockAttached = ((attached >> ((j+2) * 5 + (k+2))) & 0x1) == 0x1;
 
                     bool isOk = !isBlockAttached || testPixelValue == 0.0;
                     attachedOk = attachedOk && isOk;
                 }
-            }
+            }*/
 
 			// Read Bit-Mask
 			uint bitBlockIndex = uint(floor(pos.y / 32));

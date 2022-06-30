@@ -3,12 +3,14 @@ package de.feu.massim22.group3.utils.debugger;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
+import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.GeneralPath;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map.Entry;
 import java.awt.*;
@@ -24,8 +26,6 @@ public class MapPanel extends JPanel {
     private int selectedAgentIndex = -1;
     private String selectedAgentName = "";
     private int selectedInterestingPointIndex = -1;
-    private boolean isPainting = false;
-    private boolean isWritingData = false;
 
     MapPanel(IGraphicalDebugger debugger) {
         this.debugger = debugger;
@@ -48,9 +48,11 @@ public class MapPanel extends JPanel {
         });
     }
 
-    private void safeRepaint() {
-        if (!isWritingData) {
+    private synchronized void safeRepaint() {
+        try {
             repaint();
+        } catch (Exception e) {
+            System.out.println("Exception " + e.getMessage());
         }
     }
 
@@ -67,7 +69,7 @@ public class MapPanel extends JPanel {
             List<String> agents = data.agents();
             for (int i = 0; i < agents.size(); i++) {
                 String agent = agents.get(i);
-                if (name.equals(agent)) {
+                if (name != null && name.equals(agent)) {
                     selectedAgentIndex = i;
                     break;
                 }
@@ -95,7 +97,7 @@ public class MapPanel extends JPanel {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public synchronized void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         Dimension d = getSize();
         // Clear
@@ -121,12 +123,14 @@ public class MapPanel extends JPanel {
                     Rectangle2D.Double rect = new Rectangle2D.Double(x * cellWidth + offsetX, y * cellWidth + offsetY, cellWidth, cellWidth);
                     boolean isSelected = x == selectedCell.x && y == selectedCell.y;
                     String name = "";
+                    String groupDesire = GroupDesireTypes.NONE;
                     if (t == CellType.TEAMMATE) {
                         String agentAtCell = data.agentPosition().get(new Point(x, y));
                         isSelected = selectedAgentName != null && selectedAgentName.equals(agentAtCell);
                         name = data.agentPosition().get(new Point(x, y));
+                        groupDesire = debugger.getAgentGroupDesireType(name);
                     }
-                    CellUtils.draw(g2d, t, rect, x, y, name, isSelected);
+                    CellUtils.draw(g2d, t, rect, x, y, name, isSelected, groupDesire);
                 }
             }
 
@@ -140,12 +144,15 @@ public class MapPanel extends JPanel {
             }
 
             // Role Zones
-            for (Point p : data.roleZones()) {
-                Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
-                g2d.setColor(new Color(93,65, 213));
-                g2d.setComposite(AlphaComposite.SrcOver.derive(0.4f));
-                g2d.fill(rect);
-                g2d.setComposite(AlphaComposite.SrcOver.derive(1f));
+            try {
+                for (Point p : data.roleZones()) {
+                    Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
+                    g2d.setColor(new Color(93,65, 213));
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(0.4f));
+                    g2d.fill(rect);
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(1f));
+                }
+            } catch (ConcurrentModificationException e) {
             }
 
             // Interesting Points Distances
@@ -237,10 +244,8 @@ public class MapPanel extends JPanel {
         }
     }
 
-    void setData(GroupDebugData data) {
-        isWritingData = true;
+    synchronized void setData(GroupDebugData data) {
         this.data = data;
-        isWritingData = false;
         this.safeRepaint();
     }
 }

@@ -19,7 +19,7 @@ import java.awt.Point;
 import massim.protocol.data.Thing;
 
 public record AgentReport(List<Thing> attachedThings, int energy, boolean deactivated,
-        Set<String> actions, Point position, int[] distanceDispenser, String groupDesireType) {
+        Set<String> actions, Point position, int[] distanceDispenser, int distanceGoalZone, String groupDesireType, int step) {
     
     public Function createMessage() {
         Parameter energyPara = new Numeral(energy);
@@ -27,6 +27,7 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         Parameter posXPara = new Numeral(position.x);
         Parameter posYPara = new Numeral(position.y);
         Parameter groupDesirePara = new Identifier(groupDesireType);
+        Parameter distanceGoalZonePara = new Numeral(distanceGoalZone);
         List<Parameter> attachedParas = new ArrayList<>();
         for (Thing t: attachedThings) {
             Parameter x = new Numeral(t.x);
@@ -49,9 +50,10 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
             distanceParas.add(para);
         }
         Parameter distancePara = new ParameterList(distanceParas);
+        Parameter stepPara = new Numeral(step);
         
         return new Function(SupervisorEventName.REPORT.name(), attachedPara, energyPara, deactivatedPara,
-            actionPara, posXPara, posYPara, distancePara, groupDesirePara);
+            actionPara, posXPara, posYPara, distancePara, distanceGoalZonePara, groupDesirePara, stepPara);
     }
 
     public static AgentReport fromPercept(Percept f) {
@@ -63,13 +65,15 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         int posX = PerceptUtil.toNumber(paras, 4, Integer.class);
         int posY = PerceptUtil.toNumber(paras, 5, Integer.class);
         Point position = new Point(posX, posY);
-        String groupDesire = PerceptUtil.toStr(paras, 7);
+        int distanceGoalZone = PerceptUtil.toNumber(paras, 7, Integer.class);
+        String groupDesire = PerceptUtil.toStr(paras, 8);
         List<Integer> distList = PerceptUtil.toIntList(paras, 6);
         int[] distanceDispenser = new int[5];
         for (int i = 0; i < 5; i++) {
             distanceDispenser[i] = distList.get(i);
         }
-        return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser, groupDesire);
+        int step = PerceptUtil.toNumber(paras, 9, Integer.class);
+        return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser, distanceGoalZone, groupDesire, step);
     }
 }
 

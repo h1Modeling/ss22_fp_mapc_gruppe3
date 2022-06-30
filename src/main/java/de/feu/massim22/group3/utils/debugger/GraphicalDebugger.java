@@ -16,6 +16,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
+import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
@@ -56,7 +57,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         add(header, BorderLayout.NORTH);
 
         agentPanel = new AgentPanel();
-        agentPanel.setMinimumSize(new Dimension(350, 0));
+        agentPanel.setMinimumSize(new Dimension(450, 0));
         add(new JScrollPane(agentPanel), BorderLayout.WEST);
 
         simulationPanel = new SimulationPanel();
@@ -94,7 +95,8 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         int energy,
         String lastAction,
         String lastActionSuccess,
-        String lastActionDesire
+        String lastActionDesire,
+        String groupDesireType
     ) {}
 
     public static record DesireDebugData(
@@ -180,5 +182,14 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         if (agent.equals(selectedAgent)) {
             agentPanel.setDesireData(data);
         }
+    }
+
+    @Override
+    public String getAgentGroupDesireType(String agent) {
+        AgentDebugData data = agentData.get(agent);
+        if (data != null) {
+            return data.groupDesireType;
+        }
+        return GroupDesireTypes.NONE;
     }
 }

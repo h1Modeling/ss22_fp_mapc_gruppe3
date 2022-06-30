@@ -8,4 +8,10 @@ public abstract class GroupDesireTypes {
     public static final String TASK = "task";
 
     public static final String GUARD = "guard";
+
+    public static final String GET_BLOCK = "block";
+
+    public static final String DELIVER_ATTACH = "deliver_attach";
+
+    public static final String RECEIVE_ATTACH = "receive_attach";
 }

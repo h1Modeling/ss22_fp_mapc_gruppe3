@@ -17,7 +17,7 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
         precondition.add(new ProcessOnlySubmittableTaskDesire(belief, info));
         precondition.add(new ActionDesire(belief, neededActions));
         precondition.add(new OrDesire(
-            new AttachAbandonedBlockDesire(belief, blockDetail),
+            new AttachAbandonedBlockDesire(belief, blockDetail, supervisor),
             new AttachSingleBlockFromDispenserDesire(belief, info.requirements.get(0), supervisor))
         );
         precondition.add(new GoToGoalZoneDesire(belief));

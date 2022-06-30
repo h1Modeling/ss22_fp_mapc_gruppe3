@@ -115,7 +115,7 @@ public class BdiAgentV2 extends BdiAgent<ADesire> implements Supervisable {
     }
 
     @Override
-    public void forwardMessageFromSupervisor(Percept message, String receiver, String sender) {
+    public void forwardMessage(Percept message, String receiver, String sender) {
     }
 
     @Override

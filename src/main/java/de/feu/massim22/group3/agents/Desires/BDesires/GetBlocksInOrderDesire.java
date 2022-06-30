@@ -62,6 +62,12 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             if (isFree(e) && isFree(ne) && belief.getGoalZones().contains(new Point(1, 0))) {
                 return ActionInfo.MOVE("e", getName());
             }
+            if (isClearable(w)) {
+                return ActionInfo.CLEAR(new Point(-1, 0), getName());
+            }
+            if (isClearable(e)) {
+                return ActionInfo.CLEAR(new Point(1, 0), getName());
+            }
         }
         // Attached is south
         if (t.x == 0 && t.y == 1) {
@@ -79,6 +85,12 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             }
             if (isFree(e) && isFree(se) && belief.getGoalZones().contains(new Point(1, 0))) {
                 return ActionInfo.MOVE("e", getName());
+            }
+            if (isClearable(w)) {
+                return ActionInfo.CLEAR(new Point(-1, 0), getName());
+            }
+            if (isClearable(e)) {
+                return ActionInfo.CLEAR(new Point(1, 0), getName());
             }
         }
         // Attached is east
@@ -98,6 +110,12 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             if (isFree(s) && isFree(se) && belief.getGoalZones().contains(new Point(0, 1))) {
                 return ActionInfo.MOVE("s", getName());
             }
+            if (isClearable(n)) {
+                return ActionInfo.CLEAR(new Point(0, -1), getName());
+            }
+            if (isClearable(s)) {
+                return ActionInfo.CLEAR(new Point(0, 1), getName());
+            }
         }
         // Attached is west
         if (t.x == -1 && t.y == 0) {
@@ -116,7 +134,19 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             if (isFree(s) && isFree(se) && belief.getGoalZones().contains(new Point(0, 1))) {
                 return ActionInfo.MOVE("s", getName());
             }
+            if (isClearable(n)) {
+                return ActionInfo.CLEAR(new Point(0, -1), getName());
+            }
+            if (isClearable(s)) {
+                return ActionInfo.CLEAR(new Point(0, 1), getName());
+            }
         }
         return ActionInfo.CLEAR(new Point(goal.x, goal.y), getName());
+    }
+
+    @Override
+    public BooleanInfo isUnfulfillable() {
+        boolean value = belief.getAttachedThings().size() == 0;
+        return new BooleanInfo(value, getName()); 
     }
 }

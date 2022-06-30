@@ -39,8 +39,7 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
     public BooleanInfo isExecutable() {
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
         Point p = belief.getNearestRelativeManhattenDispenser(block.type);
-        Point abandoned = belief.getAbandonedBlockPosition(block.type);
-        boolean value = rd != null || p != null || abandoned != null;
+        boolean value = rd != null || p != null;
         String info = !value ? "No dispenser " + block.type + " visible" : ""; 
         return new BooleanInfo(value, info);
     }
@@ -123,7 +122,7 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
         int manhattenDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
         // From Pathfinding
-        if (rd != null && rd.distance() < 2 * manhattenDistance) {
+        if (rd != null && rd.distance() < 4 * manhattenDistance) {
             String dir = DirectionUtil.intToString(rd.direction());
             if (dir.length() > 0) {
                 return getActionForMove(dir.substring(0, 1), getName());
