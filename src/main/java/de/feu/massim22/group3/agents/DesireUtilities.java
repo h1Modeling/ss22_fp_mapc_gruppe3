@@ -161,7 +161,7 @@ public class DesireUtilities {
                             + " , GoAdoptRoleDesire - worker");
                 
                 if (agent.desireProcessing.attachedThings.size() == 0
-                && doDecision(agent, new AttachAbandonedBlockDesire(agent.belief, task.requirements.get(0).type))) {
+                && doDecision(agent, new AttachAbandonedBlockDesire(agent.belief, getTaskBlock(agent, task).type))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , AttachAbandonedBlockDesire");
