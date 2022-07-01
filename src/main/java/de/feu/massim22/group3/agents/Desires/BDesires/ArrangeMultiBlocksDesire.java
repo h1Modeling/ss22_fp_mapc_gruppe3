@@ -33,7 +33,8 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
 		AgentLogger
 				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
 		if (belief.getRole().actions().contains(Actions.DETACH)
-				&& belief.getRole().actions().contains(Actions.ATTACH)) {
+				&& belief.getRole().actions().contains(Actions.ATTACH)
+				&& belief.getRole().actions().contains(Actions.CONNECT)) {
 			//Ein Block Task
 			if(info.requirements.size() == 1) {
 				return new BooleanInfo(true, "");
@@ -69,7 +70,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         Thing agentThing = belief.getAttachedThings().get(0);
         
         AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
+                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlocks: " + belief.getAttachedThings() + " , taskBlocks: " + info.requirements);
         
         if (!agentThing.details.equals(info.requirements.get(0).type)) {
             return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());

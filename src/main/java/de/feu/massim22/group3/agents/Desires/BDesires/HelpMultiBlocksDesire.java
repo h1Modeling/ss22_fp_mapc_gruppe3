@@ -33,10 +33,11 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 		AgentLogger
 				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
 		if (belief.getRole().actions().contains(Actions.DETACH)
-				&& belief.getRole().actions().contains(Actions.ATTACH)) {
+				&& belief.getRole().actions().contains(Actions.ATTACH)
+				&& belief.getRole().actions().contains(Actions.CONNECT)) {
 			//Ein Block Task
 			if(info.requirements.size() == 1) {
-				return new BooleanInfo(true, "");
+				return new BooleanInfo(false, "");
 			}
 			else {
 				return blockStructure(info);
@@ -66,12 +67,14 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 			
 			
 		}else {
-			//Agent2 ist noch nicht in Vision von Agent1
-			String direction = DirectionUtil.getDirection(firstMeeting.agent1().belief.getPosition(),
-					firstMeeting.agent2().belief.getPosition());// 2.Agent muss auf Koordinaten des Ersten umgerechnet werden
+			//Agent2 ist noch nicht in connect-Entfernung von Agent1
+			String direction = DirectionUtil.getDirection(agent.belief.getPosition(),
+			        AgentMeetings.getPositionAgent2(firstMeeting));// 2.Agent muss auf Koordinaten des Ersten umgerechnet werden
 
 			return getActionForMove(direction, getName());
 		}
+		
+        return ActionInfo.SKIP(getName());
 	}
     
 	public BooleanInfo blockStructure(TaskInfo task) {
