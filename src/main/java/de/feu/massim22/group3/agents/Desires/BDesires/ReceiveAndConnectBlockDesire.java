@@ -9,20 +9,26 @@ import de.feu.massim22.group3.map.Navi;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
-public class ReceiveAndAttachBlockDesire extends BeliefDesire {
+public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     
     private String agent;
     private String supervisor;
     private TaskInfo task;
     private boolean submitted = false;
     private int waiting = 0;
+    private Thing block;
 
-    public ReceiveAndAttachBlockDesire(Belief belief, TaskInfo task, String agent, String supervisor) {
+    public ReceiveAndConnectBlockDesire(Belief belief, TaskInfo task, String agent, String supervisor, Thing block) {
         super(belief);
         this.agent = agent;
         this.task = task;
-        String[] neededActions = {"submit", "attach"};
+        this.block = block;
+        String[] neededActions = {"submit", "connect"};
         precondition.add(new ActionDesire(belief, neededActions));
+        precondition.add(new OrDesire(
+            new AttachAbandonedBlockDesire(belief, block.type, supervisor),
+            new AttachSingleBlockFromDispenserDesire(belief, block, supervisor))
+        );
         precondition.add(new GoToGoalZoneDesire(belief));
         // Create new Task for Rotation with single Block
         Set<Thing> requirements = new HashSet<>();
@@ -44,6 +50,18 @@ public class ReceiveAndAttachBlockDesire extends BeliefDesire {
     public ActionInfo getNextActionInfo() {
         ActionInfo a = fullfillPreconditions();
         if (a == null) {
+            // Rotate Block in correct Position
+            Point attached = belief.getAttachedPoints().get(0);
+            Point goal = new Point(block.x, block.y);
+            if (!attached.equals(goal)) {
+                System.out.println("TEST " + attached + " " + goal);
+                Point cr = getCRotatedPoint(attached);
+                if (cr.equals(goal)) {
+                    return getActionForCWRotation(getName());
+                }
+                return getActionForCCWRotation(getName());
+            }
+
             // Get teammate Position
             Point posTeammate = Navi.get().getPosition(agent, supervisor);
             Point pos = belief.getPosition();
@@ -54,7 +72,8 @@ public class ReceiveAndAttachBlockDesire extends BeliefDesire {
                 String dir = waiting % 2 == 0 ? "e" : "w";
                 Point p = getPointFromDirection(dir);
                 Thing t = belief.getThingAt(p);
-                return isFree(t) ? ActionInfo.MOVE(dir, getName()) : ActionInfo.SKIP(getName());
+                return ActionInfo.SKIP(getName());
+                //return isFree(t) ? ActionInfo.MOVE(dir, getName()) : ActionInfo.SKIP(getName());
             } else {
                 // Wait
                 return ActionInfo.SKIP(getName());

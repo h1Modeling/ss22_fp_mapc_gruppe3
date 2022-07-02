@@ -34,6 +34,7 @@ public class LooseWeightDesire extends BeliefDesire {
     }
 
     public ActionInfo getNextActionInfo() {
+        System.out.println("HAS DETACHED1111");
         for (Point p: belief.getAttachedPoints()) {
             if (p.x == 0 &&  p.y == 1) {
                 return ActionInfo.DETACH("s", getName());

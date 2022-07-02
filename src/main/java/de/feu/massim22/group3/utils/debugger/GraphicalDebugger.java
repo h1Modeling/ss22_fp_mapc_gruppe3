@@ -36,6 +36,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     private String selectedGroup = "";
     private String selectedAgent = "";
     private DebugStepListener listener;
+    private boolean initialised = false;
 
     public GraphicalDebugger() {
         setTitle("Debugger - Massim 22 - Gruppe 3");
@@ -123,6 +124,12 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         if (data.supervisor() == selectedGroup) {
             mapPanel.setData(data);
         }
+
+        // Select Agent at Start
+        if (!initialised) {
+            initialised = true;
+            selectAgent(data.supervisor);
+        }
     }
 
     @Override
@@ -164,9 +171,11 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     }
 
     @Override
-    public void setDebugStepListener(DebugStepListener listener) {
+    public void setDebugStepListener(DebugStepListener listener, boolean manualMode) {
         this.listener = listener;
-        header.showStepButton();
+        if (manualMode) {
+            header.showStepButton();
+        }
     }
 
     @Override
@@ -191,5 +200,12 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
             return data.groupDesireType;
         }
         return GroupDesireTypes.NONE;
+    }
+
+    @Override
+    public void setDelay(boolean value) {
+        if (this.listener != null) {
+            listener.setDelay(value);
+        }
     }
 }

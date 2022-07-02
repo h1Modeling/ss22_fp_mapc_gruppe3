@@ -9,14 +9,14 @@ import eis.iilang.Percept;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
-public class DeliverAndAttachBlockDesire extends BeliefDesire {
+public class DeliverAndConnectBlockDesire extends BeliefDesire {
 
     private String agent;
     private TaskInfo task;
     private Thing block;
     private Supervisable communicator;
 
-    public DeliverAndAttachBlockDesire(Belief belief, TaskInfo task, String agent, String supervisor, Thing block, Supervisable communicator) {
+    public DeliverAndConnectBlockDesire(Belief belief, TaskInfo task, String agent, String supervisor, Thing block, Supervisable communicator) {
         super(belief);
         this.agent = agent;
         this.task = task;
@@ -29,7 +29,7 @@ public class DeliverAndAttachBlockDesire extends BeliefDesire {
             new AttachSingleBlockFromDispenserDesire(belief, block, supervisor))
         );
         precondition.add(new MeetAgentAtGoalZoneDesire(belief, agent));
-        precondition.add(new AttachBlockToAgentDesire(belief, agent, task, block));
+        precondition.add(new ConnectBlockToAgentDesire(belief, agent, task, block));
     }
 
     public ActionInfo getNextActionInfo() {

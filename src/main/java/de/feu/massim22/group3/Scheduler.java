@@ -59,6 +59,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
     private boolean manualMode = false;
     private Queue<AgentStep> actionQueue = new ConcurrentLinkedQueue<>();
     private record AgentStep(String agentName, Action action) {}
+    private boolean delay = false;
 
     /**
      * Create a new scheduler based on the given configuration file
@@ -135,9 +136,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 
             mailService.registerAgent(agent, agentConf.team);
             Navi.get().registerAgent(agent.getName());
-            if (manualMode) {
-                Navi.<INavi>get().setDebugStepListener(this);
-            }
+            Navi.<INavi>get().setDebugStepListener(this, manualMode);
 
             try {
                 ei.registerAgent(agent.getName());
@@ -249,6 +248,14 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
             }
             // Default Mode
             else {
+                // Delay
+                if (delay) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 try {
                     eis.performAction(agent.getName(), action);
                 } catch (ActException e) {
@@ -268,5 +275,11 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
             }
         }
         actionQueue.clear();
+    }
+
+    @Override
+    public void setDelay(boolean value) {
+        System.out.println("DElay " + value);
+        this.delay = value;
     }
 }

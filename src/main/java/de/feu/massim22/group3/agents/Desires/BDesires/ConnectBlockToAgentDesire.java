@@ -6,13 +6,13 @@ import massim.protocol.data.Thing;
 
 import java.awt.Point;
 
-public class AttachBlockToAgentDesire extends BeliefDesire {
+public class ConnectBlockToAgentDesire extends BeliefDesire {
 
     private String agent;
     private Thing block;
     private TaskInfo info;
 
-    public AttachBlockToAgentDesire(Belief belief, String agent, TaskInfo info, Thing block) {
+    public ConnectBlockToAgentDesire(Belief belief, String agent, TaskInfo info, Thing block) {
         super(belief);
         this.agent = agent;
         this.block = block;
@@ -38,6 +38,7 @@ public class AttachBlockToAgentDesire extends BeliefDesire {
 
             // Rotate
             if (pos.x < goal.x) {
+                System.out.println("Rotate 1");
                 return nAttached ? getActionForCWRotation(getName()) : getActionForCCWRotation(getName());
             }
         }
@@ -46,10 +47,12 @@ public class AttachBlockToAgentDesire extends BeliefDesire {
         if (Math.abs(block.y) == 2) {
             // Rotate
             if (!horizontalAttached) {
+                System.out.println("MoVE Rotate");
                 return isWestFromAgent && nAttached 
                     ? getActionForCWRotation(getName()) 
                     : getActionForCCWRotation(getName());
             }
+            System.out.println("Move == 2");
             // Move
             return isWestFromAgent && eAttached
                 ? getActionForMove(new Point(goal.x - 1, goal.y), getName())
@@ -59,6 +62,7 @@ public class AttachBlockToAgentDesire extends BeliefDesire {
         if (Math.abs(block.y) < 2) {
             // Rotate
             if ((block.y == -1 && nAttached) || (block.y == 1 && !nAttached && !horizontalAttached)) {
+                System.out.println("ROTATE < 2");
                 return getActionForCWRotation(getName());
             }
             // Move easy

@@ -127,6 +127,7 @@ class CellUtils {
 
     private static Color getAgentTaskColor(String desire, int background) {
         switch (desire) {
+            case GroupDesireTypes.GET_BLOCK: return new Color(181,131,90);
             case GroupDesireTypes.TASK: return new Color(255, 120, 0);
             case GroupDesireTypes.EXPLORE: return new Color(192, 87, 203);
             case GroupDesireTypes.GUARD: return new Color(87, 127, 137);

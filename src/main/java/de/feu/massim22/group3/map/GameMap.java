@@ -500,6 +500,7 @@ public class GameMap {
         }
 
         // Meeting Points in goal Zone
+        /*
         for (Point p : meetingPoints) {
             if (countLeft == 0) {
                 break;
@@ -508,7 +509,7 @@ public class GameMap {
             InterestingPoint ip = new InterestingPoint(internal, ZoneType.GOALZONE, CellType.UNKNOWN, "");
             result.add(ip);
             countLeft -= 1;
-        }
+        }*/
         
         // Goal and Role Zones 
         List<List<Point>> goalLists = filterZones(goalCache, 6);

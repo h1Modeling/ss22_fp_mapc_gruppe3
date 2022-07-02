@@ -251,11 +251,32 @@ public class Supervisor implements ISupervisor {
         agentsCarryingBlock3.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock4.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         
-        List<Point> meetingPoints = Navi.<INaviAgentV1>get().getMeetingPoints(name);
+        //List<Point> meetingPoints = Navi.<INaviAgentV1>get().getMeetingPoints(name);
+
+        // Test if single Block tasks exists
+        boolean singleBlockTaskExists = false;
+        for (TaskInfo info: tasks) {
+            if (info.requirements.size() == 1) {
+                singleBlockTaskExists = true;
+                break;
+            }
+        }
 
         // Test Tasks
         for (TaskInfo info : tasks) {
+            // Get Block
+            if (!singleBlockTaskExists && reports.size() > 1) {
+                for (Thing t : info.requirements) {
+                    if (t.type.equals("b0")) sendGetBlockTask(agentsNearDispenser0, "b0");
+                    if (t.type.equals("b1")) sendGetBlockTask(agentsNearDispenser1, "b1");
+                    if (t.type.equals("b2")) sendGetBlockTask(agentsNearDispenser2, "b2");
+                    if (t.type.equals("b3")) sendGetBlockTask(agentsNearDispenser3, "b3");
+                    if (t.type.equals("b4")) sendGetBlockTask(agentsNearDispenser4, "b4");
+                }
+            }
+
             // Deliver Single Block to Agent nearer to Goal zone
+            /* 
             if (info.requirements.size() == 1) {
                 String blockDetail = info.requirements.get(0).type;
                 if (blockDetail.equals("b0")) {
@@ -273,9 +294,9 @@ public class Supervisor implements ISupervisor {
                 if (blockDetail.equals("b4")) {
                     doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock4, "b4", info);
                 }
-            }
+            } */
             // Try two Block Task with same blocks
-            if (info.requirements.size() == 2 && meetingPoints.size() > 0) {
+            if (info.requirements.size() == 2) {
                 String block1 = info.requirements.get(0).type;
                 String block2 = info.requirements.get(1).type;
                 List<Entry<String, AgentReport>> agentsBlock1 = null;
@@ -371,6 +392,20 @@ public class Supervisor implements ISupervisor {
                     */
                 }
 
+            }
+        }
+    }
+
+    private void sendGetBlockTask(List<Entry<String, AgentReport>> agents, String block) {
+        for (var entry : agents) {
+            String agent = entry.getKey();
+            // Has no task yet
+            if (agentsWithTask.get(agent) == null) {
+                Parameter blockPara = new Identifier(block);
+                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GET_BLOCK.name(), blockPara);
+                parent.forwardMessage(message, agent, name);
+                agentsWithTask.put(agent, true);
+                break;
             }
         }
     }

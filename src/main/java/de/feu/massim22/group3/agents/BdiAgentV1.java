@@ -11,7 +11,7 @@ import de.feu.massim22.group3.EisSender;
 import de.feu.massim22.group3.MailService;
 import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
-import de.feu.massim22.group3.agents.Desires.BDesires.DeliverAndAttachBlockDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.DeliverAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.DeliverBlockDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.DigFreeDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ExploreDesire;
@@ -21,7 +21,7 @@ import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.LooseWeightDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ProcessEasyTaskDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.ReceiveAndAttachBlockDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.ReceiveAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ReceiveBlockDesire;
 import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.map.INaviAgentV1;
@@ -118,13 +118,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             supervisor.reportTasks(belief.getTaskInfo());
             Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(),
                     belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention(), belief.getGroupDesireType());
-/*             
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-               */
             break;
         case TO_SUPERVISOR:
             this.supervisor.handleMessage(event, sender);
@@ -194,26 +187,44 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         }
         case SUPERVISOR_PERCEPT_DELIVER_SAME_TWO_BLOCK: {
             belief.setGroupDesireType(GroupDesireTypes.DELIVER_ATTACH);
-            System.out.println("111111111111111111111111111111111111");
+            System.out.println("DELIVER BLOCK");
             List<Parameter> parameters = event.getParameters();
             String task = PerceptUtil.toStr(parameters, 0);
             String agent = PerceptUtil.toStr(parameters, 1);
             TaskInfo taskInfo = belief.getTask(task);
-            Thing block = taskInfo.requirements.get(0);
-            desires.add(new DeliverAndAttachBlockDesire(belief, taskInfo, agent, supervisor.getName(), block, this));
+            Thing block = null;
+            for (Thing t : taskInfo.requirements) {
+                if (Math.abs(t.x) + Math.abs(t.y) > 1) {
+                    block = t;
+                    break;
+                }
+            }
+            if (block != null) {
+                desires.add(new DeliverAndConnectBlockDesire(belief, taskInfo, agent, supervisor.getName(), block, this));
+            }
             break;
         }
         case SUPERVISOR_PERCEPT_RECEIVE_SAME_TWO_BLOCK: {
             belief.setGroupDesireType(GroupDesireTypes.RECEIVE_ATTACH);
+            System.out.println("RECEIVE BLOCK");
             List<Parameter> parameters = event.getParameters();
             String task = PerceptUtil.toStr(parameters, 0);
             String agent = PerceptUtil.toStr(parameters, 1);
             TaskInfo taskInfo = belief.getTask(task);
-            desires.add(new ReceiveAndAttachBlockDesire(belief, taskInfo, agent, supervisor.getName()));
+            Thing block = null;
+            for (Thing t : taskInfo.requirements) {
+                if (Math.abs(t.x) + Math.abs(t.y) == 1) {
+                    block = t;
+                    break;
+                }
+            }
+            if (block != null) {
+                desires.add(new ReceiveAndConnectBlockDesire(belief, taskInfo, agent, supervisor.getName(), block));
+            }
             break;
         }
         case SUPERVISOR_PERCEPT_GET_BLOCK: {
-            belief.setGroupDesireType(GroupDesireTypes.TASK);
+            belief.setGroupDesireType(GroupDesireTypes.GET_BLOCK);
             List<Parameter> parameters = event.getParameters();
             String block = PerceptUtil.toStr(parameters, 0);
             desires.add(new GetBlockDesire(belief, block, supervisor.getName()));

@@ -9,7 +9,7 @@ public interface INavi {
     void setMailService(MailService mailService);
     void registerAgent(String name);
     CellType[][] getBlankCellArray(int vision); 
-    void setDebugStepListener(DebugStepListener listener);
+    void setDebugStepListener(DebugStepListener listener, boolean manualMode);
     void dispose();
     boolean isBlockAttached(String supervisor, Point p);
     Point getPosition(String name, String supervisor);

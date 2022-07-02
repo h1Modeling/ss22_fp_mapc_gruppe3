@@ -20,7 +20,8 @@ public class MeetAgentAtGoalZoneDesire extends BeliefDesire {
         List<ReachableTeammate> mates = belief.getReachableTeammates();
         for (ReachableTeammate m : mates) {
             if (m.name().equals(agent)) {
-                return m.distance() > belief.getVision() && m.distance() > 0
+                // Has Agent and Goal Zone in Vision
+                return m.distance() > belief.getVision() && m.distance() > 0 && belief.getGoalZones().size() > 0
                     ? new BooleanInfo(false, "Teammate not in vision")
                     : new BooleanInfo(true, getName());
             }

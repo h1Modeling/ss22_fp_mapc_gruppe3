@@ -75,9 +75,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         return mergeKeys.size() > 0 || busy;
     }
 
-    public void setDebugStepListener(DebugStepListener listener) {
+    public void setDebugStepListener(DebugStepListener listener, boolean manualMode) {
         if (debug) {
-            debugger.setDebugStepListener(listener);
+            debugger.setDebugStepListener(listener, manualMode);
         }
     }
 

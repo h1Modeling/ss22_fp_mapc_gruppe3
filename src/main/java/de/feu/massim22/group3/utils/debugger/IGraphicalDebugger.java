@@ -19,6 +19,7 @@ public interface IGraphicalDebugger {
     void removeSupervisor(String name, String newGroup);
     void setSelectedGroup(String name);
     void makeStep();
-    void setDebugStepListener(DebugStepListener listener);
+    void setDebugStepListener(DebugStepListener listener, boolean manualMode);
     String getAgentGroupDesireType(String agent);
+    void setDelay(boolean value);
 }
