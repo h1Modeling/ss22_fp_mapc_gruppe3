@@ -60,16 +60,34 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 	
 		int distance = foundMeetings.firstKey();
 		Meeting firstMeeting = foundMeetings.get(distance);
+		boolean rotated= false;
+		boolean connect = false;
 		
 		if(distance <= 3) {
 			//Agent1 hat Agent2 in connect-Entfernung
+			if(firstMeeting.agent2().belief.getPosition() == new Point(0,3) 
+					|| firstMeeting.agent2().belief.getPosition() == new Point(1,2) 
+					|| firstMeeting.agent2().belief.getPosition() == new Point(-1,2) ) {
+				//Agent2 steht an einer der Positionen
+				rotated = true;
+				 return ActionInfo.ROTATE_CW(getName());
+			}
+			//die beiden Agents machen ein Connect
 			
+			if(rotated) {
+				connect = true;
+				return ActionInfo.CONNECT(getName());
+			}
 			
+			//danach dettached Agent2 seinen Block
+			if(connect) {
+				return ActionInfo.DETACH(firstMeeting.agent2().belief.toString(), getName());
+			}
 			
 		}else {
 			//Agent2 ist noch nicht in connect-Entfernung von Agent1
 			String direction = DirectionUtil.getDirection(agent.belief.getPosition(),
-			        AgentMeetings.getPositionAgent2(firstMeeting));// 2.Agent muss auf Koordinaten des Ersten umgerechnet werden
+			        AgentMeetings.getPositionAgent2(firstMeeting));// 2.Agent muss auf Koordinaten des Ersten umgerechnet werden (erledigt)
 
 			return getActionForMove(direction, getName());
 		}

@@ -20,7 +20,7 @@ public class StepUtilities {
     public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
     private static int countAgent = 0;
     public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
-    boolean mergeGroups = true;
+    boolean mergeGroups = false;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
