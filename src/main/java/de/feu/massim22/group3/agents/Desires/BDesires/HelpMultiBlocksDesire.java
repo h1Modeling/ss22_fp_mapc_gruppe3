@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
-import java.awt.Point;
+//import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.AgentMeetings;
@@ -9,6 +9,7 @@ import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+import de.feu.massim22.group3.agents.Point;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import massim.protocol.data.TaskInfo;
@@ -21,10 +22,11 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
     private BdiAgentV2 agent;
     private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>();
     
-    public HelpMultiBlocksDesire(Belief belief, TaskInfo info) {
+    public HelpMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlocksDesire");
         this.info = info;
+        this.agent = agent;
     }
 
 
@@ -64,30 +66,50 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 		boolean connect = false;
 		
 		if(distance <= 3) {
-			//Agent1 hat Agent2 in connect-Entfernung
-			if(firstMeeting.agent2().belief.getPosition() == new Point(0,3) 
-					|| firstMeeting.agent2().belief.getPosition() == new Point(1,2) 
-					|| firstMeeting.agent2().belief.getPosition() == new Point(-1,2) ) {
+			//Agent1 hat Agent2 in connect-Entfernung#
+			int dist = 100;
+			int nearest = 0;
+			ArrayList<java.awt.Point> dirs = DirectionUtil.getCellsIn4Directions();
+			
+			for(int i = 0; i < dirs.size(); i++) {
+				if(Point.distance(Point.castToPoint(agent.belief.getPosition()), AgentMeetings.getPositionAgent2(firstMeeting)
+						.add(new Point (info.requirements.get(1).x, info.requirements.get(1).y ))
+						.add(Point.castToPoint(dirs.get(i)))) < dist) {
+					dist = Point.distance(Point.castToPoint(agent.belief.getPosition()), AgentMeetings.getPositionAgent2(firstMeeting)
+							.add(new Point (info.requirements.get(1).x, info.requirements.get(1).y ))
+							.add(Point.castToPoint(dirs.get(i))));
+					nearest = i;
+				}
+			}
+			
+			if(agent.belief.getPosition() == AgentMeetings.getPositionAgent2(firstMeeting)
+					.add(new Point (info.requirements.get(1).x, info.requirements.get(1).y)).add(Point.castToPoint(dirs.get(nearest))))
+					 {
 				//Agent2 steht an einer der Positionen
 				rotated = true;
 				 return ActionInfo.ROTATE_CW(getName());
+				 //|| agent.belief.getPosition() == AgentMeetings.getPositionAgent2(firstMeeting).add(new Point (1,2))
+					//|| agent.belief.getPosition() == AgentMeetings.getPositionAgent2(firstMeeting).add(new Point (-1,2)))
+				//die beiden Agents machen ein Connect
+					
+					if(rotated) {
+						connect = true;
+						return ActionInfo.CONNECT(getName());
+					}
+					
+					//danach dettached Agent2 seinen Block
+					if(connect) {
+						return ActionInfo.DETACH(firstMeeting.agent2().belief.toString(), getName());
+					}
+			}else {
+				
 			}
-			//die beiden Agents machen ein Connect
 			
-			if(rotated) {
-				connect = true;
-				return ActionInfo.CONNECT(getName());
-			}
-			
-			//danach dettached Agent2 seinen Block
-			if(connect) {
-				return ActionInfo.DETACH(firstMeeting.agent2().belief.toString(), getName());
-			}
 			
 		}else {
 			//Agent2 ist noch nicht in connect-Entfernung von Agent1
 			String direction = DirectionUtil.getDirection(agent.belief.getPosition(),
-			        AgentMeetings.getPositionAgent2(firstMeeting));// 2.Agent muss auf Koordinaten des Ersten umgerechnet werden (erledigt)
+			        AgentMeetings.getPositionAgent2(firstMeeting));
 
 			return getActionForMove(direction, getName());
 		}

@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents;
 
 import java.awt.Point;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
+import java.util.*;
 
 public class DirectionUtil {
 	public static String intToString(int direction) {
@@ -37,6 +38,17 @@ public class DirectionUtil {
         default:
             return new Point(0, 0);
         }
+    }
+	
+	public static ArrayList<Point> getCellsIn4Directions() {
+		ArrayList <Point> result = new ArrayList<>();
+
+           result.add(new Point(0,-1));
+           result.add(new Point(1,0));
+           result.add(new Point(0,1));
+           result.add(new Point(-1,0));
+           
+           return result;
     }
 	
 	   public static int getDirectionForCell(Point inCell) {

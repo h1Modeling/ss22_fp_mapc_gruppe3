@@ -176,7 +176,7 @@ public class DesireUtilities {
                             + " , GoDispenserDesire");
                 
                 if (maxTaskBlocks > 1 && agent.desireProcessing.attachedThings.size() == 1 
-                        && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task))) {
+                        && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task,agent))) {
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , HelpMultiBlocksDesire");
