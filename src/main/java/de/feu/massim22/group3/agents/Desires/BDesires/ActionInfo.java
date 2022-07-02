@@ -58,4 +58,11 @@ public record ActionInfo(Action value, String info) {
         Action a = new Action(Actions.SKIP);
         return new ActionInfo(a, info);
     }
+    
+    //Melinda Anfang
+    static ActionInfo CONNECT(String info) {
+        Action a = new Action(Actions.CONNECT);
+        return new ActionInfo(a, info);
+    }
+    //Melinda Ende
 }
