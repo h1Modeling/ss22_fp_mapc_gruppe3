@@ -1,6 +1,8 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
+import massim.protocol.data.Thing;
+
 import java.awt.Point;
 import java.util.List;
 import java.util.ArrayList;
@@ -143,6 +145,32 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 belief.getGoalZones(), belief.getRoleZones(), belief.getStep(),
                 belief.getTeam(), belief.getSteps(),  (int)belief.getScore(), belief.getNormsInfo(),
                 belief.getTaskInfo(), belief.getAttachedPoints());
+    }
+    
+    public List<Thing> getAttachedThings() {
+        List<Thing> attachedThings = new ArrayList<Thing>();
+        
+        for (Thing attachedThing : belief.getAttachedThings()) {
+            if ((attachedThing.type.equals(Thing.TYPE_BLOCK) || attachedThing.type.equals(Thing.TYPE_DISPENSER)) 
+                    && (attachedThing.x == 0
+                    || attachedThing.y == 0)) {
+                attachedThings.add(attachedThing);
+            }
+        }
+        
+        return attachedThings;
+    }
+
+    public List<Point> getAttachedPoints() {
+        List<Point> attachedPoints = new ArrayList<Point>();
+        
+        for (Point attachedPoint : belief.getAttachedPoints()) {
+            if (attachedPoint.x == 0 || attachedPoint.y == 0) {
+                attachedPoints.add(attachedPoint);
+            }
+        }
+        
+        return attachedPoints;
     }
 
     @Override

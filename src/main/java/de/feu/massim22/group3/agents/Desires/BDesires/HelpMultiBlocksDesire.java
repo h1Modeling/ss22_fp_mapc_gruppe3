@@ -100,7 +100,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 		boolean found = false;
 		int indexFound = 0;
 
-		for (Thing attachedThing : agent.belief.getAttachedThings()) {
+		for (Thing attachedThing : agent.getAttachedThings()) {
 			// ich habe einen passenden 2.Block
 			for (int i = 0; i < task.requirements.size(); i++) {
 				if (attachedThing.details.equals(task.requirements.get(i).type) 
@@ -117,8 +117,8 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 
 		if (found) {
 			for (Meeting meeting : AgentMeetings.find(agent)) {
-				if (!agent.belief.getAttachedThings().isEmpty()) {
-					for (Thing attachedThing : meeting.agent2().belief.getAttachedThings()) {
+				if (!agent.getAttachedThings().isEmpty()) {
+					for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
 						// anderer Agent hat den dazu passenden 1.Block
 						for (int i = 0; i < task.requirements.size(); i++) {
 							if (task.requirements.get(i).type.equals(attachedThing.details)

@@ -136,7 +136,7 @@ public class DesireUtilities {
               
                 agent.desireProcessing.attachedThings = new ArrayList<Thing>();
                 agent.desireProcessing.task = task;
-                agent.desireProcessing.attachedThings = agent.belief.getAttachedThings();
+                agent.desireProcessing.attachedThings = agent.getAttachedThings();
 
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Agent: " + agentStr + " attachedThings: "
                         + agent.desireProcessing.attachedThings);
@@ -188,7 +188,7 @@ public class DesireUtilities {
                             + " , GoGoalZoneDesire");
 
                 if (agent.desireProcessing.attachedThings.size() == 1 && agent.belief.getGoalZones().contains(Point.zero())
-                    && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task))) {
+                    && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , ArrangeBlocksDesire");
@@ -642,8 +642,8 @@ public class DesireUtilities {
 		// ein Block Task
 		if (task.requirements.size() > 1) {
 			for (Meeting meeting : AgentMeetings.find(agent)) {
-				if (!meeting.agent2().belief.getAttachedThings().isEmpty()) {
-					for (Thing attachedThing : meeting.agent2().belief.getAttachedThings()) {
+				if (!meeting.agent2().getAttachedThings().isEmpty()) {
+					for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
 						// Kenn ich einen Agenten mit get(0)?
 						if (attachedThing.details.equals(task.requirements.get(0).type)) {
 							result = task.requirements.get(1);

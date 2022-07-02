@@ -35,9 +35,10 @@ public class GoDispenserDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        for (Thing t : belief.getAttachedThings()) {
-            if (Math.abs(t.x) <= 1 && Math.abs(t.y) <= 1 && t.type.equals(Thing.TYPE_BLOCK)
-                && t.details.equals(block.type)) {
+        AgentLogger.info(Thread.currentThread().getName() + ".isFulfilled() attached agent: " + agent.getAttachedThings());
+        AgentLogger.info(Thread.currentThread().getName() + ".isFulfilled() attached belief: " + agent.belief.getAttachedThings());
+        for (Thing t : agent.getAttachedThings()) {
+            if ((t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_DISPENSER)) && (t.x == 0 || t.y == 0)) {
                 return new BooleanInfo(true, "");
             }
         }

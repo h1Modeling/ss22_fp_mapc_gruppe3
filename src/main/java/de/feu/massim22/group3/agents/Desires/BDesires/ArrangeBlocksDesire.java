@@ -21,10 +21,11 @@ public class ArrangeBlocksDesire extends BeliefDesire {
     private BdiAgentV2 agent;
     private Map<Integer, Meeting> foundMeetings = new TreeMap<>();
     
-    public ArrangeBlocksDesire(Belief belief, TaskInfo info) {
+    public ArrangeBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlocksDesire");
         this.info = info;
+        this.agent = agent;
     }
 
 
@@ -65,8 +66,8 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo");
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
-        Point agentBlock = belief.getAttachedPoints().get(0);
-        Thing agentThing = belief.getAttachedThings().get(0);
+        Point agentBlock = agent.getAttachedPoints().get(0);
+        Thing agentThing = agent.getAttachedThings().get(0);
         
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
@@ -112,7 +113,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 		boolean found = false;
 		int indexFound = 0;
 
-		for (Thing attachedThing : agent.belief.getAttachedThings()) {
+		for (Thing attachedThing : agent.getAttachedThings()) {
 			// ich habe einen passenden Block
 			for (int i = 0; i < task.requirements.size(); i++) {
 				if (task.requirements.get(i).type.equals(attachedThing.details)
@@ -131,8 +132,8 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 		
 		if (found) {
 			for (Meeting meeting : AgentMeetings.find(agent)) {
-				if (!meeting.agent2().belief.getAttachedThings().isEmpty()) {
-					for (Thing attachedThing2 : meeting.agent2().belief.getAttachedThings()) {
+				if (!meeting.agent2().getAttachedThings().isEmpty()) {
+					for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
 						// anderer Agent hat den Block der mir noch fehlt
 						for (int i = 0; i < task.requirements.size(); i++) {
 							if (i != indexFound && attachedThing2.details.equals(task.requirements.get(i).type)) {
