@@ -21,7 +21,7 @@ public class MeetAgentToDeliverBlockDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        return new BooleanInfo(belief.getAttachedPoints().size() == 0, "");
+        return new BooleanInfo(belief.getOwnAttachedPoints().size() == 0, "");
     }
 
     @Override
@@ -29,7 +29,7 @@ public class MeetAgentToDeliverBlockDesire extends BeliefDesire {
         // Test if teammate is in vision
         Point p = getTeammatePosition();
         if (p != null) {
-            Point attached = belief.getAttachedPoints().get(0);
+            Point attached = belief.getOwnAttachedPoints().get(0);
             // Rotation would help
             if (p.x * attached.x < 0 && p.y * attached.y < 0) {
                 Point cRotated = getCRotatedPoint(attached);
@@ -64,7 +64,7 @@ public class MeetAgentToDeliverBlockDesire extends BeliefDesire {
             }
         }
         // Detach
-        Point attached = belief.getAttachedPoints().get(0);
+        Point attached = belief.getOwnAttachedPoints().get(0);
         String dir = getDirectionFromPoint(attached);
         Point position = belief.getPosition();
         Point absoluteAttached = new Point(position.x + attached.x, position.y + attached.y);

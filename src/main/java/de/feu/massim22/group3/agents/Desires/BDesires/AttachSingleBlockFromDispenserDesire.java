@@ -69,10 +69,10 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
         if (w != null && wb == null && w.details.equals(block.type)) {
             return ActionInfo.REQUEST("w", getName());
         }
-
+        /*
         // Attach (only if no other agent with higher number is present to avoid double connection)
         Point pos = belief.getPosition();
-        String name = belief.getAgentName();
+        String name = belief.getAgentShortName();
         int id = Integer.parseInt(name.substring(1));
         ActionInfo skip = ActionInfo.SKIP("waiting for other agent");
 
@@ -116,13 +116,13 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
             int dnId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dn);
             return id > dwId && id > dnId && id > dsId ? ActionInfo.ATTACH("w", getName()) : skip;
         }
-        
+        */
         // Move
         Point p = belief.getNearestRelativeManhattenDispenser(block.type);
         int manhattenDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
         // From Pathfinding
-        if (rd != null && rd.distance() < 4 * manhattenDistance) {
+        if (rd != null && rd.distance() < 6 * manhattenDistance) {
             String dir = DirectionUtil.intToString(rd.direction());
             if (dir.length() > 0) {
                 return getActionForMove(dir.substring(0, 1), getName());

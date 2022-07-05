@@ -12,13 +12,15 @@ import massim.protocol.data.Thing;
 public class DeliverAndConnectBlockDesire extends BeliefDesire {
 
     private String agent;
+    private String agentFullName;
     private TaskInfo task;
     private Thing block;
     private Supervisable communicator;
 
-    public DeliverAndConnectBlockDesire(Belief belief, TaskInfo task, String agent, String supervisor, Thing block, Supervisable communicator) {
+    public DeliverAndConnectBlockDesire(Belief belief, TaskInfo task, String agent, String agentFullName, String supervisor, Thing block, Supervisable communicator) {
         super(belief);
         this.agent = agent;
+        this.agentFullName = agentFullName;
         this.task = task;
         this.block = block;
         this.communicator = communicator;
@@ -29,7 +31,7 @@ public class DeliverAndConnectBlockDesire extends BeliefDesire {
             new AttachSingleBlockFromDispenserDesire(belief, block, supervisor))
         );
         precondition.add(new MeetAgentAtGoalZoneDesire(belief, agent));
-        precondition.add(new ConnectBlockToAgentDesire(belief, agent, task, block));
+        precondition.add(new ConnectBlockToAgentDesire(belief, agent, agentFullName, task, block, communicator));
     }
 
     public ActionInfo getNextActionInfo() {
@@ -38,32 +40,20 @@ public class DeliverAndConnectBlockDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        return new BooleanInfo(false, "REMOVE");
-/*         
         for (IDesire d : precondition) {
             if (!d.isFulfilled().value()) {
                 return d.isFulfilled();
             }
         }
-        return new BooleanInfo(true, ""); */
+        return new BooleanInfo(true, getName());
     }
 
     @Override
     public BooleanInfo isUnfulfillable() {
-        return new BooleanInfo(false, "REMOVE");
-/*         if (belief.getStep() > task.deadline) {
+        if (belief.getStep() > task.deadline) {
             return new BooleanInfo(true, "deadline has passed");
         }
-        var attached = belief.getAttachedThings();
-        boolean value = attached.size() == 0 || !attached.get(0).details.equals(block.type);
-
-        // Inform team mate
-        if (value) {      
-            Parameter desire = new Identifier(ReceiveAndAttachBlockDesire.class.getSimpleName());
-            Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_BLOCK_DONE.name(), desire);
-            communicator.forwardMessage(message, this.agent, belief.getAgentName());
-        }
-        return new BooleanInfo(value, getName()); */
+        return new BooleanInfo(false, getName());
     }
 
     @Override

@@ -18,12 +18,11 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
     @Override
     public BooleanInfo isFulfilled() {
         for (Thing t : info.requirements) {
-            Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
-            if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
+            Thing atAgent = belief.getThingWithTypeAt(new Point(t.x, t.y), Thing.TYPE_BLOCK);
+            if (atAgent == null || !atAgent.details.equals(t.type)) {
                 String ea = atAgent == null ? t.details + " not at agent" : "";
-                String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ?  "Attached is no block" : "";
                 String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
-                return new BooleanInfo(false, ea + et + ed);
+                return new BooleanInfo(false, ea + ed);
             }
         }
         return new BooleanInfo(true, "");
@@ -142,11 +141,5 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             }
         }
         return ActionInfo.CLEAR(new Point(goal.x, goal.y), getName());
-    }
-
-    @Override
-    public BooleanInfo isUnfulfillable() {
-        boolean value = belief.getAttachedThings().size() == 0;
-        return new BooleanInfo(value, getName()); 
     }
 }

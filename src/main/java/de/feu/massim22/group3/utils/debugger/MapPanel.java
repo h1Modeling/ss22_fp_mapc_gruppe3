@@ -1,16 +1,21 @@
 package de.feu.massim22.group3.utils.debugger;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.event.MouseInputAdapter;
 
+import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
+import massim.protocol.messages.scenario.Actions;
+
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.GeneralPath;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map.Entry;
 import java.awt.*;
@@ -46,14 +51,34 @@ public class MapPanel extends JPanel {
                 safeRepaint();
             }
         });
+
+        createKeyActions();
     }
 
     private synchronized void safeRepaint() {
         try {
             repaint();
         } catch (Exception e) {
-            System.out.println("Exception " + e.getMessage());
         }
+    }
+
+    private void createKeyActions() {
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "left");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "right");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK), "downClear");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK), "upClear");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), "leftClear");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), "rightClear");
+        getActionMap().put("down", new KeyAction(ActionInfo.MOVE("s", "")));
+        getActionMap().put("up", new KeyAction(ActionInfo.MOVE("n", "")));
+        getActionMap().put("left", new KeyAction(ActionInfo.MOVE("w", "")));
+        getActionMap().put("right", new KeyAction(ActionInfo.MOVE("e", "")));
+        getActionMap().put("downClear", new KeyAction(ActionInfo.CLEAR(new Point(0, 1), "")));
+        getActionMap().put("upClear", new KeyAction(ActionInfo.CLEAR(new Point(0, -1), "")));
+        getActionMap().put("leftClear", new KeyAction(ActionInfo.CLEAR(new Point(-1, 0), "")));
+        getActionMap().put("rightClear", new KeyAction(ActionInfo.CLEAR(new Point(1, 0), "")));
     }
 
     private void selectElement() {
@@ -83,6 +108,7 @@ public class MapPanel extends JPanel {
         if (data != null) {
             selectedInterestingPointIndex = getInterestingPointIndex(selectedCell);
         }
+        requestFocusInWindow();
         safeRepaint();
     }
 
@@ -135,40 +161,45 @@ public class MapPanel extends JPanel {
             }
 
             // Goal Zones
-            for (Point p : data.goalzones()) {
-                Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
-                g2d.setColor(new Color(237,51, 59));
-                g2d.setComposite(AlphaComposite.SrcOver.derive(0.4f));
-                g2d.fill(rect);
-                g2d.setComposite(AlphaComposite.SrcOver.derive(1f));
+            for (int i = 0; i < data.goalzones().size(); i++) {
+                Point p = getGoalZone(i);
+                if (p != null) {
+                    Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
+                    g2d.setColor(new Color(237,51, 59));
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(0.4f));
+                    g2d.fill(rect);
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(1f));
+                }
             }
 
             // Role Zones
-            try {
-                for (Point p : data.roleZones()) {
+            for (int i = 0; i < data.roleZones().size(); i++) {
+                Point p = getRoleZone(i);
+                if (p != null) {
                     Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
                     g2d.setColor(new Color(93,65, 213));
                     g2d.setComposite(AlphaComposite.SrcOver.derive(0.4f));
                     g2d.fill(rect);
                     g2d.setComposite(AlphaComposite.SrcOver.derive(1f));
                 }
-            } catch (ConcurrentModificationException e) {
             }
 
             // Interesting Points Distances
             g2d.setStroke(new BasicStroke(2));
             for (int i = 0; i< data.interestingPoints().size(); i++) {
-                InterestingPoint ip = data.interestingPoints().get(i);
-                Point p = ip.point();
-                Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX + 1, p.y * cellWidth + offsetY + 1, cellWidth - 2, cellWidth - 2);
-                g2d.setColor(new Color(38,162, 255));
-                g2d.draw(rect);   
-                
-                if (selectedAgentIndex >= 0) {
-                    PathFindingResult[][] groupResult = data.pathFindingResult();
-                    PathFindingResult result = groupResult[selectedAgentIndex][i];
-                    String distance = String.valueOf(result.distance());
-                    CellUtils.drawCenteredString(g2d, distance, rect, Color.BLACK);
+                InterestingPoint ip = getInterestingPoint(i);
+                if (ip != null) {
+                    Point p = ip.point();
+                    Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX + 1, p.y * cellWidth + offsetY + 1, cellWidth - 2, cellWidth - 2);
+                    g2d.setColor(new Color(38,162, 255));
+                    g2d.draw(rect);   
+                    
+                    if (selectedAgentIndex >= 0) {
+                        PathFindingResult[][] groupResult = data.pathFindingResult();
+                        PathFindingResult result = groupResult[selectedAgentIndex][i];
+                        String distance = String.valueOf(result.distance());
+                        CellUtils.drawCenteredString(g2d, distance, rect, Color.BLACK);
+                    }
                 }
             }
 
@@ -244,8 +275,35 @@ public class MapPanel extends JPanel {
         }
     }
 
+    private synchronized Point getGoalZone(int index) {
+        return data.goalzones().size() > index ? data.goalzones().get(index) : null;
+    }
+
+    private synchronized Point getRoleZone(int index) {
+        return data.roleZones().size() > index ? data.roleZones().get(index) : null;
+    }
+
+    private synchronized InterestingPoint getInterestingPoint(int index) {
+        return data.interestingPoints().size() > index ? data.interestingPoints().get(index) : null;
+    }
+
     synchronized void setData(GroupDebugData data) {
         this.data = data;
         this.safeRepaint();
     }
+
+    private class KeyAction extends AbstractAction {
+
+        private eis.iilang.Action action;
+
+        KeyAction(ActionInfo i) {
+            action = i.value();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            MapPanel.this.debugger.setActionForAgent(selectedAgentName, action);
+        }
+
+    } 
 }

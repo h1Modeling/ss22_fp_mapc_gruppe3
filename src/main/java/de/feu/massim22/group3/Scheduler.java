@@ -10,12 +10,15 @@ import eis.iilang.Action;
 import eis.iilang.EnvironmentState;
 import eis.iilang.Percept;
 import massim.eismassim.EnvironmentInterface;
+import massim.protocol.messages.scenario.Actions;
+
 import org.json.JSONObject;
 import de.feu.massim22.group3.agents.Agent;
 import de.feu.massim22.group3.agents.BasicAgent;
 import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Supervisable;
+import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 import de.feu.massim22.group3.map.INavi;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
@@ -60,6 +63,8 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
     private Queue<AgentStep> actionQueue = new ConcurrentLinkedQueue<>();
     private record AgentStep(String agentName, Action action) {}
     private boolean delay = false;
+    private String overrideAgent = "";
+    private Action overrideAction = null;
 
     /**
      * Create a new scheduler based on the given configuration file
@@ -257,7 +262,13 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
                     }
                 }
                 try {
-                    eis.performAction(agent.getName(), action);
+                    // Override Action from Debugger or send calculated Action
+                    if (overrideAgent.equals(agent.getName()) && overrideAction != null) {
+                        eis.performAction(agent.getName(), overrideAction);
+                        overrideAction = null;
+                    } else {
+                        eis.performAction(agent.getName(), action);
+                    }
                 } catch (ActException e) {
                     AgentLogger.warning("Could not perform action " + action.getName() + " for " + agent.getName());
                 }
@@ -279,7 +290,12 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 
     @Override
     public void setDelay(boolean value) {
-        System.out.println("DElay " + value);
         this.delay = value;
+    }
+
+    @Override
+    public void setAction(String agent, Action a) {
+        overrideAgent = agent;
+        overrideAction = a;   
     }
 }

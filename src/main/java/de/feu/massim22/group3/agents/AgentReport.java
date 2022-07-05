@@ -19,7 +19,7 @@ import java.awt.Point;
 import massim.protocol.data.Thing;
 
 public record AgentReport(List<Thing> attachedThings, int energy, boolean deactivated,
-        Set<String> actions, Point position, int[] distanceDispenser, int distanceGoalZone, String groupDesireType, int step) {
+        Set<String> actions, Point position, int[] distanceDispenser, int distanceGoalZone, String groupDesireType, int step, String agentActionName) {
     
     public Function createMessage() {
         Parameter energyPara = new Numeral(energy);
@@ -28,6 +28,7 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         Parameter posYPara = new Numeral(position.y);
         Parameter groupDesirePara = new Identifier(groupDesireType);
         Parameter distanceGoalZonePara = new Numeral(distanceGoalZone);
+        Parameter agentActionNamePara = new Identifier(agentActionName);
         List<Parameter> attachedParas = new ArrayList<>();
         for (Thing t: attachedThings) {
             Parameter x = new Numeral(t.x);
@@ -53,7 +54,7 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         Parameter stepPara = new Numeral(step);
         
         return new Function(SupervisorEventName.REPORT.name(), attachedPara, energyPara, deactivatedPara,
-            actionPara, posXPara, posYPara, distancePara, distanceGoalZonePara, groupDesirePara, stepPara);
+            actionPara, posXPara, posYPara, distancePara, distanceGoalZonePara, groupDesirePara, stepPara, agentActionNamePara);
     }
 
     public static AgentReport fromPercept(Percept f) {
@@ -73,7 +74,8 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
             distanceDispenser[i] = distList.get(i);
         }
         int step = PerceptUtil.toNumber(paras, 9, Integer.class);
-        return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser, distanceGoalZone, groupDesire, step);
+        String agentActionName  = PerceptUtil.toStr(paras, 10);
+        return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser, distanceGoalZone, groupDesire, step, agentActionName);
     }
 }
 

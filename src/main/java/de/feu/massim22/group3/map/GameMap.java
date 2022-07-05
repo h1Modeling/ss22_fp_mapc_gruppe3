@@ -15,7 +15,7 @@ import org.lwjgl.BufferUtils;
 public class GameMap {
     
     private Point initialSize;
-    private Point size = null;
+    private Point size = new Point(92, 64); // null;
     // First dimension are rows, second dimension are columns
     private MapCell[][] cells;
     private Point topLeft; // top left indices can be negative
@@ -30,13 +30,13 @@ public class GameMap {
     private List<Point> meetingPoints = null;
     
     public GameMap(int x, int y) {
-        initialSize = new Point(x, y);
-        topLeft = new Point((int)(-x / 2), (int)(-y / 2));
-        cells = new MapCell[y][x];
+        initialSize = size == null ? new Point(x, y) : size;
+        topLeft = new Point((int)(-initialSize.x / 2), (int)(-initialSize.y / 2));
+        cells = new MapCell[initialSize.y][initialSize.x];
         
         // Initialize with empty cells
-        for (int i = 0; i < y; i++) {
-            for (int j = 0; j < x; j++) {
+        for (int i = 0; i < initialSize.y; i++) {
+            for (int j = 0; j < initialSize.x; j++) {
                 cells[i][j] = new MapCell();
             }
         }
@@ -68,6 +68,7 @@ public class GameMap {
         for (Entry<String, Point> e : agentPosition.entrySet()) {
             if (e.getValue().equals(p)) {
                 String agent = e.getKey();
+                // TODO change substring to teamname length
                 return Integer.parseInt(agent.substring(1));
             }
         }
@@ -138,10 +139,12 @@ public class GameMap {
         int cellX = getCellX(x);
         int cellY = getCellY(y);
         MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step);
-        CellType current = cells[cellY][cellX].getCellType();
-        // Dispenser don't change during sim and can be overwritten by blocks
-        if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
-            cells[cellY][cellX].addReport(report);
+        if (cellY >= 0 && cellY < cells.length && cellX >= 0 && cellX < cells[0].length) {
+            CellType current = cells[cellY][cellX].getCellType();
+            // Dispenser don't change during sim and can be overwritten by blocks
+            if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
+                cells[cellY][cellX].addReport(report);
+            }
         }
     }
 
@@ -340,7 +343,7 @@ public class GameMap {
             for (int y = 0; y < size.y; y++) {
                 for (int x = 0; x < size.x; x++) {
                     MapCell foreignCell = foreignMap.cells[y][x];
-                    MapCell myCell = cells[(y + offsetY + originOffsetY + size.y) % size.y][(x + offsetX + originOffsetX + size.x) % size.x];
+                    MapCell myCell = cells[(y + offsetY + originOffsetY + 2 * size.y) % size.y][(x + offsetX + originOffsetX + 2 * size.x) % size.x];
                     myCell.mergeIntoCell(foreignCell);
                 }
             }
@@ -525,6 +528,7 @@ public class GameMap {
             int maxSize = Math.max(goalListSize, roleListSize);
             
             for (int i = 0; i < maxSize; i++) {
+                int goalFactor = 2;
                 if (i < goalListSize) {
                     List<Point> goalList = goalLists.get(i);
                     if (goalList.size() > 0) {
@@ -532,7 +536,12 @@ public class GameMap {
                         InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN, "");
                         result.add(ip);
                         countLeft -= 1;
-                        goalList.remove(0);
+                        for (int k = 0; k < goalFactor; k++) {
+                            if (goalList.size() > 0) {
+                                goalList.remove(0);
+                            }
+                        }
+
                         // Remove Empty List
                         if (goalList.size() == 0) {
                             goalLists.remove(goalList);
@@ -540,6 +549,7 @@ public class GameMap {
                         }
                     }
                 }
+                int roleFactor = 12;
                 if (i < roleListSize && useRoleZones) {
                     List<Point> roleList = roleLists.get(i);
                     if (roleList.size() > 0) {
@@ -547,7 +557,11 @@ public class GameMap {
                         InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN, "");
                         result.add(ip);
                         countLeft -= 1;
-                        roleList.remove(0);
+                        for (int k = 0; k < roleFactor; k++) {
+                            if (roleList.size() > 0) {
+                                roleList.remove(0);
+                            }
+                        }
                         // Remove Empty List
                         if (roleList.size() == 0) {
                             roleLists.remove(roleList);

@@ -6,6 +6,8 @@ import java.util.List;
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
 
@@ -24,7 +26,7 @@ public abstract class BeliefDesire implements IDesire {
     protected ActionInfo fullfillPreconditions() {
         for (IDesire d : precondition) {
             if (!d.isFulfilled().value()) {
-                AgentLogger.info("Next action for agent " + belief.getAgentName() + " from " + d.getName());
+                AgentLogger.info("Next action for agent " + belief.getAgentShortName() + " from " + d.getName());
                 return d.getNextActionInfo();
             }
         }
@@ -37,7 +39,7 @@ public abstract class BeliefDesire implements IDesire {
             BooleanInfo r = d.isExecutable();
             BooleanInfo f = d.isFulfilled();
             if (!r.value() && !f.value()) {
-                AgentLogger.info(d.getName() + " is not executable for " + belief.getAgentName());
+                AgentLogger.info(d.getName() + " is not executable for " + belief.getAgentShortName());
                 return r;
             }
         }
@@ -77,13 +79,24 @@ public abstract class BeliefDesire implements IDesire {
         if (moveIteration < 4) {
             return getActionForMove(dir, desire);
         }
+        // Try to clear obstacles around
+        Thing n = belief.getThingAt("n");
+        if (n != null && n.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(0,-1), getName());
+        Thing s = belief.getThingAt("s");
+        if (s != null && s.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(0, 1), getName());
+        Thing e = belief.getThingAt("e");
+        if (e != null && e.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(1, 0), getName());
+        Thing w = belief.getThingAt("w");
+        if (w != null && w.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(-1, 0), getName());
+        
         // TODO AGENT is STuck
         return ActionInfo.SKIP("Agent is Stuck in getInteratedActionForMove");
     }
 
     protected ActionInfo getActionForMove(String dir, String desire) {
         Point dirPoint = DirectionUtil.getCellInDirection(dir);
-        List<Point> attached = belief.getAttachedPoints();
+        List<Point> attached = belief.getOwnAttachedPoints();
+
         // Rotate attached
         for (Point p : attached) {
             Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
@@ -283,7 +296,7 @@ public abstract class BeliefDesire implements IDesire {
     }
 
     protected boolean isFree(Thing t) {
-        return t == null || t.type.equals(Thing.TYPE_DISPENSER);
+        return t == null || t.type.equals(Thing.TYPE_DISPENSER) || (t.x == 0 && t.y == 0);
     }
 
     protected boolean isFreeInVision(Point p) {
@@ -331,7 +344,7 @@ public abstract class BeliefDesire implements IDesire {
     }
 
     protected String getDirectionFromPoint(Point p) {
-        if (p.x == 0) {
+        if (p.x == 0 || Math.abs(p.y) > Math.abs(p.x)) {
             return p.y < 0 ? "n" : "s";
         }
         return p.x < 0 ? "w" : "e";
@@ -344,6 +357,14 @@ public abstract class BeliefDesire implements IDesire {
             case "s": return new Point(0, 1);
             default: return new Point(-1, 0);
         }
+    }
+
+    protected int getDistance(Point p) {
+        return Math.abs(p.x) + Math.abs(p.y);
+    }
+
+    protected int getDistance(Thing t) {
+        return Math.abs(t.x) + Math.abs(t.y);
     }
 
     protected int getDistance(Point a, Point b) {
@@ -368,6 +389,23 @@ public abstract class BeliefDesire implements IDesire {
             }
         }
         return null;
+    }
+
+    protected int getBiggestAdjacentAgentId(Point p, String supervisor) {
+        Point e = new Point(p.x + 1, p.y);
+        Point n = new Point(p.x, p.y - 1);
+        Point w = new Point(p.x - 1, p.y);
+        Point s = new Point(p.x, p.y + 1);
+        int eId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, e);
+        int nId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, n);
+        int wId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, w);
+        int sId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, s);
+        return Math.max(Math.max(Math.max(eId, nId), wId), sId);
+    }
+
+    protected int getBiggestAdjacentAgentId(Thing t, String supervisor) {
+        if (t == null) return 0;
+        return getBiggestAdjacentAgentId(new Point(t.x, t.y), supervisor);
     }
 
     public Point getCCRotatedPoint(Point p) {

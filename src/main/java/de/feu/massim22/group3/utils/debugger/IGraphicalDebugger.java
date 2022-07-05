@@ -7,9 +7,11 @@ import massim.protocol.data.TaskInfo;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
+import eis.iilang.Action;
 
 public interface IGraphicalDebugger {
     void selectAgent(String agent);
+    void setActionForAgent(String agent, Action a);
     void setGroupData(GroupDebugData data);
     void setAgentData(AgentDebugData data);
     void setAgentDesire(List<DesireDebugData> data, String agent);

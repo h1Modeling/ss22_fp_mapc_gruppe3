@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.feu.massim22.group3.agents.Belief;
-import de.feu.massim22.group3.map.Navi;
 import massim.protocol.data.Thing;
 
 public class AttachAbandonedBlockDesire extends BeliefDesire {
@@ -34,9 +33,7 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
         nearest = null;
-        int vision = belief.getVision();
         List<Thing> possibleThings = new ArrayList<>();
-        String team = belief.getTeam();
         Point position = belief.getPosition();
         for (Thing t : belief.getThings()) {
             // Thing is forbidden
@@ -44,20 +41,15 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
             if (belief.isForbidden(absolutePos)) {
                 continue;
             }
-            int distance = Math.abs(t.x) + Math.abs(t.y);
-            if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block) && distance < vision) {
-                Thing n = t.x == 0 && t.y == 1 ? null : belief.getThingAt(new Point(t.x, t.y -1));
-                Thing s = t.x == 0 && t.y == -1 ? null : belief.getThingAt(new Point(t.x, t.y + 1));
-                Thing e = t.x == -1 && t.y == 0 ? null : belief.getThingAt(new Point(t.x + 1, t.y));
-                Thing w = t.x == 1 && t.y == 0 ? null : belief.getThingAt(new Point(t.x - 1, t.y));
-                // Test if agent is around
-                Point absolute = new Point(position.x + t.x, position.y + t.y);
-                boolean isAttached = Navi.get().isBlockAttached(supervisor, absolute);
-                if ((n == null || (!isAttached && !isEnemy(n, team)))
-                    && (s == null || (!isAttached && !isEnemy(s, team)))
-                    && (w == null || (!isAttached && !isEnemy(w, team)))
-                    && (e == null || (!isAttached && !isEnemy(e, team)))) {
-                    possibleThings.add(t);
+            if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block)) {
+                Point p = new Point(position.x + t.x, position.y + t.y);
+                List<Point> attached = belief.getAttachedPoints();
+                if (!attached.contains(new Point(t.x, t.y))) {
+                    int id = belief.getAgentId();
+                    int adjacentId = getBiggestAdjacentAgentId(p, supervisor);
+                    if (id == adjacentId || adjacentId == 0) {
+                        possibleThings.add(t);
+                    }
                 }
             }
         }
@@ -76,7 +68,6 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         Thing e = belief.getThingWithTypeAndDetailAt("e", Thing.TYPE_BLOCK, block);
         Thing s = belief.getThingWithTypeAndDetailAt("s", Thing.TYPE_BLOCK, block);
         Thing w = belief.getThingWithTypeAndDetailAt("w", Thing.TYPE_BLOCK, block);
-
         // Attach North
         if (n != null && n.x == nearest.x && n.y == nearest.y) {
             return ActionInfo.ATTACH("n", getName());
@@ -97,10 +88,6 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         // Move
         String dir = getDirectionToRelativePoint(new Point(nearest.x, nearest.y));
         return getActionForMove(dir, getName());
-    }
-
-    private boolean isEnemy(Thing t, String team) {
-        return t.type.equals(Thing.TYPE_ENTITY) && !t.details.equals(team);
     }
 
     @Override

@@ -267,10 +267,14 @@ class PathFinder {
                 InterestingPoint ip = goalPoints.get(j);
                 Point p = ip.point();
                 int index = startIndex + p.y * mapSize.x * 2 + p.x * 2;
-                int distance = (int)map[index];
-                int direction = (int)map[index + 1];
-                PathFindingResult resultData = new PathFindingResult(distance, direction);
-                result[i][j] = resultData;
+                if (index >= 0 && index < map.length) {
+                    int distance = (int)map[index];
+                    int direction = (int)map[index + 1];
+                    PathFindingResult resultData = new PathFindingResult(distance, direction);
+                    result[i][j] = resultData;
+                } else {
+                    result[i][j] = new PathFindingResult(0, 1);
+                }
                 // AgentLogger.fine("Path-Finding Result: " + ip.cellType() + " Distance: " + distance + " Direction " + direction);
             }
         }

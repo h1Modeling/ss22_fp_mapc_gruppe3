@@ -6,6 +6,7 @@ import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
 
+import java.awt.Point;
 public class MeetAgentAtGoalZoneDesire extends BeliefDesire {
 
     private String agent;
@@ -21,9 +22,19 @@ public class MeetAgentAtGoalZoneDesire extends BeliefDesire {
         for (ReachableTeammate m : mates) {
             if (m.name().equals(agent)) {
                 // Has Agent and Goal Zone in Vision
-                return m.distance() > belief.getVision() && m.distance() > 0 && belief.getGoalZones().size() > 0
-                    ? new BooleanInfo(false, "Teammate not in vision")
-                    : new BooleanInfo(true, getName());
+                boolean mateInGoalZone = false;
+                Point selfPos = belief.getPosition();
+                Point matePos = m.position();
+                Point offset = new Point(matePos.x - selfPos.x, matePos.y - selfPos.y);
+                for (Point p : belief.getGoalZones()) {
+                    if (p.equals(offset)) {
+                        mateInGoalZone = true;
+                        break;
+                    }
+                }
+                return m.distance() <= belief.getVision() && mateInGoalZone
+                    ? new BooleanInfo(true, getName())
+                    : new BooleanInfo(false, "Teammate not in vision");
             }
         }
         return new BooleanInfo(false, "Teammate not reachable");

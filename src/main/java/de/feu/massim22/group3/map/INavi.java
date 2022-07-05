@@ -13,4 +13,5 @@ public interface INavi {
     void dispose();
     boolean isBlockAttached(String supervisor, Point p);
     Point getPosition(String name, String supervisor);
+    void resetAgent(String name);
 }

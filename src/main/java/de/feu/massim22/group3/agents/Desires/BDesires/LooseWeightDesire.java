@@ -14,28 +14,35 @@ public class LooseWeightDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        int attached = belief.getAttachedPoints().size();
+        int attached = belief.getOwnAttachedPoints().size();
         if (attached == 0) {
             return new BooleanInfo(true, getName());
         }
+        boolean hasOneBlockTask = false;
+        for (TaskInfo info : belief.getTaskInfo()) {
+            if (info.requirements.size() == 1) {
+                hasOneBlockTask = true;
+                break;
+            }
+        }
         if (attached == 1) {
-            // Test if block is usefull
+            // Test if block is useful
             Thing block = belief.getAttachedThings().get(0);
             for (TaskInfo ti : belief.getTaskInfo()) {
                 for (Thing t : ti.requirements) {
-                    if (t.type.equals(block.details)) {
+                    if (!hasOneBlockTask && t.type.equals(block.details) || ti.requirements.size() == 1 && t.type.equals(block.details)) {
                         return new BooleanInfo(true, getName());
                     }
                 }
             }
+
         }
-        String info = belief.getAttachedPoints().size() + " Things attached";
+        String info = belief.getOwnAttachedPoints().size() + " Things attached";
         return new BooleanInfo(false, info);
     }
 
     public ActionInfo getNextActionInfo() {
-        System.out.println("HAS DETACHED1111");
-        for (Point p: belief.getAttachedPoints()) {
+        for (Point p: belief.getOwnAttachedPoints()) {
             if (p.x == 0 &&  p.y == 1) {
                 return ActionInfo.DETACH("s", getName());
             }

@@ -1,7 +1,7 @@
 {
   "agents" : [
     {
-      "count":  2,
+      "count":  10,
       "start-index":  1,
       "agent-prefix":  "3",
       "entity-prefix":  "Connection3",

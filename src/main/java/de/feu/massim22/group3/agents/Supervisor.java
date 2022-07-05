@@ -12,12 +12,13 @@ import java.util.Map.Entry;
 import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.SupervisorEventName;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
-import de.feu.massim22.group3.map.INaviAgentV1;
-import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.utils.PerceptUtil;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
+import eis.iilang.TruthValue;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
@@ -29,6 +30,7 @@ public class Supervisor implements ISupervisor {
     private List<ConfirmationData> confirmationData = new ArrayList<>();
     private Set<TaskInfo> tasks = new HashSet<>();
     private Map<String, AgentReport> reports = new HashMap<>();
+    private Map<Point, Integer> attachedRequest = new HashMap<>(); 
     private int step;
     private int[] agentReportCount =  new int[1000];
     Map<String, Boolean> agentsWithTask = new HashMap<>();
@@ -46,13 +48,23 @@ public class Supervisor implements ISupervisor {
             this.parent.forwardMessage(message, name, sender);
         } else {
             Percept data = unpackMessage(message);
+            var parameter = data.getParameters();
             String taskKey = data.getName();
             SupervisorEventName taskName = SupervisorEventName.valueOf(taskKey);
             switch (taskName) {
-            case REPORT:
+            case REPORT: {
                 AgentReport report = AgentReport.fromPercept(data);
                 reportAgentData(sender, report);
                 break;
+            }
+            case ATTACH_REQUEST: {
+                String agent = PerceptUtil.toStr(parameter, 0);
+                int x = PerceptUtil.toNumber(parameter, 1, Integer.class);
+                int y = PerceptUtil.toNumber(parameter, 2, Integer.class);
+                String direction = PerceptUtil.toStr(parameter, 3);
+                askForAttachPermission(agent, new Point(x, y), direction);
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Supervisor can't handle Message " + taskName);
             }
@@ -189,6 +201,7 @@ public class Supervisor implements ISupervisor {
         List<Entry<String, AgentReport>> agentsCarryingBlock4 = new ArrayList<>();
 
         int maxDistance = 50;
+        int maxDistanceGoalZone = 50;
         // put Repots in Lists
         for (Entry<String, AgentReport> entry : reports.entrySet()) {
             AgentReport r = entry.getValue();
@@ -196,7 +209,7 @@ public class Supervisor implements ISupervisor {
             if (r.groupDesireType().equals(GroupDesireTypes.NONE) && !r.deactivated()) {
                 // Agent don't carry block
                 if (r.attachedThings().size() == 0) {
-                    if (r.distanceGoalZone() < maxDistance) {
+                    if (r.distanceGoalZone() < maxDistanceGoalZone) {
                         agentsNearGoalZone.add(entry);
                     }
                     int[] distDispenser = r.distanceDispenser();
@@ -253,6 +266,9 @@ public class Supervisor implements ISupervisor {
         
         //List<Point> meetingPoints = Navi.<INaviAgentV1>get().getMeetingPoints(name);
 
+        // Only do tasks if GoalZone is discovered
+        if (agentsNearGoalZone.size() == 0) return;
+
         // Test if single Block tasks exists
         boolean singleBlockTaskExists = false;
         for (TaskInfo info: tasks) {
@@ -264,19 +280,7 @@ public class Supervisor implements ISupervisor {
 
         // Test Tasks
         for (TaskInfo info : tasks) {
-            // Get Block
-            if (!singleBlockTaskExists && reports.size() > 1) {
-                for (Thing t : info.requirements) {
-                    if (t.type.equals("b0")) sendGetBlockTask(agentsNearDispenser0, "b0");
-                    if (t.type.equals("b1")) sendGetBlockTask(agentsNearDispenser1, "b1");
-                    if (t.type.equals("b2")) sendGetBlockTask(agentsNearDispenser2, "b2");
-                    if (t.type.equals("b3")) sendGetBlockTask(agentsNearDispenser3, "b3");
-                    if (t.type.equals("b4")) sendGetBlockTask(agentsNearDispenser4, "b4");
-                }
-            }
-
             // Deliver Single Block to Agent nearer to Goal zone
-            /* 
             if (info.requirements.size() == 1) {
                 String blockDetail = info.requirements.get(0).type;
                 if (blockDetail.equals("b0")) {
@@ -294,9 +298,9 @@ public class Supervisor implements ISupervisor {
                 if (blockDetail.equals("b4")) {
                     doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock4, "b4", info);
                 }
-            } */
-            // Try two Block Task with same blocks
-            if (info.requirements.size() == 2) {
+            }
+            // Two Block Task - assign task or assign get block if not carrying already
+            if (info.requirements.size() == 2 && !singleBlockTaskExists) {
                 String block1 = info.requirements.get(0).type;
                 String block2 = info.requirements.get(1).type;
                 List<Entry<String, AgentReport>> agentsBlock1 = null;
@@ -315,88 +319,34 @@ public class Supervisor implements ISupervisor {
                     case "b3": agentsBlock2 = agentsCarryingBlock3; break;
                     case "b4": agentsBlock2 = agentsCarryingBlock4; break;
                 }
-                // Task with same blocks
-                if (block1.equals(block2)) {
-                    // Do Task
-                    if (agentsBlock1.size() > 1) {
-                        doTwoIdenticalBlockTaskDecision(agentsBlock1, info);
-                    } else {
-                        // Collect Blocks from Dispenser
-                        List<Entry<String, AgentReport>> agentsDispenser = null;
-                        switch (block1) {
-                            case "b0": agentsDispenser = agentsNearDispenser0; break;
-                            case "b1": agentsDispenser = agentsNearDispenser1; break;
-                            case "b2": agentsDispenser = agentsNearDispenser2; break;
-                            case "b3": agentsDispenser = agentsNearDispenser3; break;
-                            case "b4": agentsDispenser = agentsNearDispenser4; break;
-                        }
-                        // Search for possible agent
-                        for (int i = 0; i < agentsDispenser.size(); i++) {
-                            String agent = agentsDispenser.get(0).getKey();
-                            if (agentsWithTask.get(agent) == null) {
-                                Parameter blockPara = new Identifier(block1);
-                                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GET_BLOCK.name(), blockPara);
-                                parent.forwardMessage(message, agent, name);
-                                agentsWithTask.put(agent, true);
-                            }
-                        }
+
+                boolean sameBlock = block1.equals(block2);
+                if ((sameBlock && agentsBlock1.size() > 1) || (!sameBlock && agentsBlock1.size() > 0 && agentsBlock2.size() > 0)) {
+                    doTwoBlockTaskDecision(agentsBlock1, agentsBlock2, info, sameBlock);
+                } else {
+                    // Collect Blocks from Dispenser
+                    if ((!sameBlock && agentsBlock1.size() == 0) || agentsBlock1.size() < 2) {
+                        if (block1.equals("b0")) sendGetBlockTask(agentsNearDispenser0, "b0");
+                        if (block1.equals("b1")) sendGetBlockTask(agentsNearDispenser1, "b1");
+                        if (block1.equals("b2")) sendGetBlockTask(agentsNearDispenser2, "b2");
+                        if (block1.equals("b3")) sendGetBlockTask(agentsNearDispenser3, "b3");
+                        if (block1.equals("b4")) sendGetBlockTask(agentsNearDispenser4, "b4");
+                    }
+                    // Collect Blocks from Dispenser
+                    if (!sameBlock && agentsBlock2.size() == 0) {
+                        if (block2.equals("b0")) sendGetBlockTask(agentsNearDispenser0, "b0");
+                        if (block2.equals("b1")) sendGetBlockTask(agentsNearDispenser1, "b1");
+                        if (block2.equals("b2")) sendGetBlockTask(agentsNearDispenser2, "b2");
+                        if (block2.equals("b3")) sendGetBlockTask(agentsNearDispenser3, "b3");
+                        if (block2.equals("b4")) sendGetBlockTask(agentsNearDispenser4, "b4");
                     }
                 }
-                // Different blocks
-                else {
-                    /*
-                    System.out.println("TASK With different Blocks");
-                    if (agentsBlock1.size() > 0 && agentsBlock2.size() > 0) {
-                        // TODO
-                    } else {
-
-                        // Collect Blocks from Dispenser
-                        List<Entry<String, AgentReport>> agentsDispenser1 = null;
-                        List<Entry<String, AgentReport>> agentsDispenser2 = null;
-                        switch (block1) {
-                            case "b0": agentsDispenser1 = agentsNearDispenser0; break;
-                            case "b1": agentsDispenser1 = agentsNearDispenser1; break;
-                            case "b2": agentsDispenser1 = agentsNearDispenser2; break;
-                            case "b3": agentsDispenser1 = agentsNearDispenser3; break;
-                            case "b4": agentsDispenser1 = agentsNearDispenser4; break;
-                        }
-                        switch (block2) {
-                            case "b0": agentsDispenser2 = agentsNearDispenser0; break;
-                            case "b1": agentsDispenser2 = agentsNearDispenser1; break;
-                            case "b2": agentsDispenser2 = agentsNearDispenser2; break;
-                            case "b3": agentsDispenser2 = agentsNearDispenser3; break;
-                            case "b4": agentsDispenser2 = agentsNearDispenser4; break;
-                        }
-
-                        System.out.println("TASKS FOUND " + agentsDispenser1.size() + " " + agentsDispenser2.size());
-                        for (int i = 0; i < agentsDispenser1.size(); i++) {
-                            String agent = agentsDispenser1.get(0).getKey();
-                            if (agentsWithTask.get(agent) == null) {
-                                Parameter blockPara = new Identifier(block1);
-                                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GET_BLOCK.name(), blockPara);
-                                parent.forwardMessage(message, agent, name);
-                                agentsWithTask.put(agent, true);
-                            }
-                        }
-
-                        for (int i = 0; i < agentsDispenser2.size(); i++) {
-                            String agent = agentsDispenser2.get(0).getKey();
-                            if (agentsWithTask.get(agent) == null) {
-                                Parameter blockPara = new Identifier(block2);
-                                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GET_BLOCK.name(), blockPara);
-                                parent.forwardMessage(message, agent, name);
-                                agentsWithTask.put(agent, true);
-                            }
-                        }
-                    }
-                    */
-                }
-
             }
         }
     }
 
     private void sendGetBlockTask(List<Entry<String, AgentReport>> agents, String block) {
+        // only first agent which is free will get the task
         for (var entry : agents) {
             String agent = entry.getKey();
             // Has no task yet
@@ -410,32 +360,43 @@ public class Supervisor implements ISupervisor {
         }
     }
 
-    private void doTwoIdenticalBlockTaskDecision(List<Entry<String, AgentReport>> agents, TaskInfo info) {
-        List<String> taskAgents = new ArrayList<>(); 
+    private void doTwoBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, TaskInfo info, boolean identicalBlocks) {
+        List<String[]> taskAgents = new ArrayList<>(); 
 
-        while (taskAgents.size() < 2 && agents.size() > 0) {
-            String agent = agents.get(0).getKey();
-            agents.remove(0);
-            if (agentsWithTask.get(agent) == null) {
-                taskAgents.add(agent);
+        while (taskAgents.size() < 2 && agents1.size() > 0 && agents2.size() > 0) {
+            String agent1 = agents1.get(0).getKey();
+            if (agentsWithTask.get(agent1) == null) {
+                String agentActionName = agents1.get(0).getValue().agentActionName();
+                String[] data = {agent1, agentActionName};
+                taskAgents.add(data);
             }
+            agents1.remove(0);
+            String agent2 = agents2.get(0).getKey();
+            if (agentsWithTask.get(agent2) == null) {
+                String agentActionName = agents2.get(0).getValue().agentActionName();
+                String[] data = {agent2, agentActionName};
+                taskAgents.add(data);
+            }
+            agents2.remove(0);
         }
 
         if (taskAgents.size() > 1) {
-           String agent1 = taskAgents.get(0);
-           String agent2 = taskAgents.get(1);
-           agentsWithTask.put(agent1, true);
-           agentsWithTask.put(agent2, true);
+           String[] agent1 = taskAgents.get(0);
+           String[] agent2 = taskAgents.get(1);
+           agentsWithTask.put(agent1[0], true);
+           agentsWithTask.put(agent2[0], true);
 
             // Send message to agents
             Parameter taskPara = new Identifier(info.name);
-            Parameter agent1Para = new Identifier(agent1);
-            Parameter agent2Para = new Identifier(agent2);
+            Parameter agent1Para = new Identifier(agent1[0]);
+            Parameter agent2Para = new Identifier(agent2[0]);
+            Parameter agent1FullPara = new Identifier(agent1[1]);
+            Parameter agent2FullPara = new Identifier(agent2[1]);
 
-            Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_SAME_TWO_BLOCK.name(), taskPara, agent2Para);
-            Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_SAME_TWO_BLOCK.name(), taskPara, agent1Para);
-            parent.forwardMessage(message1, agent1, name);
-            parent.forwardMessage(message2, agent2, name);
+            Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_TWO_BLOCK.name(), taskPara, agent2Para, agent2FullPara);
+            Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_TWO_BLOCK.name(), taskPara, agent1Para, agent1FullPara);
+            parent.forwardMessage(message1, agent1[0], name);
+            parent.forwardMessage(message2, agent2[0], name);
         }
     }
 
@@ -466,6 +427,27 @@ public class Supervisor implements ISupervisor {
                 parent.forwardMessage(messageGoal, goalAgent, name);
                 parent.forwardMessage(messageDispenser, dispenserAgent, name); */
             }
+        }
+    }
+
+    @Override
+    public void askForAttachPermission(String agent, Point p, String direction) {
+        if (isActive()) {
+            Integer savedStep = attachedRequest.get(p);
+            boolean result = savedStep == null || savedStep < step;
+            if (result) {
+                attachedRequest.put(p, step);
+            }
+            Percept message = new Percept(EventName.ATTACH_REPLY.name(), new TruthValue(result), new Identifier(direction));
+            parent.forwardMessage(message, agent, parent.getName());
+        } else {
+            Parameter namePara = new Identifier(agent);
+            Parameter xPara = new Numeral(p.x);
+            Parameter yPara = new Numeral(p.y);
+            Parameter dirPara = new Identifier(direction);
+            Function f = new Function(SupervisorEventName.ATTACH_REQUEST.name(), namePara, xPara, yPara, dirPara);
+            Percept message = packMessage(f);
+            parent.forwardMessage(message, name, agent);
         }
     }
 }

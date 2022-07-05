@@ -34,7 +34,8 @@ import massim.protocol.data.Subject.Type;
 public class Belief {
 
     // Start Beliefs
-    private String name = "";
+    private String agentFullName = "";
+    private String agentShortName = "";
     private String team;
     private int teamSize;
     private int steps;
@@ -54,6 +55,7 @@ public class Belief {
     private String lastActionIntention;
 
     private List<Point> attachedPoints = new ArrayList<>();
+    private List<Point> ownAttachedPoints = new ArrayList<>();
     private List<Thing> attachedThings = new ArrayList<>();
     private int energy;
     private boolean deactivated;
@@ -62,6 +64,7 @@ public class Belief {
     private List<String> violations = new ArrayList<>();
     private List<Point> goalZones = new ArrayList<>();
     private List<Point> roleZones = new ArrayList<>();
+    private boolean simEnd = false;
 
     // Group 3 Beliefs
     private Point position = new Point(0, 0);
@@ -72,9 +75,10 @@ public class Belief {
     private List<ReachableTeammate> reachableTeammates = new ArrayList<>();
     private List<ForbiddenThing> forbiddenThings = new ArrayList<>();
     private String groupDesireType = GroupDesireTypes.NONE;
+    private List<ConnectionReport> connectionReports = new ArrayList<>();
 
     public Belief(String agentName) {
-        this.name = agentName;
+        this.agentShortName = agentName;
     }
 
     public void update(List<Percept> percepts) {
@@ -189,7 +193,7 @@ public class Belief {
                     stepEvents.add(ev);
                     break;
                 case "name":
-                    name = toStr(p, 0);
+                    agentFullName = toStr(p, 0);
                     break;
                 case "team":
                     team = toStr(p, 0);
@@ -215,14 +219,92 @@ public class Belief {
                 case "time":
                     break;
                 case "simEnd":
+                    simEnd = true;
                     break;
                 default:
                     AgentLogger.warning("Percept not transfered to Belief: " + percept.getName());
                 }
             }
+        updateOwnAttachedPoints();
         updatePosition();
         updateNewTasks();
         updateAttachedThings();
+    }
+
+    private void updateOwnAttachedPoints() {
+
+        if (lastAction != null && lastActionResult != null) {
+            // Attach
+            if (lastAction.equals("attach") && lastActionResult.equals(ActionResults.SUCCESS) && lastActionParams.size() > 0) {
+                Point p = null;
+                switch (lastActionParams.get(0)) {
+                    case "n": p = new Point(0, -1); break;
+                    case "e": p = new Point(1, 0); break;
+                    case "s": p = new Point(0, 1); break;
+                    case "w": p = new Point(-1, 0); break;
+                }
+                // Test for duplicates
+                if (p != null && !ownAttachedPoints.contains(p)) {
+                    ownAttachedPoints.add(p);
+                }
+            }
+            // Detach
+            if (lastAction.equals("detach") && lastActionResult.equals(ActionResults.SUCCESS) && lastActionParams.size() > 0) {
+                switch (lastActionParams.get(0)) {
+                    case "n": ownAttachedPoints.remove(new Point(0, -1)); break;
+                    case "e": ownAttachedPoints.remove(new Point(1, 0)); break;
+                    case "s": ownAttachedPoints.remove(new Point(0, 1)); break;
+                    case "w": ownAttachedPoints.remove(new Point(-1, 0)); break;
+                }
+            }        
+            // Rotate
+            if (lastAction.equals("rotate") && lastActionResult.equals(ActionResults.SUCCESS) && lastActionParams.size() > 0) {
+                if (lastActionParams.get(0).equals("cw")) {
+                    // Clock wise
+                    for (Point p : ownAttachedPoints) {
+                        Point rotated = new Point(-p.y, p.x);
+                        p.x = rotated.x;
+                        p.y = rotated.y;
+                    }
+                } else {
+                    // Counter Clock wise
+                    for (Point p : ownAttachedPoints) {
+                        Point rotated = new Point(p.y, -p.x);
+                        p.x = rotated.x;
+                        p.y = rotated.y;
+                    } 
+                }
+            }
+            // Connect
+            if (lastAction.equals("connect") && lastActionResult.equals(ActionResults.SUCCESS) && lastActionParams.size() > 0) {
+                String agent = lastActionParams.get(0);
+                ConnectionReport report = null;
+                for (ConnectionReport r : connectionReports) {
+                    if (r.step == step - 1 && r.agent.equals(agent)) {
+                        report = r;
+                        break;
+                    }
+                }
+                if (report != null) {
+                    for (Point p : report.points) {
+                        ownAttachedPoints.add(p);
+                    }
+                }
+            }
+            // Disconnect
+            if (lastAction.equals("disconnect") && lastActionResult.equals(ActionResults.SUCCESS) && lastActionParams.size() > 0) {
+                int x = Integer.parseInt(lastActionParams.get(0));
+                int y = Integer.parseInt(lastActionParams.get(1));
+                ownAttachedPoints.remove(new Point(x, y));
+                if (lastActionParams.size() == 4) {
+                    int x2 = Integer.parseInt(lastActionParams.get(2));
+                    int y2 = Integer.parseInt(lastActionParams.get(3));
+                    ownAttachedPoints.remove(new Point(x2, y2));
+                }
+            }
+            // Compare with attached Points to remove submitted or cleared points
+            ownAttachedPoints.removeIf(p -> !attachedPoints.contains(p));
+        }
     }
 
     void updateFromPathFinding(List<Parameter> points) {
@@ -358,20 +440,40 @@ public class Belief {
         }
     }
 
+    public void addPossibleConnection(Percept message) {
+        List<Parameter> paras = message.getParameters();
+        String agent = toStr(paras, 0);
+        int step = toNumber(paras, 1, Integer.class);
+        List<Point> points = new ArrayList<>();
+        for (int i = 1; i < paras.size() / 2; i++) {
+            int x = toNumber(paras, i*2, Integer.class);
+            int y = toNumber(paras, i*2+1, Integer.class);
+            Point p = new Point(x - position.x, y - position.y);
+            points.add(p);
+        }
+        ConnectionReport report = new ConnectionReport(agent, step, points);
+        connectionReports.add(report);
+    }
+
+    public boolean isSimEnd() {
+        return simEnd;
+    }
+
     public String getTeam() {
         return team;
     }
 
-    public String getAgentName() {
-        return name;
+    public String getAgentShortName() {
+        return agentShortName;
+    }
+
+    public String getAgentFullName() {
+        return agentFullName;
     }
 
     public int getVision() {
         Role r = roles.get(role);
-        if (r == null) {
-            throw new IllegalArgumentException("Current role is not in existing roles");
-        }
-        return r.vision();
+        return r == null ? 0 : r.vision();
     }
 
     public int getStep() {
@@ -433,6 +535,10 @@ public class Belief {
 
     public List<Thing> getAttachedThings() {
         return attachedThings;
+    }
+
+    public List<Point> getOwnAttachedPoints() {
+        return ownAttachedPoints;
     }
 
     public List<Point> getAttachedPoints() {
@@ -570,6 +676,24 @@ public class Belief {
         return null;
     }
 
+    public Thing getConnectedThingAt(Point p) {
+        for (Point oap : ownAttachedPoints) {
+            if (oap.equals(p)) {
+                for (Thing t : things) {
+                    if (t.x == p.x && t.y == p.y && !t.type.equals(Thing.TYPE_DISPENSER)) {
+                        return t;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public int getAgentId() {
+        String id = agentShortName.substring(team.length());
+        return Integer.parseInt(id);
+    }
+
     public Thing getThingCRotatedAt(Point p) {
         Point rotated = new Point(-p.y, p.x);
         return getThingAt(rotated);
@@ -587,6 +711,15 @@ public class Belief {
 
     public Thing getThingWithTypeAt(String d, String type) {
         Point p = DirectionUtil.getCellInDirection(d);
+        for (Thing t : things) {
+            if (t.x == p.x && t.y == p.y && t.type.equals(type)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public Thing getThingWithTypeAt(Point p, String type) {
         for (Thing t : things) {
             if (t.x == p.x && t.y == p.y && t.type.equals(type)) {
                 return t;
@@ -661,7 +794,7 @@ public class Belief {
         for (ReachableGoalZone goalZone : reachableGoalZones) {
             distGoalZone = Math.min(distGoalZone, goalZone.distance());
         }
-        return new AgentReport(attachedThings, energy, deactivated, availableActions, position, distanceDispenser, distGoalZone, groupDesireType, step);
+        return new AgentReport(attachedThings, energy, deactivated, availableActions, position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName);
     }
 
     public void setGroupDesireType(String groupDesireType) {
@@ -689,7 +822,7 @@ public class Belief {
         StringBuilder b = new StringBuilder()
                 .append("Simulation Beliefs:")
                 .append(System.lineSeparator())
-                .append("Name: ").append(name)
+                .append("Name: ").append(agentFullName)
                 .append(System.lineSeparator())
                 .append("Team: ").append(team)
                 .append(System.lineSeparator())
@@ -774,7 +907,7 @@ public class Belief {
     private void updateAttachedThings() {
         attachedThings.clear();
 
-        for (Point p : attachedPoints) {
+        for (Point p : ownAttachedPoints) {
             Thing t = getThingAt(p);
             attachedThings.add(t);
         }
@@ -806,6 +939,7 @@ public class Belief {
                 move(dir);
             }
             // Partial Success
+            /*
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
                 Role currentRole = roles.get(role);
                 // With max speed 2 we can be sure that agent moved one cell
@@ -816,11 +950,13 @@ public class Belief {
                 else {
                     // Try to guess the position with information from last step
                 }
-            }
+            } */
         }
     }
 
     private void clearLists() {
+        // Remove old connection reports (step is not updated yet is actually from last step)
+        connectionReports.removeIf(r -> r.step == step - 1);
         // copy things
         thingsAtLastStep = new HashSet<>(things);
         taskInfoAtLastStep = new HashSet<>(taskInfo);
@@ -856,5 +992,8 @@ public class Belief {
     }
 
     private static record ForbiddenThing(Point position, int stepDiscovered, int duration) {
+    }
+
+    private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
 }

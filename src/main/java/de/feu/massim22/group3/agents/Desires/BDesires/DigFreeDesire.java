@@ -41,7 +41,7 @@ public class DigFreeDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         // Remove Attachements
-        List<Point> attached = belief.getAttachedPoints();
+        List<Point> attached = belief.getOwnAttachedPoints();
         if (attached.size() > 0) {
             for (Point p : attached) {
                 if (p.x == 0 || p.y == 0) {

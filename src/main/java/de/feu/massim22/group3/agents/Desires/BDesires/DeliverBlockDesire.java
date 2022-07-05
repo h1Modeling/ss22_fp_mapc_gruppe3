@@ -47,7 +47,7 @@ public class DeliverBlockDesire extends BeliefDesire {
 
         // Inform team mate
         Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_BLOCK_DONE.name());
-        communicator.forwardMessage(message, this.agent, belief.getAgentName());
+        communicator.forwardMessage(message, this.agent, belief.getAgentShortName());
         return new BooleanInfo(true, "");
     }
 

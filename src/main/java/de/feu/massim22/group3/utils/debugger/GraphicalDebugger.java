@@ -14,12 +14,14 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
+import eis.iilang.Action;
 import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 
@@ -54,6 +56,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
 
     @Override
     public void run() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         header = new Header(this);
         add(header, BorderLayout.NORTH);
 
@@ -68,11 +71,11 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         mapPanel = new MapPanel(this);
         add(mapPanel);
 
-        setPreferredSize(new Dimension(1000, 800));
-        setSize(1000, 800);
+        setPreferredSize(new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight() - 500));
+        
         setResizable(true);
         pack();
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
         setVisible(true);
         toFront();
     }
@@ -206,6 +209,13 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     public void setDelay(boolean value) {
         if (this.listener != null) {
             listener.setDelay(value);
+        }
+    }
+
+    @Override
+    public void setActionForAgent(String agent, Action action) {
+        if (listener != null) {
+            listener.setAction(agent, action);
         }
     }
 }

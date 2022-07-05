@@ -5,6 +5,7 @@ import java.util.Set;
 import de.feu.massim22.group3.EventName;
 import eis.iilang.Percept;
 import massim.protocol.data.TaskInfo;
+import java.awt.Point;
 
 public interface ISupervisor {
 
@@ -16,4 +17,5 @@ public interface ISupervisor {
     void addAgent(String name);
     void reportAgentData(String agent, AgentReport report);
     void reportTasks(Set<TaskInfo> tasks);
+    void askForAttachPermission(String agent, Point p, String direction);
 }

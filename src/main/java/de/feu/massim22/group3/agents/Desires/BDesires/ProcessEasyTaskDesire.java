@@ -70,4 +70,8 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
         int abandonedDist = abandoned != null ? Math.abs(abandoned.x) + Math.abs(abandoned.y) : 500;
         return 100 + (500 - Math.min(dispenserDist, abandonedDist));
     }
+
+    public TaskInfo getTaskInfo() {
+        return info;
+    }
 }
