@@ -92,7 +92,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 					//|| agent.belief.getPosition() == AgentMeetings.getPositionAgent2(firstMeeting).add(new Point (-1,2)))
 				//die beiden Agents machen ein Connect
 					
-					if(rotated) {
+					/*if(rotated) {
 						connect = true;
 						return ActionInfo.CONNECT(getName());
 					}
@@ -100,7 +100,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 					//danach dettached Agent2 seinen Block
 					if(connect) {
 						return ActionInfo.DETACH(firstMeeting.agent2().belief.toString(), getName());
-					}
+					}*/
 			}else {
 				
 			}
