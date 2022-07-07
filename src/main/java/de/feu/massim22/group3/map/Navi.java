@@ -49,7 +49,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private IGraphicalDebugger debugger;
     private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
     private boolean busy = false;
-    private static boolean debug = true;
+    private static boolean debug = false;
     private final int defaultMapSize = 30;
     
     private List<CalcResult> calcResults = new ArrayList<>();
@@ -582,41 +582,19 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
-<<<<<<< HEAD
-                    
-                    Point agentPos = map.getInternalAgentPosition(agent);;
-                    AgentLogger.info(Thread.currentThread().getName() + " startCalc() - Loop Agent: " + agents.get(i)
-                            + " , Position: " + agentPos);
-
-                    /*for (int j = 0; j < interestingPoints.size(); j++) {
-                        AgentLogger
-                                .info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));
-                        AgentLogger.info(
-                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].distance());
-                        AgentLogger.info(
-                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].direction());
-                        AgentLogger.info(Thread.currentThread().getName() + " -------------------------");
-                    }*/
-                    
-                    calcResults.add(new CalcResult(agent,sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft)));
-=======
                     Point agentPos = map.getAgentPosition(agent);
+                    //Melinda                    
+                    calcResults.add(new CalcResult(agent, sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos)));
+                    //Melinda Ende
                     sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos);
->>>>>>> refs/remotes/origin/pathFinding2
                 }
             }
             return result;
         }
-
-       // return calcResults;
         return null;
     }
 
-<<<<<<< HEAD
-    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
-=======
-    private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft, Point agentPosition) {
->>>>>>> refs/remotes/origin/pathFinding2
+    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft, Point agentPosition) {
         List<Parameter> data = new ArrayList<>();
         // Generate Percept
         for (int j = 0; j < interestingPoints.size(); j++) {

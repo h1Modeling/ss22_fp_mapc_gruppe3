@@ -10,13 +10,10 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import de.feu.massim22.group3.EventName;
-<<<<<<< HEAD
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-=======
 import de.feu.massim22.group3.SupervisorEventName;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.utils.PerceptUtil;
->>>>>>> refs/remotes/origin/pathFinding2
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -39,16 +36,11 @@ public class Supervisor implements ISupervisor {
     private int[] agentReportCount =  new int[1000];
     Map<String, Boolean> agentsWithTask = new HashMap<>();
     
-    //Melinda
-    //private List<BdiAgent> allGroupAgents = new ArrayList<>();
-    
     public Supervisor(Supervisable parent) {
         this.parent = parent;
         this.name = parent.getName();
         agents.add(name);
         initConfirmationData();
-        //Melinda        
-        //allGroupAgents.add((BdiAgent)parent);
     }
     
     public void handleMessage(Percept message, String sender) {
@@ -174,23 +166,11 @@ public class Supervisor implements ISupervisor {
     public List<String> getAgents() {
         return agents;
     }
-<<<<<<< HEAD
     
     public void setAgents(List<String> agents) {
         this.agents = agents;
     }
-    
-    /*public void setAllGroupAgents(List<BdiAgent> allGroupAgents) {
-        AgentLogger.info(Thread.currentThread().getName() + " setAllGroupAgents() ? - supervisor: " + this.name + " , " + this.agents + " , " + this.allGroupAgents + " , in: " + allGroupAgents);
-    	 this.allGroupAgents = allGroupAgents;
-    }
-    
-    public List<BdiAgent> getAllGroupAgents() {
-        AgentLogger.info(Thread.currentThread().getName() + " getAllGroupAgents() ? - supervisor: " + this.name + " , " + this.agents + " , " + this.allGroupAgents);
-        return this.allGroupAgents;
-    }*/
     // Melinda Betz Ende
-=======
 
     @Override
     public void reportAgentData(String agent, AgentReport report) {
@@ -477,5 +457,4 @@ public class Supervisor implements ISupervisor {
             parent.forwardMessage(message, name, agent);
         }
     }
->>>>>>> refs/remotes/origin/pathFinding2
 }

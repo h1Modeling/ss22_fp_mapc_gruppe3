@@ -126,85 +126,12 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
             }
         } else {
             if (distanceNearestTarget < 100) {
-              //gehe zur Target-Position für den Connsct
+              //gehe zur Target-Position für den Connect
             } else {
              //gehe Richtung Agent              
             }
         }
-
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		int distanceAgent = foundMeetings.firstKey();
-		Meeting nearestMeeting = foundMeetings.get(distanceAgent);
-	    boolean onTarget = false;
-		boolean rotated= false;
-		boolean connect = false;
-		
-		if(distanceAgent <= 3) {
-			//Agent1 hat Agent2 in connect-Entfernung#
-			int distanceNearest = 100;
-			int nearest = 0;
-			ArrayList<java.awt.Point> dirs = DirectionUtil.getCellsIn4Directions();
-			
-			for(int i = 0; i < dirs.size(); i++) {
-                int distanceTarget = Point.distance(Point.castToPoint(agent.belief.getPosition()), AgentMeetings.getPositionAgent2(nearestMeeting)
-                        .add(new Point (info.requirements.get(1).x, info.requirements.get(1).y ))
-                        .add(Point.castToPoint(dirs.get(i))));
-                
-				if(distanceTarget < distanceNearest) {
-				    distanceNearest = distanceTarget;
-                    
-				    if (distanceNearest == 0) {
-				        onTarget = true;
-				        break;
-				    } else {
-				        nearest = i;
-				    }
-				}
-			}
-			
-			if (onTarget) { 	//Agent2 steht auf einer der Target-Positionen für den Connect
-				rotated = true;
-				 return ActionInfo.ROTATE_CW(getName());
-
-				 
-				//die beiden Agents machen ein Connect
-					
-				/*	if (rotated) {
-						connect = true;
-						return ActionInfo.CONNECT(getName());
-					}
-					
-					//danach dettached Agent2 seinen Block
-					if (connect) {
-						return ActionInfo.DETACH(nearestMeeting.agent2().belief.toString(), getName());
-					}*/
-			} else {
-		         //Agent2 ist noch nicht auf einer der Target-Positionen für den Connect
-	            String direction = DirectionUtil.getDirection(agent.belief.getPosition(),
-	                    AgentMeetings.getPositionAgent2(nearestMeeting)
-                        .add(new Point (info.requirements.get(1).x, info.requirements.get(1).y ))
-                        .add(Point.castToPoint(dirs.get(nearest))));
-
-	            return getActionForMove(direction, getName());				
-			}		
-		} else {
-			//Agent2 ist noch nicht in connect-Entfernung von Agent1
-			String direction = DirectionUtil.getDirection(agent.belief.getPosition(),
-			        AgentMeetings.getPositionAgent2(nearestMeeting));
-
-			return getActionForMove(direction, getName());
-		}
-		
-        //return ActionInfo.SKIP(getName());
+        return ActionInfo.SKIP(getName());  
 	}
     
 	public boolean proofBlockStructure(TaskInfo task) {

@@ -5,11 +5,12 @@ import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
 
-import java.awt.Point;
+//import java.awt.Point;
 import java.util.List;
 import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
+import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;
@@ -30,6 +31,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public boolean beliefsDone;
     
     public Point lastUsedDispenser;
+    public List<Thing> attachedThings = new ArrayList<Thing>();
+    public List<Point> attachedPoints = new ArrayList<Point>();
     
     public int exploreDirection = this.index % 4;
     public int exploreDirection2 = exploreDirection + 1;
@@ -122,7 +125,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     private void updateBeliefs() {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
-        belief.setAgent(this);
+        belief.updatePositionFromExternal();
+        refreshAttached();
         
         if (belief.getLastAction().equals(Actions.ATTACH) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
             blockAttached = true;
@@ -144,12 +148,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     "Percept - attached: " +
                     String.format("%s - %s", percept.getName(), percept.getParameters()));
             }
-            
-            /*if (percept.getName() == "goalZone"){
-                AgentLogger.info(this.getName(),
-                        "Percept - GoalZone: " +
-                        String.format("%s - %s", percept.getName(), percept.getParameters()));
-                }*/
         }
         //AgentLogger.info(belief.toString());
     }
@@ -167,24 +165,20 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     }
     
     public List<Thing> getAttachedThings() {
-        List<Thing> attachedThings = new ArrayList<Thing>();
-        
-        for (Thing attachedThing : belief.getAttachedThings()) {
-            if (attachedThing.type.equals(Thing.TYPE_BLOCK) 
-                    && (attachedThing.x == 0 || attachedThing.y == 0) 
-                    && Math.abs(attachedThing.x) <= 1
-                    && Math.abs(attachedThing.y) <= 1) {
-                attachedThings.add(attachedThing);
-            }
-        }
-        
         return attachedThings;
     }
 
-    public List<Point> getAttachedPoints() {
-        List<Point> attachedPoints = new ArrayList<Point>();
+    public List<Point> getAttachedPoints() {     
+        return attachedPoints;
+    }
+    
+    public void refreshAttached() {
+        attachedPoints = new ArrayList<Point>();
+        attachedThings = new ArrayList<Thing>();
         
-        for (Point attachedPoint : belief.getAttachedPoints()) {
+        for (java.awt.Point p : belief.getAttachedPoints()) {
+            Point attachedPoint = Point.castToPoint(p);
+            
             if ((attachedPoint.x == 0 || attachedPoint.y == 0)
                 && Math.abs(attachedPoint.x) <= 1
                 && Math.abs(attachedPoint.y) <= 1) {
@@ -193,13 +187,12 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     if (t.type.equals(Thing.TYPE_BLOCK) 
                             && t.x == attachedPoint.x 
                             && t.y == attachedPoint.y) {
-                        attachedPoints.add(attachedPoint);                    
+                        attachedPoints.add(attachedPoint);
+                        attachedThings.add(t); 
                     }                   
                 }
             }
         }
-        
-        return attachedPoints;
     }
 
     @Override

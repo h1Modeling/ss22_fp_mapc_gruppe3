@@ -76,9 +76,9 @@ public class GoAdoptRoleDesire extends BeliefDesire {
                             Thread.currentThread().getName() + "GoRoleZoneDesire - after proofDirection: " + direction);
 
                     if (dirAlt.equals(""))
-                        return getActionForMove(direction, direction, getName());
+                        return agent.desireProcessing.getActionForMove(agent, direction, direction, getName());
                     else
-                        return getActionForMoveWithAlternate(direction, dirAlt, getName());
+                        return agent.desireProcessing.getActionForMoveWithAlternate(agent, direction, dirAlt, getName());
                 }
 
                 // Data from Pathfinding
@@ -93,9 +93,9 @@ public class GoAdoptRoleDesire extends BeliefDesire {
                     AgentLogger.info(
                             Thread.currentThread().getName() + "GoRoleZoneDesire - after proofDirection: " + direction);
                     if (direction.length() > 1)     
-                        return getActionForMove(direction.substring(0, 1), direction.substring(1, 2), getName());
+                        return agent.desireProcessing.getActionForMove(agent, direction.substring(0, 1), direction.substring(1, 2), getName());
                     else
-                        return getActionForMove(direction.substring(0, 1), direction.substring(0, 1), getName());
+                        return agent.desireProcessing.getActionForMove(agent, direction.substring(0, 1), direction.substring(0, 1), getName());
                     
               
                 }
