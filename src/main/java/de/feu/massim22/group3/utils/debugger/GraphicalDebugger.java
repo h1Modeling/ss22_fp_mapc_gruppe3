@@ -14,11 +14,14 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
+import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
+import eis.iilang.Action;
 import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 
@@ -35,6 +38,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     private String selectedGroup = "";
     private String selectedAgent = "";
     private DebugStepListener listener;
+    private boolean initialised = false;
 
     public GraphicalDebugger() {
         setTitle("Debugger - Massim 22 - Gruppe 3");
@@ -52,11 +56,12 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
 
     @Override
     public void run() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         header = new Header(this);
         add(header, BorderLayout.NORTH);
 
         agentPanel = new AgentPanel();
-        agentPanel.setMinimumSize(new Dimension(350, 0));
+        agentPanel.setMinimumSize(new Dimension(450, 0));
         add(new JScrollPane(agentPanel), BorderLayout.WEST);
 
         simulationPanel = new SimulationPanel();
@@ -66,12 +71,12 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         mapPanel = new MapPanel(this);
         add(mapPanel);
 
-        setPreferredSize(new Dimension(1000, 800));
-        setSize(1000, 800);
+        setPreferredSize(new Dimension((int)screenSize.getWidth(), (int)screenSize.getHeight() - 500));
+        
         setResizable(true);
         pack();
-        setLocationRelativeTo(null);
-        setVisible(false);
+        //setLocationRelativeTo(null);
+        setVisible(true);
         toFront();
     }
 
@@ -94,7 +99,8 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         int energy,
         String lastAction,
         String lastActionSuccess,
-        String lastActionDesire
+        String lastActionDesire,
+        String groupDesireType
     ) {}
 
     public static record DesireDebugData(
@@ -120,6 +126,12 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         // update current view
         if (data.supervisor() == selectedGroup) {
             mapPanel.setData(data);
+        }
+
+        // Select Agent at Start
+        if (!initialised) {
+            initialised = true;
+            selectAgent(data.supervisor);
         }
     }
 
@@ -162,9 +174,11 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     }
 
     @Override
-    public void setDebugStepListener(DebugStepListener listener) {
+    public void setDebugStepListener(DebugStepListener listener, boolean manualMode) {
         this.listener = listener;
-        header.showStepButton();
+        if (manualMode) {
+            header.showStepButton();
+        }
     }
 
     @Override
@@ -179,6 +193,29 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     public void setAgentDesire(List<DesireDebugData> data, String agent) {
         if (agent.equals(selectedAgent)) {
             agentPanel.setDesireData(data);
+        }
+    }
+
+    @Override
+    public String getAgentGroupDesireType(String agent) {
+        AgentDebugData data = agentData.get(agent);
+        if (data != null) {
+            return data.groupDesireType;
+        }
+        return GroupDesireTypes.NONE;
+    }
+
+    @Override
+    public void setDelay(boolean value) {
+        if (this.listener != null) {
+            listener.setDelay(value);
+        }
+    }
+
+    @Override
+    public void setActionForAgent(String agent, Action action) {
+        if (listener != null) {
+            listener.setAction(agent, action);
         }
     }
 }

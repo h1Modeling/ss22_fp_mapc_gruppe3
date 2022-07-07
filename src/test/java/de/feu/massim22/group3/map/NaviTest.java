@@ -20,6 +20,7 @@ public class NaviTest {
 
     @BeforeEach
     void init() {
+        Navi.<INaviTest>get().setDebug(false);
         Navi.<INaviTest>get().clear();
     }
 
@@ -48,7 +49,7 @@ public class NaviTest {
             - - | G -
             - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("A1");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -62,15 +63,15 @@ public class NaviTest {
 
         List<Point> rolePoints = new ArrayList<>();
     
-        PathFindingResult[][] result = navi.updateMapAndPathfind("a1", "a1", 1, position, 3, things,
+        PathFindingResult[][] result = navi.updateMapAndPathfind("A1", "A1", 1, position, 3, things,
             goalPoints, rolePoints, 1, "A", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), new ArrayList<Point>());
         navi.dispose();
 
-        assertEquals(3, result[0][0].distance());
+        assertEquals(3, result[0][1].distance());
     }
 
     @Test
-    void pathFindingTestSimpleFail() {
+    void pathFindingTestSimpleWall() {
         /*  - - | - -
             - - | - -
             - A | - -   
@@ -93,10 +94,10 @@ public class NaviTest {
         List<Point> rolePoints = new ArrayList<>();
     
         PathFindingResult[][] result = navi.updateMapAndPathfind("a1", "a1", 1, position, 3, things,
-            goalPoints, rolePoints, 1, "A", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), new ArrayList<Point>());
+            goalPoints, rolePoints, 1, "a", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), new ArrayList<Point>());
         navi.dispose();
 
-        assertEquals(0, result[0][0].distance());
+        assertEquals(6, result[0][1].distance());
     }
 
     @Test
@@ -124,10 +125,10 @@ public class NaviTest {
         attached.add(new Point(0, -1));
     
         PathFindingResult[][] result = navi.updateMapAndPathfind("a1", "a1", 1, position, 3, things,
-            goalPoints, rolePoints, 1, "A", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), attached);
+            goalPoints, rolePoints, 1, "a", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), attached);
         navi.dispose();
 
-        assertEquals(3, result[0][0].distance());
+        assertEquals(3, result[0][1].distance());
     }
 
     @Test
@@ -160,10 +161,10 @@ public class NaviTest {
         attached.add(new Point(0, 1));
     
         PathFindingResult[][] result = navi.updateMapAndPathfind("a1", "a1", 1, position, 5, things,
-            goalPoints, rolePoints, 1, "A", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), attached);
+            goalPoints, rolePoints, 1, "a", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), attached);
         navi.dispose();
 
-        assertEquals(5, result[0][0].distance());
+        assertEquals(5, result[0][1].distance());
     }
 
     @Test
@@ -192,9 +193,9 @@ public class NaviTest {
         attached.add(new Point(0, -1));
     
         PathFindingResult[][] result = navi.updateMapAndPathfind("a1", "a1", 1, position, 3, things,
-            goalPoints, rolePoints, 1, "A", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), attached);
+            goalPoints, rolePoints, 1, "a", 2, 0, new HashSet<NormInfo>(), new HashSet<TaskInfo>(), attached);
         navi.dispose();
 
-        assertEquals(0, result[0][0].distance());
+        assertEquals(3, result[0][1].distance());
     }
 }

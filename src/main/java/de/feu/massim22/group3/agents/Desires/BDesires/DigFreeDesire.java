@@ -1,6 +1,5 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.Thing;
 
@@ -21,13 +20,13 @@ public class DigFreeDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        boolean value = atSamePosition < limit && dir == null;
+        boolean value = (atSamePosition < limit && dir == null);
         return new BooleanInfo(value, "");
     }
 
     @Override
     public BooleanInfo isExecutable() {
-        boolean value = atSamePosition >= limit || dir != null;
+        boolean value = (atSamePosition >= limit || dir != null);
         return new BooleanInfo(value, "");
     }
 
@@ -42,7 +41,7 @@ public class DigFreeDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         // Remove Attachements
-        List<Point> attached = ((BdiAgentV2) belief.getAgent()).getAttachedPoints();
+        List<Point> attached = belief.getOwnAttachedPoints();
         if (attached.size() > 0) {
             for (Point p : attached) {
                 if (p.x == 0 || p.y == 0) {
@@ -62,7 +61,8 @@ public class DigFreeDesire extends BeliefDesire {
             Thing t = belief.getThingAt(dir);
             if (isFree(t)) {
                 String dir2 = dir;
-                dir = null;
+                // Make random decision to avoid similar behaviour between agents in stuck group
+                dir = Math.random() > 0.5 ? null : dir2;
                 return ActionInfo.MOVE(dir2, "");
             }
             if (isClearable(t)) {

@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.Thing;
 
@@ -12,16 +11,18 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
 
     private String block;
     private Thing nearest;
+    private String supervisor;
 
-    public AttachAbandonedBlockDesire(Belief belief, String block) {
+    public AttachAbandonedBlockDesire(Belief belief, String block, String supervisor) {
         super(belief);
         this.block = block;
+        this.supervisor = supervisor;
     }
 
     @Override
     public BooleanInfo isFulfilled() {
-        for (Thing t : ((BdiAgentV2) belief.getAgent()).getAttachedThings()) {
-            if ((Math.abs(t.x) == 0 || Math.abs(t.y) == 0) && t.type.equals(Thing.TYPE_BLOCK)
+        for (Thing t : belief.getAttachedThings()) {
+            if (Math.abs(t.x) <= 1 && Math.abs(t.y) <= 1 && t.type.equals(Thing.TYPE_BLOCK)
                 && t.details.equals(block)) {
                 return new BooleanInfo(true, "");
             }
@@ -32,23 +33,23 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
         nearest = null;
-        int vision = belief.getVision();
         List<Thing> possibleThings = new ArrayList<>();
-        
+        Point position = belief.getPosition();
         for (Thing t : belief.getThings()) {
-            int distance = Math.abs(t.x) + Math.abs(t.y);
-            
-            if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block) && distance < vision) {
-                Thing n = t.x == 0 && t.y == 1 ? null : belief.getThingAt(new Point(t.x, t.y -1));
-                Thing s = t.x == 0 && t.y == -1 ? null : belief.getThingAt(new Point(t.x, t.y + 1));
-                Thing e = t.x == -1 && t.y == 0 ? null : belief.getThingAt(new Point(t.x + 1, t.y));
-                Thing w = t.x == 1 && t.y == 0 ? null : belief.getThingAt(new Point(t.x - 1, t.y));
-                // Test if agent is around
-                if ((n == null || !n.type.equals(Thing.TYPE_ENTITY))
-                    && (s == null || !s.type.equals(Thing.TYPE_ENTITY))
-                    && (w == null || !w.type.equals(Thing.TYPE_ENTITY))
-                    && (e == null || !e.type.equals(Thing.TYPE_ENTITY))) {
-                    possibleThings.add(t);
+            // Thing is forbidden
+            Point absolutePos = new Point(position.x + t.x, position.y + t.y);
+            if (belief.isForbidden(absolutePos)) {
+                continue;
+            }
+            if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block)) {
+                Point p = new Point(position.x + t.x, position.y + t.y);
+                List<Point> attached = belief.getAttachedPoints();
+                if (!attached.contains(new Point(t.x, t.y))) {
+                    int id = belief.getAgentId();
+                    int adjacentId = getBiggestAdjacentAgentId(p, supervisor);
+                    if (id == adjacentId || adjacentId == 0) {
+                        possibleThings.add(t);
+                    }
                 }
             }
         }
@@ -63,11 +64,10 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
 
-        Thing n = belief.getThingWithTypeAt("n", Thing.TYPE_BLOCK);
-        Thing e = belief.getThingWithTypeAt("e", Thing.TYPE_BLOCK);
-        Thing s = belief.getThingWithTypeAt("s", Thing.TYPE_BLOCK);
-        Thing w = belief.getThingWithTypeAt("w", Thing.TYPE_BLOCK);
-
+        Thing n = belief.getThingWithTypeAndDetailAt("n", Thing.TYPE_BLOCK, block);
+        Thing e = belief.getThingWithTypeAndDetailAt("e", Thing.TYPE_BLOCK, block);
+        Thing s = belief.getThingWithTypeAndDetailAt("s", Thing.TYPE_BLOCK, block);
+        Thing w = belief.getThingWithTypeAndDetailAt("w", Thing.TYPE_BLOCK, block);
         // Attach North
         if (n != null && n.x == nearest.x && n.y == nearest.y) {
             return ActionInfo.ATTACH("n", getName());
@@ -88,5 +88,10 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         // Move
         String dir = getDirectionToRelativePoint(new Point(nearest.x, nearest.y));
         return getActionForMove(dir, getName());
+    }
+
+    @Override
+    public void update(String supervisor) {
+        this.supervisor = supervisor;
     }
 }

@@ -9,4 +9,5 @@ public interface IDesire extends IIntention {
     BooleanInfo isUnfulfillable();
     void update(String supervisor);
     int getPriority();
+    boolean isGroupDesire();
 }

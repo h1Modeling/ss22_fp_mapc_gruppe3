@@ -30,9 +30,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL43.*;
 
 class PathFinder {
-    private int gComputeProgram;
+    private int gComputeProgram = -1;
     private long windowHandler;
-    private String shaderCache;
+    private static String shader;
     
     PathFinder(long windowHandler) {
         this.windowHandler = windowHandler;
@@ -42,6 +42,12 @@ class PathFinder {
         // Init GLFW Context - this must be done from the main thread and is therefore in the constructor
         if (!glfwInit()) {
             throw new IllegalStateException("Can't init GLFW");
+        }
+        // Load Shader Code
+        try {
+            shader = getResourceFileAsString("shader2.glsl");
+        } catch (IOException e) {
+            AgentLogger.severe("Failed to load PathFinding Shader - " + e.getLocalizedMessage());
         }
     }
 
@@ -146,35 +152,22 @@ class PathFinder {
     private void initShader(int goalCount, Point mapSize, boolean mapDiscovered) throws IOException {
         // Create and compile the compute shader.
         int mComputeShader = glCreateShader(GL_COMPUTE_SHADER);
-        String shader = getResourceFileAsString("shader.glsl");
         
-        // set shader variables before compilation
-        shader = shader
-            .replaceFirst("VAR1", "1") 	   // local Cores X
-            .replaceFirst("VAR2", goalCount + "") 	  // local Cores Y (goal Count)
-            .replaceFirst("VAR3", "1") 		// local Cores Z
-            .replaceFirst("VAR4", "100") 	// Queue Size 
-            .replaceFirst("VAR5", "8")		// Max values in Queue list
-            .replaceFirst("VAR6", mapSize.x + "")		   // Map size X 
-            .replaceFirst("VAR7", mapSize.y + "")        // Map size Y
-            .replaceFirst("VAR8", mapDiscovered + "");  // Map discovered
-                
         GL20.glShaderSource(mComputeShader, shader);
         glCompileShader(mComputeShader);
-        
         IntBuffer errorBuffer = BufferUtils.createIntBuffer(2);
         glGetShaderiv(mComputeShader, GL_COMPILE_STATUS, errorBuffer);
-        
         String s = glGetShaderInfoLog(mComputeShader);
-        
+        testForErrors();
         // Attach and link the shader against the compute program.
         glAttachShader(gComputeProgram, mComputeShader);
+        testForErrors();
         long start = System.currentTimeMillis();
         glLinkProgram(gComputeProgram);
+        testForErrors();
         long end = System.currentTimeMillis();
         long diff = end - start;
-        //AgentLogger.info("Linking Duration: " + diff);
-        
+        AgentLogger.info("Linking Duration: " + diff);
         // Check if there were any issues linking the shader.
         glGetProgramiv(gComputeProgram, GL_LINK_STATUS, errorBuffer);
         
@@ -194,22 +187,19 @@ class PathFinder {
             .append("ShaderLinkStatus: " + status[1])
             .append(System.lineSeparator());
         
-        AgentLogger.fine(b.toString());
+        AgentLogger.info(b.toString());
     }
     
-    public String getResourceFileAsString(String fileName) throws IOException {
+    private static String getResourceFileAsString(String fileName) throws IOException {
         // Load from file
-        if (shaderCache == null) {
-            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            try (InputStream is = classLoader.getResourceAsStream(fileName)) {
-                if (is == null) return null;
-                try (InputStreamReader isr = new InputStreamReader(is);
-                     BufferedReader reader = new BufferedReader(isr)) {
-                        shaderCache = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-                }
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        try (InputStream is = classLoader.getResourceAsStream(fileName)) {
+            if (is == null) return null;
+            try (InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader reader = new BufferedReader(isr)) {
+                return reader.lines().collect(Collectors.joining(System.lineSeparator()));
             }
         }
-        return shaderCache;
     }
 
     public PathFindingResult[][] start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
@@ -220,12 +210,14 @@ class PathFinder {
         // Create the compute program the compute shader is assigned to
         glfwMakeContextCurrent(this.windowHandler);
         GL.createCapabilities();
-        gComputeProgram = glCreateProgram();
+        if (gComputeProgram == -1) {
+            gComputeProgram = glCreateProgram();
 
-        try {
-            initShader(goalCount, mapSize, mapDiscovered);
-        } catch(IOException e) {
-            AgentLogger.severe(e.getLocalizedMessage());
+            try {
+                initShader(goalCount, mapSize, mapDiscovered);
+            } catch(IOException e) {
+                AgentLogger.severe(e.getLocalizedMessage());
+            }
         }
 
         // Map and Output Texture
@@ -234,10 +226,12 @@ class PathFinder {
         // Data Input Texture
         create2dTexture(dataBuffer, 2, 1, dataSize.x, dataSize.y, true);
         
-        glDispatchCompute(agentCount, 1, 1);
+        glDispatchCompute(agentCount, goalCount, 1);
+        //glDispatchCompute(1, 1, 1);
         
         // Wait until calculation ends
-        glMemoryBarrier( GL_ALL_BARRIER_BITS );
+        glMemoryBarrier(GL_PIXEL_BUFFER_BARRIER_BIT);
+        //glMemoryBarrier( GL_ALL_BARRIER_BITS );
         
         testForErrors();
         
@@ -273,10 +267,14 @@ class PathFinder {
                 InterestingPoint ip = goalPoints.get(j);
                 Point p = ip.point();
                 int index = startIndex + p.y * mapSize.x * 2 + p.x * 2;
-                int distance = (int)map[index];
-                int direction = (int)map[index + 1];
-                PathFindingResult resultData = new PathFindingResult(distance, direction);
-                result[i][j] = resultData;
+                if (index >= 0 && index < map.length) {
+                    int distance = (int)map[index];
+                    int direction = (int)map[index + 1];
+                    PathFindingResult resultData = new PathFindingResult(distance, direction);
+                    result[i][j] = resultData;
+                } else {
+                    result[i][j] = new PathFindingResult(0, 1);
+                }
                 // AgentLogger.fine("Path-Finding Result: " + ip.cellType() + " Distance: " + distance + " Direction " + direction);
             }
         }

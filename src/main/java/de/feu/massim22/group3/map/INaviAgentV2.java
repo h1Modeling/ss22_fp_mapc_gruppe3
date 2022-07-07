@@ -16,8 +16,6 @@ public interface INaviAgentV2 extends INavi {
 
     void registerSupervisor(String name, String supervisor);
 
-    Point getPosition(String name, String supervisor);
-
     List<InterestingPoint> getInterestingPoints(String supervisor, int maxNumberGoals);
     
     Point getTopLeft(String supervisor);
