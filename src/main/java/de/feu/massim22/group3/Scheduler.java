@@ -204,10 +204,17 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 				Percept message = new Percept(EventName.UPDATE.name());
 				agent.handleMessage(message, sender);
 			}
-			// get actions if agent is not multithreaded
+			// get actions if agent is not runnable
 			else {
 				Runnable runnable = () -> {
-					eis.iilang.Action action = agent.step();
+				    eis.iilang.Action action = null;
+				    try {
+				        action = agent.step();
+				    } catch (Exception e) {
+				        AgentLogger.warning(" Step failed for: " + agent + " , " + e);
+				        e.printStackTrace(System.out);
+                    }
+					
 					if (action != null) {
 						try {
 							eis.performAction(agent.getName(), action);

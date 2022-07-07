@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import org.lwjgl.BufferUtils;
 
+
 public class GameMap {
     
     private Point initialSize;

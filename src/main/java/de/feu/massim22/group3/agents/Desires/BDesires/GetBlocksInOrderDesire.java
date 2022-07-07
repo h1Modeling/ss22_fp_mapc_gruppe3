@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
@@ -12,6 +13,7 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
     
     public GetBlocksInOrderDesire(Belief belief, TaskInfo info) {
         super(belief);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GetBlocksInOrderDesire");
         this.info = info;
     }
 

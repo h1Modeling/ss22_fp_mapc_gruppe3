@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 
 public class ProcessEasyTaskDesire extends BeliefDesire {
@@ -11,6 +12,7 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
 
     public ProcessEasyTaskDesire(Belief belief, TaskInfo info, String supervisor) {
         super(belief);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ProcessEasyTaskDesire");
         this.info = info;
         String blockDetail = info.requirements.get(0).type;
         String[] neededActions = {"submit", "request"};

@@ -52,9 +52,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private static boolean debug = true;
     private final int defaultMapSize = 30;
     
+    private List<CalcResult> calcResults = new ArrayList<>();
+    
     private Navi() {
         PathFinder.init();
-
+        //AgentLogger.info(Thread.currentThread().getName() + " Navi() Constructor ");
         // Open Debugger
         if (debug) {
             debugger = new GraphicalDebugger();
@@ -138,8 +140,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     
     @Override
     public FloatBuffer getMapBuffer(String supervisor) {
-    	return maps.get(supervisor).getMapBuffer();
+    	return maps.get(supervisor).getMapBuffer();    
     }
+    //Melinda Ende
 
     public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType) {
         if (debug) {
@@ -579,16 +582,41 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
+<<<<<<< HEAD
                     Point agentPos = map.getAgentPosition(agent);
                     sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos);
+=======
+                    
+                    Point agentPos = map.getInternalAgentPosition(agent);;
+                    AgentLogger.info(Thread.currentThread().getName() + " startCalc() - Loop Agent: " + agents.get(i)
+                            + " , Position: " + agentPos);
+
+                    /*for (int j = 0; j < interestingPoints.size(); j++) {
+                        AgentLogger
+                                .info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));
+                        AgentLogger.info(
+                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].distance());
+                        AgentLogger.info(
+                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].direction());
+                        AgentLogger.info(Thread.currentThread().getName() + " -------------------------");
+                    }*/
+                    
+                    calcResults.add(new CalcResult(agent,sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft)));
+>>>>>>> master
                 }
             }
             return result;
         }
+
+       // return calcResults;
         return null;
     }
 
+<<<<<<< HEAD
     private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft, Point agentPosition) {
+=======
+    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+>>>>>>> master
         List<Parameter> data = new ArrayList<>();
         // Generate Percept
         for (int j = 0; j < interestingPoints.size(); j++) {
@@ -620,7 +648,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }                
         Percept message = new Percept(EventName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
-        mailService.sendMessage(message, agent, name);
+        mailService.sendMessage(message, agent, name); 
+        AgentLogger.info(Thread.currentThread().getName() + " sendPathFindingResultToAgent() End - Result: " + data);
+        return message;
     }
 
     private record AgentGreet(String name, String supervisor, Point agentPosition, Point offset) {}
@@ -654,8 +684,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     }
     
     @Override
-    public synchronized void updateSupervisor(String supervisor) {
+    public List<CalcResult> updateSupervisor(String supervisor) {
+    	calcResults = new ArrayList<>();
         startCalculation(supervisor, maps.get(supervisor));
+        return calcResults;
     }
 
     @Override
