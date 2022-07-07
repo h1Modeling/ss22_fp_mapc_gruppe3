@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import eis.iilang.Action;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -22,6 +23,9 @@ public abstract class BeliefDesire implements IDesire {
     }
 
     //Melinda
+    private String dir2;
+    private boolean dir2Used = false;
+    
     private Action outputAction;
     @Override
     public void setOutputAction(Action action) {
@@ -106,11 +110,22 @@ public abstract class BeliefDesire implements IDesire {
         
         return firstTry;
     }
-    //Melinda Ende
 
+    protected ActionInfo getActionForMove(String dir, String dir2, String desire) {
+        this.dir2 = dir2;
+        dir2Used = true;
+        ActionInfo out = getActionForMove(dir, desire);
+        dir2Used = false;
+        return out;
+    }
+    //Melinda Ende
+    
     protected ActionInfo getActionForMove(String dir, String desire) {
         Point dirPoint = DirectionUtil.getCellInDirection(dir);
-        List<Point> attached = belief.getAttachedPoints();
+        //Melinda 
+        List<Point> attached = ((BdiAgentV2) belief.getAgent()).getAttachedPoints();       
+        //List<Point> attached = belief.getAttachedPoints();
+        //Melinda Ende
         // Rotate attached
         for (Point p : attached) {
             Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
@@ -173,7 +188,12 @@ public abstract class BeliefDesire implements IDesire {
             return ActionInfo.CLEAR(dirPoint, desire);
         } else if (isFree(t) || attached.contains(dirPoint)) {
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
-            return ActionInfo.MOVE(dir, desire);
+            //Melinda 
+            if (dir2Used)
+                return ActionInfo.MOVE(dir, dir2, desire);
+            else
+                return ActionInfo.MOVE(dir, desire);
+            //Melinda Ende
         } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)                
                 //Melinda
                 || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {

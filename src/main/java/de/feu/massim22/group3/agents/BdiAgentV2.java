@@ -2,6 +2,8 @@ package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
 import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.ActionResults;
+import massim.protocol.messages.scenario.Actions;
 
 import java.awt.Point;
 import java.util.List;
@@ -23,13 +25,17 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     
     public boolean decisionsDone;
     public boolean requestMade = false;
+    public boolean connected = false;
+    public boolean blockAttached = false;
+    public boolean beliefsDone;
+    
     public Point lastUsedDispenser;
+    
+    public int exploreDirection = this.index % 4;
+    public int exploreDirection2 = exploreDirection + 1;
     
     public Supervisor supervisor;
     public int index;
-    
-    //public IDesire intention;
-    public boolean beliefsDone;
 
 
     /**
@@ -116,6 +122,21 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     private void updateBeliefs() {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
+        belief.setAgent(this);
+        
+        if (belief.getLastAction().equals(Actions.ATTACH) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+            blockAttached = true;
+        }
+        
+        if (belief.getLastAction().equals(Actions.DETACH) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+            blockAttached = false;
+        }
+        
+        if (belief.getLastAction().equals(Actions.SUBMIT) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+            blockAttached = false;
+        }
+        
+        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " , Agent: " + this.getName()+ " , Step: " + belief.getStep());
         
         for (Percept percept : percepts) {
             if (percept.getName() == "attached"){
@@ -124,11 +145,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     String.format("%s - %s", percept.getName(), percept.getParameters()));
             }
             
-            if (percept.getName() == "goalZone"){
+            /*if (percept.getName() == "goalZone"){
                 AgentLogger.info(this.getName(),
                         "Percept - GoalZone: " +
                         String.format("%s - %s", percept.getName(), percept.getParameters()));
-                }
+                }*/
         }
         //AgentLogger.info(belief.toString());
     }
@@ -136,8 +157,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     /**
      * Update the Map.
      * 
-     * @param agent - the Agent that wants to update the map
-     *
      */
     public void updateMap() {
         Navi.<INaviAgentV2>get().updateMap(supervisor.getName(), getName(), index,
@@ -151,9 +170,10 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         List<Thing> attachedThings = new ArrayList<Thing>();
         
         for (Thing attachedThing : belief.getAttachedThings()) {
-            if ((attachedThing.type.equals(Thing.TYPE_BLOCK) || attachedThing.type.equals(Thing.TYPE_DISPENSER)) 
-                    && (attachedThing.x == 0
-                    || attachedThing.y == 0)) {
+            if (attachedThing.type.equals(Thing.TYPE_BLOCK) 
+                    && (attachedThing.x == 0 || attachedThing.y == 0) 
+                    && Math.abs(attachedThing.x) <= 1
+                    && Math.abs(attachedThing.y) <= 1) {
                 attachedThings.add(attachedThing);
             }
         }
@@ -165,8 +185,17 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         List<Point> attachedPoints = new ArrayList<Point>();
         
         for (Point attachedPoint : belief.getAttachedPoints()) {
-            if (attachedPoint.x == 0 || attachedPoint.y == 0) {
-                attachedPoints.add(attachedPoint);
+            if ((attachedPoint.x == 0 || attachedPoint.y == 0)
+                && Math.abs(attachedPoint.x) <= 1
+                && Math.abs(attachedPoint.y) <= 1) {
+               
+                for (Thing t : belief.getThings()) {
+                    if (t.type.equals(Thing.TYPE_BLOCK) 
+                            && t.x == attachedPoint.x 
+                            && t.y == attachedPoint.y) {
+                        attachedPoints.add(attachedPoint);                    
+                    }                   
+                }
             }
         }
         

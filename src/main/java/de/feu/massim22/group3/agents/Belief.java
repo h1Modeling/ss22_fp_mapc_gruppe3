@@ -71,6 +71,7 @@ public class Belief {
     private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
     private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
     private List<ReachableTeammate> reachableTeammates = new ArrayList<>();
+    private BdiAgent agent;
 
     Belief(String agentName) {
         this.name = agentName;
@@ -404,7 +405,7 @@ public class Belief {
     public String getAgentName() {
         return name;
     }
-
+    
     public int getVision() {
         Role r = roles.get(role);
         if (r == null) {
@@ -553,7 +554,15 @@ public class Belief {
         // Zone is sorted
         return reachableRoleZones.size() > 0 ? reachableRoleZones.get(0) : null;
     }
- //Melinda   
+ //Melinda 
+    public BdiAgent getAgent() {
+        return agent;
+    }
+    
+    public void setAgent(BdiAgent agent) {
+        this.agent = agent;
+    }
+    
     public Point getNearestRelativeManhattenRoleZone() {
         roleZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
         return roleZones.size() > 0 ? roleZones.get(0) : null;
@@ -584,7 +593,9 @@ public class Belief {
         List<Thing> d = new ArrayList<>(things);
         AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 1 : " + d);
         // Filter
-        d.removeIf(r -> !r.details.equals(type));
+        //Melinda
+        d.removeIf(r -> !(r.details.equals(type) && r.type.equals(Thing.TYPE_DISPENSER)));
+        //Melinda Ende
         // Sort
         d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
         Point test = d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
@@ -616,6 +627,17 @@ public class Belief {
         }
         return null;
     }
+    
+    //Melinda
+    public Thing getAttachedThingAt(Point p) {
+        for (Thing t : things) {
+            if (t.x == p.x && t.y == p.y && !t.type.equals(Thing.TYPE_DISPENSER)) {           
+                return t;
+            }
+        }
+        return null;
+    }
+    //Melinda Ende
 
     public Thing getThingCRotatedAt(Point p) {
         Point rotated = new Point(-p.y, p.x);
@@ -766,7 +788,10 @@ public class Belief {
         attachedThings.clear();
 
         for (Point p : attachedPoints) {
-            Thing t = getThingAt(p);
+            //Melinda
+            //Thing t = getThingAt(p);
+            Thing t = getAttachedThingAt(p);
+            //Melinda Ende
             attachedThings.add(t);
         }
     }
@@ -791,21 +816,30 @@ public class Belief {
     private void updatePosition() {
         if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
             String dir = lastActionParams.get(0);
+            //Melinda
+            String dir2 = null;
+            if (lastActionParams.size() > 1)
+                dir2 = lastActionParams.get(1);
+            //Melinda Ende
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
                 move(dir);
+                //Melinda              
+                if (dir2 != null)
+                    move(dir2);
+                //Melinda Ende
             }
             // Partial Success
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
                 Role currentRole = roles.get(role);
                 // With max speed 2 we can be sure that agent moved one cell
-                if (currentRole != null && currentRole.speed()[1] < 3) {
+                //if (currentRole != null && currentRole.speed().length > 1 && currentRole.speed()[1] < 3) {
                     move(dir);
-                }
+                //}
                 // TODO Partial Success with speed > 2
-                else {
+                //else {
                     // Try to guess the position with information from last step
-                }
+                //}
             }
         }
     }

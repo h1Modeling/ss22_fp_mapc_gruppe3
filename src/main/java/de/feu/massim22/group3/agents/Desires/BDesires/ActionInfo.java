@@ -60,8 +60,13 @@ public record ActionInfo(Action value, String info) {
     }
     
     //Melinda Anfang
-    static ActionInfo CONNECT(String info) {
-        Action a = new Action(Actions.CONNECT);
+    static ActionInfo CONNECT(String agent, Point p, String info) {
+        Action a = new Action(Actions.CONNECT, new Identifier(agent), new Numeral(p.x), new Numeral(p.y));
+        return new ActionInfo(a, info);
+    }
+    
+    static ActionInfo MOVE(String dir1, String dir2, String info) {
+        Action a = new Action(Actions.MOVE, new Identifier(dir1), new Identifier(dir2));
         return new ActionInfo(a, info);
     }
     //Melinda Ende

@@ -8,6 +8,7 @@ import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
 
 //import java.awt.Point;
@@ -161,7 +162,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
         String outDirection = inDirection;
  
         if (this.agent.desireProcessing.lastWishDirection != null) {
-            if (belief.getLastAction().equals("move") && belief.getLastActionResult().equals("success")) {
+            if (belief.getLastAction().equals(Actions.MOVE) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 if (!belief.getLastActionParams().get(0).equals(this.agent.desireProcessing.lastWishDirection)) {
                     if (belief.getLastActionParams().get(0).equals(DirectionUtil.oppositeDirection(inDirection))) {
                         outDirection = this.agent.desireProcessing.lastWishDirection;

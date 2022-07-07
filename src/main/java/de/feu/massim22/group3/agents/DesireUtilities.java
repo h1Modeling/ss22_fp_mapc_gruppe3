@@ -151,7 +151,7 @@ public class DesireUtilities {
                         + " , in Zone: "+ agent.belief.getGoalZones().contains(Point.zero()) + " , att. Size: "
                         + agent.desireProcessing.attachedThings.size());
                 
-                if (agent.desireProcessing.attachedThings.size() > maxTaskBlocks 
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > maxTaskBlocks 
                     && doDecision(agent, new LooseWeightDesire(agent.belief))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
@@ -175,31 +175,31 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
                 
-                if (maxTaskBlocks > 1 && agent.desireProcessing.attachedThings.size() == 1 
+                if (maxTaskBlocks > 1 && agent.blockAttached && agent.desireProcessing.attachedThings.size() == 1
                         && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task,agent))) {
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , HelpMultiBlocksDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(Point.zero()) 
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(Point.zero()) 
                     && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoGoalZoneDesire");
 
-                if (agent.desireProcessing.attachedThings.size() == 1 && agent.belief.getGoalZones().contains(Point.zero())
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() == 1 && agent.belief.getGoalZones().contains(Point.zero())
                     && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , ArrangeBlocksDesire");
                                 
-                if (maxTaskBlocks > 1 && agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
+                if (maxTaskBlocks > 1 && agent.blockAttached && agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
                         && doDecision(agent, new ArrangeMultiBlocksDesire(agent.belief, task))) {
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , ArrangeMultiBlocksDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
                     && doDecision(agent, new SubmitDesire(agent.belief, task))) {
                     } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
@@ -365,8 +365,8 @@ public class DesireUtilities {
     }
     
     public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
-        String startDirection = "";
-        float random = new Random().nextFloat();
+        String startDirection = DirectionUtil.intToString(agent.exploreDirection);
+        /*float random = new Random().nextFloat();
         if (random < 0.25) {
             startDirection = "n";
         } else if (random < 0.5) {
@@ -375,7 +375,7 @@ public class DesireUtilities {
             startDirection = "w";
         } else {
             startDirection = "s";
-        }
+        }*/
         Identifier resultDirection = new Identifier(startDirection);
 
         if (agent.belief.getLastAction() != null && agent.belief.getLastAction().equals(Actions.MOVE)) {

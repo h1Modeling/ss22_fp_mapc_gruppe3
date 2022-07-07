@@ -43,10 +43,10 @@ public class DirectionUtil {
 	public static ArrayList<Point> getCellsIn4Directions() {
 		ArrayList <Point> result = new ArrayList<>();
 
+           result.add(new Point(-1,0));
            result.add(new Point(0,-1));
            result.add(new Point(1,0));
            result.add(new Point(0,1));
-           result.add(new Point(-1,0));
            
            return result;
     }
@@ -63,7 +63,7 @@ public class DirectionUtil {
 
            return 0;
 	    }
-
+	   
     public static Point rotateCW(Point p) {
         return new Point(-p.y, p.x);
     }

@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.Thing;
 
@@ -16,7 +17,7 @@ public class FreedomDesire extends BeliefDesire {
     @Override
     public BooleanInfo isFulfilled() {
         attached = null;
-        for (Thing t : belief.getAttachedThings()) {
+        for (Thing t : ((BdiAgentV2) belief.getAgent()).getAttachedThings()) {
             if (t.type.equals(Thing.TYPE_ENTITY)) {
                 attached = t;
                 return new BooleanInfo(false, "");

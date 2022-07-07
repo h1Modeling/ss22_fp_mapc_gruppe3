@@ -1,5 +1,6 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.Thing;
 
@@ -41,7 +42,7 @@ public class DigFreeDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         // Remove Attachements
-        List<Point> attached = belief.getAttachedPoints();
+        List<Point> attached = ((BdiAgentV2) belief.getAgent()).getAttachedPoints();
         if (attached.size() > 0) {
             for (Point p : attached) {
                 if (p.x == 0 || p.y == 0) {
