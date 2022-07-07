@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.plaf.ColorUIResource;
 
+import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import java.awt.geom.Rectangle2D;
 
@@ -16,11 +17,15 @@ class CellUtils {
     private static Color dispenser4 = new ColorUIResource(191, 184, 41);
 
     static void draw(Graphics2D g2d, CellType t, Rectangle2D.Double rect, int x, int y, String name, boolean selected) {
+        draw(g2d, t, rect, x, y, name, selected, GroupDesireTypes.NONE);
+    }
+
+    static void draw(Graphics2D g2d, CellType t, Rectangle2D.Double rect, int x, int y, String name, boolean selected, String groupDesire) {
         int greyValue = (x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1) ? 238 : 221;
         int unknownValue = (x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1) ? 88 : 71;
         switch (t) {
         case TEAMMATE:
-            drawAgent(g2d, rect, new Color(28, 113, 216), greyValue, name, selected);
+            drawAgent(g2d, rect, new Color(28, 113, 216), greyValue, name, selected, groupDesire);
             break;
         case OBSTACLE:
             g2d.setColor(black);
@@ -65,7 +70,7 @@ class CellUtils {
             drawBlock(g2d, rect, dispenser4, "b4");
             break;
         case ENEMY:
-            drawAgent(g2d, rect, new Color(237, 51, 59), greyValue, "E", false);
+            drawAgent(g2d, rect, new Color(237, 51, 59), greyValue, "E", false, GroupDesireTypes.NONE);
             break;
         default:
             g2d.draw(rect);
@@ -102,8 +107,9 @@ class CellUtils {
         g.drawString(text, x, y);
     }
 
-    private static void drawAgent(Graphics2D g2d, Rectangle2D.Double rect, Color c, int background, String name, boolean selected) {
-        Color backgroundColor = selected ? new Color(51, 209, 121) : new Color(background, background, background);
+    private static void drawAgent(Graphics2D g2d, Rectangle2D.Double rect, Color c, int background, String name, boolean selected, String groupDesire) {
+        Color backgroundC = CellUtils.getAgentTaskColor(groupDesire, background);
+        Color backgroundColor = selected ? new Color(51, 209, 121) : backgroundC;
         g2d.setColor(backgroundColor);
         g2d.fill(rect);
         g2d.setColor(black);
@@ -117,5 +123,17 @@ class CellUtils {
         g2d.setColor(new Color(255, 255, 255));
         g2d.draw(innerRect);
         drawCenteredString((Graphics)g2d, name, rect, Color.WHITE);
+    }
+
+    private static Color getAgentTaskColor(String desire, int background) {
+        switch (desire) {
+            case GroupDesireTypes.GET_BLOCK: return new Color(181,131,90);
+            case GroupDesireTypes.TASK: return new Color(255, 120, 0);
+            case GroupDesireTypes.EXPLORE: return new Color(192, 87, 203);
+            case GroupDesireTypes.GUARD: return new Color(87, 127, 137);
+            case GroupDesireTypes.RECEIVE_ATTACH: return new Color(255, 255, 0);
+            case GroupDesireTypes.DELIVER_ATTACH: return new Color(186, 255, 0);
+            default: return new Color(background, background, background);
+        }
     }
 }

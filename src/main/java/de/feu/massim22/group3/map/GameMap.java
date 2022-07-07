@@ -16,26 +16,28 @@ import org.lwjgl.BufferUtils;
 public class GameMap {
     
     private Point initialSize;
-    private Point size = null;
+    private Point size = new Point(92, 64); // null;
     // First dimension are rows, second dimension are columns
     private MapCell[][] cells;
     private Point topLeft; // top left indices can be negative
     private int mapExtensionSize = 20;
     private Map<String, Point> agentPosition = new HashMap<>(); 
-    private Map<String, Integer> agentAttached = new HashMap<>(); 
+    private Map<String, Integer> agentAttached = new HashMap<>();
+    private Map<String, Integer> agentAttachedDistance = new HashMap<>(); 
     // These hold information relative to the internal array - only use for pathfinding
     private List<Point> goalCache = new ArrayList<>();
     private List<Point> roleCache = new ArrayList<>();
     private List<InterestingPoint> dispenserCache = new ArrayList<>();
+    private List<Point> meetingPoints = null;
     
     public GameMap(int x, int y) {
-        initialSize = new Point(x, y);
-        topLeft = new Point((int)(-x / 2), (int)(-y / 2));
-        cells = new MapCell[y][x];
+        initialSize = size == null ? new Point(x, y) : size;
+        topLeft = new Point((int)(-initialSize.x / 2), (int)(-initialSize.y / 2));
+        cells = new MapCell[initialSize.y][initialSize.x];
         
         // Initialize with empty cells
-        for (int i = 0; i < y; i++) {
-            for (int j = 0; j < x; j++) {
+        for (int i = 0; i < initialSize.y; i++) {
+            for (int j = 0; j < initialSize.x; j++) {
                 cells[i][j] = new MapCell();
             }
         }
@@ -60,17 +62,58 @@ public class GameMap {
 
     public Point getInternalAgentPosition(String agent) {
         Point agentPos = agentPosition.get(agent);
-        return getInternalCellIndex(agentPos.x, agentPos.y);
+        return agentPos == null ? new Point(0, 0) : getInternalCellIndex(agentPos.x, agentPos.y);
     }
 
     public int getAgentIdAtPoint(Point p) {
         for (Entry<String, Point> e : agentPosition.entrySet()) {
             if (e.getValue().equals(p)) {
                 String agent = e.getKey();
+                // TODO change substring to teamname length
                 return Integer.parseInt(agent.substring(1));
             }
         }
         return 0;
+    }
+
+    public boolean isBlockAttached(Point p) {
+        for (Entry<String, Point> entry : agentPosition.entrySet()) {
+            Point n = new Point(p.x, p.y - 1);
+            Point e = new Point(p.x + 1, p.y);
+            Point s = new Point(p.x, p.y + 1);
+            Point w = new Point(p.x - 1, p.y);
+            String agent = entry.getKey();
+            int attached = agentAttached.get(agent);
+            if (entry.getValue().equals(n)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(0, 1), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+            if (entry.getValue().equals(s)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(0, -1), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+            if (entry.getValue().equals(e)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(-1, 0), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+            if (entry.getValue().equals(w)) {
+                boolean isAttached = attachedAtRelativePoint(new Point(1, 0), attached);
+                if (isAttached) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    boolean attachedAtRelativePoint(Point p, int value) {
+        return ((value >> ((p.y + 2) * 5 + p.x + 2)) & 0x1) == 0x1;
     }
 
     public Point getInternalCellIndex(int x, int y) {
@@ -97,10 +140,12 @@ public class GameMap {
         int cellX = getCellX(x);
         int cellY = getCellY(y);
         MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step);
-        CellType current = cells[cellY][cellX].getCellType();
-        // Dispenser don't change during sim and can be overwritten by blocks
-        if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
-            cells[cellY][cellX].addReport(report);
+        if (cellY >= 0 && cellY < cells.length && cellX >= 0 && cellX < cells[0].length) {
+            CellType current = cells[cellY][cellX].getCellType();
+            // Dispenser don't change during sim and can be overwritten by blocks
+            if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
+                cells[cellY][cellX].addReport(report);
+            }
         }
     }
 
@@ -108,8 +153,42 @@ public class GameMap {
         agentPosition.put(name, position);
     }
 
+    public List<Point> getMeetingPoints() {
+        if (meetingPoints == null) {
+            calcMeetingPoints();
+        }
+        return meetingPoints;
+    }
+
+    public void calcMeetingPoints() {
+        meetingPoints = new ArrayList<>();
+        for (int y = 2; y < cells.length - 2; y++) {
+            for (int x = 2; x < cells[0].length - 2; x++) {
+                if (meetingPoints.size() > 9) {
+                    return;
+                }
+                MapCell c = cells[y][x];
+                if (c.getZoneType() == ZoneType.GOALZONE) {
+                    boolean found = true;
+                    for (int oy = -2; oy <= 2; oy++) {
+                        for (int ox = -2; ox <= 2; ox++) {
+                            MapCell cell = cells[y+oy][x+ox];
+                            if (cell.getCellType() == CellType.OBSTACLE) {
+                                found = false;
+                            }
+                        }
+                    }
+                    if (found) {
+                        meetingPoints.add(new Point(x + topLeft.x, y + topLeft.y));
+                    }
+                }
+            }
+        }
+    }
+
     public void setAgentAttached(String name, List<Point> attachedThings) {
         int result = 0; //4096; // Agent Pos
+        int dist = 0;
         for (Point p : attachedThings) {
             if (p.y == -2) {
                 if (p.x == -2) result += 1;
@@ -142,12 +221,21 @@ public class GameMap {
                 if (p.x == 1) result += 8388608;
                 if (p.x == 2) result += 16777216;
             }
+            // Calculate biggest distance
+            dist = Math.max(dist, Math.max(Math.abs(p.x), Math.abs(p.y)));
         }
         agentAttached.put(name, result);
+        agentAttachedDistance.put(name, dist);
     }
 
     public int getAgentAttached(String agent) {
-        return agentAttached.get(agent);
+        Integer result = agentAttached.get(agent);
+        return result == null ? 0 : result;
+    }
+
+    public int getAgentAttachedDistance(String agent) {
+        Integer result = agentAttachedDistance.get(agent);
+        return result == null ? 0 : result;
     }
     
     public Point getTopLeft() {
@@ -256,7 +344,7 @@ public class GameMap {
             for (int y = 0; y < size.y; y++) {
                 for (int x = 0; x < size.x; x++) {
                     MapCell foreignCell = foreignMap.cells[y][x];
-                    MapCell myCell = cells[(y + offsetY + originOffsetY + size.y) % size.y][(x + offsetX + originOffsetX + size.x) % size.x];
+                    MapCell myCell = cells[(y + offsetY + originOffsetY + 2 * size.y) % size.y][(x + offsetX + originOffsetX + 2 * size.x) % size.x];
                     myCell.mergeIntoCell(foreignCell);
                 }
             }
@@ -278,6 +366,7 @@ public class GameMap {
         roleCache.clear();
         goalCache.clear();
         dispenserCache.clear();
+        calcMeetingPoints();
         
         for (int y = 0; y < curSize.y; y++) {
             for (int x = 0; x < curSize.x; x++) {
@@ -413,6 +502,18 @@ public class GameMap {
             InterestingPoint ip = new InterestingPoint(internal, ZoneType.NONE, CellType.TEAMMATE, e.getKey());
             result.add(ip);
         }
+
+        // Meeting Points in goal Zone
+        /*
+        for (Point p : meetingPoints) {
+            if (countLeft == 0) {
+                break;
+            }
+            Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
+            InterestingPoint ip = new InterestingPoint(internal, ZoneType.GOALZONE, CellType.UNKNOWN, "");
+            result.add(ip);
+            countLeft -= 1;
+        }*/
         
         // Goal and Role Zones 
         List<List<Point>> goalLists = filterZones(goalCache, 6);
@@ -428,6 +529,7 @@ public class GameMap {
             int maxSize = Math.max(goalListSize, roleListSize);
             
             for (int i = 0; i < maxSize; i++) {
+                int goalFactor = 2;
                 if (i < goalListSize) {
                     List<Point> goalList = goalLists.get(i);
                     if (goalList.size() > 0) {
@@ -435,7 +537,12 @@ public class GameMap {
                         InterestingPoint ip = new InterestingPoint(p, ZoneType.GOALZONE, CellType.UNKNOWN, "");
                         result.add(ip);
                         countLeft -= 1;
-                        goalList.remove(0);
+                        for (int k = 0; k < goalFactor; k++) {
+                            if (goalList.size() > 0) {
+                                goalList.remove(0);
+                            }
+                        }
+
                         // Remove Empty List
                         if (goalList.size() == 0) {
                             goalLists.remove(goalList);
@@ -443,6 +550,7 @@ public class GameMap {
                         }
                     }
                 }
+                int roleFactor = 12;
                 if (i < roleListSize && useRoleZones) {
                     List<Point> roleList = roleLists.get(i);
                     if (roleList.size() > 0) {
@@ -450,7 +558,11 @@ public class GameMap {
                         InterestingPoint ip = new InterestingPoint(p, ZoneType.ROLEZONE, CellType.UNKNOWN, "");
                         result.add(ip);
                         countLeft -= 1;
-                        roleList.remove(0);
+                        for (int k = 0; k < roleFactor; k++) {
+                            if (roleList.size() > 0) {
+                                roleList.remove(0);
+                            }
+                        }
                         // Remove Empty List
                         if (roleList.size() == 0) {
                             roleLists.remove(roleList);
