@@ -582,27 +582,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
-<<<<<<< HEAD
                     Point agentPos = map.getAgentPosition(agent);
-                    sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos);
-=======
-                    
-                    Point agentPos = map.getInternalAgentPosition(agent);;
+                    Percept p = sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos);
+                    calcResults.add(new CalcResult(agent, p));
                     AgentLogger.info(Thread.currentThread().getName() + " startCalc() - Loop Agent: " + agents.get(i)
-                            + " , Position: " + agentPos);
-
-                    /*for (int j = 0; j < interestingPoints.size(); j++) {
-                        AgentLogger
-                                .info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));
-                        AgentLogger.info(
-                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].distance());
-                        AgentLogger.info(
-                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].direction());
-                        AgentLogger.info(Thread.currentThread().getName() + " -------------------------");
-                    }*/
-                    
-                    calcResults.add(new CalcResult(agent,sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft)));
->>>>>>> master
+                    + " , Position: " + agentPos);
                 }
             }
             return result;
@@ -612,11 +596,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         return null;
     }
 
-<<<<<<< HEAD
-    private void sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft, Point agentPosition) {
-=======
-    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
->>>>>>> master
+    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft, Point agentPosition) {
         List<Parameter> data = new ArrayList<>();
         // Generate Percept
         for (int j = 0; j < interestingPoints.size(); j++) {
