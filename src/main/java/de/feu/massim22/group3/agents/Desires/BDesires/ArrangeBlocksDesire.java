@@ -51,11 +51,9 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
         for (Thing t : info.requirements) {
             Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
+            
             if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
-                String ea = atAgent == null ? t.details + " not at agent" : "";
-                String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ?  "Attached is no block" : "";
-                String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
-                return new BooleanInfo(false, ea + et + ed);
+                return new BooleanInfo(false, "");
             }
         }
         return new BooleanInfo(true, "");

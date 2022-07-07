@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.Thing;
 
@@ -19,8 +20,8 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        for (Thing t : belief.getAttachedThings()) {
-            if (Math.abs(t.x) <= 1 && Math.abs(t.y) <= 1 && t.type.equals(Thing.TYPE_BLOCK)
+        for (Thing t : ((BdiAgentV2) belief.getAgent()).getAttachedThings()) {
+            if ((Math.abs(t.x) == 0 || Math.abs(t.y) == 0) && t.type.equals(Thing.TYPE_BLOCK)
                 && t.details.equals(block)) {
                 return new BooleanInfo(true, "");
             }
@@ -33,8 +34,10 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         nearest = null;
         int vision = belief.getVision();
         List<Thing> possibleThings = new ArrayList<>();
+        
         for (Thing t : belief.getThings()) {
             int distance = Math.abs(t.x) + Math.abs(t.y);
+            
             if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block) && distance < vision) {
                 Thing n = t.x == 0 && t.y == 1 ? null : belief.getThingAt(new Point(t.x, t.y -1));
                 Thing s = t.x == 0 && t.y == -1 ? null : belief.getThingAt(new Point(t.x, t.y + 1));
