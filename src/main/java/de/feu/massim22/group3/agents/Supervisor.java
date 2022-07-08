@@ -10,10 +10,10 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import de.feu.massim22.group3.EventName;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 import de.feu.massim22.group3.SupervisorEventName;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.utils.PerceptUtil;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -170,7 +170,6 @@ public class Supervisor implements ISupervisor {
     public void setAgents(List<String> agents) {
         this.agents = agents;
     }
-    // Melinda Betz Ende
 
     @Override
     public void reportAgentData(String agent, AgentReport report) {
