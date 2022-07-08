@@ -32,7 +32,7 @@ public class GoToGoalZoneDesire extends BeliefDesire {
         Point p = belief.getNearestRelativeManhattenGoalZone();
         int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
         // Data from Pathfinding
-        if (zone != null && zone.distance() < 2 * manhattenDistance) {
+        if (zone != null && zone.distance() < 4 * manhattenDistance) {
             String direction = DirectionUtil.intToString(zone.direction());
             if (direction.length() > 0) {
             	 AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - nextActionDirectionPathfinding: " + direction);

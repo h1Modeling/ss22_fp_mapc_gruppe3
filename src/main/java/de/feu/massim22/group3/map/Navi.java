@@ -13,6 +13,7 @@ import org.lwjgl.BufferUtils;
 
 import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
@@ -44,9 +45,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private Map<String, Integer> agentStep = new HashMap<>();
     private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
-    private IGraphicalDebugger debugger = new GraphicalDebugger();
+    private Map<String, PathFinder> pathFinder = new HashMap<>();
+    private IGraphicalDebugger debugger;
     private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
     private boolean busy = false;
+    private static boolean debug = false;
+    private final int defaultMapSize = 30;
     
     private List<CalcResult> calcResults = new ArrayList<>();
     
@@ -54,7 +58,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         PathFinder.init();
         //AgentLogger.info(Thread.currentThread().getName() + " Navi() Constructor ");
         // Open Debugger
-        SwingUtilities.invokeLater((Runnable)debugger);
+        if (debug) {
+            debugger = new GraphicalDebugger();
+            SwingUtilities.invokeLater((Runnable)debugger);
+        }
 
         // TODO At end of application PathFinder must be closed to free resources
     }
@@ -68,12 +75,24 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     }
 
     @Override
+    public void resetAgent(String name) {
+        maps.put(name, new GameMap(defaultMapSize, defaultMapSize));
+        agentSupervisor.put(name, name);
+        agentStep.put(name, -1);
+        supervisorGreetData.remove(name);
+        mergeKeys.remove(name);
+        busy = false;
+    }
+
+    @Override
     public boolean isWaitingOrBusy() {
         return mergeKeys.size() > 0 || busy;
     }
 
-    public void setDebugStepListener(DebugStepListener listener) {
-        debugger.setDebugStepListener(listener);
+    public void setDebugStepListener(DebugStepListener listener, boolean manualMode) {
+        if (debug) {
+            debugger.setDebugStepListener(listener, manualMode);
+        }
     }
 
     public void setMailService(MailService mailService) {
@@ -84,10 +103,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         if (maps.containsKey(name)) {
             throw new IllegalArgumentException("Agent is already registered");
         }
-        maps.put(name, new GameMap(30, 30));
+        maps.put(name, new GameMap(defaultMapSize, defaultMapSize));
         agentSupervisor.put(name, name);
         agentStep.put(name, -1);
-        openGlHandler.put(name, PathFinder.createOpenGlContext());
+        long context = PathFinder.createOpenGlContext();
+        openGlHandler.put(name, context);
+        pathFinder.put(name, new PathFinder(context));
     }
     
     // Melinda
@@ -123,9 +144,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     }
     //Melinda Ende
 
-    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention) {
-        AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention);
-        debugger.setAgentData(data);
+    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType) {
+        if (debug) {
+            AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention, groupDesireType);
+            debugger.setAgentData(data);
+        }
     }
     
     @Override
@@ -237,14 +260,16 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         // Update internal step
         agentStep.put(agent, step);
 
-        // Update Debugger simulation data
-        debugger.setSimInfo(step, maxSteps, score);
+        if (debug) {
+            // Update Debugger simulation data
+            debugger.setSimInfo(step, maxSteps, score);
 
-        // Update Debugger Norms
-        debugger.setNorms(normsInfo, step);
+            // Update Debugger Norms
+            debugger.setNorms(normsInfo, step);
 
-        // Update Debugger Tasks
-        debugger.setTasks(taskInfo, step);
+            // Update Debugger Tasks
+            debugger.setTasks(taskInfo, step);
+        }
     }
 
     private void makeMergeSuggestions() {
@@ -366,7 +391,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }
         
         // Update Debugger
-        debugger.removeSupervisor(oldSupervisor, newSupervisor);
+        if (debug) {
+            debugger.removeSupervisor(oldSupervisor, newSupervisor);
+        }
         mergeKeys.remove(mergeKey);
     }
 
@@ -490,7 +517,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         // y = 2: Goal Position
         int maxNumberGoals = 64;
         int dataY = 3;
-        List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals, false);
+        List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals, true);
         int numberGoals = interestingPoints.size();
         int textureSize = Math.max(agentSize, numberGoals);
         Point dataSize = new Point(textureSize, dataY);
@@ -509,7 +536,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     String agent = agents.get(x);
                     int attached = map.getAgentAttached(agent);
                     dataTextureBuffer.put(attached);
-                    dataTextureBuffer.put(0);
+                    // Distance of exterior block
+                    int distance = map.getAgentAttachedDistance(agent);
+                    dataTextureBuffer.put(distance);
                 } 
                 // Interesting Points Position (Path-Finding Goals)
                 else if (y == 2 && x < numberGoals) {
@@ -527,8 +556,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }
         dataTextureBuffer.flip();
 
-        long handler = openGlHandler.get(supervisor);
-        PathFinder finder = new PathFinder(handler);
+        PathFinder finder = pathFinder.get(supervisor);
         boolean mapDiscovered = map.mapDiscovered();
         
         if (numberGoals > 0) {
@@ -543,8 +571,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             List<Point> goalZones = map.getGoalCache();
 
             // Update debugger
-            GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
-            debugger.setGroupData(debugData);
+            if (debug) {
+                GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
+                debugger.setGroupData(debugData);
+            }
             
             // Send Result to Agents
             if (mailService != null) {
@@ -552,60 +582,47 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     String agent = agents.get(i);
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
-                    
-                    Point agentPos = map.getInternalAgentPosition(agent);;
-                    AgentLogger.info(Thread.currentThread().getName() + " startCalc() - Loop Agent: " + agents.get(i)
-                            + " , Position: " + agentPos);
-
-                    /*for (int j = 0; j < interestingPoints.size(); j++) {
-                        AgentLogger
-                                .info(Thread.currentThread().getName() + " InterestingPoint: " + interestingPoints.get(j));
-                        AgentLogger.info(
-                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].distance());
-                        AgentLogger.info(
-                                Thread.currentThread().getName() + " PathFindingResult: " + agentResultData[j].direction());
-                        AgentLogger.info(Thread.currentThread().getName() + " -------------------------");
-                    }*/
-                    
-                    calcResults.add(new CalcResult(agent,sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft)));
+                    Point agentPos = map.getAgentPosition(agent);
+                    //Melinda                    
+                    calcResults.add(new CalcResult(agent, sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos)));
+                    //Melinda Ende
+                    sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos);
                 }
             }
             return result;
         }
-
-       // return calcResults;
         return null;
     }
 
-    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+    private Percept sendPathFindingResultToAgent(String agent, PathFindingResult[] agentResultData, List<InterestingPoint> interestingPoints, Point mapTopLeft, Point agentPosition) {
         List<Parameter> data = new ArrayList<>();
         // Generate Percept
         for (int j = 0; j < interestingPoints.size(); j++) {
             PathFindingResult resultData = agentResultData[j];
             InterestingPoint ip = interestingPoints.get(j);
+            Point p = ip.point();
+            Point absPoint = new Point(p.x + mapTopLeft.x, p.y + mapTopLeft.y);
             boolean iZ = ip.cellType().equals(CellType.UNKNOWN);
             Parameter isZone = new TruthValue(iZ);
             String det = iZ ? ip.zoneType().name() : ip.cellType().name();
             Parameter detail = new Identifier(det);
-            Parameter pointX = new Numeral(ip.point().x + mapTopLeft.x);
-            Parameter pointY = new Numeral(ip.point().y + mapTopLeft.y);
+            Parameter pointX = new Numeral(absPoint.x);
+            Parameter pointY = new Numeral(absPoint.y);
             Parameter ipData = new Identifier(ip.data());
-            // Result was found
-            if (resultData.distance() > 0) {
-                Parameter distance = new Numeral(resultData.distance());
-                Parameter direction = new Numeral(resultData.direction());
-                // Generate Data for Point
-                Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
-                data.add(f);
-            } 
-            // Send also non reachable important points
-            else {
-                // GoalZone or Dispenser
-                if ((iZ && ip.zoneType().equals(ZoneType.GOALZONE)) || (!iZ && !ip.cellType().equals(CellType.TEAMMATE))) {
-                    Parameter f = new Function("nonReachablePointResult", detail, isZone, pointX, pointY, ipData);
-                    data.add(f);
-                }
-            }
+
+            // Send Manhatten distance if calculation failed
+            int dist = resultData.distance() > 0 
+                ? resultData.distance() 
+                : Math.abs(absPoint.x - agentPosition.x) + Math.abs(absPoint.y - agentPosition.y);
+            int dirCode = resultData.distance() > 0
+                ? resultData.direction()
+                : DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPosition, absPoint));
+                
+            Parameter distance = new Numeral(dist);
+            Parameter direction = new Numeral(dirCode);
+            // Generate Data for Point
+            Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
+            data.add(f);
         }                
         Percept message = new Percept(EventName.PATHFINDER_RESULT.name(), data);
         // Send Data to Agent
@@ -670,12 +687,31 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
     @Override
     public void updateDesireDebugData(List<DesireDebugData> data, String agent) {
-        debugger.setAgentDesire(data, agent);
+        if (debug) {
+            debugger.setAgentDesire(data, agent);
+        }
     }
 
     @Override
     public int getAgentIdAtPoint(String supervisor, Point p) {
         GameMap map = maps.get(supervisor);
         return map.getAgentIdAtPoint(p);
+    }
+
+    @Override
+    public boolean isBlockAttached(String supervisor, Point p) {
+        GameMap map = maps.get(supervisor);
+        return map.isBlockAttached(p);
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        Navi.debug = debug;
+    }
+
+    @Override
+    public List<Point> getMeetingPoints(String supervisor) {
+        GameMap map = maps.get(supervisor);
+        return map.getMeetingPoints();
     }
 }

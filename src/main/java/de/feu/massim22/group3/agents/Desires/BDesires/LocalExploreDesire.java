@@ -32,7 +32,7 @@ public class LocalExploreDesire extends BeliefDesire {
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());
        Identifier newDirection = agent.desireProcessing.walkCircles(agent, 60);
-       return getActionForMove(newDirection.getValue(), newDirection.getValue(), getName());
+       return agent.desireProcessing.getActionForMove(agent, newDirection.getValue(), newDirection.getValue(), getName());
         //Integer direction = agent.index % 4 ;
         //AgentLogger.info(Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Action: move, " +  DirectionUtil.intToString(direction));
         /*int direction = 0;

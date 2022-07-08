@@ -27,6 +27,9 @@ public class DesireUtilities {
     public String directionCircle = "cw";
     public int directionCounter = 0;
     public int circleSize = 40;
+    private String dir2;
+    private boolean dir2Used = false;
+    private int moveIteration = 0;
  
 	public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
@@ -80,7 +83,6 @@ public class DesireUtilities {
                 && !inDesire.isUnfulfillable().value() 
                 && inDesire.isExecutable().value()) { // desire ist möglich , hinzufügen
             inDesire.setOutputAction(inDesire.getNextActionInfo().value());
-            //inDesire.setPriority(getPriority(inDesire));
             agent.desires.add(inDesire);
             result = true;
         }
@@ -164,7 +166,7 @@ public class DesireUtilities {
                             + " , GoAdoptRoleDesire - worker");
                 
                 if (agent.desireProcessing.attachedThings.size() == 0
-                && doDecision(agent, new AttachAbandonedBlockDesire(agent.belief, getTaskBlock(agent, task).type))) {
+                && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlock(agent, task).type))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , AttachAbandonedBlockDesire");
@@ -419,52 +421,6 @@ public class DesireUtilities {
         return resultDirection;
     }
     
-    public void analyseAttachedThings() {  
-        AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() Task: " + task.name);
-        for (Thing attachedBlock : attachedThings) {
-	        
-			if (blockInTask(task.requirements, attachedBlock)) {
-		        AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block OK");    
-				// Blocktype stimmt
-				// Block ist an der richtigen Stelle
-				goodBlocks.add(attachedBlock);
-				goodPositionBlocks.add(attachedBlock);
-			} else {
-	             AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block nicht OK");  
-				typeOk = false;
-				
-				for (Thing taskBlock : task.requirements) {
-					if (attachedBlock.details.equals(taskBlock.type)) {
-		                AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block OK an falscher Stelle"); 
-						// Blocktype stimmt
-						// Block ist an der falschen Stelle
-						goodBlocks.add(attachedBlock);
-						badPositionBlocks.add(attachedBlock);
-						typeOk = true;
-						break;
-					}
-				}
-				
-				if (!typeOk) {
-                    AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block Type falsch"); 
-					// Blocktype stimmt nicht
-					badBlocks.add(attachedBlock);
-				}
-			}
-		}
-		
-        for (int i = 0; i < 5; i++) {
-            int diff = countBlockType(task.requirements, "b" + i) - countBlockType(attachedThings, "b" + i);
-            
-            if (diff > 0) {
-                for (int j = 0; j < diff; j++) {
-                    missingBlocks.add(new Thing(0, 0, Thing.TYPE_BLOCK, "b" + i));
-                }
-            }
-        }
-        AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() missingBlocks: " + missingBlocks);              
-    }
-    
     public Thing toTaskBlock(Thing toThingBlock) {           
         return new Thing(toThingBlock.x, toThingBlock.y, toThingBlock.details, "");
     }
@@ -534,82 +490,7 @@ public class DesireUtilities {
 
         return null;
     }
-    
-    
-    public Action getPossibleActionForMove(BdiAgentV2 agent, String direction) {
-        Action nextAction = null;
-        //Thing neighbourOfBlock = null;
-        Thing neighbour = agent.desireProcessing.getContentInDirection(agent, direction);
-        // AgentLogger.info(Thread.currentThread().getName() + "
-        // getPossibleActionForMove() - Neighbour: " + neighbour);
-
-         if (neighbour == null 
-                 || (neighbour.type.equals(Thing.TYPE_BLOCK )
-                 && agent.desireProcessing.attachedThings.contains(neighbour))) {
-             //if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
-                //     && agent.desireProcessing.attachedThings.contains(neighbour) && agent.desireProcessing.getContentInDirection(agent, new Point(neighbour.x, neighbour.y), direction) == null)) {
-             // Weg ist frei (alte Variante)
-            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH) 
-                    || (neighbour != null && neighbour.type.equals(Thing.TYPE_BLOCK )
-                            && !agent.desireProcessing.attachedThings.contains(neighbour))) {
-                if (agent.desireProcessing.attachedThings.size() == 1) {
-                    agent.desireProcessing.dontArrange = true;
-                    
-                    if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
-                        agent.desireProcessing.failedPath += 1;
-                        
-                        if ( agent.desireProcessing.failedPath > 2) {
-                            if(agent.desireProcessing.nextTry == "ccw") {
-                                agent.desireProcessing.nextTry = "cw";
-                            } else {
-                                agent.desireProcessing.nextTry = "ccw";
-                            }
-                        }
-                    }
-                    nextAction = new Action("rotate", new Identifier(agent.desireProcessing.nextTry));
-                } else { 
-                    /**if(agent.desireProcessing.nextTryDir == 1) {
-                        agent.desireProcessing.nextTryDir = -1;
-                    } else {
-                        agent.desireProcessing.nextTryDir = 1;
-                    }
-                    direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + agent.desireProcessing.nextTryDir);*/
-                    agent.desireProcessing.failedPath = 0;
-                    nextAction = new Action("move", new Identifier(direction));
-                }
-            } else {
-                agent.desireProcessing.failedPath = 0;
-                nextAction = new Action("move", new Identifier(direction));
-            }
-
-        } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE) 
-                || (neighbour.type.equals(Thing.TYPE_BLOCK )
-                        && !agent.desireProcessing.attachedThings.contains(neighbour))) {
-            Point pointCell = Point.castToPoint(DirectionUtil.getCellInDirection(direction));
-            // ein Hindernis wegräumen
-            agent.desireProcessing.failedPath = 0;
-            nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),
-                    new Identifier(String.valueOf(pointCell.y)));
-
-        } else if (neighbour.type.equals(Thing.TYPE_ENTITY)) {
-            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
-            // einem Agenten oder einem Block ausweichen
-            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);
-
-        } else
-            AgentLogger.info(Thread.currentThread().getName() + "  90");
-
-        AgentLogger.info(Thread.currentThread().getName() + "  getPossibleActionForMove() - Action: "
-                + nextAction.getName() + " , " + direction);
-
-        return nextAction;
-    }
-    
-    public synchronized void addDesire(BdiAgentV2 agent, IDesire inDesire) {
-        AgentLogger.info(Thread.currentThread().getName() + " addDesire() Agent: " + agent.getName() + " , Desire: " + inDesire.getName());
-        agent.desires.add(inDesire);
-    }
-    
+          
     public boolean taskReachedDeadline (BdiAgentV2 agent,TaskInfo task) {
     	boolean result = false;
     	if (agent.belief.getStep() > task.deadline) {
@@ -618,25 +499,7 @@ public class DesireUtilities {
     	}
     	return result;
     }
-    
-    public void manageAgentRoles() {
-        for (BdiAgentV2 agent : StepUtilities.allAgents) {
-            if (agent.belief.getRole().name().equals("default")) {
-                if (agent.index <= 1) 
-                    if (doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "explorer"))) {
-                    } else 
-                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                                + " , GoAdoptRoleDesire - explorer");
-                
-                if (agent.index > 2) 
-                    if (doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "worker"))) {
-                    } else 
-                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                                + " , GoAdoptRoleDesire - worker");
-            }
-        }
-    }
-    
+       
 	public Thing getTaskBlock(BdiAgentV2 agent, TaskInfo task) {
 		Thing result = task.requirements.get(0);
 		// ein Block Task
@@ -655,4 +518,183 @@ public class DesireUtilities {
 		}
 		return result;
 	}
+	
+    private ActionInfo getIteratedActionForMove(BdiAgentV2 agent, String dir, String desire) {
+        moveIteration++;
+        if (moveIteration < 4) {
+            return getActionForMove(agent, dir, desire);
+        }
+        // TODO AGENT is STuck
+        return ActionInfo.SKIP("Agent is Stuck");
+    }
+	
+	public ActionInfo getActionForMoveWithAlternate(BdiAgentV2 agent, String dir, String dirAlt, String desire) {
+        ActionInfo firstTry = getActionForMove(agent, dir, desire);
+        String lastRotation = agent.belief.getLastActionParams().size() > 0 ? agent.belief.getLastActionParams().get(0) : "";
+        
+        if ((firstTry.value().getName().equals(Actions.MOVE) 
+                && !firstTry.value().getParameters().get(0).toString().equals(dir)  
+                && !firstTry.value().getParameters().get(0).toString().equals(dirAlt))
+                || ((firstTry.value().getName().equals(Actions.ROTATE) 
+                && (firstTry.value().getParameters().get(0).toString().equals("cw")
+                && lastRotation.equals("ccw")) 
+                || (firstTry.value().getParameters().get(0).toString().equals("ccw")
+                && lastRotation.equals("cw"))))) {
+            return getActionForMove(agent, dirAlt, desire);
+        }
+        
+        return firstTry;
+    }
+
+    public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String dir2, String desire) {
+        this.dir2 = dir2;
+        dir2Used = true;
+        ActionInfo out = getActionForMove(agent, dir, desire);
+        dir2Used = false;
+        return out;
+    }
+    
+    public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String desire) {
+        Point dirPoint = Point.castToPoint(DirectionUtil.getCellInDirection(dir));
+        //Melinda 
+        List<Point> attached = agent.getAttachedPoints();       
+        //List<Point> attached = belief.getAttachedPoints();
+        //Melinda Ende
+        // Rotate attached
+        for (Point p : attached) {
+            Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
+            Thing t = agent.belief.getThingAt(testPoint);
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - Direction: " + dir + " , Block attached: " + p + " , in Richtung: " + testPoint);
+            if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
+                // Can be rotated
+                Thing cw = agent.belief.getThingCRotatedAt(p);
+                Thing ccw = agent.belief.getThingCCRotatedAt(p);
+                Point cwP = getCRotatedPoint(p);
+                Point ccwP = getCCRotatedPoint(p);
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - oppositeD: " + DirectionUtil.oppositeDirection(dir) + " , Cell: " + DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)));
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cw + " , Free?: " + isFree(cw));
+                String lastRotation = agent.belief.getLastActionParams().size() > 0 ? agent.belief.getLastActionParams().get(0) : "";
+                
+                if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
+                    if (isFree(cw) && !lastRotation.equals("ccw")) {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
+                        return ActionInfo.ROTATE_CW(desire);
+                    } else {
+                        if (isFree(ccw) && !lastRotation.equals("cw")) {
+                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                            return ActionInfo.ROTATE_CCW(desire);
+                        }
+                    }
+                } else {
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
+                    if (isFree(ccw) && !lastRotation.equals("cw")) {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                        return ActionInfo.ROTATE_CCW(desire);
+                    } else {
+                        if (isFree(cw) && !lastRotation.equals("ccw")) {
+                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
+                            return ActionInfo.ROTATE_CW(desire);
+                        }
+                    }                    
+                }
+                
+                if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
+                    Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
+                    return ActionInfo.CLEAR(target, desire);
+                }
+                if (ccw != null && ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
+                    Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
+                    return ActionInfo.CLEAR(target, desire);
+                }
+            }
+        }
+        // Test Agent
+        Thing t = agent.belief.getThingAt(dirPoint);
+        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t);
+        if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if2");
+            return ActionInfo.CLEAR(dirPoint, desire);
+        } else if (isFree(t) || attached.contains(dirPoint)) {
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
+
+            if (dir2Used)
+                return ActionInfo.MOVE(dir, dir2, desire);
+            else
+                return ActionInfo.MOVE(dir, desire);
+        } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)                
+                || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
+
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if4");
+            // Try to move around agent
+            boolean inDirection = true; // dir.equals("n") || dir.equals("e");
+            String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);
+            String dir2 = inDirection ? getCCRotatedDirection(dir) : getCRotatedDirection(dir);
+            Thing tDir1 = agent.belief.getThingAt(dir1);
+            Thing tDir2 = agent.belief.getThingAt(dir2);
+
+            if (isFree(tDir1) || isClearable(tDir1)) {
+                return getIteratedActionForMove(agent, dir1, desire);
+            }
+
+            if (isFree(tDir2) || isClearable(tDir2)) {
+                return getIteratedActionForMove(agent, dir2, desire);
+            }
+            return ActionInfo.SKIP("Agent is stuck");
+
+        } else {
+            return ActionInfo.SKIP("Agent is stuck");
+        }
+    }
+    
+    protected boolean isFree(Thing t) {
+        return t == null || t.type.equals(Thing.TYPE_DISPENSER);
+    }
+
+    protected boolean isClearable(Thing t) {
+        return t != null && (t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_OBSTACLE));
+    }
+
+    protected Point getCRotatedPoint(Point p) {
+        return new Point(-p.y, p.x);
+    }
+
+    protected String getCRotatedDirection(String dir) {
+        switch (dir) {
+            case "n": return "e";
+            case "e": return "s";
+            case "s": return "w";
+            default: return "n";
+        }
+    }
+
+    protected String getCCRotatedDirection(String dir) {
+        switch (dir) {
+            case "n": return "w";
+            case "e": return "n";
+            case "s": return "e";
+            default: return "s";
+        }
+    }
+
+    protected String getDirectionFromPoint(Point p) {
+        if (p.x == 0) {
+            return p.y < 0 ? "n" : "s";
+        }
+        return p.x < 0 ? "w" : "e";
+    }
+
+    protected Point getPointFromDirection(String dir) {
+        switch (dir) {
+            case "n": return new Point(0, -1);
+            case "e": return new Point(1, 0);
+            case "s": return new Point(0, 1);
+            default: return new Point(-1, 0);
+        }
+    }
+
+    public Point getCCRotatedPoint(Point p) {
+        return new Point(p.y, -p.x);
+    }
 }

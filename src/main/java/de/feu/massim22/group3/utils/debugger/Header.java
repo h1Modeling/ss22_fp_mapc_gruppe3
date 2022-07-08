@@ -1,12 +1,14 @@
 package de.feu.massim22.group3.utils.debugger;
 
 import java.awt.GridBagLayout;
+import java.awt.event.ItemEvent;
 import java.util.Set;
 import java.awt.GridBagConstraints;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,6 +20,7 @@ class Header extends JPanel {
     private JComboBox<String> groupSelection;
     private JLabel stepLabel;
     private JLabel pointLabel;
+    private JCheckBox delay;
 
     Header(IGraphicalDebugger debugger) {
 
@@ -60,6 +63,15 @@ class Header extends JPanel {
         });
         next.setVisible(false);
         add(next, c);
+
+        // Checkbox
+        delay = new JCheckBox("Verzögern");
+        c.gridx = 4;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        delay.addItemListener(l -> {
+            debugger.setDelay(l.getStateChange() == ItemEvent.SELECTED);
+        });
+        add(delay, c);
     }
 
     void setData(int currentStep, int maxSteps, int score) {

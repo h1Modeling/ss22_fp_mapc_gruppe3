@@ -229,9 +229,9 @@ public class GoDispenserDesire extends BeliefDesire {
             }
             AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 12");   
             if (distance > 3)
-                return getActionForMove(direction, direction, getName());
+                return this.agent.desireProcessing.getActionForMove(agent, direction, getName());
             else
-                return getActionForMove(direction, getName());
+                return this.agent.desireProcessing.getActionForMove(agent, direction, getName());
         }
     }
     

@@ -20,12 +20,11 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
     @Override
     public BooleanInfo isFulfilled() {
         for (Thing t : info.requirements) {
-            Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
-            if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
+            Thing atAgent = belief.getThingWithTypeAt(new Point(t.x, t.y), Thing.TYPE_BLOCK);
+            if (atAgent == null || !atAgent.details.equals(t.type)) {
                 String ea = atAgent == null ? t.details + " not at agent" : "";
-                String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ?  "Attached is no block" : "";
                 String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
-                return new BooleanInfo(false, ea + et + ed);
+                return new BooleanInfo(false, ea + ed);
             }
         }
         return new BooleanInfo(true, "");
@@ -64,6 +63,12 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             if (isFree(e) && isFree(ne) && belief.getGoalZones().contains(new Point(1, 0))) {
                 return ActionInfo.MOVE("e", getName());
             }
+            if (isClearable(w)) {
+                return ActionInfo.CLEAR(new Point(-1, 0), getName());
+            }
+            if (isClearable(e)) {
+                return ActionInfo.CLEAR(new Point(1, 0), getName());
+            }
         }
         // Attached is south
         if (t.x == 0 && t.y == 1) {
@@ -81,6 +86,12 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             }
             if (isFree(e) && isFree(se) && belief.getGoalZones().contains(new Point(1, 0))) {
                 return ActionInfo.MOVE("e", getName());
+            }
+            if (isClearable(w)) {
+                return ActionInfo.CLEAR(new Point(-1, 0), getName());
+            }
+            if (isClearable(e)) {
+                return ActionInfo.CLEAR(new Point(1, 0), getName());
             }
         }
         // Attached is east
@@ -100,6 +111,12 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             if (isFree(s) && isFree(se) && belief.getGoalZones().contains(new Point(0, 1))) {
                 return ActionInfo.MOVE("s", getName());
             }
+            if (isClearable(n)) {
+                return ActionInfo.CLEAR(new Point(0, -1), getName());
+            }
+            if (isClearable(s)) {
+                return ActionInfo.CLEAR(new Point(0, 1), getName());
+            }
         }
         // Attached is west
         if (t.x == -1 && t.y == 0) {
@@ -117,6 +134,12 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
             }
             if (isFree(s) && isFree(se) && belief.getGoalZones().contains(new Point(0, 1))) {
                 return ActionInfo.MOVE("s", getName());
+            }
+            if (isClearable(n)) {
+                return ActionInfo.CLEAR(new Point(0, -1), getName());
+            }
+            if (isClearable(s)) {
+                return ActionInfo.CLEAR(new Point(0, 1), getName());
             }
         }
         return ActionInfo.CLEAR(new Point(goal.x, goal.y), getName());

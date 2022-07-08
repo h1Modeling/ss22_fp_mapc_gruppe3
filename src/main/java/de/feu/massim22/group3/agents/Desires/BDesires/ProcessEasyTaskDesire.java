@@ -19,7 +19,7 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
         precondition.add(new ProcessOnlySubmittableTaskDesire(belief, info));
         precondition.add(new ActionDesire(belief, neededActions));
         precondition.add(new OrDesire(
-            new AttachAbandonedBlockDesire(belief, blockDetail),
+            new AttachAbandonedBlockDesire(belief, blockDetail, supervisor),
             new AttachSingleBlockFromDispenserDesire(belief, info.requirements.get(0), supervisor))
         );
         precondition.add(new GoToGoalZoneDesire(belief));
@@ -71,5 +71,9 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
         int dispenserDist = dispenser != null ? Math.abs(dispenser.x) + Math.abs(dispenser.y) : 500;
         int abandonedDist = abandoned != null ? Math.abs(abandoned.x) + Math.abs(abandoned.y) : 500;
         return 100 + (500 - Math.min(dispenserDist, abandonedDist));
+    }
+
+    public TaskInfo getTaskInfo() {
+        return info;
     }
 }

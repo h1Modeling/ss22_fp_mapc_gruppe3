@@ -41,7 +41,7 @@ class AgentPanel extends JPanel {
 
         name = new JLabel();
         add(name, "wrap");
-        name.setMinimumSize(new Dimension(100, 10));
+        name.setMinimumSize(new Dimension(200, 10));
 
         JLabel roleLabel = new JLabel("Rolle:");
         add(roleLabel);

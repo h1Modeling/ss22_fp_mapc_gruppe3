@@ -121,9 +121,9 @@ public class GoGoalZoneDesire extends BeliefDesire {
                         Thread.currentThread().getName() + "GoGoalZoneDesire - after proofDirection: " + direction);
 
                 if (dirAlt.equals(""))
-                    return getActionForMove(direction, getName());
+                    return agent.desireProcessing.getActionForMove(agent, direction, getName());
                 else
-                    return getActionForMoveWithAlternate(direction, dirAlt, getName());
+                    return agent.desireProcessing.getActionForMoveWithAlternate(agent, direction, dirAlt, getName());
             }
 
             // Data from Pathfinding
