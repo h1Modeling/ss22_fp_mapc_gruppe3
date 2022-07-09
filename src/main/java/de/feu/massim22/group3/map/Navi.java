@@ -49,7 +49,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private IGraphicalDebugger debugger;
     private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
     private boolean busy = false;
-    private static boolean debug = true;
+    private static boolean debug = false;
     private final int defaultMapSize = 30;
     
     private List<CalcResult> calcResults = new ArrayList<>();
@@ -125,7 +125,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     @Override
 	public List<InterestingPoint> getInterestingPoints(String supervisor, int maxNumberGoals) {
 		GameMap map = maps.get(supervisor);
-		return map.getInterestingPoints(maxNumberGoals, false);
+		return map.getInterestingPoints(maxNumberGoals, true);
 	}
 	
     @Override
@@ -583,7 +583,6 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     PathFindingResult[] agentResultData = result[i];
                     Point mapTopLeft = map.getTopLeft();
                     Point agentPos = map.getAgentPosition(agent);
-
                     Percept p = sendPathFindingResultToAgent(agent, agentResultData, interestingPoints, mapTopLeft, agentPos);
                     calcResults.add(new CalcResult(agent, p));
                     AgentLogger.info(Thread.currentThread().getName() + " startCalc() - Loop Agent: " + agents.get(i)

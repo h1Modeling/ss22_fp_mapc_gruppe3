@@ -35,8 +35,8 @@ public class GoDispenserDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + ".isFulfilled() attached agent: " + agent.getAttachedThings());
-        AgentLogger.info(Thread.currentThread().getName() + ".isFulfilled() attached belief: " + agent.belief.getAttachedThings());
+        AgentLogger.info(Thread.currentThread().getName() + " .isFulfilled() attached agent: " + agent.getAttachedThings());
+        AgentLogger.info(Thread.currentThread().getName() + " .isFulfilled() attached belief: " + agent.belief.getAttachedThings());
         for (Thing t : agent.getAttachedThings()) {
             if ((t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_DISPENSER)) && (t.x == 0 || t.y == 0)) {
                 return new BooleanInfo(true, "");
@@ -47,7 +47,7 @@ public class GoDispenserDesire extends BeliefDesire {
 
     @Override
 	public BooleanInfo isExecutable() {
-		AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.isExecutable() Start - Agent: "
+		AgentLogger.info(Thread.currentThread().getName() + " GoDispenserDesire.isExecutable() Start - Agent: "
 				+ agent.getName());
 		if (agent.belief.getRole().actions().contains(Actions.REQUEST)
 				&& agent.belief.getRole().actions().contains(Actions.ATTACH)) {
@@ -70,7 +70,7 @@ public class GoDispenserDesire extends BeliefDesire {
 					}
 				}
 				AgentLogger
-						.info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
+						.info(Thread.currentThread().getName() + " .isExecutable() Type Dispenser: " + typeDispensers);
 				if (typeDispensers.size() > 0) {
 					// es wurde ein Dispenser vom gesuchten Typ gefunden
 					return new BooleanInfo(true, "");
@@ -82,29 +82,29 @@ public class GoDispenserDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.getNextAction() Start");
+        AgentLogger.info(Thread.currentThread().getName() + " GoDispenserDesire.getNextAction() Start");
 
         boolean attachPossible = false;
         Point dispenserItself = null;
         ReachableDispenser nearestDispenser = null;
         // Dispenser mit der kürzesten Entfernung zum Agenten
-        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,1");
+        AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 0,1");
         Point visionDispenser = Point.castToPoint(belief.getNearestRelativeManhattenDispenser(block.type));
-        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,2");
+        AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 0,2");
         
         if (visionDispenser != null) {
-            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 1");
+            AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 1");
             distance = Math.abs(visionDispenser.x) + Math.abs(visionDispenser.y);
             dispenserItself = new Point(belief.getPosition().x + visionDispenser.x, belief.getPosition().y + visionDispenser.y);
         } else {
-            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 2");
+            AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 2");
             nearestDispenser = agent.desireProcessing.getNearestDispenser(typeDispensers);
             dispenserItself = Point.castToPoint(DirectionUtil.getDispenserItself(nearestDispenser));
 
             if (agent.requestMade && agent.lastUsedDispenser != null && agent.lastUsedDispenser != nearestDispenser.position()) {
-                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 3");
+                AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 3");
                 for (Thing thing : agent.belief.getThings()) {
-                    AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 3.1: " + thing.type + " , " + agent.lastUsedDispenser);
+                    AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 3.1: " + thing.type + " , " + agent.lastUsedDispenser);
                     if (thing.type.equals(Thing.TYPE_DISPENSER)
                             && thing.x == agent.lastUsedDispenser.x - agent.belief.getPosition().x
                             && thing.y == agent.lastUsedDispenser.y - agent.belief.getPosition().y) {
@@ -114,7 +114,7 @@ public class GoDispenserDesire extends BeliefDesire {
                     }
                 }
             }
-            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 4");
+            AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 4");
             agent.lastUsedDispenser = dispenserItself;
             distance = Math.abs(dispenserItself.x - agent.belief.getPosition().x)
                     + Math.abs(dispenserItself.y - agent.belief.getPosition().y);
@@ -125,11 +125,11 @@ public class GoDispenserDesire extends BeliefDesire {
             AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - dNearest: "
                     + nearestDispenser.position() + nearestDispenser.data() + " , dItself: " + dispenserItself);*/
         }
-        AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 5");
+        AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 5");
         
         if (distance == 1) {
             // steht neben einem Dispenser
-            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 6");           
+            AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 6");           
             for (Thing thing : agent.belief.getThings()) {
                 if (thing.type.equals(Thing.TYPE_BLOCK) && thing.x == visionDispenser.x
                         && thing.y == visionDispenser.y) {
@@ -139,12 +139,12 @@ public class GoDispenserDesire extends BeliefDesire {
                     }
                 }
             }
-            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 7");
+            AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 7");
             String direction = DirectionUtil.getDirection(Point.zero(), visionDispenser);
 
             if (attachPossible) {
                 Point pos = Point.castToPoint(agent.belief.getPosition());
-                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8: " + pos + " , " + direction);               
+                AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 8: " + pos + " , " + direction);               
                 
                 Point d1 = new Point(0, 0);
                 Point d2 = new Point(0, 0);
@@ -163,27 +163,27 @@ public class GoDispenserDesire extends BeliefDesire {
                 }
                 if (direction.equals("e")) {
                     d1 = new Point(pos.x + 1, pos.y + 1);
-                    r1 = new Point(1, 1);
+                    r1 = new Point(0, -1);
                     d2 = new Point(pos.x + 2, pos.y);
-                    r2 = new Point(2, 0);
+                    r2 = new Point(-1, 0);
                     d3 = new Point(pos.x + 1, pos.y - 1);
-                    r3 = new Point(1, -1);
+                    r3 = new Point(0, 1);
                 }
                 if (direction.equals("s")) {
                     d1 = new Point(pos.x - 1, pos.y + 1);
-                    r1 = new Point(-1, 1);
+                    r1 = new Point(1, 0);
                     d2 = new Point(pos.x, pos.y + 2);
-                    r2 = new Point(0, 2);
+                    r2 = new Point(0, -1);
                     d3 = new Point(pos.x + 1, pos.y + 1);
-                    r3 = new Point(1, 1);
+                    r3 = new Point(-1, 0);
                 }
                 if (direction.equals("w")) {
                     d1 = new Point(pos.x - 1, pos.y - 1);
-                    r1 = new Point(-1, -1);
+                    r1 = new Point(0, 1);
                     d2 = new Point(pos.x - 2, pos.y);
-                    r2 = new Point(-2, 0);
+                    r2 = new Point(1, 0);
                     d3 = new Point(pos.x - 1, pos.y + 1);
-                    r3 = new Point(-1, 1);
+                    r3 = new Point(0, -1);
                 }
                 
                 ArrayList<Integer> met =  new ArrayList<Integer>();
@@ -193,7 +193,7 @@ public class GoDispenserDesire extends BeliefDesire {
                     Point p1 = new Point(meeting.posAgent1());
                     Point p2 = new Point(meeting.posAgent2());
                     Point p3 = new Point(meeting.relAgent2());
-                    AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8.1: " + meeting.agent2().getName() + " , " + Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))));      
+                    AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 8.1: " + meeting.agent2().getName() + " , " + Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))));      
                     
                     if (d1 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))) && meeting.agent2().belief.getAttachedPoints().contains(r1)
                             || d2 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))) && meeting.agent2().belief.getAttachedPoints().contains(r2)
@@ -203,7 +203,7 @@ public class GoDispenserDesire extends BeliefDesire {
                         i++;
                     }
                 }
-                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8.2: " + agent.index + " , " + met);      
+                AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 8.2: " + agent.index + " , " + met);      
                 
                 for (int metIndex : met) {
                     if(agent.index < metIndex)
@@ -212,7 +212,7 @@ public class GoDispenserDesire extends BeliefDesire {
 
                 return ActionInfo.ATTACH(direction, getName());             
             } else {
-                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 9");
+                AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 9");
                 agent.requestMade = true;
                 return ActionInfo.REQUEST(direction, getName());
             }
@@ -220,14 +220,14 @@ public class GoDispenserDesire extends BeliefDesire {
         } else {
              // steht noch nicht neben einem Dispenser
             String direction = "";
-            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 10");                    
+            AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 10");                    
             if (visionDispenser != null) {
                 direction = DirectionUtil.getDirection(Point.zero(), visionDispenser);
             } else {
-                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 11");  
+                AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 11");  
                 direction = DirectionUtil.firstIntToString(nearestDispenser.direction());
             }
-            AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 12");   
+            AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 12");   
             if (distance > 3)
                 return this.agent.desireProcessing.getActionForMove(agent, direction, getName());
             else

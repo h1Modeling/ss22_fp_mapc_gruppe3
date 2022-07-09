@@ -28,24 +28,6 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         this.agent = agent;
     }
 
-
-	@Override
-	public BooleanInfo isExecutable() {
-		AgentLogger
-				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
-		if (belief.getRole().actions().contains(Actions.DETACH)
-				&& belief.getRole().actions().contains(Actions.ATTACH)) {
-			//Ein Block Task
-			if(info.requirements.size() == 1) {
-				return new BooleanInfo(true, "");
-			}
-			else {
-				return blockStructure(info);
-			}
-		}
-		return new BooleanInfo(false, "");
-	}
-
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
@@ -58,6 +40,20 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         }
         return new BooleanInfo(true, "");
     }
+
+	@Override
+	public BooleanInfo isExecutable() {
+		AgentLogger
+				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
+		if (belief.getRole().actions().contains(Actions.DETACH)
+				&& belief.getRole().actions().contains(Actions.ATTACH)) {
+			//Ein Block Task
+			if(info.requirements.size() == 1) 
+				return new BooleanInfo(true, "");
+		}
+		
+		return new BooleanInfo(false, "");
+	}
 
     @Override
     public ActionInfo getNextActionInfo() {
@@ -105,48 +101,4 @@ public class ArrangeBlocksDesire extends BeliefDesire {
             return ActionInfo.SKIP(getName());
         }
     }
-    
-	public BooleanInfo blockStructure(TaskInfo task) {
-		BooleanInfo result = new BooleanInfo(false, "");
-		boolean found = false;
-		int indexFound = 0;
-
-		for (Thing attachedThing : agent.getAttachedThings()) {
-			// ich habe einen passenden Block
-			for (int i = 0; i < task.requirements.size(); i++) {
-				if (task.requirements.get(i).type.equals(attachedThing.details)
-						&& (attachedThing.x == 0 && attachedThing.y == 1
-								|| attachedThing.x == 0 && attachedThing.y == -1
-								|| attachedThing.x == 1 && attachedThing.y == 0
-								|| attachedThing.x == -1 && attachedThing.y == 0)) {
-					found = true;
-					indexFound = i;
-					break;
-				}
-			}
-			
-			if (found) break;
-		}
-		
-		if (found) {
-			for (Meeting meeting : AgentMeetings.find(agent)) {
-				if (!meeting.agent2().getAttachedThings().isEmpty()) {
-					for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
-						// anderer Agent hat den Block der mir noch fehlt
-						for (int i = 0; i < task.requirements.size(); i++) {
-							if (i != indexFound && attachedThing2.details.equals(task.requirements.get(i).type)) {
-								result = new BooleanInfo(true, "");
-								foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);
-								break;
-							}
-						}
-						
-						if (result.value()) break;
-					}
-				}
-			}
-		}	
-
-		return result;
-	}
 }

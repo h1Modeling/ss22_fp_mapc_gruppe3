@@ -937,7 +937,7 @@ public class Belief {
         }
     }
 
-    private void updatePosition() {
+    /*private void updatePosition() {
         if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
             if (lastActionParams.size() == 0) return;
             String dir = lastActionParams.get(0);
@@ -946,7 +946,7 @@ public class Belief {
                 move(dir);
             }
             // Partial Success
-            /*
+            
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
                 Role currentRole = roles.get(role);
                 // With max speed 2 we can be sure that agent moved one cell
@@ -957,9 +957,30 @@ public class Belief {
                 else {
                     // Try to guess the position with information from last step
                 }
-            } */
+            } 
+        }
+    }*/
+    
+    // Melinda
+    public void updatePosition() {
+        String dir = null;
+
+        if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
+            // Success
+            if (lastActionResult.equals(ActionResults.SUCCESS)) {
+                for (int i = 0; i < lastActionParams.size(); i++) {
+                    dir = lastActionParams.get(i);
+                    move(dir);
+                }
+            }
+
+            // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
+            if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
+                move(lastActionParams.get(0));
+            }
         }
     }
+    // Melinda Ende
 
     private void clearLists() {
         // Remove old connection reports (step is not updated yet is actually from last step)
@@ -1019,7 +1040,7 @@ public class Belief {
 
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                move(dir);
+                move(lastActionParams.get(0));
             }
         }
     }

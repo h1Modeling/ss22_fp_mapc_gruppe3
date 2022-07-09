@@ -125,7 +125,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     private void updateBeliefs() {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
-        belief.updatePositionFromExternal();
+        //belief.updatePositionFromExternal();
         refreshAttached();
         
         if (belief.getLastAction().equals(Actions.ATTACH) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
