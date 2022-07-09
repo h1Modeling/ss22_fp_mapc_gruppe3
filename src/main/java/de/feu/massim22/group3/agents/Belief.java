@@ -1019,7 +1019,7 @@ public class Belief {
 
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                move(dir);
+                move(lastActionParams.get(0));
             }
         }
     }
