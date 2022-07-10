@@ -310,7 +310,7 @@ public class StepUtilities {
         List<CalcResult> calcResults = new ArrayList<>();
         FloatBuffer mapBuffer = navi.getMapBuffer(supervisor.getName());
 
-        int maxNumberGoals = 32;
+        int maxNumberGoals = 64;
         List<InterestingPoint> interestingPoints = navi.getInterestingPoints(supervisor.getName(), maxNumberGoals);
 
         if (interestingPoints.size() > 0) {
@@ -359,6 +359,7 @@ public class StepUtilities {
                 // Generate Data for Point
                 Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
                 data.add(f);
+                AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept: " + f);
             }
         }
 
