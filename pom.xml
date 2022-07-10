@@ -166,6 +166,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.6.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>massim</groupId>
             <artifactId>eismassim</artifactId>
             <version>4.4</version>

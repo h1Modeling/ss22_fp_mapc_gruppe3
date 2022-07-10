@@ -16,6 +16,7 @@ import de.feu.massim22.group3.agents.Desires.BDesires.ExploreDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.FreedomDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.LooseWeightDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.ProcessComplexTaskDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ProcessEasyTaskDesire;
 import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.map.INaviAgentV1;
@@ -185,6 +186,9 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             if (info.requirements.size() == 1) {
                 desires.add(new ProcessEasyTaskDesire(belief, info, supervisor.getName()));
             }
+            if (info.requirements.size() > 1) {
+                desires.add(new ProcessComplexTaskDesire(belief, info, supervisor.getName()));
+            }
         }
 
         // Delete expired Desires
@@ -192,6 +196,13 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
 
         // Sort Desires
         desires.sort((a, b) -> a.getPriority() - b.getPriority());
+        
+        AgentLogger.info(this.getName(), "sorted Desire List:");
+        String desireString = "";
+        for(IDesire desire : desires) {
+            desireString += desire.getName() + " " + String.valueOf(desire.getPriority()) + "; ";
+        }
+        AgentLogger.info(this.getName(), desireString);
     }
 
     private void findIntention() {
