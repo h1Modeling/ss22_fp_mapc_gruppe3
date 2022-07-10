@@ -11,6 +11,7 @@ import de.feu.massim22.group3.agents.Desires.BDesires.*;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
+import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
 import eis.iilang.Action;
@@ -44,6 +45,7 @@ public class DesireUtilities {
 	public int nextTryDir = 1;
 	public int failedPath = 0;
 	public String lastWishDirection = null;
+	public List<Point> knownDispensers = new ArrayList<Point>();
 	
     /**
      * The method runs the different agent decisions.
@@ -58,16 +60,25 @@ public class DesireUtilities {
                 + " , Agent: " + agent.getName());
 
         if (doDecision(agent, new DigFreeDesire(agent.belief))) {
+            AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
+            + " , DigFreeDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+            + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , DigFreeDesire");
         
         if (doDecision(agent, new FreedomDesire(agent.belief))) {
+            AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
+            + " , FreedomDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+            + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , FreedomDesire");
         
         if (doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent))) {
+            AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
+            + " , LocalExploreDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+            + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , LocalExploreDesire");
@@ -106,8 +117,6 @@ public class DesireUtilities {
 
         BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
         
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.belief.getReachableDispensers());
-
         List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
         List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
         List<String> busyGroupAgents = new ArrayList<>();
@@ -144,14 +153,30 @@ public class DesireUtilities {
                         + agent.desireProcessing.attachedThings);
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , Things: " + agent.belief.getThings());
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser in Vision: " 
+                        + agent.belief.getDispenserInVision());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Reachable Dispenser: " 
+                        + agent.belief.getReachableDispensers());
+            
+                knownDispensers = new ArrayList<Point>();
+                for (int i = 0; i < agent.belief.getReachableDispensers().size(); i++) {
+                    if(agent.belief.getReachableDispensers().get(i).type().equals(Convert.blockNameToDispenser(getTaskBlock(agent, task))))
+                        knownDispensers.add(Point.castToPoint(agent.belief.getReachableDispensers().get(i).position()));
+                }               
+                knownDispensers.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Known Dispenser: " 
+                        + knownDispensers);
+                /*AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , GoalZones: " + agent.belief.getGoalZones());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
-                        + agent.getName() + " , ReachableGoalZones: " + agent.belief.getReachableGoalZones());
+                        + agent.getName() + " , ReachableGoalZones: " + agent.belief.getReachableGoalZones());*/
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , nicht in Zone: " + !agent.belief.getGoalZones().contains(Point.zero()) 
                         + " , in Zone: "+ agent.belief.getGoalZones().contains(Point.zero()) + " , att. Size: "
                         + agent.desireProcessing.attachedThings.size());
+                
+                agent.desireProcessing.runAgentDecisions(agent.belief.getStep(), agent);
                 
                 if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > maxTaskBlocks 
                     && doDecision(agent, new LooseWeightDesire(agent.belief))) {
@@ -564,11 +589,12 @@ public class DesireUtilities {
         if ((firstTry.value().getName().equals(Actions.MOVE) 
                 && !firstTry.value().getParameters().get(0).toString().equals(dir)  
                 && !firstTry.value().getParameters().get(0).toString().equals(dirAlt))
-                || ((firstTry.value().getName().equals(Actions.ROTATE) 
-                && (firstTry.value().getParameters().get(0).toString().equals("cw")
+                || (firstTry.value().getName().equals(Actions.ROTATE) 
+                && firstTry.value().getParameters().get(0).toString().equals("cw")
                 && lastRotation.equals("ccw")) 
-                || (firstTry.value().getParameters().get(0).toString().equals("ccw")
-                && lastRotation.equals("cw"))))) {
+                || (firstTry.value().getName().equals(Actions.ROTATE)  
+                && firstTry.value().getParameters().get(0).toString().equals("ccw")
+                && lastRotation.equals("cw"))) {
             return getActionForMove(agent, dirAlt, desire);
         }
         

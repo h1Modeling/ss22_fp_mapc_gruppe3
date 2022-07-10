@@ -657,6 +657,16 @@ public class Belief {
 
         return d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
     }
+    
+    public List<Thing> getDispenserInVision() {
+        List<Thing> d = new ArrayList<>(things);
+        // Filter
+        d.removeIf(r -> !r.type.equals(Thing.TYPE_DISPENSER));
+        // Sort
+        d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+
+        return d;
+    }
 
     public Point getAbandonedBlockPosition(String detail) {
         // Test if agent in vision
@@ -967,12 +977,13 @@ public class Belief {
 
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
             // Success
-            if (lastActionResult.equals(ActionResults.SUCCESS)) {
+            move(lastActionParams.get(0));
+           /* if (lastActionResult.equals(ActionResults.SUCCESS)) {
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
                     move(dir);
                 }
-            }
+            }*/
 
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {

@@ -84,8 +84,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 }
             } else {
                     AgentLogger.info(Thread.currentThread().getName() + " step() beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
-                    Thread t4 = new Thread(() -> desireProcessing.runAgentDecisions(belief.getStep(), this));
-                    t4.start();
+                    /*Thread t4 = new Thread(() -> desireProcessing.runAgentDecisions(belief.getStep(), this));
+                    t4.start();*/
                     break;
             }
         }
