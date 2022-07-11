@@ -13,7 +13,7 @@ public class LocalExploreDesire extends BeliefDesire {
 
     public LocalExploreDesire(Belief belief, String supervisor, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start ExploreDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start LocalExploreDesire");
         this.agent = agent;
         this.supervisor = supervisor;
     }
@@ -30,12 +30,23 @@ public class LocalExploreDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName());
-       // Identifier newDirection = agent.desireProcessing.walkCircles(agent, 10);
-        Integer direction = agent.index % 4 ;
-        AgentLogger.info(Thread.currentThread().getName() + ".getNextAction() - Action: move, " +  DirectionUtil.intToString(direction));
+        AgentLogger.info(Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());
+       Identifier newDirection = agent.desireProcessing.walkCircles(agent, 60);
+       return agent.desireProcessing.getActionForMove(agent, newDirection.getValue(), newDirection.getValue(), getName());
+        //Integer direction = agent.index % 4 ;
+        //AgentLogger.info(Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Action: move, " +  DirectionUtil.intToString(direction));
+        /*int direction = 0;
+        int direction2 = 0;
 
-        return getActionForMove(DirectionUtil.intToString(direction), getName());
+        if (Math.abs(agent.belief.getPosition().x) > 100 || Math.abs(agent.belief.getPosition().y) > 100) {
+            direction = (agent.exploreDirection + 2) % 4;
+            direction2 = (agent.exploreDirection2 + 2) % 4;
+        } else {
+            direction = agent.exploreDirection;
+            direction2 = agent.exploreDirection2;
+        }*/
+        
+       // return getActionForMove(DirectionUtil.intToString(agent.exploreDirection), DirectionUtil.intToString(agent.exploreDirection2), getName());
     }
 
     @Override
@@ -45,6 +56,6 @@ public class LocalExploreDesire extends BeliefDesire {
 
     @Override
     public int getPriority() {
-        return 10;
+        return 100;
     }
 }

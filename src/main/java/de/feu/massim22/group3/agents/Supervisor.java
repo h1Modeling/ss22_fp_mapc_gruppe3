@@ -36,16 +36,11 @@ public class Supervisor implements ISupervisor {
     private int[] agentReportCount =  new int[1000];
     Map<String, Boolean> agentsWithTask = new HashMap<>();
     
-    //Melinda
-    //private List<BdiAgent> allGroupAgents = new ArrayList<>();
-    
     public Supervisor(Supervisable parent) {
         this.parent = parent;
         this.name = parent.getName();
         agents.add(name);
         initConfirmationData();
-        //Melinda        
-        //allGroupAgents.add((BdiAgent)parent);
     }
     
     public void handleMessage(Percept message, String sender) {
@@ -175,17 +170,6 @@ public class Supervisor implements ISupervisor {
     public void setAgents(List<String> agents) {
         this.agents = agents;
     }
-    
-    /*public void setAllGroupAgents(List<BdiAgent> allGroupAgents) {
-        AgentLogger.info(Thread.currentThread().getName() + " setAllGroupAgents() ? - supervisor: " + this.name + " , " + this.agents + " , " + this.allGroupAgents + " , in: " + allGroupAgents);
-    	 this.allGroupAgents = allGroupAgents;
-    }
-    
-    public List<BdiAgent> getAllGroupAgents() {
-        AgentLogger.info(Thread.currentThread().getName() + " getAllGroupAgents() ? - supervisor: " + this.name + " , " + this.agents + " , " + this.allGroupAgents);
-        return this.allGroupAgents;
-    }*/
-    // Melinda Betz Ende
 
     @Override
     public void reportAgentData(String agent, AgentReport report) {

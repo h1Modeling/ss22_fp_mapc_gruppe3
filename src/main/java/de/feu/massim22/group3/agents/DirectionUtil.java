@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents;
 
 import java.awt.Point;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
+import java.util.*;
 
 public class DirectionUtil {
 	public static String intToString(int direction) {
@@ -38,7 +39,31 @@ public class DirectionUtil {
             return new Point(0, 0);
         }
     }
+	
+	public static ArrayList<Point> getCellsIn4Directions() {
+		ArrayList <Point> result = new ArrayList<>();
 
+           result.add(new Point(-1,0));
+           result.add(new Point(0,-1));
+           result.add(new Point(1,0));
+           result.add(new Point(0,1));
+           
+           return result;
+    }
+	
+	   public static int getDirectionForCell(Point inCell) {
+           if (inCell.equals(new Point(0, -1)))
+               return 1;
+           else if (inCell.equals(new Point(1, 0)))
+               return 2;
+           else if (inCell.equals(new Point(0, 1)))
+               return 3;
+           else if (inCell.equals(new Point(-1, 0))) 
+               return 4;
+
+           return 0;
+	    }
+	   
     public static Point rotateCW(Point p) {
         return new Point(-p.y, p.x);
     }
@@ -172,5 +197,32 @@ public class DirectionUtil {
         }
 
         return new Point(x, y);
+    }
+	
+    public static String oppositeDirection(String inDirection) {
+        String outDirection = inDirection;
+        
+        if (inDirection.equals("n")) outDirection = "s";
+        if (inDirection.equals("e")) outDirection = "w";
+        if (inDirection.equals("s")) outDirection = "n";
+        if (inDirection.equals("w")) outDirection = "e";
+        
+        return outDirection;
+    }
+    
+    public static String proofDirection(String inDirection, BdiAgentV2 agent) {
+        String outDirection = inDirection;
+ 
+        if (agent.desireProcessing.lastWishDirection != null) {
+            if (agent.belief.getLastAction().equals("move") && agent.belief.getLastActionResult().equals("success")) {
+                if (!agent.belief.getLastActionParams().get(0).equals(agent.desireProcessing.lastWishDirection)) {
+                    if (agent.belief.getLastActionParams().get(0).equals(DirectionUtil.oppositeDirection(inDirection))) {
+                        outDirection = agent.desireProcessing.lastWishDirection;
+                    }
+                }
+            }
+        }
+        
+        return outDirection;
     }
 }

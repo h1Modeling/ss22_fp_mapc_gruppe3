@@ -130,10 +130,11 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
                 	Thread t = new Thread((Runnable)agent);
                 	t.start();
                 	break;
-                //Melinda Betz 05.05.2022
+                //Melinda
                 case "BdiAgentV2":
                     agent = new BdiAgentV2(agentConf.name, mailService, agentConf.index);
                     break;
+                    //Melinda Ende
                 default:
                     AgentLogger.warning("Unknown agent type/class " + agentConf.className);
             }
@@ -205,6 +206,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 				agent.handleMessage(message, sender);
 			}
 			// get actions if agent is not runnable
+			//Melinda
 			else {
 				Runnable runnable = () -> {
 				    eis.iilang.Action action = null;
@@ -228,7 +230,8 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 				t1.start();
 			}
 		});
-
+//Melinda Ende
+		
         if(newPerceptAgents.size() == 0) try {
             Thread.sleep(100); // wait a bit in case no agents have been executed
         } catch (InterruptedException ignored) {}

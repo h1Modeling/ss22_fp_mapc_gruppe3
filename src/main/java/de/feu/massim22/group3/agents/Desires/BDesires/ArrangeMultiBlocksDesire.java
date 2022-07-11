@@ -15,17 +15,16 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
-public class ArrangeBlocksDesire extends BeliefDesire {
+public class ArrangeMultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
     private BdiAgentV2 agent;
     private Map<Integer, Meeting> foundMeetings = new TreeMap<>();
     
-    public ArrangeBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
+    public ArrangeMultiBlocksDesire(Belief belief, TaskInfo info) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlocksDesire");
         this.info = info;
-        this.agent = agent;
     }
 
 
@@ -34,7 +33,8 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 		AgentLogger
 				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
 		if (belief.getRole().actions().contains(Actions.DETACH)
-				&& belief.getRole().actions().contains(Actions.ATTACH)) {
+				&& belief.getRole().actions().contains(Actions.ATTACH)
+				&& belief.getRole().actions().contains(Actions.CONNECT)) {
 			//Ein Block Task
 			if(info.requirements.size() == 1) {
 				return new BooleanInfo(true, "");
@@ -51,9 +51,11 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
         for (Thing t : info.requirements) {
             Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
-            
             if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
-                return new BooleanInfo(false, "");
+                String ea = atAgent == null ? t.details + " not at agent" : "";
+                String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ?  "Attached is no block" : "";
+                String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
+                return new BooleanInfo(false, ea + et + ed);
             }
         }
         return new BooleanInfo(true, "");
@@ -68,7 +70,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         Thing agentThing = agent.getAttachedThings().get(0);
         
         AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
+                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlocks: " + agent.getAttachedThings() + " , taskBlocks: " + info.requirements);
         
         if (!agentThing.details.equals(info.requirements.get(0).type)) {
             return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());

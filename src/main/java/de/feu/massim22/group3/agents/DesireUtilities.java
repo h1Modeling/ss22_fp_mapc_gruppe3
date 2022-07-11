@@ -1,8 +1,11 @@
 package de.feu.massim22.group3.agents;
 
-import java.awt.Point;
+//import java.awt.Point;
 import java.util.*;
 
+import javax.management.relation.RoleStatus;
+import de.feu.massim22.group3.agents.Point;
+import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
 
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
@@ -13,15 +16,20 @@ import eis.iilang.Identifier;
 import eis.iilang.Action;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
+import massim.protocol.data.Role;
 import massim.protocol.messages.scenario.Actions;
 import massim.protocol.messages.scenario.ActionResults;
 
 public class DesireUtilities {
-	
+	public StepUtilities stepUtilities;
 	public TaskInfo task;
+    public int maxTaskBlocks = 1;
     public String directionCircle = "cw";
     public int directionCounter = 0;
     public int circleSize = 40;
+    private String dir2;
+    private boolean dir2Used = false;
+    private int moveIteration = 0;
  
 	public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
@@ -35,6 +43,7 @@ public class DesireUtilities {
 	public String nextTry = "ccw";
 	public int nextTryDir = 1;
 	public int failedPath = 0;
+	public String lastWishDirection = null;
 	
     /**
      * The method runs the different agent decisions.
@@ -48,8 +57,20 @@ public class DesireUtilities {
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
                 + " , Agent: " + agent.getName());
 
-        doDecision(agent, new DigFreeDesire(agent.belief));
-        doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent));
+        if (doDecision(agent, new DigFreeDesire(agent.belief))) {
+        } else
+            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , DigFreeDesire");
+        
+        if (doDecision(agent, new FreedomDesire(agent.belief))) {
+        } else
+            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , FreedomDesire");
+        
+        if (doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent))) {
+        } else
+            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , LocalExploreDesire");
         
         agent.decisionsDone = true;
         return result;
@@ -61,8 +82,7 @@ public class DesireUtilities {
         if (!inDesire.isFulfilled().value() 
                 && !inDesire.isUnfulfillable().value() 
                 && inDesire.isExecutable().value()) { // desire ist möglich , hinzufügen
-            //inDesire.setOutputAction(inDesire.getNextActionInfo().value());
-            //inDesire.setPriority(getPriority(inDesire));
+            inDesire.setOutputAction(inDesire.getNextActionInfo().value());
             agent.desires.add(inDesire);
             result = true;
         }
@@ -78,87 +98,114 @@ public class DesireUtilities {
      * 
      * @return boolean - the supervisor decisions are done
      */
-    public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor) {
+    public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor, StepUtilities stepUtilities) {
+        this.stepUtilities = stepUtilities;
         boolean result = false;
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
                 + " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
 
         BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
-        //Set<TaskInfo> set = supervisorAgent.belief.getTaskInfo();
-        //List<Point> attachedPoints;
-        //Role role = null;
+        
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.belief.getReachableDispensers());
 
         List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
         List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
         List<String> busyGroupAgents = new ArrayList<>();
 
         // Schleife über alle Tasks
-        //for (TaskInfo loopTask : supervisorAgent.belief.getNewTasks()) {
         for (TaskInfo loopTask : supervisorAgent.belief.getTaskInfo()) {
+        	//Task Deadline erreicht
+        	if(taskReachedDeadline ( supervisorAgent, loopTask)) {
+        		 continue;
+        	}
             task = loopTask;
             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name
                     + " Agents: " + allGroupAgents + " freie Agents: " + freeGroupAgents);
 
             // TODO Mehrblock-Tasks
-           if ( task.requirements.size() > 1) {
-//               continue;
+           if ( task.requirements.size() > maxTaskBlocks) {
+               continue;
            }
            
             // über alle Agenten einer Gruppe
             for (String agentStr : allGroupAgents) {
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr);
-                BdiAgentV2 agent = StepUtilities.getAgent(agentStr);               
+                BdiAgentV2 agent = StepUtilities.getAgent(agentStr); 
+                
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr + " , Pos: " + agent.belief.getPosition());
+                AgentLogger.info(
+                        Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName()
+                                + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
+              
                 agent.desireProcessing.attachedThings = new ArrayList<Thing>();
                 agent.desireProcessing.task = task;
-                agent.desireProcessing.attachedThings = agent.belief.getAttachedThings();
+                agent.desireProcessing.attachedThings = agent.getAttachedThings();
 
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Agent: " + agentStr + " attachedThings: "
                         + agent.desireProcessing.attachedThings);
-                AgentLogger.info(
-                        Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: " + agent.getName()
-                                + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
+                        + agent.getName() + " , Things: " + agent.belief.getThings());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
+                        + agent.getName() + " , GoalZones: " + agent.belief.getGoalZones());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
+                        + agent.getName() + " , ReachableGoalZones: " + agent.belief.getReachableGoalZones());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
+                        + agent.getName() + " , nicht in Zone: " + !agent.belief.getGoalZones().contains(Point.zero()) 
+                        + " , in Zone: "+ agent.belief.getGoalZones().contains(Point.zero()) + " , att. Size: "
+                        + agent.desireProcessing.attachedThings.size());
                 
-                //doDecision(agent, new ProcessEasyTaskDesire(agent.belief, task, agent.getName())); 
-                
-                if (agent.desireProcessing.attachedThings.size() == 0
-                    && doDecision(agent, new AttachSingleBlockFromDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName()))) {
-                    //&& doDecision(agent, new GoDispenserDesire(agent.belief, task.requirements.get(0), supervisor.getName(), agent))) {
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > maxTaskBlocks 
+                    && doDecision(agent, new LooseWeightDesire(agent.belief))) {
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , AttachSingleBlockFromDispenserDesire");
+                            + " , LooseWeightDesire");
+                
+                if (agent.belief.getRole().name().equals("default") 
+                    && doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "worker"))) {
+                } else 
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                            + " , GoAdoptRoleDesire - worker");
+                
+                if (agent.desireProcessing.attachedThings.size() == 0
+                && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlock(agent, task).type))) {
+                } else
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                            + " , AttachAbandonedBlockDesire");
+                
+                if (agent.desireProcessing.attachedThings.size() == 0
+                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock(agent, task), supervisor.getName(), agent, stepUtilities))) {
+                } else
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                            + " , GoDispenserDesire");
+                
+                if (maxTaskBlocks > 1 && agent.blockAttached && agent.desireProcessing.attachedThings.size() == 1
+                        && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task,agent))) {
+                        } else
+                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                                + " , HelpMultiBlocksDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(new Point(0, 0)))
-                    if (doDecision(agent, new GoToGoalZoneDesire(agent.belief))) {
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > 0 && !agent.belief.getGoalZones().contains(Point.zero()) 
+                    && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , GoToGoalZoneDesire");
+                            + " , GoGoalZoneDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0)))
-                    if (doDecision(agent, new GetBlocksInOrderDesire(agent.belief, task))) {
-                    //if (doDecision(agent, new ArrangeBlocksDesire(agent.belief, task))) {
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() == 1 && agent.belief.getGoalZones().contains(Point.zero())
+                    && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task, agent))) {
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , GetBlocksInOrderDesire");
+                            + " , ArrangeBlocksDesire");
+                                
+                if (maxTaskBlocks > 1 && agent.blockAttached && agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
+                        && doDecision(agent, new ArrangeMultiBlocksDesire(agent.belief, task))) {
+                        } else
+                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                                + " , ArrangeMultiBlocksDesire");
 
-                if (agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(new Point(0, 0)))
-                    if (doDecision(agent, new SubmitDesire(agent.belief, task))) {
-                    } else
+                if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > 0 && agent.belief.getGoalZones().contains(Point.zero())
+                    && doDecision(agent, new SubmitDesire(agent.belief, task))) {
+                    } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , SubmitDesire");
-              
-                /*for (int i = agent.desires.size() - 1; i >= 0; i--) {
-                    AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , " + agent.desires.get(i).getName() + " , Action: " + agent.desires.get(i).getOutputAction() + " , Prio: " + agent.desires.get(i).getPriority());
-                }*/
-                
-                // was hat der Agent für eine Rolle
-/*                role = agent.getAgentBelief().getRole();
-                // Agent hat default Rolle
-                if (role.equals(" default") && doDecision(agent, new GoAdoptRole(agent, "worker"))) {
-                    busyGroupAgents.add(agent.getName());
-                } else {
-
- */
             } // Loop agents
         } // Loop tasks
 
@@ -185,20 +232,28 @@ public class DesireUtilities {
 
         switch (desire.getName()) {
         
+        case "GoAdoptRoleDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+            else
+                result = 1000;
+            break;
         case "DigFreeDesire":
-            result = 1000;
+            result = 1500;
+            break;
+        case "FreedomDesire":
+            result = 2000;
             break;
         case "LocalExploreDesire":
-            result = 10;
+            result = 100;
             break;
+
+            //Heinz Desires (nicht genutzt)
         case "ExploreDesire":
             result = 20;
             break;
         case "AttachSingleBlockFromDispenserDesire":
             result = 200;
-            break;
-        case "GoDispenserDesire":
-            result = 200 - desire.getPriority();
             break;
         case "GoToGoalZoneDesire":
             result = 300;
@@ -206,11 +261,41 @@ public class DesireUtilities {
         case "GetBlocksInOrderDesire":
             result = 400;
             break;
+            //Heinz Desires (nicht genutzt) Ende 
+            
+        case "AttachAbandonedBlockDesire":
+            if (desire.getOutputAction().getName().equals(Actions.ATTACH))
+                result = 290;
+            else
+                result = 250;        
+            break;
+        case "GoDispenserDesire":
+            if (desire.getOutputAction().getName().equals(Actions.ATTACH))
+                result = 300;
+                else if (desire.getOutputAction().getName().equals(Actions.REQUEST))
+                    result = 280;
+            else
+                result = 250 - desire.getPriority();           
+            break;
+        case "GoGoalZoneDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+            else
+                result = 400;        
+            break;
         case "ArrangeBlocksDesire":
-            result = 400;
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+                else if (desire.getOutputAction().getName().equals(Actions.DETACH))
+                    result = 450;
+            else
+                result = 500;        
             break;
         case "SubmitDesire":
-            result = 500;
+            result = 600;
+            break;
+        case "LooseWeightDesire":
+            result = 700;
             break;
         }
 
@@ -227,16 +312,6 @@ public class DesireUtilities {
     public synchronized IDesire determineIntention(BdiAgentV2 agent) {
         IDesire result = null;
         int priority = 0;
-        
-        /*for (int i = agent.desires.size() - 1; i >= 0; i--) {
-            IDesire d = agent.desires.get(i);
-            d.update(agent.supervisor.getName());
-
-            if (!d.isFulfilled().value() && d.isExecutable().value()) {
-                result = agent.desires.get(i);
-                break;
-            }
-        }*/
         
         for (IDesire desire : agent.desires) {
             /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
@@ -292,8 +367,8 @@ public class DesireUtilities {
     }
     
     public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
-        String startDirection = "";
-        float random = new Random().nextFloat();
+        String startDirection = DirectionUtil.intToString(agent.exploreDirection);
+        /*float random = new Random().nextFloat();
         if (random < 0.25) {
             startDirection = "n";
         } else if (random < 0.5) {
@@ -302,7 +377,7 @@ public class DesireUtilities {
             startDirection = "w";
         } else {
             startDirection = "s";
-        }
+        }*/
         Identifier resultDirection = new Identifier(startDirection);
 
         if (agent.belief.getLastAction() != null && agent.belief.getLastAction().equals(Actions.MOVE)) {
@@ -346,52 +421,6 @@ public class DesireUtilities {
         return resultDirection;
     }
     
-    public void analyseAttachedThings() {  
-        AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() Task: " + task.name);
-        for (Thing attachedBlock : attachedThings) {
-	        
-			if (blockInTask(task.requirements, attachedBlock)) {
-		        AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block OK");    
-				// Blocktype stimmt
-				// Block ist an der richtigen Stelle
-				goodBlocks.add(attachedBlock);
-				goodPositionBlocks.add(attachedBlock);
-			} else {
-	             AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block nicht OK");  
-				typeOk = false;
-				
-				for (Thing taskBlock : task.requirements) {
-					if (attachedBlock.details.equals(taskBlock.type)) {
-		                AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block OK an falscher Stelle"); 
-						// Blocktype stimmt
-						// Block ist an der falschen Stelle
-						goodBlocks.add(attachedBlock);
-						badPositionBlocks.add(attachedBlock);
-						typeOk = true;
-						break;
-					}
-				}
-				
-				if (!typeOk) {
-                    AgentLogger.info(Thread.currentThread().getName()+ " analyseAttachedThings() - Block Type falsch"); 
-					// Blocktype stimmt nicht
-					badBlocks.add(attachedBlock);
-				}
-			}
-		}
-		
-        for (int i = 0; i < 5; i++) {
-            int diff = countBlockType(task.requirements, "b" + i) - countBlockType(attachedThings, "b" + i);
-            
-            if (diff > 0) {
-                for (int j = 0; j < diff; j++) {
-                    missingBlocks.add(new Thing(0, 0, Thing.TYPE_BLOCK, "b" + i));
-                }
-            }
-        }
-        AgentLogger.info(Thread.currentThread().getName() + " analyseAttachedThings() missingBlocks: " + missingBlocks);              
-    }
-    
     public Thing toTaskBlock(Thing toThingBlock) {           
         return new Thing(toThingBlock.x, toThingBlock.y, toThingBlock.details, "");
     }
@@ -433,13 +462,13 @@ public class DesireUtilities {
     }
     
     public Thing getContentInDirection(BdiAgentV2 agent, String direction) {
-        Point cell = DirectionUtil.getCellInDirection(direction);
+        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(direction));
 
         return getContent(agent, cell);
     }
     
     public Thing getContentInDirection(BdiAgentV2 agent, Point from, String direction) {
-        Point cell = DirectionUtil.getCellInDirection(from, direction);
+        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(from, direction));
 
         return getContent(agent, cell);
     }
@@ -461,80 +490,211 @@ public class DesireUtilities {
 
         return null;
     }
-    
-    
-    public Action getPossibleActionForMove(BdiAgentV2 agent, String direction) {
-        Action nextAction = null;
-        //Thing neighbourOfBlock = null;
-        Thing neighbour = agent.desireProcessing.getContentInDirection(agent, direction);
-        // AgentLogger.info(Thread.currentThread().getName() + "
-        // getPossibleActionForMove() - Neighbour: " + neighbour);
+          
+    public boolean taskReachedDeadline (BdiAgentV2 agent,TaskInfo task) {
+    	boolean result = false;
+    	if (agent.belief.getStep() > task.deadline) {
+    		//Task ist abgelaufen 
+    		result = true;
+    	}
+    	return result;
+    }
+       
+	public Thing getTaskBlock(BdiAgentV2 agent, TaskInfo task) {
+		Thing result = task.requirements.get(0);
+		// ein Block Task
+		if (task.requirements.size() > 1) {
+			for (Meeting meeting : AgentMeetings.find(agent)) {
+				if (!meeting.agent2().getAttachedThings().isEmpty()) {
+					for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
+						// Kenn ich einen Agenten mit get(0)?
+						if (attachedThing.details.equals(task.requirements.get(0).type)) {
+							result = task.requirements.get(1);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+    private ActionInfo getIteratedActionForMove(BdiAgentV2 agent, String dir, String desire) {
+        moveIteration++;
+        if (moveIteration < 4) {
+            return getActionForMove(agent, dir, desire);
+        }
+        // TODO AGENT is STuck
+        return ActionInfo.SKIP("Agent is Stuck");
+    }
+	
+	public ActionInfo getActionForMoveWithAlternate(BdiAgentV2 agent, String dir, String dirAlt, String desire) {
+        ActionInfo firstTry = getActionForMove(agent, dir, desire);
+        String lastRotation = agent.belief.getLastActionParams().size() > 0 ? agent.belief.getLastActionParams().get(0) : "";
+        
+        if ((firstTry.value().getName().equals(Actions.MOVE) 
+                && !firstTry.value().getParameters().get(0).toString().equals(dir)  
+                && !firstTry.value().getParameters().get(0).toString().equals(dirAlt))
+                || ((firstTry.value().getName().equals(Actions.ROTATE) 
+                && (firstTry.value().getParameters().get(0).toString().equals("cw")
+                && lastRotation.equals("ccw")) 
+                || (firstTry.value().getParameters().get(0).toString().equals("ccw")
+                && lastRotation.equals("cw"))))) {
+            return getActionForMove(agent, dirAlt, desire);
+        }
+        
+        return firstTry;
+    }
 
-         if (neighbour == null 
-                 || (neighbour.type.equals(Thing.TYPE_BLOCK )
-                 && agent.desireProcessing.attachedThings.contains(neighbour))) {
-             //if (neighbour == null || (neighbour.type.equals(Thing.TYPE_BLOCK)
-                //     && agent.desireProcessing.attachedThings.contains(neighbour) && agent.desireProcessing.getContentInDirection(agent, new Point(neighbour.x, neighbour.y), direction) == null)) {
-             // Weg ist frei (alte Variante)
-            if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH) 
-                    || (neighbour != null && neighbour.type.equals(Thing.TYPE_BLOCK )
-                            && !agent.desireProcessing.attachedThings.contains(neighbour))) {
-                if (agent.desireProcessing.attachedThings.size() == 1) {
-                    agent.desireProcessing.dontArrange = true;
-                    
-                    if (agent.belief.getLastActionResult().equals(ActionResults.FAILED_PATH)) {
-                        agent.desireProcessing.failedPath += 1;
-                        
-                        if ( agent.desireProcessing.failedPath > 2) {
-                            if(agent.desireProcessing.nextTry == "ccw") {
-                                agent.desireProcessing.nextTry = "cw";
-                            } else {
-                                agent.desireProcessing.nextTry = "ccw";
-                            }
+    public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String dir2, String desire) {
+        this.dir2 = dir2;
+        dir2Used = true;
+        ActionInfo out = getActionForMove(agent, dir, desire);
+        dir2Used = false;
+        return out;
+    }
+    
+    public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String desire) {
+        Point dirPoint = Point.castToPoint(DirectionUtil.getCellInDirection(dir));
+        //Melinda 
+        List<Point> attached = agent.getAttachedPoints();       
+        //List<Point> attached = belief.getAttachedPoints();
+        //Melinda Ende
+        // Rotate attached
+        for (Point p : attached) {
+            Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
+            Thing t = agent.belief.getThingAt(testPoint);
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - Direction: " + dir + " , Block attached: " + p + " , in Richtung: " + testPoint);
+            if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
+                // Can be rotated
+                Thing cw = agent.belief.getThingCRotatedAt(p);
+                Thing ccw = agent.belief.getThingCCRotatedAt(p);
+                Point cwP = getCRotatedPoint(p);
+                Point ccwP = getCCRotatedPoint(p);
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - oppositeD: " + DirectionUtil.oppositeDirection(dir) + " , Cell: " + DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)));
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cw + " , Free?: " + isFree(cw));
+                String lastRotation = agent.belief.getLastActionParams().size() > 0 ? agent.belief.getLastActionParams().get(0) : "";
+                
+                if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
+                    if (isFree(cw) && !lastRotation.equals("ccw")) {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
+                        return ActionInfo.ROTATE_CW(desire);
+                    } else {
+                        if (isFree(ccw) && !lastRotation.equals("cw")) {
+                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                            return ActionInfo.ROTATE_CCW(desire);
                         }
                     }
-                    nextAction = new Action("rotate", new Identifier(agent.desireProcessing.nextTry));
-                } else { 
-                    /**if(agent.desireProcessing.nextTryDir == 1) {
-                        agent.desireProcessing.nextTryDir = -1;
+                } else {
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
+                    if (isFree(ccw) && !lastRotation.equals("cw")) {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                        return ActionInfo.ROTATE_CCW(desire);
                     } else {
-                        agent.desireProcessing.nextTryDir = 1;
-                    }
-                    direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + agent.desireProcessing.nextTryDir);*/
-                    agent.desireProcessing.failedPath = 0;
-                    nextAction = new Action("move", new Identifier(direction));
+                        if (isFree(cw) && !lastRotation.equals("ccw")) {
+                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
+                            return ActionInfo.ROTATE_CW(desire);
+                        }
+                    }                    
                 }
-            } else {
-                agent.desireProcessing.failedPath = 0;
-                nextAction = new Action("move", new Identifier(direction));
+                
+                if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
+                    Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
+                    return ActionInfo.CLEAR(target, desire);
+                }
+                if (ccw != null && ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
+                    Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
+                    return ActionInfo.CLEAR(target, desire);
+                }
+            }
+        }
+        // Test Agent
+        Thing t = agent.belief.getThingAt(dirPoint);
+        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t);
+        if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if2");
+            return ActionInfo.CLEAR(dirPoint, desire);
+        } else if (isFree(t) || attached.contains(dirPoint)) {
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
+
+            if (dir2Used)
+                return ActionInfo.MOVE(dir, dir2, desire);
+            else
+                return ActionInfo.MOVE(dir, desire);
+        } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)                
+                || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
+
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if4");
+            // Try to move around agent
+            boolean inDirection = true; // dir.equals("n") || dir.equals("e");
+            String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);
+            String dir2 = inDirection ? getCCRotatedDirection(dir) : getCRotatedDirection(dir);
+            Thing tDir1 = agent.belief.getThingAt(dir1);
+            Thing tDir2 = agent.belief.getThingAt(dir2);
+
+            if (isFree(tDir1) || isClearable(tDir1)) {
+                return getIteratedActionForMove(agent, dir1, desire);
             }
 
-        } else if (neighbour.type.equals(Thing.TYPE_OBSTACLE) 
-                || (neighbour.type.equals(Thing.TYPE_BLOCK )
-                        && !agent.desireProcessing.attachedThings.contains(neighbour))) {
-            Point pointCell = DirectionUtil.getCellInDirection(direction);
-            // ein Hindernis wegräumen
-            agent.desireProcessing.failedPath = 0;
-            nextAction = new Action("clear", new Identifier(String.valueOf(pointCell.x)),
-                    new Identifier(String.valueOf(pointCell.y)));
+            if (isFree(tDir2) || isClearable(tDir2)) {
+                return getIteratedActionForMove(agent, dir2, desire);
+            }
+            return ActionInfo.SKIP("Agent is stuck");
 
-        } else if (neighbour.type.equals(Thing.TYPE_ENTITY)) {
-            direction = DirectionUtil.intToString(DirectionUtil.stringToInt(direction) + 1);
-            // einem Agenten oder einem Block ausweichen
-            nextAction = agent.desireProcessing.getPossibleActionForMove(agent, direction);
-
-        } else
-            AgentLogger.info(Thread.currentThread().getName() + "  90 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ");
-
-        AgentLogger.info(Thread.currentThread().getName() + "  getPossibleActionForMove() - Action: "
-                + nextAction.getName() + " , " + direction);
-
-        return nextAction;
+        } else {
+            return ActionInfo.SKIP("Agent is stuck");
+        }
     }
     
-    public synchronized void addDesire(BdiAgentV2 agent, IDesire inDesire) {
-        AgentLogger.info(Thread.currentThread().getName() + " addDesire() Agent: " + agent.getName() + " , Desire: " + inDesire.getName());
-        agent.desires.add(inDesire);
+    protected boolean isFree(Thing t) {
+        return t == null || t.type.equals(Thing.TYPE_DISPENSER);
+    }
+
+    protected boolean isClearable(Thing t) {
+        return t != null && (t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_OBSTACLE));
+    }
+
+    protected Point getCRotatedPoint(Point p) {
+        return new Point(-p.y, p.x);
+    }
+
+    protected String getCRotatedDirection(String dir) {
+        switch (dir) {
+            case "n": return "e";
+            case "e": return "s";
+            case "s": return "w";
+            default: return "n";
+        }
+    }
+
+    protected String getCCRotatedDirection(String dir) {
+        switch (dir) {
+            case "n": return "w";
+            case "e": return "n";
+            case "s": return "e";
+            default: return "s";
+        }
+    }
+
+    protected String getDirectionFromPoint(Point p) {
+        if (p.x == 0) {
+            return p.y < 0 ? "n" : "s";
+        }
+        return p.x < 0 ? "w" : "e";
+    }
+
+    protected Point getPointFromDirection(String dir) {
+        switch (dir) {
+            case "n": return new Point(0, -1);
+            case "e": return new Point(1, 0);
+            case "s": return new Point(0, 1);
+            default: return new Point(-1, 0);
+        }
+    }
+
+    public Point getCCRotatedPoint(Point p) {
+        return new Point(p.y, -p.x);
     }
 }
-

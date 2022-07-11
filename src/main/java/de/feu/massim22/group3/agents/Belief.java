@@ -620,6 +620,13 @@ public class Belief {
         // Zone is sorted
         return reachableRoleZones.size() > 0 ? reachableRoleZones.get(0) : null;
     }
+    
+    //Melinda
+    public Point getNearestRelativeManhattenRoleZone() {
+        roleZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+        return roleZones.size() > 0 ? roleZones.get(0) : null;
+    }
+    //Melinda Ende
 
     public ReachableGoalZone getNearestGoalZone() {
         // Zone is sorted
@@ -996,4 +1003,25 @@ public class Belief {
 
     private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
+
+    // Melinda
+    public void updatePositionFromExternal() {
+        String dir = null;
+
+        if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
+            // Success
+            if (lastActionResult.equals(ActionResults.SUCCESS)) {
+                for (int i = 0; i < lastActionParams.size(); i++) {
+                    dir = lastActionParams.get(i);
+                    move(dir);
+                }
+            }
+
+            // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
+            if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
+                move(lastActionParams.get(0));
+            }
+        }
+    }
+    // Melinda Ende
 }
