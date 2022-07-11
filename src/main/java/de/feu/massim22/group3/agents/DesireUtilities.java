@@ -535,11 +535,12 @@ public class DesireUtilities {
         if ((firstTry.value().getName().equals(Actions.MOVE) 
                 && !firstTry.value().getParameters().get(0).toString().equals(dir)  
                 && !firstTry.value().getParameters().get(0).toString().equals(dirAlt))
-                || ((firstTry.value().getName().equals(Actions.ROTATE) 
-                && (firstTry.value().getParameters().get(0).toString().equals("cw")
+                || (firstTry.value().getName().equals(Actions.ROTATE) 
+                && firstTry.value().getParameters().get(0).toString().equals("cw")
                 && lastRotation.equals("ccw")) 
-                || (firstTry.value().getParameters().get(0).toString().equals("ccw")
-                && lastRotation.equals("cw"))))) {
+                || (firstTry.value().getName().equals(Actions.ROTATE)  
+                && firstTry.value().getParameters().get(0).toString().equals("ccw")
+                && lastRotation.equals("cw"))) {
             return getActionForMove(agent, dirAlt, desire);
         }
         
