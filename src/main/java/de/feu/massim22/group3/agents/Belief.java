@@ -345,7 +345,7 @@ public class Belief {
                     ReachableDispenser rd = new ReachableDispenser(pos, CellType.valueOf(detail), distance, direction,
                             data);
                     reachableDispensers.add(rd);
-                    AgentLogger.info(Thread.currentThread().getName() + " updateFromPathFinding: " + rd);
+                    //AgentLogger.info(Thread.currentThread().getName() + " updateFromPathFinding: " + rd);
                 }
                 // Teammate
                 if (!isZone && CellType.valueOf(detail) == CellType.TEAMMATE) {
@@ -1008,11 +1008,11 @@ public class Belief {
     // Melinda
     public void updatePositionFromExternal() {
         String dir = null;
-        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
-                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Success: " +  lastActionParams);
+                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Success: " +  lastActionParams);
                 
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
@@ -1022,11 +1022,14 @@ public class Belief {
 
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Partial: " +  lastActionParams);
+                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Partial: " +  lastActionParams);
                 move(lastActionParams.get(0));
             }
         }
-        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
+        
+        position.x = position.x % 92;
+        position.y = position.y % 64;
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     // Melinda Ende
 }

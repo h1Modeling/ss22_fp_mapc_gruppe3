@@ -22,6 +22,10 @@ public abstract class BdiAgent<T> extends Agent {
     public Belief getAgentBelief() {
         return belief;
     }
+    
+    public IIntention getIntention() {
+       return this.intention;
+    }
 
     public void setIntention(IIntention intention) {
         this.intention = intention;

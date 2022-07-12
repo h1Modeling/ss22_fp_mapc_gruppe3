@@ -163,54 +163,61 @@ public class GoDispenserDesire extends BeliefDesire {
                 }
                 if (direction.equals("e")) {
                     d1 = new Point(pos.x + 1, pos.y + 1);
-                    r1 = new Point(1, 1);
+                    r1 = new Point(0, -1);
                     d2 = new Point(pos.x + 2, pos.y);
-                    r2 = new Point(2, 0);
+                    r2 = new Point(-1, 0);
                     d3 = new Point(pos.x + 1, pos.y - 1);
-                    r3 = new Point(1, -1);
+                    r3 = new Point(0, 1);
                 }
                 if (direction.equals("s")) {
                     d1 = new Point(pos.x - 1, pos.y + 1);
-                    r1 = new Point(-1, 1);
+                    r1 = new Point(1, 0);
                     d2 = new Point(pos.x, pos.y + 2);
-                    r2 = new Point(0, 2);
+                    r2 = new Point(0, -1);
                     d3 = new Point(pos.x + 1, pos.y + 1);
-                    r3 = new Point(1, 1);
+                    r3 = new Point(-1, 0);
                 }
                 if (direction.equals("w")) {
                     d1 = new Point(pos.x - 1, pos.y - 1);
-                    r1 = new Point(-1, -1);
+                    r1 = new Point(0, 1);
                     d2 = new Point(pos.x - 2, pos.y);
-                    r2 = new Point(-2, 0);
+                    r2 = new Point(1, 0);
                     d3 = new Point(pos.x - 1, pos.y + 1);
-                    r3 = new Point(-1, 1);
+                    r3 = new Point(0, -1);
                 }
-                
-                ArrayList<Integer> met =  new ArrayList<Integer>();
+
+                ArrayList<Integer> met = new ArrayList<Integer>();
                 int i = 0;
-                    
+
                 for (Meeting meeting : AgentMeetings.find(agent)) {
                     Point p1 = new Point(meeting.posAgent1());
                     Point p2 = new Point(meeting.posAgent2());
                     Point p3 = new Point(meeting.relAgent2());
-                    AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8.1: " + meeting.agent2().getName() + " , " + Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))));      
-                    
-                    if (d1 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))) && meeting.agent2().belief.getAttachedPoints().contains(r1)
-                            || d2 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))) && meeting.agent2().belief.getAttachedPoints().contains(r2)
-                            || d3 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))) && meeting.agent2().belief.getAttachedPoints().contains(r3)) {
+                    AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 8.1: "
+                            + meeting.agent2().getName() + " , "
+                            + Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))));
+
+                    if (d1 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))
+                            && meeting.agent2().belief.getAttachedPoints().contains(r1)
+                            || d2 == Point.castToPoint(meeting.agent2().belief.getPosition())
+                                    .add(p1.add(p3.sub(p2)))
+                                    && meeting.agent2().belief.getAttachedPoints().contains(r2)
+                            || d3 == Point.castToPoint(meeting.agent2().belief.getPosition())
+                                    .add(p1.add(p3.sub(p2)))
+                                    && meeting.agent2().belief.getAttachedPoints().contains(r3)) {
                         met.add(meeting.agent2().index);
-                        
+
                         i++;
                     }
                 }
-                AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 8.2: " + agent.index + " , " + met);      
-                
+                AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 8.2: " + agent.index
+                        + " , " + met);
+
                 for (int metIndex : met) {
-                    if(agent.index < metIndex)
-                        return ActionInfo.SKIP(getName());
+                    if (agent.index < metIndex) return ActionInfo.SKIP(getName());
                 }
 
-                return ActionInfo.ATTACH(direction, getName());             
+                return ActionInfo.ATTACH(direction, getName());            
             } else {
                 AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 9");
                 agent.requestMade = true;

@@ -34,6 +34,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Point> attachedPoints = new ArrayList<Point>();
     
+    public int exploreCount = 0;    
     public int exploreDirection = this.index % 4;
     public int exploreDirection2 = exploreDirection + 1;
     

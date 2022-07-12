@@ -562,61 +562,73 @@ public class DesireUtilities {
         //List<Point> attached = belief.getAttachedPoints();
         //Melinda Ende
         // Rotate attached
-        for (Point p : attached) {
-            Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
-            Thing t = agent.belief.getThingAt(testPoint);
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - Direction: " + dir + " , Block attached: " + p + " , in Richtung: " + testPoint);
-            if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
-                // Can be rotated
-                Thing cw = agent.belief.getThingCRotatedAt(p);
-                Thing ccw = agent.belief.getThingCCRotatedAt(p);
-                Point cwP = getCRotatedPoint(p);
-                Point ccwP = getCCRotatedPoint(p);
-                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
-                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - oppositeD: " + DirectionUtil.oppositeDirection(dir) + " , Cell: " + DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)));
-                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cw + " , Free?: " + isFree(cw));
-                String lastRotation = agent.belief.getLastActionParams().size() > 0 ? agent.belief.getLastActionParams().get(0) : "";
-                
-                if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
-                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
-                    if (isFree(cw) && !lastRotation.equals("ccw")) {
-                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
-                        return ActionInfo.ROTATE_CW(desire);
-                    } else {
-                        if (isFree(ccw) && !lastRotation.equals("cw")) {
-                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
-                            return ActionInfo.ROTATE_CCW(desire);
-                        }
-                    }
-                } else {
-                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
-                    if (isFree(ccw) && !lastRotation.equals("cw")) {
-                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
-                        return ActionInfo.ROTATE_CCW(desire);
-                    } else {
+        if (agent.blockAttached) {
+            for (Point p : attached) {
+                Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
+                Thing t = agent.belief.getThingAt(testPoint);
+                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - Direction: " + dir
+                        + " , Block attached: " + p + " , in Richtung: " + testPoint);
+                if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
+                    // Can be rotated
+                    Thing cw = agent.belief.getThingCRotatedAt(p);
+                    Thing ccw = agent.belief.getThingCCRotatedAt(p);
+                    Point cwP = getCRotatedPoint(p);
+                    Point ccwP = getCCRotatedPoint(p);
+                    AgentLogger.info(
+                            Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - oppositeD: "
+                            + DirectionUtil.oppositeDirection(dir) + " , Cell: "
+                            + DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)));
+                    AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cw + " , Free?: "
+                            + isFree(cw));
+                    String lastRotation = agent.belief.getLastActionParams().size() > 0
+                            ? agent.belief.getLastActionParams().get(0)
+                            : "";
+
+                    if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
                         if (isFree(cw) && !lastRotation.equals("ccw")) {
                             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
                             return ActionInfo.ROTATE_CW(desire);
+                        } else {
+                            if (isFree(ccw) && !lastRotation.equals("cw")) {
+                                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                                return ActionInfo.ROTATE_CCW(desire);
+                            }
                         }
-                    }                    
-                }
-                
-                if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
-                    Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
-                    return ActionInfo.CLEAR(target, desire);
-                }
-                if (ccw != null && ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
-                    Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
-                    return ActionInfo.CLEAR(target, desire);
+                    } else {
+                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
+                        if (isFree(ccw) && !lastRotation.equals("cw")) {
+                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                            return ActionInfo.ROTATE_CCW(desire);
+                        } else {
+                            if (isFree(cw) && !lastRotation.equals("ccw")) {
+                                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
+                                return ActionInfo.ROTATE_CW(desire);
+                            }
+                        }
+                    }
+
+                    if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
+                        Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
+                        return ActionInfo.CLEAR(target, desire);
+                    }
+                    if (ccw != null && ccw.type.equals(Thing.TYPE_OBSTACLE) && !ccwP.equals(dirPoint)) {
+                        Point target = Point.castToPoint(DirectionUtil.rotateCW(p));
+                        return ActionInfo.CLEAR(target, desire);
+                    }
                 }
             }
         }
+        
         // Test Agent
         Thing t = agent.belief.getThingAt(dirPoint);
         AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t);
-        if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
+        
+        if (t != null && (t.type.equals(Thing.TYPE_OBSTACLE) || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if2");
             return ActionInfo.CLEAR(dirPoint, desire);
+            
         } else if (isFree(t) || attached.contains(dirPoint)) {
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
 
@@ -624,6 +636,7 @@ public class DesireUtilities {
                 return ActionInfo.MOVE(dir, dir2, desire);
             else
                 return ActionInfo.MOVE(dir, desire);
+            
         } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)                
                 || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
 

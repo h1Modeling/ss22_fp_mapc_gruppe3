@@ -359,7 +359,7 @@ public class StepUtilities {
                 // Generate Data for Point
                 Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
                 data.add(f);
-                AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept: " + f);
+                //AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept: " + f);
             }
         }
 

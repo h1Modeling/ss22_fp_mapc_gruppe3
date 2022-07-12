@@ -253,7 +253,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 CellType cellType = thingVision[y][x];
                 ZoneType zoneType = zoneVision[y][x];
                 if (cellType != CellType.UNKNOWN) {
-                    AgentLogger.info(Thread.currentThread().getName() + " updateMap: " + (x + position.x - vision) + " , " + (y + position.y - vision) + " , " + cellType + " , " + zoneType + " , " + agentIndex + " , " + step);
+                    //AgentLogger.info(Thread.currentThread().getName() + " updateMap: " + (x + position.x - vision) + " , " + (y + position.y - vision) + " , " + cellType + " , " + zoneType + " , " + agentIndex + " , " + step);
                     
                     map.addReport(x + position.x - vision, y + position.y - vision, cellType, zoneType, agentIndex, step);
                 }
