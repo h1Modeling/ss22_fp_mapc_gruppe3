@@ -198,13 +198,11 @@ public class GoDispenserDesire extends BeliefDesire {
                             + Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))));
 
                     if (d1 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))
-                            && meeting.agent2().belief.getAttachedPoints().contains(r1)
-                            || d2 == Point.castToPoint(meeting.agent2().belief.getPosition())
-                                    .add(p1.add(p3.sub(p2)))
-                                    && meeting.agent2().belief.getAttachedPoints().contains(r2)
-                            || d3 == Point.castToPoint(meeting.agent2().belief.getPosition())
-                                    .add(p1.add(p3.sub(p2)))
-                                    && meeting.agent2().belief.getAttachedPoints().contains(r3)) {
+//                            && meeting.agent2().belief.getAttachedPoints().contains(r1)
+                            || d2 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))
+//                                    && meeting.agent2().belief.getAttachedPoints().contains(r2)
+                            || d3 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))) {
+//                                    && meeting.agent2().belief.getAttachedPoints().contains(r3)) {
                         met.add(meeting.agent2().index);
 
                         i++;
