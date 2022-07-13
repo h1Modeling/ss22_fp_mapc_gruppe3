@@ -36,7 +36,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
 				&& belief.getRole().actions().contains(Actions.ATTACH)
 				&& belief.getRole().actions().contains(Actions.CONNECT)) {
 			//Ein Block Task
-			if(info.requirements.size() == 1) {
+			if(info.requirements.size() <= agent.desireProcessing.maxTaskBlocks) {
 				return new BooleanInfo(true, "");
 			}
 			else {

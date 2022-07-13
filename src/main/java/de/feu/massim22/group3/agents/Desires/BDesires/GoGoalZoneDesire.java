@@ -10,6 +10,7 @@ import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
+import java.util.*;
 
 //import java.awt.Point;
 
@@ -38,7 +39,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
     }
     
     @Override
-    public synchronized BooleanInfo isExecutable() {
+    public BooleanInfo isExecutable() {
         AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - GoGoalZoneDesire.isExecutable, Step: " + belief.getStep());
         BooleanInfo resultBack = null;
@@ -60,7 +61,6 @@ public class GoGoalZoneDesire extends BeliefDesire {
                         goalZone = getNearestGoalZoneFromMeeting(meeting.agent2());
                         
                         if (goalZone != null) {
-                            //nearestGoalZone = goalZone.add(posAgentOld.add(realtiveGoalZoneAgentOld.sub(posGoalZoneAgentOld)));
                             nearestGoalZone = goalZone.translate2To1(meeting);
                             result = true;
                             break;                                                     
@@ -171,24 +171,15 @@ public class GoGoalZoneDesire extends BeliefDesire {
         int distance = 1000;
         
         for (Meeting meeting : AgentMeetings.find(inAgent)) {
-            AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 4 - agent: " + meeting.agent2().getName() + " , rgz: " + meeting.agent2().belief.getReachableGoalZones());
+            ArrayList<ReachableGoalZone> rgz = new ArrayList<ReachableGoalZone>(meeting.agent2().belief.getReachableGoalZones());
+            AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 4 - agent: " + rgz);
             
-            if (!meeting.agent2().belief.getReachableGoalZones().isEmpty()) {
-                /*Point p1 = new Point(meeting.posAgent1());
-                Point p2 = new Point(meeting.posAgent2());
-                Point p3 = new Point(meeting.relAgent2());
-                goalZone = Point.castToPoint(meeting.agent2().belief.getNearestGoalZone().position()).add(p1.add(p3.sub(p2)));*/
-                
+            if (!rgz.isEmpty()) {               
                 goalZone = Point.castToPoint(meeting.agent2().belief.getNearestGoalZone().position()).translate2To1(meeting);
                 AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 5: " + meeting.agent2().belief.getNearestGoalZone() + " , dist: " + Point.distance(Point.castToPoint(inAgent.belief.getPosition()), goalZone) + " , min: " + distance);
                 
                 if (Point.distance(Point.castToPoint(inAgent.belief.getPosition()), goalZone) < distance) {
                     AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 6");  
-                    /*posAgentOld = new Point(meeting.posAgent1());
-                    goalZoneAgent = meeting.agent2();
-                    posGoalZoneAgentOld = new Point(meeting.posAgent2());
-                    realtiveGoalZoneAgentOld = new Point(meeting.relAgent2());
-                    nearestGoalZoneGoalZoneAgentNew = Point.castToPoint(meeting.agent2().belief.getNearestGoalZone().position());*/
                     goalZoneAgent = meeting.agent2();
                     distance = Point.distance(Point.castToPoint(inAgent.belief.getPosition()), goalZone);
                 }

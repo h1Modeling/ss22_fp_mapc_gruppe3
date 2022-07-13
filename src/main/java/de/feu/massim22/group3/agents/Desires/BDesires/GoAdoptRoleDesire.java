@@ -1,7 +1,10 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
+import java.util.ArrayList;
+
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
@@ -113,17 +116,16 @@ public class GoAdoptRoleDesire extends BeliefDesire {
                 boolean found = false;
                 nearestRoleZone = getNearestRoleZoneFromMeeting(agent);
 
-                if (nearestRoleZone != null)
+                if (nearestRoleZone != null) 
                     found = true;
                 else {
                     for (Meeting meeting : AgentMeetings.find(agent)) {
                         roleZone = getNearestRoleZoneFromMeeting(meeting.agent2());
-
+                        
                         if (roleZone != null) {
-                            nearestRoleZone = roleZone
-                                    .add(posAgentOld.add(realtiveRoleZoneAgentOld.sub(posRoleZoneAgentOld)));
+                            nearestRoleZone = roleZone.translate2To1(meeting);
                             found = true;
-                            break;
+                            break; 
                         }
                     }
                 }
@@ -150,22 +152,16 @@ private Point getNearestRoleZoneFromMeeting(BdiAgentV2 inAgent) {
     int distance = 1000;
     
     for (Meeting meeting : AgentMeetings.find(inAgent)) {
-        AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 4 - agent: " + meeting.agent2().getName() + " , rgz: " + meeting.agent2().belief.getReachableRoleZones());
+        ArrayList<ReachableRoleZone> rrz = new ArrayList<ReachableRoleZone>(meeting.agent2().belief.getReachableRoleZones());
+        AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 4 - agent: " + rrz);
         
-        if (!meeting.agent2().belief.getReachableRoleZones().isEmpty()) {
-            Point p1 = new Point(meeting.posAgent1());
-            Point p2 = new Point(meeting.posAgent2());
-            Point p3 = new Point(meeting.relAgent2());
-            roleZone = Point.castToPoint(meeting.agent2().belief.getNearestRoleZone().position()).add(p1.add(p3.sub(p2)));
+        if (!rrz.isEmpty()) {  
+            roleZone = Point.castToPoint(meeting.agent2().belief.getNearestRoleZone().position()).translate2To1(meeting);
             AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 5: " + meeting.agent2().belief.getNearestRoleZone() + " , dist: " + Point.distance(Point.castToPoint(inAgent.belief.getPosition()), roleZone) + " , min: " + distance);
             
             if (Point.distance(Point.castToPoint(inAgent.belief.getPosition()), roleZone) < distance) {
                 AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 6");  
-                posAgentOld = new Point(meeting.posAgent1());
                 roleZoneAgent = meeting.agent2();
-                posRoleZoneAgentOld = new Point(meeting.posAgent2());
-                realtiveRoleZoneAgentOld = new Point(meeting.relAgent2());
-                nearestRoleZoneRoleZoneAgentNew = Point.castToPoint(meeting.agent2().belief.getNearestRoleZone().position());
                 distance = Point.distance(Point.castToPoint(inAgent.belief.getPosition()), roleZone);
             }
         } 
