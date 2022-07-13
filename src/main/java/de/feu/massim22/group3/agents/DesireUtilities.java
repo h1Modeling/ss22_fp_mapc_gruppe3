@@ -303,15 +303,17 @@ public class DesireUtilities {
             if (desire.getOutputAction().getName().equals(Actions.ATTACH))
                 result = 290;
             else
-                result = 250;        
+                result = 260;        
             break;
         case "GoDispenserDesire":
-            if (desire.getOutputAction().getName().equals(Actions.ATTACH))
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 200;
+            else if (desire.getOutputAction().getName().equals(Actions.ATTACH))
                 result = 300;
                 else if (desire.getOutputAction().getName().equals(Actions.REQUEST))
                     result = 280;
             else
-                result = 250 - desire.getPriority();           
+                result = 250;           
             break;
         case "GoGoalZoneDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
