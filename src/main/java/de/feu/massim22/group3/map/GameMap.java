@@ -391,7 +391,7 @@ public class GameMap {
                     }
                 }
                 if (c.getCellType().name().contains("DISPENSER")) {
-                    AgentLogger.info(Thread.currentThread().getName() + " getMapBuffer: " + x + " , " + y + " , " + c.getCellType().name() + " , ");
+                   // AgentLogger.info(Thread.currentThread().getName() + " getMapBuffer: " + x + " , " + y + " , " + c.getCellType().name() + " , ");
 
                     Point size = getMapSize();
                     // Get neighbour cells

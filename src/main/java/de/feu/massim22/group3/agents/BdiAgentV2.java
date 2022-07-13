@@ -128,17 +128,22 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         belief.update(percepts);
         belief.updatePositionFromExternal();
         refreshAttached();
-        
-        if (belief.getLastAction().equals(Actions.ATTACH) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
-            blockAttached = true;
-        }
-        
-        if (belief.getLastAction().equals(Actions.DETACH) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
-            blockAttached = false;
-        }
-        
-        if (belief.getLastAction().equals(Actions.SUBMIT) && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
-            blockAttached = false;
+   
+        if (belief.getLastAction() != null) {
+            if (belief.getLastAction().equals(Actions.ATTACH)
+                    && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+                blockAttached = true;
+            }
+
+            if (belief.getLastAction().equals(Actions.DETACH)
+                    && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+                blockAttached = false;
+            }
+
+            if (belief.getLastAction().equals(Actions.SUBMIT)
+                    && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+                blockAttached = false;
+            }
         }
         
         AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " , Agent: " + this.getName()+ " , Step: " + belief.getStep());

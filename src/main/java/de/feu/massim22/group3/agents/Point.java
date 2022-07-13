@@ -1,5 +1,7 @@
 package de.feu.massim22.group3.agents;
 
+import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+
 public class Point extends java.awt.Point {
 
     public Point(int x, int y) {
@@ -66,8 +68,15 @@ public class Point extends java.awt.Point {
         return (Math.abs(a.x - b.x) + Math.abs(a.y - b.y)); // Manhattan
     }
 
-    public void translate(Point vector) {
-        this.add(vector);
+    public void translate(Point point) {
+        this.add(point);
+    }
+    
+    public Point translate2To1(Meeting meeting) {
+        Point p1 = new Point(meeting.posAgent1());
+        Point p2 = new Point(meeting.posAgent2());
+        Point p3 = new Point(meeting.relAgent2());
+        return this.add(p1.add(p3.sub(p2)));
     }
 
     /**
