@@ -44,12 +44,12 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
-	@Override
+    @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable");
         onTarget = false;
-        
+
         if (belief.getRole().actions().contains(Actions.DETACH) 
                 && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
@@ -85,24 +85,14 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                             }
                         }
                     }
-                } else
-                    // Agent muss sich nähern
+                    
                     return new BooleanInfo(true, "");
+                } else
+                    // Die Blöcke für die Task sind nicht vorhanden
+                    return new BooleanInfo(false, "");
             }
         }
-        
-        if (onTarget) {     //Agent2 steht auf einer der Target-Positionen für den Connect
-            if (DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)).equals(dirBlock2))
-                //Block ist bereits an der richtigen Position
-                return new BooleanInfo(false, "");
-            else
-                //Block muss noch gedreht werden
-                return new BooleanInfo(true, "");
-        } else 
-            if (blockStructureOk) 
-                //Agent muss sich nähern
-                return new BooleanInfo(true, "");
-            
+
         return new BooleanInfo(false, "");
     }
 
