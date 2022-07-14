@@ -25,6 +25,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
     private boolean onTarget;
     private int distanceNearestTarget;
     private int nearestTarget;
+    private Point target;
     private Point myBlock;
     private Point block1;
     private Point block2;
@@ -59,7 +60,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 if (proofBlockStructure(info)) {
                     distanceAgent = foundMeetings.firstKey();
                     nearestMeeting = foundMeetings.get(distanceAgent);
-                    distanceNearestTarget = 100;
+                    distanceNearestTarget = 1000;
                     nearestTarget = 0;
 
                     if (distanceAgent <= 3) {
@@ -69,9 +70,9 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                         for (int i = 0; i < dirs.size(); i++) {
                             Thing t = nearestMeeting.agent2().belief
                                     .getThingAt(new Point(block2.add(Point.castToPoint(dirs.get(i)))));
-                            int distanceTarget = Point.distance(Point.castToPoint(agent.belief.getPosition()),
-                                    AgentMeetings.getPositionAgent2(nearestMeeting).add(block2)
-                                            .add(Point.castToPoint(dirs.get(i))));
+                            target = AgentMeetings.getPositionAgent2(nearestMeeting).add(block2)
+                                    .add(Point.castToPoint(dirs.get(i)));
+                            int distanceTarget = Point.distance(Point.castToPoint(agent.belief.getPosition()),target);
 
                             if (distanceTarget == 0) {
                                 onTarget = true;
@@ -153,17 +154,22 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 }
             }
         } else {
-            if (distanceNearestTarget < 100) {
+            if (distanceNearestTarget <= 3) {
               //gehe zur Target-Position für den Connect
-            	
-            	
+            	String direction = DirectionUtil.getDirection(agent.belief.getPosition(), target);
+            	return ActionInfo.MOVE(direction, getName());
             } else {
              //gehe Richtung Agent  
-            	
-            	
+            	 Point p1 = new Point(nearestMeeting.posAgent1());
+                 Point p2 = new Point(nearestMeeting.posAgent2());
+                 Point p3 = new Point(nearestMeeting.relAgent2());
+                 Point pointAgent2 = Point.castToPoint(nearestMeeting.agent2().belief.getPosition())
+                         .add(p1.add(p3.sub(p2)));
+                 String direction = DirectionUtil.getDirection(agent.belief.getPosition(), pointAgent2);
+            	return ActionInfo.MOVE(direction, getName());
             }
         }
-       return ActionInfo.SKIP(getName());  
+       //return ActionInfo.SKIP(getName());  
 	}
     
 	public boolean proofBlockStructure(TaskInfo task) {
