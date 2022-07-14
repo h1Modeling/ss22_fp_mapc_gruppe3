@@ -44,17 +44,17 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
-	@Override
+    @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable");
         onTarget = false;
-        
+
         if (belief.getRole().actions().contains(Actions.DETACH) 
                 && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
             // Mehr Block Task
-            if (info.requirements.size() > 1) {
+            if (info.requirements.size() == 2) {
                 // Die Blöcke für die Task sind vorhanden
                 if (proofBlockStructure(info)) {
                     distanceAgent = foundMeetings.firstKey();
@@ -85,32 +85,22 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                             }
                         }
                     }
-                } else
-                    // Agent muss sich nähern
+                    
                     return new BooleanInfo(true, "");
+                } else
+                    // Die Blöcke für die Task sind nicht vorhanden
+                    return new BooleanInfo(false, "");
             }
         }
-        
-        if (onTarget) {     //Agent2 steht auf einer der Target-Positionen für den Connect
-            if (DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)).equals(dirBlock2))
-                //Block ist bereits an der richtigen Position
-                return new BooleanInfo(false, "");
-            else
-                //Block muss noch gedreht werden
-                return new BooleanInfo(true, "");
-        } else 
-            if (blockStructureOk) 
-                //Agent muss sich nähern
-                return new BooleanInfo(true, "");
-            
+
         return new BooleanInfo(false, "");
     }
 
-	@Override
-	public ActionInfo getNextActionInfo() {
-		AgentLogger.info(
-				Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo");
-	
+    @Override
+    public ActionInfo getNextActionInfo() {
+        AgentLogger.info(
+                Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo");
+    
         if (onTarget) {     //Agent2 steht auf einer der Target-Positionen für den Connect
             if (DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)).equals(dirBlock2)) {
                 //Block ist bereits an der richtigen Position
@@ -123,66 +113,113 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 }
             } else {
                 //Block muss noch gedreht werden
+                Point taskBlock = Point.castToPoint(DirectionUtil.getCellInDirection(dirBlock2));
+                Point agentBlock = myBlock;
+               // Thing agentThing = agent.getAttachedThings().get(0);
+                
+               /* if (!agentThing.details.equals(info.requirements.get(0).type)) {
+                    return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());
+                }*/
+                
+                String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
+
+                if (clockDirection == "") {
+                    return ActionInfo.SKIP(getName());
+                } else {
+                    Thing cw = belief.getThingCRotatedAt(agentBlock);
+                    Thing ccw = belief.getThingCCRotatedAt(agentBlock);
+
+                    if (clockDirection == "cw") {
+                        if (isFree(cw)) {
+                            return ActionInfo.ROTATE_CW(getName());
+                        } else {
+                            if (cw.type.equals(Thing.TYPE_OBSTACLE)) {
+                                Point target = Point.castToPoint(DirectionUtil.rotateCW(agentBlock));
+                                return ActionInfo.CLEAR(target, getName());
+                            }
+                        }
+                    }
+                    if (clockDirection == "ccw") {
+                        if (isFree(ccw)) {
+                            return ActionInfo.ROTATE_CCW(getName());
+                        } else {
+                            if (ccw.type.equals(Thing.TYPE_OBSTACLE)) {
+                                Point target = Point.castToPoint(DirectionUtil.rotateCCW(agentBlock));
+                                return ActionInfo.CLEAR(target, getName());
+                            }
+                        }
+                    }
+                    return ActionInfo.SKIP(getName());
+                }
             }
         } else {
             if (distanceNearestTarget < 100) {
               //gehe zur Target-Position für den Connect
+                String disNearestTarget = DirectionUtil.intToString(distanceNearestTarget);
+                String dirNTarget = DirectionUtil.intToString(nearestTarget);
+                return ActionInfo.MOVE(dirNTarget, disNearestTarget);
             } else {
-             //gehe Richtung Agent              
+             //gehe Richtung Agent  
+                String disAgent = DirectionUtil.intToString(distanceAgent);
+                Point agentPoint = Point.castToPoint(DirectionUtil.getCellInDirection(disAgent));
+                //Wie einen Point in eine Direction umwandeln?
+                String dirAgent = agentPoint.toString();
+                
+                return ActionInfo.MOVE(dirAgent, disAgent);
             }
         }
-        return ActionInfo.SKIP(getName());  
-	}
+       // return ActionInfo.SKIP(getName());  
+    }
     
-	public boolean proofBlockStructure(TaskInfo task) {
-		boolean result = false;
-		boolean found = false;
-		int indexFound = 0;
+    public boolean proofBlockStructure(TaskInfo task) {
+        boolean result = false;
+        boolean found = false;
+        int indexFound = 0;
 
-		for (Thing attachedThing : agent.getAttachedThings()) {
-			// ich habe einen passenden 2.Block
-			for (int i = 0; i < task.requirements.size(); i++) {
-			    if (task.requirements.get(i).type.equals(attachedThing.details)
+        for (Thing attachedThing : agent.getAttachedThings()) {
+            // ich habe einen passenden 2.Block
+            for (int i = 0; i < task.requirements.size(); i++) {
+                if (task.requirements.get(i).type.equals(attachedThing.details)
                         && task.requirements.get(i).x != 0
                         && task.requirements.get(i).y != 0
-						&& (attachedThing.x == 0
-						|| attachedThing.y == 0)) {
-					found = true;
-					myBlock = new Point(attachedThing.x, attachedThing.y);
-					block2 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
-					break;
-				}
-			}
+                        && (attachedThing.x == 0
+                        || attachedThing.y == 0)) {
+                    found = true;
+                    myBlock = new Point(attachedThing.x, attachedThing.y);
+                    block2 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
+                    break;
+                }
+            }
 
-			if (found)
-				break;
-		}
+            if (found)
+                break;
+        }
 
-		if (found) {
-			for (Meeting meeting : AgentMeetings.find(agent)) {
-				if (!agent.getAttachedThings().isEmpty()) {
-					for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
-						// anderer Agent hat den dazu passenden 1.Block
-						for (int i = 0; i < task.requirements.size(); i++) {
-							if (task.requirements.get(i).type.equals(attachedThing.details)
-			                        && (task.requirements.get(i).x == 0
-			                        || task.requirements.get(i).y == 0)
-			                        && (attachedThing.x == 0
-			                        || attachedThing.y == 0)) {
-								result = true;
-								foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);
-			                    block1 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
-								break;
-							}
-						}
-						
-						if (result) break;
-					}
-				}
-			}
-		}
+        if (found) {
+            for (Meeting meeting : AgentMeetings.find(agent)) {
+                if (!agent.getAttachedThings().isEmpty()) {
+                    for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
+                        // anderer Agent hat den dazu passenden 1.Block
+                        for (int i = 0; i < task.requirements.size(); i++) {
+                            if (task.requirements.get(i).type.equals(attachedThing.details)
+                                    && (task.requirements.get(i).x == 0
+                                    || task.requirements.get(i).y == 0)
+                                    && (attachedThing.x == 0
+                                    || attachedThing.y == 0)) {
+                                result = true;
+                                foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);
+                                block1 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
+                                break;
+                            }
+                        }
+                        
+                        if (result) break;
+                    }
+                }
+            }
+        }
 
-		blockStructureOk = result;
-		return result;
-	}
+        blockStructureOk = result;
+        return result;
+    }
 }
