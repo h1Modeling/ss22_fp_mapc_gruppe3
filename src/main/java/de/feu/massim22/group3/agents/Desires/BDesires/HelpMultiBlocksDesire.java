@@ -54,7 +54,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
             // Mehr Block Task
-            if (info.requirements.size() > 1) {
+            if (info.requirements.size() == 2) {
                 // Die Blöcke für die Task sind vorhanden
                 if (proofBlockStructure(info)) {
                     distanceAgent = foundMeetings.firstKey();
@@ -113,7 +113,44 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 }
             } else {
                 //Block muss noch gedreht werden
-            	return ActionInfo.ROTATE_CW(dirBlock2);
+            	Point taskBlock = Point.castToPoint(DirectionUtil.getCellInDirection(dirBlock2));
+                Point agentBlock = myBlock;
+               // Thing agentThing = agent.getAttachedThings().get(0);
+                
+               /* if (!agentThing.details.equals(info.requirements.get(0).type)) {
+                    return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());
+                }*/
+                
+                String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
+
+                if (clockDirection == "") {
+                    return ActionInfo.SKIP(getName());
+                } else {
+                    Thing cw = belief.getThingCRotatedAt(agentBlock);
+                    Thing ccw = belief.getThingCCRotatedAt(agentBlock);
+
+                    if (clockDirection == "cw") {
+                        if (isFree(cw)) {
+                            return ActionInfo.ROTATE_CW(getName());
+                        } else {
+                            if (cw.type.equals(Thing.TYPE_OBSTACLE)) {
+                                Point target = Point.castToPoint(DirectionUtil.rotateCW(agentBlock));
+                                return ActionInfo.CLEAR(target, getName());
+                            }
+                        }
+                    }
+                    if (clockDirection == "ccw") {
+                        if (isFree(ccw)) {
+                            return ActionInfo.ROTATE_CCW(getName());
+                        } else {
+                            if (ccw.type.equals(Thing.TYPE_OBSTACLE)) {
+                                Point target = Point.castToPoint(DirectionUtil.rotateCCW(agentBlock));
+                                return ActionInfo.CLEAR(target, getName());
+                            }
+                        }
+                    }
+                    return ActionInfo.SKIP(getName());
+                }
             }
         } else {
             if (distanceNearestTarget < 100) {

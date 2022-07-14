@@ -23,20 +23,17 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     
     public ArrangeMultiBlocksDesire(Belief belief, TaskInfo info) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlocksDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeMultiBlocksDesire");
         this.info = info;
     }
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeMultiBlocksDesire.isFulfilled");
         for (Thing t : info.requirements) {
             Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
-            if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
-                String ea = atAgent == null ? t.details + " not at agent" : "";
-                String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ?  "Attached is no block" : "";
-                String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
-                return new BooleanInfo(false, ea + et + ed);
+            if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {            	
+                return new BooleanInfo(false, "");
             }
         }
         return new BooleanInfo(true, "");
@@ -45,69 +42,73 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
 	@Override
 	public BooleanInfo isExecutable() {
 		AgentLogger
-				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
+				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeMultiBlocksDesire.isExecutable");
 		if (belief.getRole().actions().contains(Actions.DETACH)
 				&& belief.getRole().actions().contains(Actions.ATTACH)
 				&& belief.getRole().actions().contains(Actions.CONNECT)) {
-			//Ein Block Task
-			if(info.requirements.size() == 1) {
-				return new BooleanInfo(true, "");
-			}
-			else {
-				return blockStructure(info);
+			//2 Block Tasks
+			if(info.requirements.size() == 2) {
+				return proofBlockStructure(info);
 			}
 		}
 		return new BooleanInfo(false, "");
 	}
 
     @Override
-    public ActionInfo getNextActionInfo() {
-        AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo");
-        Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
-        Point agentBlock = agent.getAttachedPoints().get(0);
-        Thing agentThing = agent.getAttachedThings().get(0);
-        
-        AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlocks: " + agent.getAttachedThings() + " , taskBlocks: " + info.requirements);
-        
-        if (!agentThing.details.equals(info.requirements.get(0).type)) {
-            return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());
-        }
-        
-        String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
+	public ActionInfo getNextActionInfo() {
+		AgentLogger.info(Thread.currentThread().getName()
+				+ " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo");
+		Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
+		Point agentBlock = agent.getAttachedPoints().get(0);
+		Thing agentThing = agent.getAttachedThings().get(0);
 
-        if (clockDirection == "") {
-            return ActionInfo.SKIP(getName());
-        } else {
-            Thing cw = belief.getThingCRotatedAt(agentBlock);
-            Thing ccw = belief.getThingCCRotatedAt(agentBlock);
+		AgentLogger.info(Thread.currentThread().getName()
+				+ " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo agentBlocks: "
+				+ agent.getAttachedThings() + " , taskBlocks: " + info.requirements);
 
-            if (clockDirection == "cw") {
-                if (isFree(cw)) {
-                    return ActionInfo.ROTATE_CW(getName());
-                } else {
-                    if (cw.type.equals(Thing.TYPE_OBSTACLE)) {
-                        Point target = DirectionUtil.rotateCW(agentBlock);
-                        return ActionInfo.CLEAR(target, getName());
-                    }
-                }
-            }
-            if (clockDirection == "ccw") {
-                if (isFree(ccw)) {
-                    return ActionInfo.ROTATE_CCW(getName());
-                } else {
-                    if (ccw.type.equals(Thing.TYPE_OBSTACLE)) {
-                        Point target = DirectionUtil.rotateCCW(agentBlock);
-                        return ActionInfo.CLEAR(target, getName());
-                    }
-                }
-            }
-            return ActionInfo.SKIP(getName());
-        }
-    }
+		if (!agentThing.details.equals(info.requirements.get(0).type)) {
+			return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)),
+					getName());
+		}
+		//TODO
+		if (taskBlock.equals(agentBlock)) {
+			
+			return ActionInfo.CONNECT(getName(), agentBlock, getName());
+		} else {
+			String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
+
+			if (clockDirection == "") {
+				return ActionInfo.SKIP(getName());
+			} else {
+				Thing cw = belief.getThingCRotatedAt(agentBlock);
+				Thing ccw = belief.getThingCCRotatedAt(agentBlock);
+
+				if (clockDirection == "cw") {
+					if (isFree(cw)) {
+						return ActionInfo.ROTATE_CW(getName());
+					} else {
+						if (cw.type.equals(Thing.TYPE_OBSTACLE)) {
+							Point target = DirectionUtil.rotateCW(agentBlock);
+							return ActionInfo.CLEAR(target, getName());
+						}
+					}
+				}
+				if (clockDirection == "ccw") {
+					if (isFree(ccw)) {
+						return ActionInfo.ROTATE_CCW(getName());
+					} else {
+						if (ccw.type.equals(Thing.TYPE_OBSTACLE)) {
+							Point target = DirectionUtil.rotateCCW(agentBlock);
+							return ActionInfo.CLEAR(target, getName());
+						}
+					}
+				}
+				return ActionInfo.SKIP(getName());
+			}
+		}
+	}
     
-	public BooleanInfo blockStructure(TaskInfo task) {
+	public BooleanInfo proofBlockStructure(TaskInfo task) {
 		BooleanInfo result = new BooleanInfo(false, "");
 		boolean found = false;
 		int indexFound = 0;
