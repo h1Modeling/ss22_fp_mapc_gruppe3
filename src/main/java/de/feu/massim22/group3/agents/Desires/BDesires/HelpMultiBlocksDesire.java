@@ -160,11 +160,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 return ActionInfo.MOVE(direction, getName());
             } else {
              //gehe Richtung Agent  
-                 Point p1 = new Point(nearestMeeting.posAgent1());
-                 Point p2 = new Point(nearestMeeting.posAgent2());
-                 Point p3 = new Point(nearestMeeting.relAgent2());
-                 Point pointAgent2 = Point.castToPoint(nearestMeeting.agent2().belief.getPosition())
-                         .add(p1.add(p3.sub(p2)));
+                 Point pointAgent2 = Point.castToPoint(nearestMeeting.agent2().belief.getPosition()).translate2To1(nearestMeeting);
                  String direction = DirectionUtil.getDirection(agent.belief.getPosition(), pointAgent2);
                 return ActionInfo.MOVE(direction, getName());
             }
