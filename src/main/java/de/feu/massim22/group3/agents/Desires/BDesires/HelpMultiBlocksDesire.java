@@ -155,20 +155,15 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
         } else {
             if (distanceNearestTarget < 100) {
               //gehe zur Target-Position für den Connect
-            	String disNearestTarget = DirectionUtil.intToString(distanceNearestTarget);
-            	String dirNTarget = DirectionUtil.intToString(nearestTarget);
-            	return ActionInfo.MOVE(dirNTarget, disNearestTarget);
+            	
+            	
             } else {
              //gehe Richtung Agent  
-            	String disAgent = DirectionUtil.intToString(distanceAgent);
-            	Point agentPoint = Point.castToPoint(DirectionUtil.getCellInDirection(disAgent));
-            	//Wie einen Point in eine Direction umwandeln?
-            	String dirAgent = agentPoint.toString();
             	
-            	return ActionInfo.MOVE(dirAgent, disAgent);
+            	
             }
         }
-       // return ActionInfo.SKIP(getName());  
+       return ActionInfo.SKIP(getName());  
 	}
     
 	public boolean proofBlockStructure(TaskInfo task) {
