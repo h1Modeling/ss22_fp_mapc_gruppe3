@@ -190,21 +190,12 @@ public class GoDispenserDesire extends BeliefDesire {
                 int i = 0;
 
                 for (Meeting meeting : AgentMeetings.find(agent)) {
-                    Point p1 = new Point(meeting.posAgent1());
-                    Point p2 = new Point(meeting.posAgent2());
-                    Point p3 = new Point(meeting.relAgent2());
+                    Point metAgent = Point.castToPoint(meeting.agent2().belief.getPosition()).translate2To1(meeting);
                     AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 8.1: "
-                            + meeting.agent2().getName() + " , "
-                            + Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2))));
+                            + meeting.agent2().getName() + " , " + metAgent);
 
-                    if (d1 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))
-//                            && meeting.agent2().belief.getAttachedPoints().contains(r1)
-                            || d2 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))
-//                                    && meeting.agent2().belief.getAttachedPoints().contains(r2)
-                            || d3 == Point.castToPoint(meeting.agent2().belief.getPosition()).add(p1.add(p3.sub(p2)))) {
-//                                    && meeting.agent2().belief.getAttachedPoints().contains(r3)) {
+                    if (d1.equals(metAgent) || d2.equals(metAgent) || d3.equals(metAgent)) {
                         met.add(meeting.agent2().index);
-
                         i++;
                     }
                 }
