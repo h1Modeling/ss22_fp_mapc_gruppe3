@@ -78,6 +78,13 @@ public class Point extends java.awt.Point {
         Point p3 = new Point(meeting.relAgent2());
         return this.add(p1.add(p3.sub(p2)));
     }
+    
+    public Point translate1To2(Meeting meeting) {
+        Point p1 = new Point(meeting.posAgent2());
+        Point p2 = new Point(meeting.posAgent1());
+        Point p3 = new Point(meeting.relAgent1());
+        return this.add(p1.add(p3.sub(p2)));
+    }
 
     /**
      * new difference vector

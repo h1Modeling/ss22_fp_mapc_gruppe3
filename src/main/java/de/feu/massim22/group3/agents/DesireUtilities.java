@@ -23,7 +23,7 @@ import massim.protocol.messages.scenario.ActionResults;
 public class DesireUtilities {
 	public StepUtilities stepUtilities;
 	public TaskInfo task;
-    public int maxTaskBlocks = 1;
+    public int maxTaskBlocks = 2;
     public String directionCircle = "cw";
     public int directionCounter = 0;
     public int circleSize = 40;
@@ -128,8 +128,7 @@ public class DesireUtilities {
         		 continue;
         	}
             task = loopTask;
-            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name
-                    + " Agents: " + allGroupAgents + " freie Agents: " + freeGroupAgents);
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name + " , " + task.requirements.size() + " , " + task.requirements);
 
             // TODO Mehrblock-Tasks
            if ( task.requirements.size() > maxTaskBlocks) {
@@ -166,7 +165,8 @@ public class DesireUtilities {
                     && doDecision(agent, new LooseWeightDesire(agent.belief))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , LooseWeightDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters() 
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , LooseWeightDesire");
@@ -175,7 +175,8 @@ public class DesireUtilities {
                     && doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "worker"))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoAdoptRoleDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                 } else 
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoAdoptRoleDesire - worker");
@@ -184,7 +185,8 @@ public class DesireUtilities {
                 && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlock(agent, task).type))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , AttachAbandonedBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , AttachAbandonedBlockDesire");
@@ -193,7 +195,8 @@ public class DesireUtilities {
                     && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock(agent, task), supervisor.getName(), agent, stepUtilities))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoDispenserDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
@@ -202,7 +205,8 @@ public class DesireUtilities {
                         && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task,agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , HelpMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , HelpMultiBlocksDesire");
@@ -211,7 +215,8 @@ public class DesireUtilities {
                     && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoGoalZoneDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoGoalZoneDesire");
@@ -220,16 +225,18 @@ public class DesireUtilities {
                     && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , ArrangeBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , ArrangeBlocksDesire");
                                 
                 if (maxTaskBlocks > 1 && agent.blockAttached && agent.belief.getGoalZones().contains(Point.zero())
-                        && doDecision(agent, new ArrangeMultiBlocksDesire(agent.belief, task))) {
+                        && doDecision(agent, new ArrangeMultiBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , ArrangeMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , ArrangeMultiBlocksDesire");
@@ -238,7 +245,8 @@ public class DesireUtilities {
                     && doDecision(agent, new SubmitDesire(agent.belief, task))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , SubmitDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters());
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                     } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , SubmitDesire");
@@ -324,16 +332,36 @@ public class DesireUtilities {
         case "ArrangeBlocksDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 10;
-                else if (desire.getOutputAction().getName().equals(Actions.DETACH))
-                    result = 450;
+            else if (desire.getOutputAction().getName().equals(Actions.DETACH))
+                result = 450;
             else
-                result = 500;        
+                result = 500;
+            break;
+        case "HelpMultiBlocksDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+            else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
+                result = 650;
+            else if (desire.getOutputAction().getName().equals(Actions.DETACH))
+                result = 700;
+            else
+                result = 600;
+            break;
+        case "ArrangeMultiBlocksDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+            else if (desire.getOutputAction().getName().equals(Actions.DETACH))
+                result = 550;
+            else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
+                result = 650;
+            else
+                result = 600;
             break;
         case "SubmitDesire":
-            result = 600;
+            result = 1000;
             break;
         case "LooseWeightDesire":
-            result = 700;
+            result = 1400;
             break;
         }
 

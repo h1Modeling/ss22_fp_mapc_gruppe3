@@ -7,13 +7,8 @@ import java.util.ArrayList;
 public class AgentMeetings {
     public static List<Meeting> meetings = new ArrayList<Meeting>();
     
-    static int exists;
-    
-    public static void add(Meeting meeting) {
-        if (exists(meeting)) {
-            meetings.remove(exists);
-        }
-        
+    public static synchronized void add(Meeting meeting) {
+        remove(meeting);
         meetings.add(meeting);
     }
     
@@ -22,13 +17,21 @@ public class AgentMeetings {
         
         for (int i = 0; i < meetings.size(); i++) {
             if (meetings.get(i).agent1.equals(meeting.agent1) && meetings.get(i).agent2.equals(meeting.agent2)) {
-                exists = i;
                 result = true;
                 break;
             } 
         }
         
         return result;
+    }
+    
+    public static void remove(Meeting meeting) {       
+        for (int i = 0; i < meetings.size(); i++) {
+            if (meetings.get(i).agent1.equals(meeting.agent1) && meetings.get(i).agent2.equals(meeting.agent2)) {
+                meetings.remove(i);
+                break;
+            } 
+        }
     }
     
     public static int getDistance(Meeting meeting) {

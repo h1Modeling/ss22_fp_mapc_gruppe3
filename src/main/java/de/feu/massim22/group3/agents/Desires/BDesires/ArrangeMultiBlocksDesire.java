@@ -3,10 +3,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 import java.awt.Point;
 import java.util.*;
 
-import de.feu.massim22.group3.agents.AgentMeetings;
-import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.Belief;
-import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
@@ -19,12 +16,13 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
     private BdiAgentV2 agent;
-    private Map<Integer, Meeting> foundMeetings = new TreeMap<>();
+    private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>();
     
-    public ArrangeMultiBlocksDesire(Belief belief, TaskInfo info) {
+    public ArrangeMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeMultiBlocksDesire");
         this.info = info;
+        this.agent = agent;
     }
 
     @Override
@@ -70,11 +68,18 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
             return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)),
                     getName());
         }
-        //TODO
+        
+        Meeting nearestMeeting = foundMeetings.get(foundMeetings.firstKey());
+
         if (taskBlock.equals(agentBlock)) {
-            
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - AA"); 
+            AgentCooperations.setCooperation(new AgentCooperations.Cooperation(info, nearestMeeting.agent2(), Status.ReadyToConnect, 
+                    nearestMeeting.agent1(), AgentCooperations.getStatusHelper(info, nearestMeeting.agent2(), nearestMeeting.agent1())));
             return ActionInfo.CONNECT(getName(), agentBlock, getName());
         } else {
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - BB");  
+            AgentCooperations.setCooperation(new AgentCooperations.Cooperation(info, nearestMeeting.agent2(), Status.Arranging, 
+                    nearestMeeting.agent1(), AgentCooperations.getStatusHelper(info, nearestMeeting.agent2(), nearestMeeting.agent1())));
             String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
 
             if (clockDirection == "") {
@@ -109,6 +114,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     }
     
     public BooleanInfo proofBlockStructure(TaskInfo task) {
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure");
         BooleanInfo result = new BooleanInfo(false, "");
         boolean found = false;
         int indexFound = 0;
@@ -147,8 +153,9 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                     }
                 }
             }
-        }   
-
+        }
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - possible Helper: " + foundMeetings);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure: " + found + " , " + result);
         return result;
     }
 }
