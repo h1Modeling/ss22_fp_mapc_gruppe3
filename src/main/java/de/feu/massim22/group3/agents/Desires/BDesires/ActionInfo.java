@@ -56,7 +56,7 @@ public record ActionInfo(Action value, String info) {
     }
 
     public static ActionInfo SKIP(String info) {
-        Action a = new Action(Actions.SKIP);
+        Action a = new Action(Actions.SKIP, new Identifier(info));
         return new ActionInfo(a, info);
     }
 

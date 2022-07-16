@@ -18,7 +18,8 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 public class GameMap {
     
     private Point initialSize;
-    private Point size = new Point(92, 64); // null;
+    //private Point size = new Point(92, 64); // null;
+    private Point size = new Point(32, 32); // null;
     // First dimension are rows, second dimension are columns
     private MapCell[][] cells;
     private Point topLeft; // top left indices can be negative

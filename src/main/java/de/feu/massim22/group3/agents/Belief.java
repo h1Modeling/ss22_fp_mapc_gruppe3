@@ -1027,8 +1027,10 @@ public class Belief {
             }
         }
         
-        position.x = position.x % 92;
-        position.y = position.y % 64;
+        //position.x = position.x % 92;
+        //position.y = position.y % 64;
+        position.x = position.x % 32;
+        position.y = position.y % 32;
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     // Melinda Ende

@@ -16,6 +16,10 @@ public class Point extends java.awt.Point {
         return new Point(0, 0);
     }
     
+    public static String toString(Point point) {
+        return "[" + point.x + "," + point.y + "]";
+    }
+    
     public static Point castToPoint(java.awt.Point inPoint) {
         return inPoint != null ? new Point(inPoint.x, inPoint.y) : null;
     }

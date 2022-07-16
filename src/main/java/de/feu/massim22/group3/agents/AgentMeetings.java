@@ -1,6 +1,8 @@
 package de.feu.massim22.group3.agents;
 
 import de.feu.massim22.group3.agents.Point;
+import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -21,6 +23,19 @@ public class AgentMeetings {
                 break;
             } 
         }
+        
+        return result;
+    }
+    
+    public static String toString(Meeting meeting) {
+        String result = "";
+        
+       result = meeting.agent1.getName() + " , " 
+               + Point.toString(meeting.relAgent1) + " , " 
+               + Point.toString(meeting.posAgent1) + " , " 
+               + meeting.agent2.getName() + " , " 
+               + Point.toString(meeting.relAgent2) + " , " 
+               + Point.toString(meeting.posAgent2);
         
         return result;
     }
@@ -59,6 +74,19 @@ public class AgentMeetings {
         
         return resultList;
     }  
+    
+    public static Meeting get(BdiAgentV2 agent1, BdiAgentV2 agent2) {
+       Meeting result = null; 
+        
+        for (int i = 0; i < meetings.size(); i++) {
+            if (meetings.get(i).agent1.equals(agent1) && meetings.get(i).agent2.equals(agent2)) {
+                result = meetings.get(i);
+                break;
+            } 
+        }
+        
+        return result;
+    } 
     
     public record Meeting(BdiAgentV2 agent1, Point relAgent1,  Point posAgent1, BdiAgentV2 agent2, Point relAgent2,  Point posAgent2) {}
 }

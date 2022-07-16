@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
+import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
@@ -138,13 +139,45 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             if (belief.getLastAction().equals(Actions.DETACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
+                
+                if (AgentCooperations.exists(this)) {
+                    Cooperation coop = AgentCooperations.get(this);
+
+                    if (coop.helper().equals(this))
+                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
+                                coop.statusMaster(), coop.helper(), Status.Detached));
+                }
             }
 
             if (belief.getLastAction().equals(Actions.SUBMIT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
+
+                if (AgentCooperations.exists(this)) {
+                    Cooperation coop = AgentCooperations.get(this);
+
+                    if (coop.master().equals(this) && coop.task().name.equals(belief.getLastActionParams().get(0))) 
+                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
+                                Status.Submitted, coop.helper(), coop.statusHelper()));
+                }
+            }
+            
+            if (belief.getLastAction().equals(Actions.CONNECT)
+                    && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+                if (AgentCooperations.exists(this)) {
+                    Cooperation coop = AgentCooperations.get(this);
+
+                    if (coop.master().equals(this))
+                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
+                                Status.Connected, coop.helper(), coop.statusHelper()));
+                    else
+                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
+                                coop.statusMaster(), coop.helper(), Status.Connected));
+                }
             }
         }
+        
+        
         
         AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " , Agent: " + this.getName()+ " , Step: " + belief.getStep());
         
