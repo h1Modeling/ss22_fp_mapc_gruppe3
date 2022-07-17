@@ -20,6 +20,11 @@ public class Point extends java.awt.Point {
         return "[" + point.x + "," + point.y + "]";
     }
     
+    @Override
+    public String toString() {
+        return "[" + this.x + "," + this.y + "]";
+    }
+    
     public static Point castToPoint(java.awt.Point inPoint) {
         return inPoint != null ? new Point(inPoint.x, inPoint.y) : null;
     }

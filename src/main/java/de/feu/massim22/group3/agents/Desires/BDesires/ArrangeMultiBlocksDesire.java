@@ -133,10 +133,17 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         BooleanInfo result = new BooleanInfo(false, "");
         boolean found = false;
         int indexFound = 0;
+        Point pointFound = null;
         
-        if (agent.isBusy && AgentCooperations.exists(info, agent, 1)) {
+        AgentLogger.info(Thread.currentThread().getName()
+                + " runSupervisorDecisions - proofBlockStructure - agent.isBusy: " + agent.isBusy + " , " + task.name);
+        AgentLogger.info(Thread.currentThread().getName()
+                + " runSupervisorDecisions - proofBlockStructure - coops: " + AgentCooperations.toString(AgentCooperations.cooperations));
+        
+        if (agent.isBusy && AgentCooperations.exists(task, agent, 1)) {
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure - ist master");
          // Agent ist als master in einer cooperation 
-            this.coop = AgentCooperations.get(info, agent, 1);
+            this.coop = AgentCooperations.get(task, agent, 1);
             result = new BooleanInfo(true, "");
         } else {
             if (!agent.isBusy) {
@@ -149,6 +156,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                                         && task.requirements.get(i).x <= 1 && task.requirements.get(i).y <= 1)) {
                             found = true;
                             indexFound = i;
+                            pointFound = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
                             break;
                         }
                     }
@@ -162,7 +170,11 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                             for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
                                 // anderer Agent hat den Block der mir noch fehlt
                                 for (int i = 0; i < task.requirements.size(); i++) {
-                                    if (i != indexFound
+                                    AgentLogger.info(Thread.currentThread().getName()
+                                            + " runSupervisorDecisions - proofBlockStructure - attached: "
+                                            + attachedThing2 + " , task: " + task.requirements.get(i));
+                                    
+                                    if ((task.requirements.get(i).x != pointFound.x || task.requirements.get(i).y != pointFound.y)
                                             && attachedThing2.details.equals(task.requirements.get(i).type)) {
                                         result = new BooleanInfo(true, "");
                                         foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);

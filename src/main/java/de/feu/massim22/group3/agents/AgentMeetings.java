@@ -18,7 +18,7 @@ public class AgentMeetings {
         boolean result = false;
         
         for (int i = 0; i < meetings.size(); i++) {
-            if (meetings.get(i).agent1.equals(meeting.agent1) && meetings.get(i).agent2.equals(meeting.agent2)) {
+            if (meetings.get(i).agent1.getName().equals(meeting.agent1.getName()) && meetings.get(i).agent2.getName().equals(meeting.agent2.getName())) {
                 result = true;
                 break;
             } 
@@ -42,7 +42,7 @@ public class AgentMeetings {
     
     public static void remove(Meeting meeting) {       
         for (int i = 0; i < meetings.size(); i++) {
-            if (meetings.get(i).agent1.equals(meeting.agent1) && meetings.get(i).agent2.equals(meeting.agent2)) {
+            if (meetings.get(i).agent1.getName().equals(meeting.agent1.getName()) && meetings.get(i).agent2.getName().equals(meeting.agent2.getName())) {
                 meetings.remove(i);
                 break;
             } 
@@ -67,7 +67,7 @@ public class AgentMeetings {
         List<Meeting> resultList = new ArrayList<Meeting>(); 
         
         for (int i = 0; i < meetings.size(); i++) {
-            if (meetings.get(i).agent1.equals(agent)) {
+            if (meetings.get(i).agent1.getName().equals(agent.getName())) {
                 resultList.add(meetings.get(i));
             } 
         }
@@ -79,7 +79,7 @@ public class AgentMeetings {
        Meeting result = null; 
         
         for (int i = 0; i < meetings.size(); i++) {
-            if (meetings.get(i).agent1.equals(agent1) && meetings.get(i).agent2.equals(agent2)) {
+            if (meetings.get(i).agent1.getName().equals(agent1.getName()) && meetings.get(i).agent2.getName().equals(agent2.getName())) {
                 result = meetings.get(i);
                 break;
             } 
@@ -88,7 +88,21 @@ public class AgentMeetings {
         return result;
     } 
     
-    public record Meeting(BdiAgentV2 agent1, Point relAgent1,  Point posAgent1, BdiAgentV2 agent2, Point relAgent2,  Point posAgent2) {}
+    public record Meeting(BdiAgentV2 agent1, Point relAgent1,  Point posAgent1, BdiAgentV2 agent2, Point relAgent2,  Point posAgent2) {
+        @Override
+        public String toString() {
+            String result = "";
+            
+           result = agent1.getName() + " , " 
+                   + Point.toString(relAgent1) + " , " 
+                   + Point.toString(posAgent1) + " , " 
+                   + agent2.getName() + " , " 
+                   + Point.toString(relAgent2) + " , " 
+                   + Point.toString(posAgent2);
+            
+            return result;
+        }
+    }
 }
 
 

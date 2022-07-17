@@ -30,6 +30,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public boolean connected = false;
     public boolean blockAttached = false;
     public boolean isBusy = false;
+    public boolean alwaysToTarget = false;
     public boolean beliefsDone;
     
     public Point lastUsedDispenser;
@@ -147,6 +148,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     if (coop.helper().equals(this)) {
                         AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
                                 coop.statusMaster(), coop.helper(), Status.Detached));
+                        alwaysToTarget = false;
                         isBusy = false;
                     }
                 }
@@ -162,6 +164,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     if (coop.master().equals(this) && coop.task().name.equals(belief.getLastActionParams().get(0))) { 
                         AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
                                 Status.Submitted, coop.helper(), coop.statusHelper()));
+                        AgentCooperations.remove(coop);
+                        alwaysToTarget = false;
                         isBusy = false;
                     }
                 }
