@@ -202,8 +202,20 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
         boolean result = false;
         boolean found = false;
         int indexFound = 0;
+        
+        if (agent.isBusy && AgentCooperations.exists(info, agent, 2)) {
+            // Agent ist als helper in einer cooperation
+            this.coop = AgentCooperations.get(info, agent, 2);
+            result = true;
+            AgentLogger.info(Thread.currentThread().getName()
+                    + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - proofBlockStructure - coop: "
+                    + AgentCooperations.toString(coop));
+        }
+        
+        blockStructureOk = result;
+        return result;
 
-        for (Thing attachedThing : agent.getAttachedThings()) {
+        /*for (Thing attachedThing : agent.getAttachedThings()) {
             // ich habe einen passenden 2.Block
             for (int i = 0; i < task.requirements.size(); i++) {
                 if (task.requirements.get(i).type.equals(attachedThing.details)
@@ -217,7 +229,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 
             if (found)
                 break;
-        }
+        }*/
 
         /*if (found) {
             for (Meeting meeting : AgentMeetings.find(agent)) {
@@ -243,7 +255,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
             }
         }*/
         
-        if (found) {
+        /*if (found) {
             if (AgentCooperations.exists(info, agent)) {
                 Cooperation coop = AgentCooperations.get(agent);
 
@@ -255,10 +267,9 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                             + AgentCooperations.toString(coop));
                 }
             }
-        }
+        }*/
         
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure: " + found + " , " + result);
-        blockStructureOk = result;
-        return result;
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure: " + found + " , " + result);
+
     }
 }

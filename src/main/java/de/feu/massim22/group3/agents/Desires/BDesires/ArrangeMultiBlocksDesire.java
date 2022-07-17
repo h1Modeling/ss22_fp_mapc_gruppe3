@@ -18,6 +18,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     private TaskInfo info;    
     private BdiAgentV2 agent;
     private BdiAgentV2 possibleHelper;
+    private Cooperation coop;
     private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>();
     
     public ArrangeMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
@@ -58,7 +59,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo");
-        Cooperation coop = null;
+        //Cooperation coop = null;
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
         Point agentBlock = agent.getAttachedPoints().get(0);
         Thing agentThing = agent.getAttachedThings().get(0);
@@ -72,19 +73,13 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
          * ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell
          * (agentBlock)), getName()); }
          */
-
-        if (AgentCooperations.exists(info, agent))
-            coop = AgentCooperations.get(info, agent);
-        else
-            coop = new AgentCooperations.Cooperation(info, agent, Status.InGoalZone, possibleHelper,
-                    Status.New);
         
         AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - coop: " + AgentCooperations.toString(coop));
 
         if (coop.statusMaster().equals(Status.ReadyToConnect)) {
             if (coop.statusHelper().equals(Status.ReadyToConnect))
-                return ActionInfo.CONNECT(possibleHelper.getName(), agentBlock, getName());
+                return ActionInfo.CONNECT(coop.master().getName(), agentBlock, getName());
             else
                 return ActionInfo.SKIP("1000 waiting for helper to be ready to connect");
         } else {
@@ -138,64 +133,80 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         BooleanInfo result = new BooleanInfo(false, "");
         boolean found = false;
         int indexFound = 0;
-
-        for (Thing attachedThing : agent.getAttachedThings()) {
-            // ich habe einen passenden Block
-            for (int i = 0; i < task.requirements.size(); i++) {
-                if (task.requirements.get(i).type.equals(attachedThing.details)
-                        && ((task.requirements.get(i).x == 0 || task.requirements.get(i).y == 0)
-                        && task.requirements.get(i).x <= 1 && task.requirements.get(i).y <= 1)) {
-                    found = true;
-                    indexFound = i;
-                    break;
-                }
-            }
-            
-            if (found) break;
-        }
         
-        if (found) {
-            for (Meeting meeting : AgentMeetings.find(agent)) {
-                if (!meeting.agent2().getAttachedThings().isEmpty()) {
-                    for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
-                        // anderer Agent hat den Block der mir noch fehlt
-                        for (int i = 0; i < task.requirements.size(); i++) {
-                            if (i != indexFound && attachedThing2.details.equals(task.requirements.get(i).type)) {
-                                result = new BooleanInfo(true, "");
-                                foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);
-                                break;
-                            }
+        if (agent.isBusy && AgentCooperations.exists(info, agent, 1)) {
+         // Agent ist als master in einer cooperation 
+            this.coop = AgentCooperations.get(info, agent, 1);
+            result = new BooleanInfo(true, "");
+        } else {
+            if (!agent.isBusy) {
+             // Agent ist weder als master noch als helper in einer cooperation
+                for (Thing attachedThing : agent.getAttachedThings()) {
+                    //Agent hat einen passenden Block
+                    for (int i = 0; i < task.requirements.size(); i++) {
+                        if (task.requirements.get(i).type.equals(attachedThing.details)
+                                && ((task.requirements.get(i).x == 0 || task.requirements.get(i).y == 0)
+                                        && task.requirements.get(i).x <= 1 && task.requirements.get(i).y <= 1)) {
+                            found = true;
+                            indexFound = i;
+                            break;
                         }
-                        
-                        if (result.value()) break;
                     }
+
+                    if (found) break;
                 }
-            }
-            
-            if (!result.value()) {
-                for (Meeting meeting : AgentMeetings.find(agent)) {                   
-                    for (Meeting subMeeting : AgentMeetings.find(meeting.agent2())) {
-                        if (!subMeeting.agent2().getAttachedThings().isEmpty()) {
-                            for (Thing attachedThing2 : subMeeting.agent2().getAttachedThings()) {
+
+                if (found) {
+                    for (Meeting meeting : AgentMeetings.find(agent)) {
+                        if (!meeting.agent2().getAttachedThings().isEmpty()) {
+                            for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
                                 // anderer Agent hat den Block der mir noch fehlt
                                 for (int i = 0; i < task.requirements.size(); i++) {
-                                    if (i != indexFound && attachedThing2.details.equals(task.requirements.get(i).type)) {
+                                    if (i != indexFound
+                                            && attachedThing2.details.equals(task.requirements.get(i).type)) {
                                         result = new BooleanInfo(true, "");
-                                        foundMeetings.put(AgentMeetings.getDistance(subMeeting), subMeeting);
+                                        foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);
                                         break;
                                     }
                                 }
-                                
+
                                 if (result.value()) break;
                             }
                         }
                     }
-                }                
+
+                    if (!result.value()) {
+                        for (Meeting meeting : AgentMeetings.find(agent)) {
+                            for (Meeting subMeeting : AgentMeetings.find(meeting.agent2())) {
+                                if (!subMeeting.agent2().getAttachedThings().isEmpty()) {
+                                    for (Thing attachedThing2 : subMeeting.agent2().getAttachedThings()) {
+                                        // anderer Agent hat den Block der mir noch fehlt
+                                        for (int i = 0; i < task.requirements.size(); i++) {
+                                            if (i != indexFound
+                                                    && attachedThing2.details.equals(task.requirements.get(i).type)
+                                                    && !AgentCooperations.exists(subMeeting.agent2())) {
+                                                result = new BooleanInfo(true, "");
+                                                foundMeetings.put(AgentMeetings.getDistance(subMeeting), subMeeting);
+                                                break;
+                                            }
+                                        }
+
+                                        if (result.value()) break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (result.value()) {
+                    possibleHelper = foundMeetings.get(foundMeetings.firstKey()).agent2();                    
+                    this.coop = new AgentCooperations.Cooperation(info, agent, Status.InGoalZone, possibleHelper,
+                                Status.New);
+                    agent.isBusy = true;
+                    possibleHelper.isBusy = true;
+                }
             }
-        }
-        
-        if (result.value()) {
-            possibleHelper = foundMeetings.get(foundMeetings.firstKey()).agent2();
         }
  
         for (Meeting m : AgentMeetings.find(agent))

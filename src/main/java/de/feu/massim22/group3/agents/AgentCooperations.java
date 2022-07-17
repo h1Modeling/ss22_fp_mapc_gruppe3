@@ -13,12 +13,13 @@ public class AgentCooperations {
         cooperations.add(cooperation);
     }
     
-    public static boolean exists(TaskInfo task, BdiAgentV2 master) {
+    public static boolean exists(TaskInfo task, BdiAgentV2 agent, int sel) {
         boolean result = false;
         
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.equals(task) 
-                    && cooperations.get(i).master.equals(master)) {
+                    && (sel == 1 && cooperations.get(i).master.equals(agent))
+                    || (sel == 2 && cooperations.get(i).helper.equals(agent))) {
                 result = true;
                 break;
             } 
@@ -67,12 +68,13 @@ public class AgentCooperations {
         return result;
     }
     
-    public static Cooperation get(TaskInfo task, BdiAgentV2 master) {
+    public static Cooperation get(TaskInfo task, BdiAgentV2 agent, int sel) {
         boolean result = false;
         
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.equals(task) 
-                    && cooperations.get(i).master.equals(master)) {
+                    && (sel == 1 && cooperations.get(i).master.equals(agent))
+                    || (sel == 2 && cooperations.get(i).helper.equals(agent))) {
                 return cooperations.get(i);
             } 
         }
