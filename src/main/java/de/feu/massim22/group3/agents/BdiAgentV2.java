@@ -27,7 +27,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     
     public boolean decisionsDone;
     public boolean requestMade = false;
-    public boolean connected = false;
+    //public boolean connected = false;
     public boolean blockAttached = false;
     public boolean isBusy = false;
     public boolean alwaysToTarget = false;
@@ -146,8 +146,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     Cooperation coop = AgentCooperations.get(this);
 
                     if (coop.helper().equals(this)) {
-                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
-                                coop.statusMaster(), coop.helper(), Status.Detached));
+                        AgentCooperations.setStatusHelper(coop.task(), coop.helper(), Status.Detached);
                         alwaysToTarget = false;
                         isBusy = false;
                     }
@@ -162,33 +161,41 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     Cooperation coop = AgentCooperations.get(this);
 
                     if (coop.master().equals(this) && coop.task().name.equals(belief.getLastActionParams().get(0))) { 
-                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
-                                Status.Submitted, coop.helper(), coop.statusHelper()));
+                        AgentCooperations.setStatusMaster(coop.task(), coop.master(), Status.Submitted);
                         AgentCooperations.remove(coop);
                         alwaysToTarget = false;
                         isBusy = false;
                     }
                 }
             }
-            
+
+            AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - belief.getLastAction(): " 
+            + belief.getLastAction() + " , " + belief.getLastActionResult() + " , Agent: " + this.getName());
+
             if (belief.getLastAction().equals(Actions.CONNECT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 if (AgentCooperations.exists(this)) {
                     Cooperation coop = AgentCooperations.get(this);
-
-                    if (coop.master().equals(this))
-                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
-                                Status.Connected, coop.helper(), coop.statusHelper()));
-                    else
-                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
-                                coop.statusMaster(), coop.helper(), Status.Connected));
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop.toString());
+                    
+                    if (coop.master().getName().equals(this.getName())) {
+                        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - master");
+                        AgentCooperations.setStatusMaster(coop.task(), coop.master(), Status.Connected);
+                    }
+                    
+                    if (coop.helper().getName().equals(this.getName())) {
+                        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - helper");
+                        AgentCooperations.setStatusHelper(coop.task(), coop.helper(), Status.Connected);
+                    }
+                    coop = AgentCooperations.get(this);
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop.toString());
                 }
             }
         }
         
         
         
-        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " , Agent: " + this.getName()+ " , Step: " + belief.getStep());
+        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " isBusy: " + isBusy + " , Agent: " + this.getName()+ " , Step: " + belief.getStep());
         
         for (Percept percept : percepts) {
             if (percept.getName() == "attached"){

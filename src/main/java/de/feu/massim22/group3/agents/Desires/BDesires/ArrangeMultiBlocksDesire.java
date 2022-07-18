@@ -37,6 +37,17 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                 return new BooleanInfo(false, "");
             }
         }
+        
+        if (AgentCooperations.exists(info, agent, 1)) {
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure - ist master");
+         // Agent ist als master in einer cooperation 
+            this.coop = AgentCooperations.get(info, agent, 1);
+            
+            if (!(coop.statusMaster().equals(Status.Connected) && coop.statusHelper().equals(Status.Detached))) {
+                return new BooleanInfo(false, "");
+            }
+        }
+        
         return new BooleanInfo(true, "");
     }
 
@@ -77,11 +88,11 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - coop: " + AgentCooperations.toString(coop));
 
+        if (coop.statusMaster().equals(Status.Connected) && coop.statusHelper().equals(Status.ReadyToDetach)) {  
+            return ActionInfo.SKIP("1000 waiting for helper to detach");
+        } else
         if (coop.statusMaster().equals(Status.ReadyToConnect)) {
-            if (coop.statusHelper().equals(Status.ReadyToConnect))
-                return ActionInfo.CONNECT(coop.master().getName(), agentBlock, getName());
-            else
-                return ActionInfo.SKIP("1000 waiting for helper to be ready to connect");
+            return ActionInfo.SKIP("1000 waiting for helper to be ready to connect");
         } else {
             if (taskBlock.equals(agentBlock)) {
                 AgentLogger.info(Thread.currentThread().getName()
@@ -194,7 +205,8 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                                     for (Thing attachedThing2 : subMeeting.agent2().getAttachedThings()) {
                                         // anderer Agent hat den Block der mir noch fehlt
                                         for (int i = 0; i < task.requirements.size(); i++) {
-                                            if (i != indexFound
+                                            if ((task.requirements.get(i).x != pointFound.x || task.requirements.get(i).y != pointFound.y) 
+                                                    && !subMeeting.agent2().getName().equals(agent.getName())
                                                     && attachedThing2.details.equals(task.requirements.get(i).type)
                                                     && !AgentCooperations.exists(subMeeting.agent2())) {
                                                 result = new BooleanInfo(true, "");

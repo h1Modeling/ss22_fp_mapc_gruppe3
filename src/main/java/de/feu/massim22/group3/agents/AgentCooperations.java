@@ -15,6 +15,28 @@ public class AgentCooperations {
         cooperations.add(cooperation);
     }
     
+    public static synchronized void setStatusMaster(TaskInfo task, BdiAgentV2 agent, Status status) {
+        for (int i = 0; i < cooperations.size(); i++) {
+            if (cooperations.get(i).task.name.equals(task.name) 
+                    && (cooperations.get(i).master.getName().equals(agent.getName())
+                    || cooperations.get(i).helper.getName().equals(agent.getName()))) {
+                setCooperation(cooperations.get(i).setStatusMaster(status));
+                break;
+            } 
+        }
+    }
+    
+    public static synchronized void setStatusHelper(TaskInfo task, BdiAgentV2 agent, Status status) {
+        for (int i = 0; i < cooperations.size(); i++) {
+            if (cooperations.get(i).task.name.equals(task.name) 
+                    && (cooperations.get(i).master.getName().equals(agent.getName())
+                    || cooperations.get(i).helper.getName().equals(agent.getName()))) {
+                setCooperation(cooperations.get(i).setStatusHelper(status));
+                break;
+            } 
+        }
+    }
+    
     public static boolean exists(TaskInfo task, BdiAgentV2 agent, int sel) {
         boolean result = false;
         
@@ -30,11 +52,27 @@ public class AgentCooperations {
         return result;
     }
     
+    public static boolean exists(TaskInfo task, BdiAgentV2 agent) {
+        boolean result = false;
+        
+        for (int i = 0; i < cooperations.size(); i++) {
+            if (cooperations.get(i).task.name.equals(task.name) 
+                    && (cooperations.get(i).master.getName().equals(agent.getName())
+                    || cooperations.get(i).helper.getName().equals(agent.getName()))) {
+                result = true;
+                break;
+            } 
+        }
+        
+        return result;
+    }
+    
     public static boolean exists(BdiAgentV2 agent) {
         boolean result = false;
         
         for (int i = 0; i < cooperations.size(); i++) {
-            if (cooperations.get(i).master.getName().equals(agent.getName()) || cooperations.get(i).helper.getName().equals(agent.getName())) {
+            if (cooperations.get(i).master.getName().equals(agent.getName()) 
+                || cooperations.get(i).helper.getName().equals(agent.getName())) {
                 result = true;
                 break;
             } 
@@ -93,6 +131,20 @@ public class AgentCooperations {
         return null;
     }
     
+    public static Cooperation get(TaskInfo task, BdiAgentV2 agent) {
+        boolean result = false;
+        
+        for (int i = 0; i < cooperations.size(); i++) {
+            if (cooperations.get(i).task.name.equals(task.name) 
+                    && (cooperations.get(i).master.getName().equals(agent.getName())
+                    || cooperations.get(i).helper.getName().equals(agent.getName()))) {
+                return cooperations.get(i);
+            } 
+        }
+        
+        return null;
+    }
+    
     public static Cooperation get(BdiAgentV2 agent) {
         boolean result = false;
         
@@ -144,18 +196,24 @@ public class AgentCooperations {
         return Status.New;
     }
        
-    public record Cooperation(TaskInfo task, BdiAgentV2 master, Status statusMaster, BdiAgentV2 helper, Status statusHelper) {
+    public record Cooperation(TaskInfo task, BdiAgentV2 master, Status statusMaster, BdiAgentV2 helper,
+            Status statusHelper) {
         @Override
         public String toString() {
             String result = "";
-            
-           result = task.name + " , " 
-                   + master.getName() + " , " 
-                   + statusMaster + " , " 
-                   + helper.getName() + " , " 
-                   + statusHelper;
-            
+
+            result = task.name + " , " + master.getName() + " , " + statusMaster + " , " + helper.getName() + " , "
+                    + statusHelper;
+
             return result;
+        }
+
+        public Cooperation setStatusMaster(Status status) {
+            return new Cooperation(task(), master(), status, helper(), statusHelper());
+        }
+        
+        public Cooperation setStatusHelper(Status status) {
+            return new Cooperation(task(), master(), statusMaster(), helper(), status);
         }
     }
 }

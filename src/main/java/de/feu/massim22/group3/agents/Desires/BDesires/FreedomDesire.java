@@ -21,7 +21,7 @@ public class FreedomDesire extends BeliefDesire {
             Thing t = belief.getThingWithTypeAt(p, Thing.TYPE_ENTITY);
             if (t != null) {
                 attached = t;
-                return new BooleanInfo(false, "");
+                return new BooleanInfo(true, "");
             }
         }
         return new BooleanInfo(true, "Connected to Teammate");

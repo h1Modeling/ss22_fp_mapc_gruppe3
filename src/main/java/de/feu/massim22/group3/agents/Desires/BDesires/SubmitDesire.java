@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
-import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
@@ -11,11 +12,13 @@ import java.awt.Point;
 public class SubmitDesire extends BeliefDesire {
 
     private TaskInfo info;
+    private BdiAgentV2 agent;
     
-    public SubmitDesire(Belief belief, TaskInfo info) {
+    public SubmitDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
         this.info = info;
+        this.agent = agent;
     }
   
 	@Override
@@ -31,12 +34,18 @@ public class SubmitDesire extends BeliefDesire {
                 for (Thing t : this.info.requirements) {
                     Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
                     if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
-                        String ea = atAgent == null ? t.details + " not at agent" : "";
-                        String et = atAgent != null && !atAgent.type.equals(Thing.TYPE_BLOCK) ? "Attached is no block"
-                                : "";
-                        String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
-                        return new BooleanInfo(false, ea + et + ed);
+                        return new BooleanInfo(false, "");
                     }
+                }
+            }
+            
+            if (AgentCooperations.exists(this.info, agent, 1)) {
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure - ist master");
+             // Agent ist als master in einer cooperation 
+                Cooperation coop = AgentCooperations.get(this.info, agent, 1);
+                
+                if (!(coop.statusMaster().equals(Status.Connected) && coop.statusHelper().equals(Status.Detached))) {
+                    return new BooleanInfo(false, "");
                 }
             }
         }

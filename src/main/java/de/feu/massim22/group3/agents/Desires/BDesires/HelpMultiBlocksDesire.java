@@ -133,19 +133,14 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                     AgentCooperations.setCooperation(new AgentCooperations.Cooperation(info, coop.master(), 
                             AgentCooperations.getStatusMaster(info, coop.master(), coop.helper()), 
                             coop.helper(), Status.ReadyToDetach));
+                    
                     return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)), getName());
                 } else {
-                    if (coop.statusHelper().equals(Status.ReadyToConnect)) {
-                        if (coop.statusMaster().equals(Status.ReadyToConnect))
-                            return ActionInfo.CONNECT(coop.helper().getName(), myBlock, getName());
-                        else
-                            return ActionInfo.SKIP("1000 waiting for master to be ready to connect");
-                    } else {
-                        AgentCooperations.setCooperation(new AgentCooperations.Cooperation(info, coop.master(), 
-                                AgentCooperations.getStatusMaster(info, coop.master(), coop.helper()), 
-                                coop.helper(), Status.ReadyToConnect));  
-                        return ActionInfo.SKIP("1000 waiting for master to be ready to connect");
-                    }               
+                    AgentCooperations.setCooperation(new AgentCooperations.Cooperation(info, coop.master(),
+                            AgentCooperations.getStatusMaster(info, coop.master(), coop.helper()), coop.helper(),
+                            Status.ReadyToConnect));
+
+                    return ActionInfo.SKIP("1000 waiting for master to be ready to connect");
                 }
             } else {
                 //Block muss noch gedreht werden

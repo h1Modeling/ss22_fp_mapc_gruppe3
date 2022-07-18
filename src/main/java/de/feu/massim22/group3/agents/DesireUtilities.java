@@ -240,9 +240,19 @@ public class DesireUtilities {
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , ArrangeMultiBlocksDesire");
+                
+                if (maxTaskBlocks > 1 && agent.blockAttached 
+                        && doDecision(agent, new ConnectMultiBlocksDesire(agent.belief, task, agent))) {
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
+                    + " , HelpMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                        } else
+                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                                + " , ConnectMultiBlocksDesire");
 
                 if (agent.blockAttached && agent.belief.getGoalZones().contains(Point.zero())
-                    && doDecision(agent, new SubmitDesire(agent.belief, task))) {
+                    && doDecision(agent, new SubmitDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , SubmitDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
@@ -356,6 +366,9 @@ public class DesireUtilities {
                 result = 650;
             else
                 result = 600;
+            break;
+        case "ConnectMultiBlocksDesire":
+            result = 1050;
             break;
         case "SubmitDesire":
             result = 1100;
