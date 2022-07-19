@@ -456,4 +456,8 @@ public class Supervisor implements ISupervisor {
             parent.forwardMessage(message, name, agent);
         }
     }
+    
+    public BdiAgent getParent( ) {
+        return (BdiAgent) parent;
+    }
 }

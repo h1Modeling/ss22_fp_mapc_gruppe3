@@ -21,6 +21,7 @@ public class GoDispenserDesire extends BeliefDesire {
     private CellType dispenser;
     private String supervisor;
     private int distance;
+    private boolean strangeAgent = false;
     private StepUtilities stepUtilities;
 
     public GoDispenserDesire(Belief belief, Thing block, String supervisor, BdiAgentV2 agent, StepUtilities stepUtilities) {
@@ -53,7 +54,6 @@ public class GoDispenserDesire extends BeliefDesire {
 				&& agent.belief.getRole().actions().contains(Actions.ATTACH)) {
 			if (belief.getReachableDispensers().size() > 0) {
 				// es existiert ein Dispenser ( den der Agent erreichen kann)
-				// TODO in Vision nach Dispenser suchen
 				List<ReachableDispenser> reachableDispensers = belief.getReachableDispensers();
 
 				AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block.type);
@@ -74,6 +74,27 @@ public class GoDispenserDesire extends BeliefDesire {
 				if (typeDispensers.size() > 0) {
 					// es wurde ein Dispenser vom gesuchten Typ gefunden
 					return new BooleanInfo(true, "");
+				} else {
+				    for (Supervisor a : StepUtilities.allSupervisors) {
+				        if (!a.equals(agent.supervisor)) {
+				            reachableDispensers = a.getParent().belief.getReachableDispensers();
+				            
+				            for (ReachableDispenser reachableDispenser : reachableDispensers) {
+			                    // alle Dispenser vom gesuchten Typ
+			                    String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
+
+			                    if (typeDispenser.equals(block.type)) {
+			                        typeDispensers.add(reachableDispenser);
+			                    }
+			                }
+				            
+			                if (typeDispensers.size() > 0) {
+			                    // es wurde ein Dispenser vom gesuchten Typ gefunden
+			                    strangeAgent = true;
+			                    return new BooleanInfo(true, "");
+			                }
+				        }
+				    }
 				}
 			}
 		}
@@ -87,6 +108,8 @@ public class GoDispenserDesire extends BeliefDesire {
         boolean attachPossible = false;
         Point dispenserItself = null;
         ReachableDispenser nearestDispenser = null;
+        distance = 1000;
+        
         // Dispenser mit der kürzesten Entfernung zum Agenten
         AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,1");
         Point visionDispenser = Point.castToPoint(belief.getNearestRelativeManhattenDispenser(block.type));
@@ -126,6 +149,10 @@ public class GoDispenserDesire extends BeliefDesire {
                     + nearestDispenser.position() + nearestDispenser.data() + " , dItself: " + dispenserItself);*/
         }
         AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 5");
+        
+        if (distance == 1000) {
+            
+        }
         
         if (distance == 1) {
             // steht neben einem Dispenser

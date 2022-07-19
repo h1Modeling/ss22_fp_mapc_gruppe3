@@ -130,8 +130,8 @@ public class DesireUtilities {
             task = loopTask;
             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name + " , " + task.requirements.size() + " , " + task.requirements);
 
-           //if ( task.requirements.size() > maxTaskBlocks) {
-           if ( task.requirements.size() != 2) {
+           if ( task.requirements.size() > maxTaskBlocks) {
+           //if ( task.requirements.size() > 2) {
                continue;
            }
            

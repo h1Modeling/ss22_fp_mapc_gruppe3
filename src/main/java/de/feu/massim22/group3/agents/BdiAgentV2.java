@@ -43,6 +43,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     
     public Supervisor supervisor;
     public int index;
+    public Point startPosition;
 
 
     /**
@@ -131,6 +132,9 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         belief.update(percepts);
         belief.updatePositionFromExternal();
         refreshAttached();
+        
+        if (belief.getStep() == 0)
+            startPosition= Point.castToPoint(belief.getAbsolutePosition());
    
         if (belief.getLastAction() != null) {
             if (belief.getLastAction().equals(Actions.ATTACH)
@@ -202,6 +206,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             AgentLogger.info(this.getName(),
                     "Percept - attached: " +
                     String.format("%s - %s", percept.getName(), percept.getParameters()));
+            }
+            
+            if (percept.getName() == "position"){
+            AgentLogger.info(this.getName(),
+                    "Percept: " + String.format("%s - %s", percept.getName(), percept.getParameters()) + " , absolutePosition: " + belief.getAbsolutePosition());
             }
         }
         //AgentLogger.info(belief.toString());

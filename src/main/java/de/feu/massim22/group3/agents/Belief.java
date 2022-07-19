@@ -65,6 +65,7 @@ public class Belief {
     private List<Point> goalZones = new ArrayList<>();
     private List<Point> roleZones = new ArrayList<>();
     private boolean simEnd = false;
+    private Point absolutePosition;
 
     // Group 3 Beliefs
     private Point position = new Point(0, 0);
@@ -220,6 +221,11 @@ public class Belief {
                     break;
                 case "simEnd":
                     simEnd = true;
+                    break;
+                case "position":
+                    int posX = toNumber(p, 0, Integer.class);
+                    int posY = toNumber(p, 1, Integer.class);
+                    absolutePosition = new Point(posX, posY);
                     break;
                 default:
                     AgentLogger.warning("Percept not transfered to Belief: " + percept.getName());
@@ -627,6 +633,10 @@ public class Belief {
         roleZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
         return roleZones.size() > 0 ? roleZones.get(0) : null;
     }
+    
+    public Point getAbsolutePosition() {
+        return absolutePosition;
+    }
     //Melinda Ende
 
     public ReachableGoalZone getNearestGoalZone() {
@@ -1027,10 +1037,10 @@ public class Belief {
             }
         }
         
-        //position.x = position.x % 92;
-        //position.y = position.y % 64;
-        position.x = position.x % 32;
-        position.y = position.y % 32;
+        position.x = position.x % 64;
+        position.y = position.y % 92;
+        //position.x = position.x % 32;
+        //position.y = position.y % 32;
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     // Melinda Ende
