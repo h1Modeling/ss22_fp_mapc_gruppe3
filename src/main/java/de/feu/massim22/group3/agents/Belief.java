@@ -1043,5 +1043,11 @@ public class Belief {
         //position.y = position.y % 32;
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
+    
+    public void updatePositionFromAbsolutePosition() {
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
+        this.position = new Point(absolutePosition.x, absolutePosition.y);
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
+    }
     // Melinda Ende
 }

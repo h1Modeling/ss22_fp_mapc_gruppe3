@@ -43,7 +43,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     
     public Supervisor supervisor;
     public int index;
-    public Point startPosition;
+    public Point startPosition = new Point(Point.zero());
 
 
     /**
@@ -133,8 +133,10 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         belief.updatePositionFromExternal();
         refreshAttached();
         
-        if (belief.getStep() == 0)
-            startPosition= Point.castToPoint(belief.getAbsolutePosition());
+        if (belief.getStep() == 0) {
+            startPosition = (Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : startPosition;
+            belief.updatePositionFromAbsolutePosition();
+        }
    
         if (belief.getLastAction() != null) {
             if (belief.getLastAction().equals(Actions.ATTACH)
