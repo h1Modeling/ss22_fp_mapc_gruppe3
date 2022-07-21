@@ -8,10 +8,10 @@ import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
 import de.feu.massim22.group3.agents.Desires.BDesires.V2.*;
+
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
-import de.feu.massim22.group3.agents.StepUtilities.DispenserFlag;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
 import eis.iilang.Action;
@@ -22,8 +22,8 @@ import massim.protocol.messages.scenario.Actions;
 import massim.protocol.messages.scenario.ActionResults;
 
 public class DesireUtilities {
-	public StepUtilities stepUtilities;
-	public TaskInfo task;
+    public StepUtilities stepUtilities;
+    public TaskInfo task;
     public int maxTaskBlocks = 2;
     public String directionCircle = "cw";
     public int directionCounter = 0;
@@ -32,21 +32,21 @@ public class DesireUtilities {
     private boolean dir2Used = false;
     private int moveIteration = 0;
  
-    public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
-	public List<Thing> attachedThings = new ArrayList<Thing>();
+    public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
     public List<Thing> badBlocks = new ArrayList<Thing>();
     public List<Thing> goodPositionBlocks = new ArrayList<Thing>();
     public List<Thing> badPositionBlocks = new ArrayList<Thing>();
     public List<Thing> missingBlocks = new ArrayList<Thing>();
-	public boolean typeOk = false;
-	public boolean analysisDone = false;
-	public boolean dontArrange = false;
-	public String nextTry = "ccw";
-	public int nextTryDir = 1;
-	public int failedPath = 0;
-	public String lastWishDirection = null;
-	
+    public boolean typeOk = false;
+    public boolean analysisDone = false;
+    public boolean dontArrange = false;
+    public String nextTry = "ccw";
+    public int nextTryDir = 1;
+    public int failedPath = 0;
+    public String lastWishDirection = null;
+    public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
+    
     /**
      * The method runs the different agent decisions.
      *
@@ -54,20 +54,7 @@ public class DesireUtilities {
      * 
      * @return boolean - the agent decisions are done
      */
-    public synchronized boolean runDecisions(int step, BdiAgentV2 agent) {
-        runAgentDecisions(step, agent);
-        runAgentDecisionsWithTask(step, agent);
-        return false;
-    }
-	
-    /**
-     * The method runs the different agent decisions.
-     *
-     * @param agent - the agent who wants to make the decisions
-     * 
-     * @return boolean - the agent decisions are done
-     */
-    public boolean runAgentDecisions(int step, BdiAgentV2 agent) {
+    public synchronized boolean runAgentDecisions(int step, BdiAgentV2 agent) {
         boolean result = false;
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
                 + " , Agent: " + agent.getName());
@@ -145,33 +132,39 @@ public class DesireUtilities {
      * 
      * @return boolean - the supervisor decisions are done
      */
-    public boolean runAgentDecisionsWithTask(int step, BdiAgentV2 agent) {
-        //this.stepUtilities = stepUtilities;
+    public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor, StepUtilities stepUtilities) {
+        this.stepUtilities = stepUtilities;
         boolean result = false;
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() Start - Step: " + step
-                + " , Supervisor: " + agent.supervisor.getName() + " , Agent: " + agent.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
+                + " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
 
-        //BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
+        BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
         
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorunAgentDecisionsWithTaskrDecisions() Dispenser: " + agent.belief.getReachableDispensers());
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.belief.getReachableDispensers());
 
-        List<String> allGroupAgents = new ArrayList<>(agent.supervisor.getAgents());
+        List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
+        List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
+        List<String> busyGroupAgents = new ArrayList<>();
 
         // Schleife über alle Tasks
-        for (TaskInfo loopTask : agent.belief.getTaskInfo()) {
-        	//Task Deadline erreicht
-        	if(taskReachedDeadline (agent, loopTask)) {
-        		 continue;
-        	}
+        for (TaskInfo loopTask : supervisorAgent.belief.getTaskInfo()) {
+            //Task Deadline erreicht
+            if(taskReachedDeadline ( supervisorAgent, loopTask)) {
+                 continue;
+            }
             task = loopTask;
-            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() Task: " + task.name + " , " + task.requirements.size() + " , " + task.requirements);
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name + " , " + task.requirements.size() + " , " + task.requirements);
 
            if ( task.requirements.size() > maxTaskBlocks) {
            //if ( task.requirements.size() > 2) {
                continue;
            }
+           
+            // über alle Agenten einer Gruppe
+            for (String agentStr : allGroupAgents) {
+                BdiAgentV2 agent = StepUtilities.getAgent(agentStr); 
                 
-                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() Agent: " + agent.getName() + " , Pos: " + agent.belief.getPosition());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr + " , Pos: " + agent.belief.getPosition());
                 AgentLogger.info(
                         Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName()
                                 + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
@@ -180,15 +173,15 @@ public class DesireUtilities {
                 agent.desireProcessing.task = task;
                 agent.desireProcessing.attachedThings = agent.getAttachedThings();
 
-                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Agent: " + agent.getName() + " attachedThings: "
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Agent: " + agentStr + " attachedThings: "
                         + agent.desireProcessing.attachedThings);
-                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() - Agent: "
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , Things: " + agent.belief.getThings());
-                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() - Agent: "
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , GoalZones: " + agent.belief.getGoalZones());
-                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() - Agent: "
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , ReachableGoalZones: " + agent.belief.getReachableGoalZones());
-                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() - Agent: "
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , nicht in Zone: " + !agent.belief.getGoalZones().contains(Point.zero()) 
                         + " , in Zone: "+ agent.belief.getGoalZones().contains(Point.zero()) + " , att. Size: "
                         + agent.desireProcessing.attachedThings.size());
@@ -197,7 +190,7 @@ public class DesireUtilities {
                 if (!agent.blockAttached
                 && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlock(agent, task).type))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , GoAbandonedBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , AttachAbandonedBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
                 } else
@@ -205,7 +198,7 @@ public class DesireUtilities {
                             + " , AttachAbandonedBlockDesire");
                 
                 if (!agent.blockAttached 
-                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock(agent, task), agent.supervisor.getName(), agent))) {
+                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock(agent, task), supervisor.getName(), agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoDispenserDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
@@ -273,12 +266,15 @@ public class DesireUtilities {
                     } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , SubmitDesire");
-
+            } // Loop agents
         } // Loop tasks
 
-        agent.supervisor.setDecisionsDone(true);
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask() End - Step: " + step
-                + " , Supervisor: " + agent.supervisor.getName() + " , Agents: " + agent.supervisor.getAgents());
+        freeGroupAgents.removeAll(busyGroupAgents);
+        busyGroupAgents.clear();
+
+        supervisor.setDecisionsDone(true);
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() End - Step: " + step
+                + " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
         return result;
     }
     
@@ -290,7 +286,7 @@ public class DesireUtilities {
      * 
      * @return int - the priority
      */
-	// TODO sinnvolle Prioritäten vergeben
+    // TODO sinnvolle Prioritäten vergeben
     public int getPriority(IDesire desire) {
         int result = 0;
 
@@ -581,33 +577,33 @@ public class DesireUtilities {
     }
           
     public boolean taskReachedDeadline (BdiAgentV2 agent,TaskInfo task) {
-    	boolean result = false;
-    	if (agent.belief.getStep() > task.deadline) {
-    		//Task ist abgelaufen 
-    		result = true;
-    	}
-    	return result;
+        boolean result = false;
+        if (agent.belief.getStep() > task.deadline) {
+            //Task ist abgelaufen 
+            result = true;
+        }
+        return result;
     }
        
-	public Thing getTaskBlock(BdiAgentV2 agent, TaskInfo task) {
-		Thing result = task.requirements.get(0);
-		// ein Block Task
-		if (task.requirements.size() > 1) {
-			for (Meeting meeting : AgentMeetings.find(agent)) {
-				if (!meeting.agent2().getAttachedThings().isEmpty()) {
-					for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
-						// Kenn ich einen Agenten mit get(0)?
-						if (attachedThing.details.equals(task.requirements.get(0).type)) {
-							result = task.requirements.get(1);
-							break;
-						}
-					}
-				}
-			}
-		}
-		return result;
-	}
-	
+    public Thing getTaskBlock(BdiAgentV2 agent, TaskInfo task) {
+        Thing result = task.requirements.get(0);
+        // ein Block Task
+        if (task.requirements.size() > 1) {
+            for (Meeting meeting : AgentMeetings.find(agent)) {
+                if (!meeting.agent2().getAttachedThings().isEmpty()) {
+                    for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
+                        // Kenn ich einen Agenten mit get(0)?
+                        if (attachedThing.details.equals(task.requirements.get(0).type)) {
+                            result = task.requirements.get(1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
     private ActionInfo getIteratedActionForMove(BdiAgentV2 agent, String dir, String desire) {
         moveIteration++;
         if (moveIteration < 4) {
@@ -616,8 +612,8 @@ public class DesireUtilities {
         // TODO AGENT is STuck
         return ActionInfo.SKIP("Agent is Stuck");
     }
-	
-	public ActionInfo getActionForMoveWithAlternate(BdiAgentV2 agent, String dir, String dirAlt, String desire) {
+    
+    public ActionInfo getActionForMoveWithAlternate(BdiAgentV2 agent, String dir, String dirAlt, String desire) {
         ActionInfo firstTry = getActionForMove(agent, dir, desire);
         String lastRotation = agent.belief.getLastActionParams().size() > 0 ? agent.belief.getLastActionParams().get(0) : "";
         
@@ -800,4 +796,6 @@ public class DesireUtilities {
     public Point getCCRotatedPoint(Point p) {
         return new Point(p.y, -p.x);
     }
+    
+    public record DispenserFlag(Point position, Boolean attachMade) {}
 }

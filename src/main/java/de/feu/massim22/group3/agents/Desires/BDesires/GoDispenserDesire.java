@@ -4,7 +4,7 @@ package de.feu.massim22.group3.agents.Desires.BDesires;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.StepUtilities.DispenserFlag;
+import de.feu.massim22.group3.agents.DesireUtilities.DispenserFlag;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
