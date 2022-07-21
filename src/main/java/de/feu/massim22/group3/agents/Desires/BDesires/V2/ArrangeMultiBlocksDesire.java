@@ -179,7 +179,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
 
                 if (found) {
                     for (Meeting meeting : AgentMeetings.find(agent)) {
-                        if (!meeting.agent2().getAttachedThings().isEmpty()) {
+                        if ( !AgentCooperations.exists(meeting.agent2()) && !meeting.agent2().getAttachedThings().isEmpty()) {
                             for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
                                 // anderer Agent hat den Block der mir noch fehlt
                                 for (int i = 0; i < task.requirements.size(); i++) {
@@ -200,23 +200,28 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                         }
                     }
                     
-
                     if (!result.value()) {
                         for (BdiAgentV2 help : StepUtilities.allAgents) {
-                            if (!help.getAttachedThings().isEmpty()) {
+                            if (!help.getName().equals(agent.getName()) && !AgentCooperations.exists(help)
+                                    && !help.getAttachedThings().isEmpty()) {
                                 for (Thing attachedThing2 : help.getAttachedThings()) {
-                         // anderer Agent hat den Block der mir noch fehlt
-                            for (int i = 0; i < task.requirements.size(); i++) {                               
-                                if ((task.requirements.get(i).x != pointFound.x || task.requirements.get(i).y != pointFound.y)
-                                        && attachedThing2.details.equals(task.requirements.get(i).type)) {
-                                    result = new BooleanInfo(true, "");
-                                    foundMeetings.put(Point.distance(Point.castToPoint(agent.belief.getPosition()), Point.castToPoint(help.belief.getPosition())), new Meeting(agent, null, null, help, null, null));
-                                    break;
+                                    // anderer Agent hat den Block der mir noch fehlt
+                                    for (int i = 0; i < task.requirements.size(); i++) {
+                                        if ((task.requirements.get(i).x != pointFound.x
+                                                || task.requirements.get(i).y != pointFound.y)
+                                                && attachedThing2.details.equals(task.requirements.get(i).type)) {
+                                            result = new BooleanInfo(true, "");
+                                            foundMeetings.put(
+                                                    Point.distance(Point.castToPoint(agent.belief.getPosition()),
+                                                            Point.castToPoint(help.belief.getPosition())),
+                                                    new Meeting(agent, null, null, help, null, null));
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                        }
 
                    /* if (!result.value()) {
                         for (Meeting meeting : AgentMeetings.find(agent)) {
@@ -240,8 +245,8 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                                 }
                             }
                         }
-                    }
-                }*/
+                    }*/
+                }
 
                 if (result.value()) {
                     possibleHelper = foundMeetings.get(foundMeetings.firstKey()).agent2();                    
@@ -260,3 +265,4 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         return result;
     }
 }
+

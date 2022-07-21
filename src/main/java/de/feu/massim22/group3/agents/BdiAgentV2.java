@@ -116,10 +116,16 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             }
         }
         
-        // Cooperations
+        // sind Cooperations abgelaufen?
         if (this.getName().equals("31")) {
-            for (Cooperation coop : AgentCooperations.cooperations) {
+             List<Cooperation> cooperations = new ArrayList<Cooperation>(AgentCooperations.cooperations);
+            
+            for (Cooperation coop : cooperations) {
                 AgentLogger.info(Thread.currentThread().getName() + " step() coop: " + coop.toString());
+                
+                if(desireProcessing.taskReachedDeadline(this, coop.task())) {
+                    AgentCooperations.remove(coop);
+                }
             }
         }
         

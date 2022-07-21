@@ -25,7 +25,8 @@ public class GoGoalZoneDesire extends BeliefDesire {
     Point realtiveGoalZoneAgentOld;*/
     Point nearestGoalZone;
     boolean defaultGoalZone = false;
-    Point posDefaultGoalZone = new Point(28, 54);
+    Point posDefaultGoalZone1 = new Point(9, 1);
+    Point posDefaultGoalZone2 = new Point(28, 54);
 
     public GoGoalZoneDesire(Belief belief, BdiAgentV2 agent) {
         super(belief);
@@ -73,8 +74,13 @@ public class GoGoalZoneDesire extends BeliefDesire {
             }
             
             defaultGoalZone = true;
-            nearestGoalZone = posDefaultGoalZone;
             result = true;
+            
+            if (agent.belief.getPosition().y < 28 || agent.belief.getPosition().y > 75) 
+                nearestGoalZone = posDefaultGoalZone1;
+            else
+                nearestGoalZone = posDefaultGoalZone2;
+                
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 7");

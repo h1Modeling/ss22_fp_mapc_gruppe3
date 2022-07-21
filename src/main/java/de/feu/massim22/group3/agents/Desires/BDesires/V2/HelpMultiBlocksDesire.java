@@ -207,7 +207,8 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                         AgentCooperations.getStatusMaster(info, nearestMeeting.agent2(), nearestMeeting.agent1()), 
                         nearestMeeting.agent1(), Status.GoTarget));
                 agent.alwaysToTarget = true;
-                return ActionInfo.MOVE(direction, getName());
+                //return ActionInfo.MOVE(direction, getName());
+                return this.agent.desireProcessing.getActionForMove(agent, direction, getName());
             } else {
              //gehe Richtung Agent 
                 AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - HelpMultiBlocksDesire.getNextActionInfo - EE");
@@ -216,7 +217,8 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                  AgentCooperations.setCooperation(new AgentCooperations.Cooperation(info, nearestMeeting.agent2(), 
                          AgentCooperations.getStatusMaster(info, nearestMeeting.agent2(), nearestMeeting.agent1()), 
                          nearestMeeting.agent1(), Status.GoMaster));
-                return ActionInfo.MOVE(direction, getName());
+                //return ActionInfo.MOVE(direction, getName());
+                return this.agent.desireProcessing.getActionForMove(agent, direction, getName());
             }
         }
        //return ActionInfo.SKIP(getName());  

@@ -102,28 +102,28 @@ public class DirectionUtil {
 
         if (pointTarget.x == 0) {
             if (pointTarget.y < 0)
-                result = "n";
+                result = (pointTarget.y > -36) ? "n" : "s";
             else
-                result = "s";
+                result = (pointTarget.y < 36) ? "s" : "n";
         }
 
         if (pointTarget.y == 0) {
             if (pointTarget.x < 0)
-                result = "w";
+                result = (pointTarget.x > -36) ? "w" : "e";
             else
-                result = "e";
+                result = (pointTarget.x < 36) ? "e" : "w";
         }
 
         if (pointTarget.x != 0 && pointTarget.y != 0) {
             if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
                 if (pointTarget.x < 0)
-                    result = "w";
+                    result = (pointTarget.x > -36) ? "w" : "e";
                 else
-                    result = "e";
+                    result = (pointTarget.x < 36) ? "e" : "w";
             else if (pointTarget.y < 0)
-                result = "n";
+                result = (pointTarget.y > -36) ? "n" : "s";
             else
-                result = "s";
+                result = (pointTarget.y < 36) ? "s" : "n";
         }
 
         return result;

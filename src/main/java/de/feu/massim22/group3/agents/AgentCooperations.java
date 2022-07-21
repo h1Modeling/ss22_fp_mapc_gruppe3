@@ -157,7 +157,7 @@ public class AgentCooperations {
         return null;
     }
     
-    public static void remove(Cooperation cooperation) {       
+    public static synchronized void remove(Cooperation cooperation) {       
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(cooperation.task.name) 
                     && cooperations.get(i).master.getName().equals(cooperation.master.getName()) 
