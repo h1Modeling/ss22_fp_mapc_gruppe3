@@ -23,7 +23,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
 
     public DesireUtilities desireProcessing = new DesireUtilities();
-    //public static StepUtilities stepProcessing = new StepUtilities(desireProcessing);
+    //public StepUtilities stepLogic = new StepUtilities(desireProcessing);
     
     public boolean decisionsDone;
     public boolean requestMade = false;
@@ -38,7 +38,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public List<Point> attachedPoints = new ArrayList<Point>();
     
     public int exploreCount = 0;    
-    public int exploreDirection = (this.index) % 4;
+    public int exploreDirection = this.index % 4;
     public int exploreDirection2 = exploreDirection + 1;
     
     public Supervisor supervisor;
@@ -82,31 +82,23 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
             if (!beliefsDone) {
-                 try {
+                     try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             } else {
                     AgentLogger.info(Thread.currentThread().getName() + " step() beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
-                    Thread t4 = new Thread(() -> {
-                        desireProcessing.runAgentDecisions(belief.getStep(), this);
-                        desireProcessing.runAgentDecisionsWithTask(belief.getStep(), this);
-                        }
-                    );
+                    Thread t4 = new Thread(() -> desireProcessing.runAgentDecisions(belief.getStep(), this));
                     t4.start();
-                    /*desireProcessing.runDecisions(belief.getStep(), this);*/
                     break;
             }
         }
-        
-        //StepUtilities.reportDecisionsDone(this, belief.getStep(), belief.getTeamSize());
-        
+
         // warten auf decisions (agent und supervisor)
         AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for decisionsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         
         while (true) {
-            // Wenn alle Agenten fertig sind kommt die Ermittlung und Ausgabe der Intentions (macht das Logfile 'schöner')
             if (!(decisionsDone && supervisor.getDecisionsDone())) {
                 try {
                     Thread.sleep(100);
@@ -123,8 +115,15 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 break;
             }
         }
-
-        // nächste Action
+        
+        // Cooperations
+        if (this.getName().equals("31")) {
+            for (Cooperation coop : AgentCooperations.cooperations) {
+                AgentLogger.info(Thread.currentThread().getName() + " step() coop: " + coop.toString());
+            }
+        }
+        
+        // next Action
         AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() 
         + " , Intention: " + intention.getName() + " , Action: " +  intention.getOutputAction().getName() 
         + " , Params: " +  intention.getOutputAction().getParameters());
@@ -213,14 +212,15 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         
         for (Percept percept : percepts) {
             if (percept.getName() == "attached"){
-            /*AgentLogger.info(this.getName(),
+            AgentLogger.info(this.getName(),
                     "Percept - attached: " +
-                    String.format("%s - %s", percept.getName(), percept.getParameters()));*/
+                    String.format("%s - %s", percept.getName(), percept.getParameters()));
             }
             
             if (percept.getName() == "position"){
             AgentLogger.info(this.getName(),
-                    "Percept: " + String.format("%s - %s", percept.getName(), percept.getParameters()) + " , absolutePosition: " + belief.getAbsolutePosition() + " , beliefPosition: " + belief.getPosition());
+                    "Percept: " + String.format("%s - %s", percept.getName(), percept.getParameters()) 
+                    + " , absolutePosition: " + belief.getAbsolutePosition() + " , beliefPosition: " + belief.getPosition());
             }
         }
         //AgentLogger.info(belief.toString());

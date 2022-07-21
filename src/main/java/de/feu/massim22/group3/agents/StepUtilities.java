@@ -228,7 +228,7 @@ public class StepUtilities {
                     //AgentLogger.info(Thread.currentThread().getName() + agent.belief.reachablesToString());
                 }
                 
-                //desireProcessing.runSupervisorDecisions(step, supervisor, this);
+                desireProcessing.runSupervisorDecisions(step, supervisor, this);
             };
             
             Thread t3 = new Thread(runnable);

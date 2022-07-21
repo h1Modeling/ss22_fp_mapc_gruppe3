@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.agents.Desires.BDesires.V2;
 
-import java.awt.Point;
+//import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
@@ -24,14 +24,14 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     
     public ArrangeMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Start ArrangeMultiBlocksDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeMultiBlocksDesire");
         this.info = info;
         this.agent = agent;
     }
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - ArrangeMultiBlocksDesire.isFulfilled");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeMultiBlocksDesire.isFulfilled");
         for (Thing t : info.requirements) {
             Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
             if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {             
@@ -40,7 +40,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         }
         
         if (AgentCooperations.exists(info, agent, 1)) {
-            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - proofBlockStructure - ist master");
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure - ist master");
          // Agent ist als master in einer cooperation 
             this.coop = AgentCooperations.get(info, agent, 1);
             
@@ -55,7 +55,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger
-                .info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - ArrangeMultiBlocksDesire.isExecutable");
+                .info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeMultiBlocksDesire.isExecutable");
         if (belief.getRole().actions().contains(Actions.DETACH)
                 && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
@@ -70,14 +70,14 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - ArrangeMultiBlocksDesire.getNextActionInfo");
+                + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo");
         //Cooperation coop = null;
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
         Point agentBlock = agent.getAttachedPoints().get(0);
         Thing agentThing = agent.getAttachedThings().get(0);
 
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - ArrangeMultiBlocksDesire.getNextActionInfo agentBlocks: "
+                + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo agentBlocks: "
                 + agent.getAttachedThings() + " , taskBlocks: " + info.requirements);
 
         /*
@@ -87,9 +87,9 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
          */
         
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - ArrangeMultiBlocksDesire.getNextActionInfo - coop: " + AgentCooperations.toString(coop));
+                + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - coop: " + AgentCooperations.toString(coop));
 
-        if (coop.statusMaster().equals(Status.Connected) && coop.statusHelper().equals(Status.ReadyToDetach)) {  
+        if (coop.statusMaster().equals(Status.Connected) && (coop.statusHelper().equals(Status.Connected) || coop.statusHelper().equals(Status.ReadyToDetach))) {  
             return ActionInfo.SKIP("1000 waiting for helper to detach");
         } else
         if (coop.statusMaster().equals(Status.ReadyToConnect)) {
@@ -97,13 +97,13 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         } else {
             if (taskBlock.equals(agentBlock)) {
                 AgentLogger.info(Thread.currentThread().getName()
-                        + " runAgentDecisionsWithTask - ArrangeMultiBlocksDesire.getNextActionInfo - AA");
+                        + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - AA");
                 AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
                         Status.ReadyToConnect, coop.helper(), coop.statusHelper()));
                 return ActionInfo.SKIP("1000 waiting for helper to be ready to connect");
             } else {
                 AgentLogger.info(Thread.currentThread().getName()
-                        + " runAgentDecisionsWithTask - ArrangeMultiBlocksDesire.getNextActionInfo - BB");
+                        + " runSupervisorDecisions - ArrangeMultiBlocksDesire.getNextActionInfo - BB");
                 AgentCooperations.setCooperation(new AgentCooperations.Cooperation(coop.task(), coop.master(),
                         Status.Arranging, coop.helper(), coop.statusHelper()));
                 String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
@@ -119,7 +119,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                             return ActionInfo.ROTATE_CW(getName());
                         } else {
                             if (cw.type.equals(Thing.TYPE_OBSTACLE)) {
-                                Point target = DirectionUtil.rotateCW(agentBlock);
+                                Point target = Point.castToPoint(DirectionUtil.rotateCW(agentBlock));
                                 return ActionInfo.CLEAR(target, getName());
                             }
                         }
@@ -129,7 +129,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                             return ActionInfo.ROTATE_CCW(getName());
                         } else {
                             if (ccw.type.equals(Thing.TYPE_OBSTACLE)) {
-                                Point target = DirectionUtil.rotateCCW(agentBlock);
+                                Point target = Point.castToPoint(DirectionUtil.rotateCCW(agentBlock));
                                 return ActionInfo.CLEAR(target, getName());
                             }
                         }
@@ -141,22 +141,23 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     }
     
     public BooleanInfo proofBlockStructure(TaskInfo task) {
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - proofBlockStructure");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure");
         BooleanInfo result = new BooleanInfo(false, "");
         boolean found = false;
         int indexFound = 0;
         Point pointFound = null;
         
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - proofBlockStructure - agent.isBusy: " + agent.isBusy + " , " + task.name);
+                + " runSupervisorDecisions - proofBlockStructure - agent.isBusy: " + agent.isBusy + " , " + task.name);
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - proofBlockStructure - coops: " + AgentCooperations.toString(AgentCooperations.cooperations));
+                + " runSupervisorDecisions - proofBlockStructure - coops: " + AgentCooperations.toString(AgentCooperations.cooperations));
         
         if (agent.isBusy && AgentCooperations.exists(task, agent, 1)) {
-            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - proofBlockStructure - ist master");
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure - ist master");
          // Agent ist als master in einer cooperation 
             this.coop = AgentCooperations.get(task, agent, 1);
             result = new BooleanInfo(true, "");
+            
         } else {
             if (!agent.isBusy) {
              // Agent ist weder als master noch als helper in einer cooperation
@@ -183,7 +184,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                                 // anderer Agent hat den Block der mir noch fehlt
                                 for (int i = 0; i < task.requirements.size(); i++) {
                                     AgentLogger.info(Thread.currentThread().getName()
-                                            + " runAgentDecisionsWithTask - proofBlockStructure - attached: "
+                                            + " runSupervisorDecisions - proofBlockStructure - attached: "
                                             + attachedThing2 + " , task: " + task.requirements.get(i));
                                     
                                     if ((task.requirements.get(i).x != pointFound.x || task.requirements.get(i).y != pointFound.y)
@@ -198,8 +199,26 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                             }
                         }
                     }
+                    
 
                     if (!result.value()) {
+                        for (BdiAgentV2 help : StepUtilities.allAgents) {
+                            if (!help.getAttachedThings().isEmpty()) {
+                                for (Thing attachedThing2 : help.getAttachedThings()) {
+                         // anderer Agent hat den Block der mir noch fehlt
+                            for (int i = 0; i < task.requirements.size(); i++) {                               
+                                if ((task.requirements.get(i).x != pointFound.x || task.requirements.get(i).y != pointFound.y)
+                                        && attachedThing2.details.equals(task.requirements.get(i).type)) {
+                                    result = new BooleanInfo(true, "");
+                                    foundMeetings.put(Point.distance(Point.castToPoint(agent.belief.getPosition()), Point.castToPoint(help.belief.getPosition())), new Meeting(agent, null, null, help, null, null));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                        }
+
+                   /* if (!result.value()) {
                         for (Meeting meeting : AgentMeetings.find(agent)) {
                             for (Meeting subMeeting : AgentMeetings.find(meeting.agent2())) {
                                 if (!subMeeting.agent2().getAttachedThings().isEmpty()) {
@@ -222,7 +241,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                             }
                         }
                     }
-                }
+                }*/
 
                 if (result.value()) {
                     possibleHelper = foundMeetings.get(foundMeetings.firstKey()).agent2();                    
@@ -235,9 +254,9 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         }
  
         for (Meeting m : AgentMeetings.find(agent))
-            AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Meetings: " + AgentMeetings.toString(m));
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - possible Helper: " + (possibleHelper == null ? "" : possibleHelper.getName()));
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - proofBlockStructure: " + found + " , " + result);
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Meetings: " + AgentMeetings.toString(m));
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - possible Helper: " + (possibleHelper == null ? "" : possibleHelper.getName()));
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure: " + found + " , " + result);
         return result;
     }
 }
