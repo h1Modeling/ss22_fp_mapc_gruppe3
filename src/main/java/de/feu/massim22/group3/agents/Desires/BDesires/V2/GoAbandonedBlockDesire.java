@@ -1,10 +1,11 @@
-package de.feu.massim22.group3.agents.Desires.BDesires;
+package de.feu.massim22.group3.agents.Desires.BDesires.V2;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.Desires.BDesires.*;
 import massim.protocol.data.Thing;
 
 public class GoAbandonedBlockDesire extends BeliefDesire {

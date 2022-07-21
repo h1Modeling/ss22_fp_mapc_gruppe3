@@ -1,8 +1,9 @@
-package de.feu.massim22.group3.agents.Desires.BDesires;
+package de.feu.massim22.group3.agents.Desires.BDesires.V2;
 
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.AgentMeetings;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.Desires.BDesires.*;
 import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.BdiAgentV2;
@@ -23,16 +24,18 @@ public class GoGoalZoneDesire extends BeliefDesire {
     Point posGoalZoneAgentOld;
     Point realtiveGoalZoneAgentOld;*/
     Point nearestGoalZone;
+    boolean defaultGoalZone = false;
+    Point posDefaultGoalZone = new Point(28, 54);
 
     public GoGoalZoneDesire(Belief belief, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoGoalZoneDesire, Step: " + belief.getStep());
+        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Start GoGoalZoneDesire, Step: " + belief.getStep());
         this.agent = agent;
     }
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
+        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - GoGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
         boolean result = belief.getGoalZones().contains(Point.zero());
         String info = result ? "" : "not on goal zone";
         return new BooleanInfo(result, info);
@@ -41,7 +44,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(Thread.currentThread().getName()
-                + " runSupervisorDecisions - GoGoalZoneDesire.isExecutable, Step: " + belief.getStep());
+                + " runAgentDecisionsWithTask - GoGoalZoneDesire.isExecutable, Step: " + belief.getStep());
         BooleanInfo resultBack = null;
         boolean result = false;
         Point goalZone = null;
@@ -68,6 +71,10 @@ public class GoGoalZoneDesire extends BeliefDesire {
                     }
                 }
             }
+            
+            defaultGoalZone = true;
+            nearestGoalZone = posDefaultGoalZone;
+            result = true;
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 7");
@@ -79,9 +86,9 @@ public class GoGoalZoneDesire extends BeliefDesire {
     
     @Override
     public ActionInfo getNextActionInfo() {
-        if (goalZoneAgent == null) {
+        if (goalZoneAgent == null && !defaultGoalZone) {
             AgentLogger.info(Thread.currentThread().getName()
-                    + " runSupervisorDecisions - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
+                    + " runAgentDecisionsWithTask - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
             AgentLogger.info(
                     Thread.currentThread().getName() + "GoGoalZoneDesire - AgentPosition: " + belief.getPosition());
             AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - reachableGoalZones: "
@@ -132,14 +139,19 @@ public class GoGoalZoneDesire extends BeliefDesire {
                 return getActionForMove(direction.substring(0, 1), getName());
             }
         } else {
+            if (goalZoneAgent != null) 
             // GoalZone from strange agent
-            AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZone from strange agent: "
-                    + agent.getName());
-            
+                AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZone from strange agent: "
+                    + goalZoneAgent.getName() + " , " + goalZoneAgent.belief.getPosition());
+            else
+             // default GoalZone 
+                AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZone from strange agent: "
+                        + agent.getName() + " , " + agent.belief.getPosition());
+                       
             String direction = DirectionUtil.getDirection(agent.belief.getPosition(), nearestGoalZone);
             int distance = Point.distance(Point.castToPoint(agent.belief.getPosition()), nearestGoalZone);
             AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZone from strange agent: "
-               + goalZoneAgent.getName() + " , nearestGoalZone: " + nearestGoalZone + " , dir: " + direction + " , dist: " + distance);
+               + ((goalZoneAgent != null) ? goalZoneAgent.getName() : null) + " , nearestGoalZone: " + nearestGoalZone + " , dir: " + direction + " , dist: " + distance);
             
             if (distance < 40)
                 return getActionForMove(direction, getName());

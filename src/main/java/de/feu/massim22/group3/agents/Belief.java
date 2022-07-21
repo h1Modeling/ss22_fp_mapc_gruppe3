@@ -1037,16 +1037,17 @@ public class Belief {
             }
         }
         
-        position.x = position.x % 64;
-        position.y = position.y % 92;
-        //position.x = position.x % 32;
-        //position.y = position.y % 32;
+        position.x = (((position.x % 64) + 64) % 64);
+        position.y = (((position.y % 92) + 92) % 92);
+        //position.x = (((position.x % 32) + 32) % 32);
+        //position.y = (((position.y % 32) + 32) % 32);
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     
     public void updatePositionFromAbsolutePosition() {
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
-        this.position = new Point(absolutePosition.x, absolutePosition.y);
+        if (absolutePosition != null)
+            this.position = new Point(absolutePosition.x, absolutePosition.y);
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     // Melinda Ende

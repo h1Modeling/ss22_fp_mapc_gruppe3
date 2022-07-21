@@ -1,7 +1,8 @@
-package de.feu.massim22.group3.agents.Desires.BDesires;
+package de.feu.massim22.group3.agents.Desires.BDesires.V2;
 
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.agents.Desires.BDesires.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
@@ -16,7 +17,7 @@ public class SubmitDesire extends BeliefDesire {
     
     public SubmitDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
+        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Start SubmitDesire, Step: " + belief.getStep());
         this.info = info;
         this.agent = agent;
     }
@@ -40,7 +41,7 @@ public class SubmitDesire extends BeliefDesire {
             }
             
             if (AgentCooperations.exists(this.info, agent, 1)) {
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure - ist master");
+                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - proofBlockStructure - ist master");
              // Agent ist als master in einer cooperation 
                 Cooperation coop = AgentCooperations.get(this.info, agent, 1);
                 

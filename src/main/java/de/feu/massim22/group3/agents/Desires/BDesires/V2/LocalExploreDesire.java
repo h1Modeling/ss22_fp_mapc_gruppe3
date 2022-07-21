@@ -1,7 +1,9 @@
-package de.feu.massim22.group3.agents.Desires.BDesires;
+package de.feu.massim22.group3.agents.Desires.BDesires.V2;
 
+import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.Desires.BDesires.*;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
@@ -45,6 +47,11 @@ public class LocalExploreDesire extends BeliefDesire {
                agent.exploreCount++;
        } else {
            agent.exploreCount = 0;
+  
+           if (!agent.belief.getRoleName().equals("default")) 
+           // Richtung freie GoalZone für Multi-Block-Tasks
+               agent.exploreDirection = DirectionUtil.stringToInt(DirectionUtil.getDirection(agent.belief.getAbsolutePosition(), new Point(28, 54)));
+           agent.exploreDirection2 = (agent.exploreDirection2 + 5) % 4;
        }
         
         return agent.desireProcessing.getActionForMove(agent, DirectionUtil.intToString(agent.exploreDirection), DirectionUtil.intToString(agent.exploreDirection2), getName());

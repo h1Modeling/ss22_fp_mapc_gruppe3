@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.Desires.BDesires;
+package de.feu.massim22.group3.agents.Desires.BDesires.V2;
 
 import java.awt.Point;
 import java.util.*;
@@ -7,6 +7,7 @@ import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.Desires.BDesires.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
@@ -21,7 +22,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
     
     public ArrangeBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlocksDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Start ArrangeBlocksDesire");
         this.info = info;
         this.agent = agent;
     }
@@ -30,7 +31,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 	@Override
 	public BooleanInfo isExecutable() {
 		AgentLogger
-				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isExecutable");
+				.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - ArrangeBlocksDesire.isExecutable");
 		if (belief.getRole().actions().contains(Actions.DETACH)
 				&& belief.getRole().actions().contains(Actions.ATTACH)) {
 			//Ein Block Task
@@ -42,7 +43,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
+        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - ArrangeBlocksDesire.isFulfilled");
         for (Thing t : info.requirements) {
             Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
             
@@ -56,13 +57,13 @@ public class ArrangeBlocksDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo");
+                Thread.currentThread().getName() + " runAgentDecisionsWithTask - ArrangeBlocksDesire.getNextActionInfo");
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
         Point agentBlock = agent.getAttachedPoints().get(0);
         Thing agentThing = agent.getAttachedThings().get(0);
         
         AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
+                Thread.currentThread().getName() + " runAgentDecisionsWithTask - ArrangeBlocksDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
         
         if (!agentThing.details.equals(info.requirements.get(0).type)) {
             return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());

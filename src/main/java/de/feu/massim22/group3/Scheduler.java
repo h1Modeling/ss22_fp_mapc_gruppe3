@@ -213,7 +213,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 				    try {
 				        action = agent.step();
 				    } catch (Exception e) {
-				        AgentLogger.warning(" Step failed for: " + agent + " , " + e);
+				        AgentLogger.warning(" Step failed for: " + agent.getName() + " , " + e);
 				        e.printStackTrace(System.out);
                     }
 					
@@ -229,8 +229,8 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 				Thread t1 = new Thread(runnable);
 				t1.start();
 			}
+			//Melinda Ende
 		});
-//Melinda Ende
 		
         if(newPerceptAgents.size() == 0) try {
             Thread.sleep(100); // wait a bit in case no agents have been executed

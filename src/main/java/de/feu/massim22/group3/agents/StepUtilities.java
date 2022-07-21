@@ -19,7 +19,10 @@ public class StepUtilities {
     public static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
     public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
     private static int countAgent = 0;
-    public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
+    private static int countAgent2 = 0;
+    private static int activeStep = 0;
+    public static boolean DecisionsDone;
+    //public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
     boolean mergeGroups = true;
     
     public StepUtilities(DesireUtilities desireProcessing) {
@@ -48,7 +51,25 @@ public class StepUtilities {
 
         return result;
     }
-
+    
+    /**
+     * The agent has initiated his map update.
+     * 
+     * @param agent    - the agent which has updated the map
+     * @param step     - the step in which the program is at the moment
+     * @param teamSize - the size of the team of which the agent is part of
+     * 
+     * @return boolean - the agent is done updating the map
+     */
+    public static synchronized void reportDecisionsDone(BdiAgentV2 agent, int step, int teamSize) {
+        countAgent2++;
+        
+        if (countAgent2 == teamSize) {
+            countAgent2 = 0;
+            DecisionsDone = true; 
+        } 
+    }
+    
     /**
      * All the things that have to be done to merge two groups together, update the
      * maps for the resulting groups and do some group/supervisor decisions.
@@ -66,6 +87,8 @@ public class StepUtilities {
         Set<Supervisor> exSupervisors = new HashSet<Supervisor>();
         Set<Thing> things = new HashSet<>();
         ArrayList<String> allSupervisorNames = new ArrayList<String>();
+        
+        DecisionsDone = false;
         
         Collections.sort(allAgents, new Comparator<BdiAgentV2>() {
             @Override
@@ -205,7 +228,7 @@ public class StepUtilities {
                     //AgentLogger.info(Thread.currentThread().getName() + agent.belief.reachablesToString());
                 }
                 
-                desireProcessing.runSupervisorDecisions(step, supervisor, this);
+                //desireProcessing.runSupervisorDecisions(step, supervisor, this);
             };
             
             Thread t3 = new Thread(runnable);
@@ -359,7 +382,7 @@ public class StepUtilities {
                 // Generate Data for Point
                 Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
                 data.add(f);
-                AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept: " + f);
+                //AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept: " + f);
             }
         }
 

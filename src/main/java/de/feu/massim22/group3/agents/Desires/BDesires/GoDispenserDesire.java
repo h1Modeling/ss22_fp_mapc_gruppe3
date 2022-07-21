@@ -22,16 +22,16 @@ public class GoDispenserDesire extends BeliefDesire {
     private String supervisor;
     private int distance;
     private boolean strangeAgent = false;
-    private StepUtilities stepUtilities;
+    //private StepUtilities stepUtilities;
 
-    public GoDispenserDesire(Belief belief, Thing block, String supervisor, BdiAgentV2 agent, StepUtilities stepUtilities) {
+    public GoDispenserDesire(Belief belief, Thing block, String supervisor, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoDispenserDesire, Step: " + belief.getStep());
         this.agent = agent;
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
         this.supervisor = supervisor;
-        this.stepUtilities = stepUtilities;
+        //this.stepUtilities = stepUtilities;
     }
 
     @Override
@@ -260,7 +260,7 @@ public class GoDispenserDesire extends BeliefDesire {
     
     private boolean attachMade(Point dispenser) {
     	boolean result = false;
-    	for(DispenserFlag dFlag : stepUtilities.dFlags ) {
+    	for(DispenserFlag dFlag : agent.desireProcessing.dFlags ) {
     		if((dFlag.position().equals(dispenser) && dFlag.attachMade())) {
     			result = true;
     			break;
