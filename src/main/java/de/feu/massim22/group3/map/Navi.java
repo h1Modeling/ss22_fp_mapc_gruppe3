@@ -59,11 +59,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         //AgentLogger.info(Thread.currentThread().getName() + " Navi() Constructor ");
         // Open Debugger
         if (debug) {
-            debugger = new GraphicalDebugger();
+            debugger = new GraphicalDebugger(this);
             SwingUtilities.invokeLater((Runnable)debugger);
         }
-
-        // TODO At end of application PathFinder must be closed to free resources
     }
 
     @SuppressWarnings("unchecked")
