@@ -304,6 +304,8 @@ public class Belief {
             }
             // Compare with attached Points to remove submitted or cleared points
             ownAttachedPoints.removeIf(p -> !attachedPoints.contains(p));
+        } else {
+            ownAttachedPoints.addAll(attachedPoints);
         }
     }
 

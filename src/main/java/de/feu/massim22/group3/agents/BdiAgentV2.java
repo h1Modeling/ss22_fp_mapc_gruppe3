@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
-import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;

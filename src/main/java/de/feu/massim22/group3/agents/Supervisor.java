@@ -13,7 +13,6 @@ import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.SupervisorEventName;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.utils.PerceptUtil;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
