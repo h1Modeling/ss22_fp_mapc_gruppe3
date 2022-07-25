@@ -18,6 +18,8 @@ import de.feu.massim22.group3.agents.Desires.BDesires.ExploreDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.FreedomDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.GetBlockDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.Desires.BDesires.GuardDispenserDesire;
+import de.feu.massim22.group3.agents.Desires.BDesires.GuardGoalZoneDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.LooseWeightDesire;
 import de.feu.massim22.group3.agents.Desires.BDesires.ProcessEasyTaskDesire;
@@ -274,6 +276,19 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             setIntention(null);
             break;
         }
+        case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
+            belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
+            List<Parameter> parameters = event.getParameters();
+            desires.add(new GuardGoalZoneDesire(belief, supervisor.getName()));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_GUARD_DISPENSER: {
+            belief.setGroupDesireType(GroupDesireTypes.GUARD_DISPENSER);
+            List<Parameter> parameters = event.getParameters();
+            String block = PerceptUtil.toStr(parameters, 0);
+            desires.add(new GuardDispenserDesire(belief, block, supervisor.getName()));
+            break;
+        }
         default:
             throw new IllegalArgumentException("Message is not handled: " + taskName);
         }
@@ -285,8 +300,10 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         desires.add(new DigFreeDesire(belief));
         desires.add(new FreedomDesire(belief));
         // TODO remove / modify if sim roles change
-        String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
-        desires.add(new WalkByGetRoleDesire(belief, actions));
+        // not usable for now because of need to adopt a clear role (like digger)--> conflict
+        // with this line.
+//        String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
+//        desires.add(new WalkByGetRoleDesire(belief, actions));
     }
 
     private void updateDesires() {

@@ -16,8 +16,16 @@ public class ActionDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
+        Role r = belief.getRole();
+        // For GuardTask (role "digger" must be adopted)
+//        if (actions.equals(new String[]{"clear"}) && !r.equals(possibleRole)) {
+        if (actions[0].equals("clear") && !r.name().equals(possibleRole.name())) {
+            if (precondition.size() == 0) {
+                precondition.add(new GoToRoleZoneDesire(belief));
+            }
+            return new BooleanInfo(false, "Did not adopt the best clear role yet");
+        }
         for (String a : actions) {
-            Role r = belief.getRole();
             if (r == null || !r.actions().contains(a)) {
                 // Add Preconditions
                 if (precondition.size() == 0) {

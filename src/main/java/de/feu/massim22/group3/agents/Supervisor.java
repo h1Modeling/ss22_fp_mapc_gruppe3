@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -288,8 +289,59 @@ public class Supervisor implements ISupervisor {
         
         //List<Point> meetingPoints = Navi.<INaviAgentV1>get().getMeetingPoints(name);
 
+//        // TODO Get closest agent to each dispenser that is needed for a current task
+//        // Find most needed dispenser for current tasks
+//        Map<String, Integer> blocks = new HashMap<>();
+//        blocks.put("b0", 0);
+//        blocks.put("b1", 0);
+//        blocks.put("b2", 0);
+//        blocks.put("b3", 0);
+//        blocks.put("b4", 0);
+//        
+//        for (TaskInfo task : tasks) {
+//            for (Thing t : task.requirements) {
+//                // block types for 1-block-tasks count double
+//                if (task.requirements.size() == 1) {
+//                    blocks.put(t.type, blocks.get(t.type) + 2);
+//                }
+//                else {
+//                    blocks.put(t.type, blocks.get(t.type) + 1);
+//                }
+//            }
+//        }
+//        // Sort Hash Map by turning it into a List of Entries
+//        List<Entry<String, Integer>> blockList = new ArrayList<>(blocks.entrySet());
+//        blockList.sort(Entry.comparingByValue());
+//        Collections.reverse(blockList);
+//
+//        // If information about tasks exists (in the first step it does not exist yet):
+//        if (blockList.get(0).getValue() != 0) {
+//            AgentLogger.info("Most valuable block types are (blockList): " + blockList);
+//            // Two block types are equally important
+//            if (blockList.get(0).getValue() == blockList.get(1).getValue()) {
+//                switch (blockList.get(1).getKey()) {
+//                case "b0": sendGuardDispenserTask (agentsNearDispenser0, "b0"); break;
+//                case "b1": sendGuardDispenserTask (agentsNearDispenser1, "b1"); break;
+//                case "b2": sendGuardDispenserTask (agentsNearDispenser2, "b2"); break;
+//                case "b3": sendGuardDispenserTask (agentsNearDispenser3, "b3"); break;
+//                case "b4": sendGuardDispenserTask (agentsNearDispenser4, "b4"); break;
+//                }
+//            }
+//            // Only one most important block type
+//            switch (blockList.get(0).getKey()) {
+//            case "b0": sendGuardDispenserTask (agentsNearDispenser0, "b0"); break;
+//            case "b1": sendGuardDispenserTask (agentsNearDispenser1, "b1"); break;
+//            case "b2": sendGuardDispenserTask (agentsNearDispenser2, "b2"); break;
+//            case "b3": sendGuardDispenserTask (agentsNearDispenser3, "b3"); break;
+//            case "b4": sendGuardDispenserTask (agentsNearDispenser4, "b4"); break;
+//            }
+//        }
+
         // Only do tasks if GoalZone is discovered
         if (agentsNearGoalZone.size() == 0) return;
+
+        // To test GuardGoalZoneDesire
+        sendGuardGoalZoneTask(agentsNearGoalZone);
 
         // Test if single Block tasks exists
         boolean singleBlockTaskExists = false;
@@ -367,6 +419,36 @@ public class Supervisor implements ISupervisor {
         }
     }
 
+    private void sendGuardGoalZoneTask(List<Entry<String, AgentReport>> agents) {
+        // Only first agent which is free will get the task
+        for (var entry : agents) {
+            String agent = entry.getKey();
+            // Has no task yet
+            if (agentsWithTask.get(agent) == null) {
+                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE.name());
+                parent.forwardMessage(message, agent, name);
+                agentsWithTask.put(agent, true);
+                break;
+            }
+        }
+    }
+
+    private void sendGuardDispenserTask(List<Entry<String, AgentReport>> agents, String block) {
+        // Only first agent which is free will get the task
+        for (var entry : agents) {
+            String agent = entry.getKey();
+            // Has no task yet
+            if (agentsWithTask.get(agent) == null) {
+                Parameter blockPara = new Identifier(block);
+                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GUARD_DISPENSER.name(), blockPara);
+                parent.forwardMessage(message, agent, name);
+                agentsWithTask.put(agent, true);
+                break;
+            }
+        }
+    }
+    
+    
     private void sendGetBlockTask(List<Entry<String, AgentReport>> agents, String block) {
         // only first agent which is free will get the task
         for (var entry : agents) {

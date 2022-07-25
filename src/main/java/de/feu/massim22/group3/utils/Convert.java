@@ -47,7 +47,7 @@ public class Convert {
         }
     }
 
-    private static CellType dispenserToCellType(String blockDetail) {
+    public static CellType dispenserToCellType(String blockDetail) {
         switch (blockDetail) {
             case "b0": return CellType.DISPENSER_0;
             case "b1": return CellType.DISPENSER_1;

@@ -7,7 +7,9 @@ public abstract class GroupDesireTypes {
 
     public static final String TASK = "task";
 
-    public static final String GUARD = "guard";
+    public static final String GUARD_GOAL_ZONE = "guard_goal_zone";
+
+    public static final String GUARD_DISPENSER = "guard_dispenser";
 
     public static final String GET_BLOCK = "block";
 

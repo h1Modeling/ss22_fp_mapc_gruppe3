@@ -566,6 +566,21 @@ public class Belief {
     }
 
     public Role getRoleByActions(String[] actions) {
+        // determine Role with best values for clear
+        if (actions.length == 1 && actions[0].equals("clear")) {
+            double maxFactor = 0;
+            Role bestClearRole = null;
+            for (Role r : roles.values()) {
+                double curFactor = r.clearChance() * r.clearMaxDistance();
+                if (curFactor > maxFactor) {
+                    maxFactor = curFactor;
+                    bestClearRole = r;
+                }
+            }
+            AgentLogger.info("bestClearRole is " + bestClearRole.name());
+            return bestClearRole;
+        }
+
         for (Role r : roles.values()) {
             boolean allFound = true;
             for (String action : actions) {
