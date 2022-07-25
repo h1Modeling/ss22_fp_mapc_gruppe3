@@ -63,7 +63,7 @@ public class DesireUtilities {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
             + " , DigFreeDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
             + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , DigFreeDesire");
@@ -72,7 +72,7 @@ public class DesireUtilities {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
             + " , FreedomDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
             + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , FreedomDesire");
@@ -81,7 +81,7 @@ public class DesireUtilities {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
             + " , LocalExploreDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
             + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , LocalExploreDesire");
@@ -91,7 +91,7 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                 + " , LooseWeightDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                 + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters() 
-                + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
             } else
                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , LooseWeightDesire");
@@ -101,7 +101,7 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                 + " , GoAdoptRoleDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                 + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
             } else 
                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , GoAdoptRoleDesire - worker");
@@ -140,7 +140,7 @@ public class DesireUtilities {
 
         BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
         
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.belief.getReachableDispensers());
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.belief.getReachableDispensersX());
 
         List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
         List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
@@ -192,7 +192,7 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , AttachAbandonedBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , AttachAbandonedBlockDesire");
@@ -202,7 +202,7 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoDispenserDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
@@ -212,7 +212,7 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , HelpMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , HelpMultiBlocksDesire");
@@ -222,7 +222,7 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoGoalZoneDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoGoalZoneDesire");
@@ -232,7 +232,7 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , ArrangeBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , ArrangeBlocksDesire");
@@ -242,7 +242,7 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , ArrangeMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , ArrangeMultiBlocksDesire");
@@ -250,9 +250,9 @@ public class DesireUtilities {
                 if (maxTaskBlocks > 1 && agent.blockAttached 
                         && doDecision(agent, new ConnectMultiBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , HelpMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , ConnectMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , ConnectMultiBlocksDesire");
@@ -262,7 +262,7 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , SubmitDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1)));
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                     } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , SubmitDesire");
@@ -278,6 +278,13 @@ public class DesireUtilities {
         return result;
     }
     
+    private boolean isPossibleMaster(BdiAgentV2 inAgent) {
+        // Variante 1: nur gerade Agenten dürfen Master sein
+        if (inAgent.index % 2 == 0)     
+            return true;
+        
+        return false;
+    }
 
     /**
      * The method has a certain priority for every desire.
@@ -287,7 +294,7 @@ public class DesireUtilities {
      * @return int - the priority
      */
     // TODO sinnvolle Prioritäten vergeben
-    public int getPriority(IDesire desire) {
+    public int getPriority(IDesire desire, BdiAgentV2 agent) {
         int result = 0;
 
         switch (desire.getName()) {
@@ -306,23 +313,7 @@ public class DesireUtilities {
             break;
         case "LocalExploreDesire":
             result = 100;
-            break;
-
-            //Heinz Desires (nicht genutzt)
-        case "ExploreDesire":
-            result = 20;
-            break;
-        case "AttachSingleBlockFromDispenserDesire":
-            result = 200;
-            break;
-        case "GoToGoalZoneDesire":
-            result = 300;
-            break;
-        case "GetBlocksInOrderDesire":
-            result = 400;
-            break;
-            //Heinz Desires (nicht genutzt) Ende 
-            
+            break;            
         case "AttachAbandonedBlockDesire":
             if (desire.getOutputAction().getName().equals(Actions.ATTACH))
                 result = 290;
@@ -336,8 +327,19 @@ public class DesireUtilities {
                 result = 300;
                 else if (desire.getOutputAction().getName().equals(Actions.REQUEST))
                     result = 280;
-            else
-                result = 250;           
+            else {
+                result = 250 - desire.getPriority();
+                
+               switch (((GoDispenserDesire) desire).getBlock().type) {
+               case "b0":
+                   if (agent.index % 2 == 0)
+                       result -= 10; 
+               case "b1":
+               case "b2":
+                   if (agent.index % 2 != 0)
+                       result += 10;
+               }
+            }
             break;
         case "GoGoalZoneDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
@@ -357,9 +359,9 @@ public class DesireUtilities {
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
-                result = 650;
+                result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.DETACH))
-                result = 700;
+                result = 1000;
             else
                 result = 600;
             break;
@@ -369,7 +371,7 @@ public class DesireUtilities {
             else if (desire.getOutputAction().getName().equals(Actions.DETACH))
                 result = 550;
             else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
-                result = 650;
+                result = 1000;
             else
                 result = 600;
             break;
@@ -377,7 +379,10 @@ public class DesireUtilities {
             result = 1050;
             break;
         case "SubmitDesire":
-            result = 1100;
+            if (((SubmitDesire) desire).getTask().requirements.size() == 1)
+                result = 950;
+            else    
+                result = 1100;
             break;
         case "LooseWeightDesire":
             result = 1400;
@@ -401,9 +406,9 @@ public class DesireUtilities {
         for (IDesire desire : agent.desires) {
             /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
                     + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + getPriority(desire));*/
-            if (getPriority(desire) > priority) {
+            if (getPriority(desire, agent) > priority) {
                 result = desire;
-                priority = getPriority(desire);
+                priority = getPriority(desire, agent);
             }
         }
 

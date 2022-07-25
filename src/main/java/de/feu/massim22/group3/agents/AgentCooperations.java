@@ -5,6 +5,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.util.List;
 import java.util.ArrayList;
+
 import massim.protocol.data.TaskInfo;
 
 public class AgentCooperations {

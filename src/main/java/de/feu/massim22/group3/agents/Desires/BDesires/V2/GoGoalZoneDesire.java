@@ -76,7 +76,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
             defaultGoalZone = true;
             result = true;
             
-            if (agent.belief.getPosition().y < 28 || agent.belief.getPosition().y > 75) 
+            if (agent.belief.getPosition().y < 28) 
                 nearestGoalZone = posDefaultGoalZone1;
             else
                 nearestGoalZone = posDefaultGoalZone2;

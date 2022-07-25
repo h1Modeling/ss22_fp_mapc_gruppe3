@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
@@ -43,7 +44,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     
     public Supervisor supervisor;
     public int index;
+    boolean absolutePositions = true;
     public Point startPosition = new Point(Point.zero());
+    public Meeting[] firstMeeting = new Meeting[11];
+    private Point[] startPositions = {Point.zero(), new Point(24, 35), new Point(1, 78), new Point(14, 26), new Point(15, 26), new Point(8, 44)
+            , new Point(61, 15), new Point(20, 84), new Point(1, 79), new Point(15, 25), new Point(61, 14)};
 
 
     /**
@@ -147,8 +152,22 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         refreshAttached();
         
         if (belief.getStep() == 0) {
-            startPosition = (Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : startPosition;
-            belief.updatePositionFromAbsolutePosition();
+            if (absolutePositions) {
+                if (Point.castToPoint(belief.getAbsolutePosition()) != null) {
+                    startPosition = Point.castToPoint(belief.getAbsolutePosition());
+                    belief.updatePositionFromAbsolutePosition();
+                    
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - getAbsolutePosition() true - startPosition: " 
+                            + startPosition);
+                }
+                else {
+                    startPosition = new Point(startPositions[index]);
+                    belief.setPosition(startPosition);      
+                    
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - getAbsolutePosition() false - startPosition: " 
+                            + startPosition);
+                }            
+            }
         }
    
         if (belief.getLastAction() != null) {

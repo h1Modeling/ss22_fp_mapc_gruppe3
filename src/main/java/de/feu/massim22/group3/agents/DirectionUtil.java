@@ -96,7 +96,7 @@ public class DirectionUtil {
 	        return new Point(x, y);
 	    }
 
-	public static String getDirection(Point from, Point to) {
+	public static String getDirectionAround(Point from, Point to) {
         String result = " ";
         Point pointTarget = new Point(to.x - from.x, to.y - from.y);
 
@@ -128,6 +128,39 @@ public class DirectionUtil {
 
         return result;
     }
+	
+	   public static String getDirection(Point from, Point to) {
+	        String result = " ";
+	        Point pointTarget = new Point(to.x - from.x, to.y - from.y);
+
+	        if (pointTarget.x == 0) {
+	            if (pointTarget.y < 0)
+	                result = "n";
+	            else
+	                result = "s";
+	        }
+
+	        if (pointTarget.y == 0) {
+	            if (pointTarget.x < 0)
+	                result = "w";
+	            else
+	                result = "e";
+	        }
+
+	        if (pointTarget.x != 0 && pointTarget.y != 0) {
+	            if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
+	                if (pointTarget.x < 0)
+	                    result = "w";
+	                else
+	                    result = "e";
+	            else if (pointTarget.y < 0)
+	                result = "n";
+	            else
+	                result = "s";
+	        }
+
+	        return result;
+	    }
 	
 	// ist a soll b  cw clockwise  ccw counter clockwise
 	public static String getClockDirection(Point a, Point b) {

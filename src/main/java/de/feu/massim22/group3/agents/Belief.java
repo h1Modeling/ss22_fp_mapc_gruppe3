@@ -1027,6 +1027,7 @@ public class Belief {
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
                     move(dir);
+                    moveNonModuloPosition(dir);
                 }
             }
 
@@ -1034,6 +1035,7 @@ public class Belief {
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
                 //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Partial: " +  lastActionParams);
                 move(lastActionParams.get(0));
+                moveNonModuloPosition(lastActionParams.get(0));
             }
         }
         
@@ -1046,9 +1048,46 @@ public class Belief {
     
     public void updatePositionFromAbsolutePosition() {
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
-        if (absolutePosition != null)
+        if (absolutePosition != null) {
             this.position = new Point(absolutePosition.x, absolutePosition.y);
+            this.nonModuloPosition = new Point(absolutePosition.x, absolutePosition.y);            
+        }
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
+    }
+    
+    private Point nonModuloPosition = new Point(0, 0);
+    
+    public Point getNonModuloPosition() {
+        return nonModuloPosition;
+    }
+    
+    private void moveNonModuloPosition(String dir) {
+        switch (dir) {
+            case "n":
+                nonModuloPosition.y -= 1;
+                break;
+            case "e":
+                nonModuloPosition.x += 1;
+                break;
+            case "s":
+                nonModuloPosition.y += 1;
+                break;
+            case "w":
+                nonModuloPosition.x -= 1;
+                break;
+        }
+    }
+    
+    public List<ReachableDispenser> getReachableDispensersX() {
+        List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
+        
+        for (ReachableDispenser rd : reachableDispensers) {
+            if (rd.data().equals("x")) {
+                reachableDispensersX.add(rd);
+            }
+        }
+        
+        return reachableDispensersX;
     }
     // Melinda Ende
 }

@@ -2,7 +2,8 @@ package de.feu.massim22.group3.agents;
 
 import eis.iilang.Percept;
 
-import java.util.*;
+import java.util.HashMap; 
+import java.util.*; 
 
 import de.feu.massim22.group3.MailService;
 

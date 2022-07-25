@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents;
 
 import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -10,7 +11,11 @@ public class AgentMeetings {
     public static List<Meeting> meetings = new ArrayList<Meeting>();
     
     public static synchronized void add(Meeting meeting) {
-        remove(meeting);
+        if (remove(meeting))
+            evaluateMapSize(meeting);
+        else
+            meeting.agent1.firstMeeting[meeting.agent2.index] = newMeeting(meeting);
+            
         meetings.add(meeting);
     }
     
@@ -40,13 +45,18 @@ public class AgentMeetings {
         return result;
     }
     
-    public static void remove(Meeting meeting) {       
+    public static boolean remove(Meeting meeting) { 
+        boolean result = false;
+        
         for (int i = 0; i < meetings.size(); i++) {
             if (meetings.get(i).agent1.getName().equals(meeting.agent1.getName()) && meetings.get(i).agent2.getName().equals(meeting.agent2.getName())) {
                 meetings.remove(i);
+                result = true;
                 break;
-            } 
+            }
         }
+        
+        return result;
     }
     
     public static int getDistance(Meeting meeting) {
@@ -86,9 +96,27 @@ public class AgentMeetings {
         }
         
         return result;
-    } 
+    }
     
-    public record Meeting(BdiAgentV2 agent1, Point relAgent1,  Point posAgent1, BdiAgentV2 agent2, Point relAgent2,  Point posAgent2) {
+    private static void evaluateMapSize(Meeting meeting) {
+        Meeting fm = newMeeting(meeting.agent1.firstMeeting[meeting.agent2().index]);
+        Meeting m = newMeeting(meeting);
+        
+        AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings.evaluateMapSize - firstMeeting: " 
+        + fm.toString() + " , meeting: " + m.toString());
+        
+        int height = (m.nmpAgent2.y - fm.nmpAgent2.y) - (m.nmpAgent1.y - fm.nmpAgent1.y) - (m.relAgent2.y - fm.relAgent2.y);
+        int width = (m.nmpAgent2.x - fm.nmpAgent2.x) - (m.nmpAgent1.x - fm.nmpAgent1.x) - (m.relAgent2.x - fm.relAgent2.x);
+        
+        AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings - height: " 
+        + height + " , width: " + width);
+    }
+    
+    private static Meeting newMeeting(Meeting meeting) {
+        return new Meeting(meeting.agent1, meeting.relAgent1,  meeting.posAgent1,  meeting.nmpAgent1, meeting.agent2, meeting.relAgent2,  meeting.posAgent2,  meeting.nmpAgent2);
+    }
+    
+    public record Meeting(BdiAgentV2 agent1, Point relAgent1,  Point posAgent1,  Point nmpAgent1, BdiAgentV2 agent2, Point relAgent2,  Point posAgent2,  Point nmpAgent2) {       
         @Override
         public String toString() {
             String result = "";
@@ -96,9 +124,11 @@ public class AgentMeetings {
            result = agent1.getName() + " , " 
                    + Point.toString(relAgent1) + " , " 
                    + Point.toString(posAgent1) + " , " 
+                   + Point.toString(nmpAgent1) + " , " 
                    + agent2.getName() + " , " 
                    + Point.toString(relAgent2) + " , " 
-                   + Point.toString(posAgent2);
+                   + Point.toString(posAgent2) + " , "
+                   + Point.toString(nmpAgent2);
             
             return result;
         }

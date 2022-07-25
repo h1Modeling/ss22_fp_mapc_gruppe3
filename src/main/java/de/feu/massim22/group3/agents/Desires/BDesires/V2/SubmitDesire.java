@@ -63,6 +63,10 @@ public class SubmitDesire extends BeliefDesire {
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
     }
+    
+    public TaskInfo getTask() {
+        return info;
+    }
 
     @Override
     public BooleanInfo isUnfulfillable() {

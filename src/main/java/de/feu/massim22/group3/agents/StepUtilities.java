@@ -24,6 +24,7 @@ public class StepUtilities {
     public static boolean DecisionsDone;
     //public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
     boolean mergeGroups = true;
+    boolean alwaysAgentMeetings = true;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
@@ -103,7 +104,7 @@ public class StepUtilities {
         }
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() allSupervisors: " + allSupervisorNames);
 
-        if (allSupervisors.size() > 1) {
+        if (allSupervisors.size() > 1 || alwaysAgentMeetings) {
             // Noch gibt es mehr als einen Supervisor
             for (BdiAgentV2 agent : allAgents) {
                 AgentLogger.info(
@@ -239,7 +240,9 @@ public class StepUtilities {
     }
     
     private void recordAgentMeeting( BdiAgentV2 agent1, BdiAgentV2 agent2, Point realtivePositionAgent2) {
-        AgentMeetings.add(new AgentMeetings.Meeting(agent1, Point.zero(), Point.castToPoint(agent1.belief.getPosition()), agent2, realtivePositionAgent2,  Point.castToPoint(agent2.belief.getPosition())));
+        AgentMeetings.add(new AgentMeetings.Meeting(agent1, Point.zero(), Point.castToPoint(agent1.belief.getPosition()), 
+                Point.castToPoint(agent1.belief.getNonModuloPosition()), agent2, realtivePositionAgent2,  
+                Point.castToPoint(agent2.belief.getPosition()), Point.castToPoint(agent2.belief.getNonModuloPosition())));
     }
     
     private int countMeetings(ArrayList<AgentMeeting> foundAgent, Point reverseFound) {
@@ -339,15 +342,21 @@ public class StepUtilities {
         if (interestingPoints.size() > 0) {
             PathFindingResult[] agentResultData = new PathFindingResult[interestingPoints.size()];
            Point mapTopLeft = Point.castToPoint(navi.getTopLeft(supervisor.getName()));
+           AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - mapTopLeft: " + mapTopLeft);
 
             for (int i = 0; i < agents.size(); i++) {
-                Point agentPos = Point.castToPoint(navi.getInternalAgentPosition(supervisor.getName(), agents.get(i)));
+                //Point agentPos = Point.castToPoint(navi.getInternalAgentPosition(supervisor.getName(), agents.get(i)));
+                //entspricht mit absolute Position bereits der internal Position
+                Point agentPos = Point.castToPoint(getAgent(agents.get(i)).belief.getPosition());
+                AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - agent: " + agents.get(i) + " , agentPos: " + agentPos);
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos = Point.castToPoint(interestingPoints.get(j).point());
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
+                    if (interestingPoints.get(i).data().equals("x"))
+                        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoint: " + interestingPoints.get(i).point() + " , data: " + interestingPoints.get(i).data() + " , " + interestingPoints.get(i).cellType().name() + " , " + distance + " , " + direction);
                 }
 
                 percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));
@@ -382,34 +391,35 @@ public class StepUtilities {
                 // Generate Data for Point
                 Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
                 data.add(f);
-                //AgentLogger.info(Thread.currentThread().getName() + " pathFindingResultToPercept: " + f);
+                if (ipData.toString().equals("x"))
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + agent + " , pathFindingResultToPercept: " + f);
             }
         }
 
         return new Percept("PATHFINDER_RESULT", data);
     }
 
-    /**
-     * 
-     *
-     * 
-     * 
-     * 
-     */
-    public static BdiAgentV2 getAgent(String inAgent) {
-        BdiAgentV2 result = null;
-
-        for (BdiAgentV2 agent : allAgents) {
-            if (agent.getName() == inAgent) {
-                result = agent;
-                break;
-            }
-        }
-
-        return result;
-    }
-    
     public record DispenserFlag(Point position, Boolean attachMade) {}
+
+/**
+ * 
+ *
+ * 
+ * 
+ * 
+ */
+public static BdiAgentV2 getAgent(String inAgent) {
+    BdiAgentV2 result = null;
+
+    for (BdiAgentV2 agent : allAgents) {
+        if (agent.getName() == inAgent) {
+            result = agent;
+            break;
+        }
+    }
+
+    return result;
+}
 }
 
 class AgentMeeting {

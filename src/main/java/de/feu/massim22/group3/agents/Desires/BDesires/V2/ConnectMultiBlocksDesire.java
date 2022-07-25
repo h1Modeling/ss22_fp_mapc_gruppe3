@@ -37,7 +37,7 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
          // Agent ist als master in einer cooperation 
             this.coop = AgentCooperations.get(info, agent);
             
-            if (coop.statusMaster().equals(Status.Connected) 
+            if ((coop.statusMaster().equals(Status.Connected) || coop.statusMaster().equals(Status.Submitted))
                     && (coop.statusHelper().equals(Status.Detached) || coop.statusHelper().equals(Status.Connected))) {
                 return new BooleanInfo(true, "");
             }

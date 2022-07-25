@@ -69,7 +69,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                         distanceAgent = AgentMeetings.getDistance(nearestMeeting);
                     } else {
                         distanceAgent = Point.distance(Point.castToPoint(agent.belief.getPosition()), Point.castToPoint(coop.master().belief.getPosition()));
-                        nearestMeeting = new Meeting(agent, Point.zero(), Point.zero(), coop.master(), Point.zero(), Point.zero());
+                        nearestMeeting = new Meeting(agent, Point.zero(), Point.zero(), Point.zero(), coop.master(), Point.zero(), Point.zero(), Point.zero());
                     }
                     
                     AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - HelpMultiBlocksDesire.isExecutable - meeting: " 

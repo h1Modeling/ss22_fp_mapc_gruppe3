@@ -214,7 +214,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                                             foundMeetings.put(
                                                     Point.distance(Point.castToPoint(agent.belief.getPosition()),
                                                             Point.castToPoint(help.belief.getPosition())),
-                                                    new Meeting(agent, null, null, help, null, null));
+                                                    new Meeting(agent, null, null, null, help, null, null, null));
                                             break;
                                         }
                                     }
