@@ -243,57 +243,63 @@ class PathFinder {
      */
     public PathFindingResult[][] start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
 
-        // Set Timer
-        long start = System.currentTimeMillis();
-        
-        // Create the compute program the compute shader is assigned to
-        glfwMakeContextCurrent(this.windowHandler);
-        GL.createCapabilities();
-        if (gComputeProgram == -1) {
-            gComputeProgram = glCreateProgram();
+        try {
+            // Set Timer
+            long start = System.currentTimeMillis();
+            
+            // Create the compute program the compute shader is assigned to
+            glfwMakeContextCurrent(this.windowHandler);
+            GL.createCapabilities();
+            if (gComputeProgram == -1) {
+                gComputeProgram = glCreateProgram();
 
-            try {
-                initShader(goalCount, mapSize, mapDiscovered);
-            } catch(IOException e) {
-                AgentLogger.severe(e.getLocalizedMessage());
+                try {
+                    initShader(goalCount, mapSize, mapDiscovered);
+                } catch(IOException e) {
+                    AgentLogger.severe(e.getLocalizedMessage());
+                }
             }
+
+            // Map and Output Texture
+            create3dTexture(mapBuffer, 2, 0, mapSize.x, mapSize.y, agentCount + 1, false);
+
+            // Data Input Texture
+            create2dTexture(dataBuffer, 2, 1, dataSize.x, dataSize.y, true);
+            
+            glDispatchCompute(agentCount, goalCount, 1);
+            //glDispatchCompute(1, 1, 1);
+            
+            // Wait until calculation ends
+            glMemoryBarrier(GL_PIXEL_BUFFER_BARRIER_BIT);
+            //glMemoryBarrier( GL_ALL_BARRIER_BITS );
+            
+            testForErrors();
+            
+            // Get Result
+            float[] result = new float[mapSize.y * mapSize.x * (agentCount + 1) * 2];
+            glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, result);
+                    
+            // Log Time spent
+            long end = System.currentTimeMillis();
+            long diff = end - start;
+            AgentLogger.info("Path Finding Duration: " + diff);
+
+            // Image logging
+            // TODO add logging parameter
+            if (true) {
+                logMap(mapSize, result, supervisor, step);
+            }
+            
+            // Remove Context from thread
+            glfwMakeContextCurrent(0);
+
+            // Calculate Result
+            return decodeResult(result, goalPoints, mapSize, agentCount);
+        } catch (IllegalStateException e) {
+            // If the program gets terminated during calculation the context will be gone and this exception will be fired
+            float[] result = new float[mapSize.y * mapSize.x * (agentCount + 1) * 2];
+            return decodeResult(result, goalPoints, mapSize, agentCount);
         }
-
-        // Map and Output Texture
-        create3dTexture(mapBuffer, 2, 0, mapSize.x, mapSize.y, agentCount + 1, false);
-
-        // Data Input Texture
-        create2dTexture(dataBuffer, 2, 1, dataSize.x, dataSize.y, true);
-        
-        glDispatchCompute(agentCount, goalCount, 1);
-        //glDispatchCompute(1, 1, 1);
-        
-        // Wait until calculation ends
-        glMemoryBarrier(GL_PIXEL_BUFFER_BARRIER_BIT);
-        //glMemoryBarrier( GL_ALL_BARRIER_BITS );
-        
-        testForErrors();
-        
-        // Get Result
-        float[] result = new float[mapSize.y * mapSize.x * (agentCount + 1) * 2];
-        glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, result);
-                
-        // Log Time spent
-        long end = System.currentTimeMillis();
-        long diff = end - start;
-        AgentLogger.info("Path Finding Duration: " + diff);
-
-        // Image logging
-        // TODO add logging parameter
-        if (true) {
-            logMap(mapSize, result, supervisor, step);
-        }
-        
-        // Remove Context from thread
-        glfwMakeContextCurrent(0);
-
-        // Calculate Result
-        return decodeResult(result, goalPoints, mapSize, agentCount);
     }
 
     private PathFindingResult[][] decodeResult(float[] map, List<InterestingPoint> goalPoints, Point mapSize, int agentCount) {

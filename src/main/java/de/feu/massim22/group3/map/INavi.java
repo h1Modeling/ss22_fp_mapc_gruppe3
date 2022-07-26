@@ -15,7 +15,7 @@ import java.awt.Point;
  * @author Heinz Stadler
  * @author Melinda Betz (minor contribution)
  */
-public interface INavi {
+public interface INavi extends Disposable {
     /**
      * Sets the <code>MailService</code> for communication to the agents
      * @param mailService the <code>MailService</code>

@@ -10,7 +10,6 @@ import eis.iilang.Action;
 import eis.iilang.EnvironmentState;
 import eis.iilang.Percept;
 import massim.eismassim.EnvironmentInterface;
-import massim.protocol.messages.scenario.Actions;
 
 import org.json.JSONObject;
 import de.feu.massim22.group3.agents.Agent;
@@ -18,7 +17,6 @@ import de.feu.massim22.group3.agents.BasicAgent;
 import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Supervisable;
-import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
 import de.feu.massim22.group3.map.INavi;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;

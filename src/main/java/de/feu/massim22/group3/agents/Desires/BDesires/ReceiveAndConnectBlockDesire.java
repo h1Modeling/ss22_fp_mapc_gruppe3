@@ -18,10 +18,8 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     
     private String agent;
     private String agentFullName;
-    private String supervisor;
     private TaskInfo task;
     private boolean submitted = false;
-    private int waiting = 0;
     private Thing block;
     private Supervisable communicator;
 
@@ -188,7 +186,6 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
 
     @Override
     public void update(String supervisor) {
-        this.supervisor = supervisor;
         super.update(supervisor);
         TaskInfo t = belief.getTask(task.name);
         if (t == null) {
