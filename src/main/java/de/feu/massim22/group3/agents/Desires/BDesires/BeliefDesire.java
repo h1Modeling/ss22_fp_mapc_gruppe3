@@ -24,10 +24,6 @@ public abstract class BeliefDesire implements IDesire {
         this.belief = belief;
     }
     
-    //Melinda
-    private String dir2;
-    private boolean dir2Used = false;
-    
     private Action outputAction;
     @Override
     public void setOutputAction(Action action) {
@@ -123,10 +119,7 @@ public abstract class BeliefDesire implements IDesire {
                 Thing ccw = belief.getThingCCRotatedAt(p);
                 Point cwP = getCRotatedPoint(p);
                 Point ccwP = getCCRotatedPoint(p);
-                Point cwP2 = new Point(cwP.x + dirPoint.x, cwP.y + dirPoint.y);
-                Point ccwP2 = new Point(ccwP.x + dirPoint.x, ccwP.y + dirPoint.y);
-                Thing cw2 = belief.getThingAt(cwP2);
-                Thing ccw2 = belief.getThingAt(ccwP2);
+
                 // Move away from direction if possible
                 if (isFree(cw) && isFree(ccw)) {
                     if (isFree(cw) && !cwP.equals(dirPoint)) {
@@ -156,11 +149,14 @@ public abstract class BeliefDesire implements IDesire {
         }
         // Test Agent
         Thing t = belief.getThingAt(dirPoint);
+        // Clear Obstacle
         if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
             return ActionInfo.CLEAR(dirPoint, desire);
+        // Move
         } else if (isFree(t)|| attached.contains(dirPoint)) {
             return ActionInfo.MOVE(dir, desire);
-        } else if (t != null && t.type.equals(Thing.TYPE_ENTITY)) {
+        // Try to move around Agent or Block
+        } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY) || t.type.equals(Thing.TYPE_BLOCK))) {
             // Try to move around agent
             boolean inDirection = true; // dir.equals("n") || dir.equals("e");
             String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);
