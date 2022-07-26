@@ -51,9 +51,9 @@ public class LocalExploreDesire extends BeliefDesire {
            if (!agent.belief.getRoleName().equals("default")) 
            // Richtung freie GoalZone für Multi-Block-Tasks
                if (agent.belief.getPosition().y < 28)
-                   agent.exploreDirection = DirectionUtil.stringToInt(DirectionUtil.getDirection(agent.belief.getAbsolutePosition(), new Point(9, 1)));
+                   agent.exploreDirection = DirectionUtil.stringToInt(DirectionUtil.getDirection(agent.belief.getPosition(), new Point(9, 1)));
                else
-                   agent.exploreDirection = DirectionUtil.stringToInt(DirectionUtil.getDirection(agent.belief.getAbsolutePosition(), new Point(28, 54)));
+                   agent.exploreDirection = DirectionUtil.stringToInt(DirectionUtil.getDirection(agent.belief.getPosition(), new Point(28, 54)));
            agent.exploreDirection2 = (agent.exploreDirection2 + 5) % 4;
        }
         

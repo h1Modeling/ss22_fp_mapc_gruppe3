@@ -52,7 +52,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
 
         if (belief.getRole().actions().contains(Actions.DETACH)
                 && belief.getRole().actions().contains(Actions.ATTACH)) {
-            result = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
+            result = belief.getReachableGoalZonesX().size() > 0 || belief.getGoalZones().size() > 0;
             AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 2");
 
             if (!result) {
@@ -98,7 +98,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
             AgentLogger.info(
                     Thread.currentThread().getName() + "GoGoalZoneDesire - AgentPosition: " + belief.getPosition());
             AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - reachableGoalZones: "
-                    + belief.getReachableGoalZones());
+                    + belief.getReachableGoalZonesX());
             AgentLogger
                     .info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZones: " + belief.getGoalZones());
 
@@ -189,7 +189,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
         int distance = 1000;
         
         for (Meeting meeting : AgentMeetings.find(inAgent)) {
-            ArrayList<ReachableGoalZone> rgz = new ArrayList<ReachableGoalZone>(meeting.agent2().belief.getReachableGoalZones());
+            ArrayList<ReachableGoalZone> rgz = new ArrayList<ReachableGoalZone>(meeting.agent2().belief.getReachableGoalZonesX());
             AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 4 - agent: " + rgz);
             
             if (!rgz.isEmpty()) {               

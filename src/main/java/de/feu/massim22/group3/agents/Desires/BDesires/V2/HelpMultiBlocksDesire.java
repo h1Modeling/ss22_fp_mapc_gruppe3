@@ -256,7 +256,13 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
 
                 if (found)
                     break;
-            } 
+            }
+            
+            if (!found) {
+                // trotz Cooperation kein passender 2.Block (sollte nicht passieren, kommt aber leider vor)
+                result = false;
+                AgentCooperations.remove(coop);
+            }
         }
         
         blockStructureOk = result;

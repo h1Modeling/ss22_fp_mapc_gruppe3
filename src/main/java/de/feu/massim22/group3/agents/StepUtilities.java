@@ -352,11 +352,14 @@ public class StepUtilities {
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos = Point.castToPoint(interestingPoints.get(j).point());
+                    //targetPos.x = (((targetPos.x % 64) + 64) % 64);
+                    //targetPos.y = (((targetPos.y % 92) + 92) % 92);
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
-                    if (interestingPoints.get(i).data().equals("x"))
-                        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoint: " + interestingPoints.get(i).point() + " , data: " + interestingPoints.get(i).data() + " , " + interestingPoints.get(i).cellType().name() + " , " + distance + " , " + direction);
+                    
+                    if (interestingPoints.get(j).data().equals("x"))
+                        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoint: " + interestingPoints.get(j).point() + " , data: " + interestingPoints.get(j).data() + " , " + interestingPoints.get(j).cellType().name() + " , " + distance + " , " + direction);
                 }
 
                 percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));

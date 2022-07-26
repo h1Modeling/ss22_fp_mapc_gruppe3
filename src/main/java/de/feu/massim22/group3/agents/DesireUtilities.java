@@ -178,9 +178,11 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , Things: " + agent.belief.getThings());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
+                        + agent.getName() + " , ReachableDispensers: " + agent.belief.getReachableDispensersX());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , GoalZones: " + agent.belief.getGoalZones());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
-                        + agent.getName() + " , ReachableGoalZones: " + agent.belief.getReachableGoalZones());
+                        + agent.getName() + " , ReachableGoalZones: " + agent.belief.getReachableGoalZonesX());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , nicht in Zone: " + !agent.belief.getGoalZones().contains(Point.zero()) 
                         + " , in Zone: "+ agent.belief.getGoalZones().contains(Point.zero()) + " , att. Size: "
@@ -190,12 +192,12 @@ public class DesireUtilities {
                 if (!agent.blockAttached
                 && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlock(agent, task).type))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , AttachAbandonedBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , GoAbandonedBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , AttachAbandonedBlockDesire");
+                            + " , GoAbandonedBlockDesire");
                 
                 if (!agent.blockAttached 
                     && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock(agent, task), supervisor.getName(), agent))) {
@@ -314,7 +316,7 @@ public class DesireUtilities {
         case "LocalExploreDesire":
             result = 100;
             break;            
-        case "AttachAbandonedBlockDesire":
+        case "GoAbandonedBlockDesire":
             if (desire.getOutputAction().getName().equals(Actions.ATTACH))
                 result = 290;
             else

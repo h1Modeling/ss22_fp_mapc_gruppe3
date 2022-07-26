@@ -1083,11 +1083,50 @@ public class Belief {
         
         for (ReachableDispenser rd : reachableDispensers) {
             if (rd.data().equals("x")) {
-                reachableDispensersX.add(rd);
+                Point agentPos = getPosition();
+                int posx = (((rd.position().x % 64) + 64) % 64);
+                int posy = (((rd.position().y % 92) + 92) % 92);
+                int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
+                int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));             
+                ReachableDispenser rdnew = new ReachableDispenser(new Point(posx, posy), rd.type(),  distance,  direction, rd.data());
+                reachableDispensersX.add(rdnew);
             }
         }
         
         return reachableDispensersX;
     }
+    
+    public List<ReachableGoalZone> getReachableGoalZonesX() {
+        List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
+        
+        for (ReachableGoalZone rd : this.reachableGoalZones) {
+            Point agentPos = getPosition();
+            int posx = (((rd.position().x % 64) + 64) % 64);
+            int posy = (((rd.position().y % 92) + 92) % 92);
+            int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
+            ReachableGoalZone rdnew = new ReachableGoalZone(new Point(posx, posy), distance, direction);
+            reachableGoalZones.add(rdnew);
+        }
+        
+        return reachableGoalZones;
+    }
+    
+    public List<ReachableRoleZone> getReachableRoleZonesX() {
+        List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
+        
+        for (ReachableRoleZone rd : this.reachableRoleZones) {
+            Point agentPos = getPosition();
+            int posx = (((rd.position().x % 64) + 64) % 64);
+            int posy = (((rd.position().y % 92) + 92) % 92);
+            int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
+            ReachableRoleZone rdnew = new ReachableRoleZone(new Point(posx, posy), distance, direction);
+            reachableRoleZones.add(rdnew);
+        }
+        
+        return reachableRoleZones;
+    }
+
     // Melinda Ende
 }

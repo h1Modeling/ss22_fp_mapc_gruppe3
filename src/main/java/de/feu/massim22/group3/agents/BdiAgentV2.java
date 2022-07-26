@@ -47,8 +47,17 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     boolean absolutePositions = true;
     public Point startPosition = new Point(Point.zero());
     public Meeting[] firstMeeting = new Meeting[11];
-    private Point[] startPositions = {Point.zero(), new Point(24, 35), new Point(1, 78), new Point(14, 26), new Point(15, 26), new Point(8, 44)
-            , new Point(61, 15), new Point(20, 84), new Point(1, 79), new Point(15, 25), new Point(61, 14)};
+    private Point[] startPositions = {Point.zero()
+            , new Point(24, 35)
+            , new Point(1, 78)
+            , new Point(14, 26)
+            , new Point(15, 26)
+            , new Point(8, 44)
+            , new Point(61, 15)
+            , new Point(20, 84)
+            , new Point(1, 79)
+            , new Point(15, 25)
+            , new Point(61, 14)};
 
 
     /**
@@ -214,7 +223,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 if (AgentCooperations.exists(this)) {
                     Cooperation coop = AgentCooperations.get(this);
-                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop.toString());
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop);
                     
                     if (coop.master().getName().equals(this.getName())) {
                         AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - master");
@@ -226,7 +235,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                         AgentCooperations.setStatusHelper(coop.task(), coop.helper(), Status.Connected);
                     }
                     coop = AgentCooperations.get(this);
-                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop.toString());
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop);
                 }
             }
         }

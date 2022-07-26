@@ -65,8 +65,12 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runAgentDecisionsWithTask - ArrangeBlocksDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
         
-        if (!agentThing.details.equals(info.requirements.get(0).type)) {
+        if (!existsTask(agentThing)) {
             return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());
+        }
+        
+        if (!agentThing.details.equals(info.requirements.get(0).type)) {
+            return ActionInfo.SKIP(getName());
         }
         
         String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
@@ -100,4 +104,13 @@ public class ArrangeBlocksDesire extends BeliefDesire {
             return ActionInfo.SKIP(getName());
         }
     }
+    
+    private boolean existsTask(Thing block) {
+        for (TaskInfo task : belief.getTaskInfo()) {
+            if (task.requirements.size() == 1 && block.details.equals(task.requirements.get(0).type)) {
+                return true;
+            }
+        }
+        return false;
+    } 
 }

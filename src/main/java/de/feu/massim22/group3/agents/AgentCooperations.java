@@ -119,8 +119,6 @@ public class AgentCooperations {
     }
     
     public static Cooperation get(TaskInfo task, BdiAgentV2 agent, int sel) {
-        boolean result = false;
-        
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (sel == 1 && cooperations.get(i).master.getName().equals(agent.getName())
@@ -133,8 +131,6 @@ public class AgentCooperations {
     }
     
     public static Cooperation get(TaskInfo task, BdiAgentV2 agent) {
-        boolean result = false;
-        
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (cooperations.get(i).master.getName().equals(agent.getName())
@@ -147,8 +143,6 @@ public class AgentCooperations {
     }
     
     public static Cooperation get(BdiAgentV2 agent) {
-        boolean result = false;
-        
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).master.getName().equals(agent.getName()) || cooperations.get(i).helper.getName().equals(agent.getName())) {
                 return cooperations.get(i);

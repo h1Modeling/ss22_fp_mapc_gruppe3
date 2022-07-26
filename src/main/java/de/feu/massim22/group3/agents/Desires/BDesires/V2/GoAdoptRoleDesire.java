@@ -50,7 +50,7 @@ public class GoAdoptRoleDesire extends BeliefDesire {
         AgentLogger
                 .info(Thread.currentThread().getName() + "GoAdoptRoleDesire - AgentPosition: " + belief.getPosition());
         AgentLogger.info(Thread.currentThread().getName() + "GoAdoptRoleDesire - reachableRoleZones: "
-                + belief.getReachableRoleZones());
+                + belief.getReachableRoleZonesX());
         AgentLogger.info(Thread.currentThread().getName() + "GoAdoptRoleDesire - RoleZones: " + belief.getRoleZones());
         
         Point roleZone = null;
@@ -61,7 +61,7 @@ public class GoAdoptRoleDesire extends BeliefDesire {
             return ActionInfo.ADOPT(role, getName());
         } else {
             // not yet in rolezone
-            if (belief.getReachableRoleZones().size() > 0 || belief.getRoleZones().size() > 0) {
+            if (belief.getReachableRoleZonesX().size() > 0 || belief.getRoleZones().size() > 0) {
                 AgentLogger.info(Thread.currentThread().getName() + "GoAdoptRoleDesire - RoleZone visible");
                 Point p = Point.castToPoint(belief.getNearestRelativeManhattenRoleZone());
                 int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
@@ -153,7 +153,7 @@ private Point getNearestRoleZoneFromMeeting(BdiAgentV2 inAgent) {
     int distance = 1000;
     
     for (Meeting meeting : AgentMeetings.find(inAgent)) {
-        ArrayList<ReachableRoleZone> rrz = new ArrayList<ReachableRoleZone>(meeting.agent2().belief.getReachableRoleZones());
+        ArrayList<ReachableRoleZone> rrz = new ArrayList<ReachableRoleZone>(meeting.agent2().belief.getReachableRoleZonesX());
         AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 4 - agent: " + rrz);
         
         if (!rrz.isEmpty()) {  
