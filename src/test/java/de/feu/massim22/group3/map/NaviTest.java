@@ -49,7 +49,7 @@ public class NaviTest {
             - - | G -
             - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("A1");
+        navi.registerAgent("A1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -78,7 +78,7 @@ public class NaviTest {
             - - | G -
             - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -108,7 +108,7 @@ public class NaviTest {
             - - | G -
             - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -139,7 +139,7 @@ public class NaviTest {
             - - - A -
             - - - # -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -175,7 +175,7 @@ public class NaviTest {
             - - | G -
             - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
