@@ -29,15 +29,30 @@ import java.awt.image.WritableRaster;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL43.*;
 
+/**
+ * The Class <code>PathFinder</code> handles the communication with the OpenGL library GLFW to create and
+ * manage OpenGL Contexts. The Contexts are used to perform calculations by a compute shader to receive 
+ * path finding information. 
+ *
+ * @author Heinz Stadler
+ */
 class PathFinder {
     private int gComputeProgram = -1;
     private long windowHandler;
     private static String shader;
     
+    /**
+     * Instantiates a new PathFinder
+     * @param windowHandler the handler to the openGl context
+     */
     PathFinder(long windowHandler) {
         this.windowHandler = windowHandler;
     }
 
+    /**
+     * Initializes the GLFW library and loads the compute shader.
+     * This method must be called from the main thread.
+     */
     static void init() {
         // Init GLFW Context - this must be done from the main thread and is therefore in the constructor
         if (!glfwInit()) {
@@ -51,6 +66,11 @@ class PathFinder {
         }
     }
 
+    /**
+     * Frees the resources used by the OpenGL context.
+     *  
+     * @param context the handler to the OpenGL context
+     */
     static void close(long context) {
         // Free Resources
         glfwMakeContextCurrent(context);
@@ -58,6 +78,10 @@ class PathFinder {
         glfwMakeContextCurrent(0);
     }
 
+    /**
+     * Creates a new OpenGL context.
+     * @return the handler to the OpenGL context
+     */
     static long createOpenGlContext() {
         // Create Hidden Window to get OpenGL Context
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -202,6 +226,21 @@ class PathFinder {
         }
     }
 
+    /**
+     * Starts the path finding.
+     * 
+     * @param mapBuffer the buffer in which obstacles are stored as 1.0f and free cells are stored as 0.0f
+     * @param dataBuffer the buffer with information about agent position and attached blocks to the agent
+     * @param goalPoints a List of Points for which path finding should be started
+     * @param mapSize the size of the map input texture
+     * @param dataSize the size of the data input texture
+     * @param agentCount the number of agents 
+     * @param goalCount the number of goals
+     * @param mapDiscovered indicates if the map size is already discovered or not 
+     * @param supervisor the supervisor of the group for which the path finding should be started
+     * @param step the current step of the simulation
+     * @return a two dimensional Array of path finding results containing the distance and direction of every goal point from every agent
+     */
     public PathFindingResult[][] start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
 
         // Set Timer

@@ -141,7 +141,8 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
             if(agent == null) continue;
 
             mailService.registerAgent(agent, agentConf.team);
-            Navi.get().registerAgent(agent.getName());
+
+            Navi.get().registerAgent(agent.getName(), agentConf.team);
             Navi.<INavi>get().setDebugStepListener(this, manualMode);
 
             try {

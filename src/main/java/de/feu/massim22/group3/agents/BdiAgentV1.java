@@ -124,7 +124,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 desires = new ArrayList<>();
                 addBasicDesires();
                 // Reset Navi
-                Navi.<INaviAgentV1>get().resetAgent(getName());
+                String team = belief.getTeam();
+                Navi.<INaviAgentV1>get().resetAgent(getName(), team);
             }
         }
     }

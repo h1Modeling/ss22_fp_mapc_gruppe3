@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class GameMapTest {
     
-    private GameMap map = new GameMap(3, 5);
+    private GameMap map = new GameMap(3, 5, "A");
 
     @Test
     void testMapExtensionLeft() {
@@ -52,7 +52,7 @@ class GameMapTest {
     @Test
     void testMergeIntoMapUndiscovered() throws InterruptedException {
         map.addReport(1, 0, CellType.FREE, ZoneType.NONE, 0, 0);
-        GameMap toMerge = new GameMap(5, 10);
+        GameMap toMerge = new GameMap(5, 10, "A");
         Thread.sleep(1);
         toMerge.addReport(1, 0, CellType.DISPENSER_0, ZoneType.NONE, 1, 1);
         Point offset = map.mergeIntoMap(toMerge, new Point(2, 1), new Point(4, -1));
@@ -65,7 +65,7 @@ class GameMapTest {
         map.addReport(1, 0, CellType.FREE, ZoneType.NONE, 0, 0);
         Thread.sleep(1);
         map.setFinalSize(10, 10);
-        GameMap toMerge = new GameMap(10, 10);
+        GameMap toMerge = new GameMap(10, 10, "A");
         Thread.sleep(1);
         toMerge.addReport(1, 1, CellType.DISPENSER_0, ZoneType.NONE, 1, 1);
         //toMerge.setFinalSize(10, 10);
@@ -84,7 +84,7 @@ class GameMapTest {
 
     @Test
     void testGetMapBuffer() {
-        GameMap m = new GameMap(3, 3);
+        GameMap m = new GameMap(3, 3, "A");
         m.addReport(0, 0, CellType.FREE, ZoneType.NONE, 0, 1);
         FloatBuffer result = m.getMapBuffer();
         float[] actual = new float[18];
@@ -95,7 +95,7 @@ class GameMapTest {
 
     @Test
     void setAgentAttached() {
-        GameMap m = new GameMap(3, 3);
+        GameMap m = new GameMap(3, 3, "A");
         List<Point> points = new ArrayList<>();
         for (int y = -2; y < 3; y++) {
             for (int x = -2; x < 3; x++) {
@@ -109,7 +109,7 @@ class GameMapTest {
 
     @Test
     void attachedAtRelativePoint() {
-        GameMap m = new GameMap(10, 10);
+        GameMap m = new GameMap(10, 10, "A");
         boolean result1 = m.attachedAtRelativePoint(new Point(0, -1), 141440);
         boolean result2 = m.attachedAtRelativePoint(new Point(0, 1), 141440);
         boolean result3 = m.attachedAtRelativePoint(new Point(-1, 0), 141440);
@@ -121,7 +121,7 @@ class GameMapTest {
 
     @Test
     void isBlockAttachedTest() {
-        GameMap map = new GameMap(20, 20);
+        GameMap map = new GameMap(20, 20, "A");
         map.addReport(0, 0, CellType.FREE, ZoneType.NONE, 0, 0);
         map.setAgentPosition("a1", new Point(2,3));
         List<Point> attachedThings = new ArrayList<>();
