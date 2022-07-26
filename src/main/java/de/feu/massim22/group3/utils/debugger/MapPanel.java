@@ -1,7 +1,6 @@
 package de.feu.massim22.group3.utils.debugger;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.event.MouseInputAdapter;
@@ -12,7 +11,6 @@ import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
-import massim.protocol.messages.scenario.Actions;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.GeneralPath;

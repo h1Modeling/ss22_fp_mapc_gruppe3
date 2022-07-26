@@ -10,8 +10,10 @@ import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.ParameterList;
+import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 import massim.protocol.data.Thing;
+import java.awt.Point;
 
 public class PerceptUtil {
 
@@ -80,5 +82,13 @@ public class PerceptUtil {
             result.add(new Thing(x, y, type, detail));
         }
         return result;
+    }
+
+    public static Percept fromThing(Thing t) {
+        return new Percept("thing", new Numeral(t.x), new Numeral(t.y), new Identifier(t.type), new Identifier(t.details));
+    }
+
+    public static Percept fromAttachedPoint(Point p) {
+        return new Percept("attached", new Numeral(p.x), new Numeral(p.y));
     }
 }

@@ -3,8 +3,6 @@ package de.feu.massim22.group3.agents;
 //import java.awt.Point;
 import java.util.*;
 
-import javax.management.relation.RoleStatus;
-import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
 
@@ -13,12 +11,9 @@ import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
-import eis.iilang.Action;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
-import massim.protocol.data.Role;
 import massim.protocol.messages.scenario.Actions;
-import massim.protocol.messages.scenario.ActionResults;
 
 public class DesireUtilities {
 	public StepUtilities stepUtilities;
@@ -524,7 +519,7 @@ public class DesireUtilities {
         if (moveIteration < 4) {
             return getActionForMove(agent, dir, desire);
         }
-        // TODO AGENT is STuck
+        // TODO AGENT is Stuck
         return ActionInfo.SKIP("Agent is Stuck");
     }
 	

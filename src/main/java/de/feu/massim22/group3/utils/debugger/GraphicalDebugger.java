@@ -15,10 +15,12 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.*;
 
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
 import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
+import de.feu.massim22.group3.map.Disposable;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
 import eis.iilang.Action;
@@ -40,9 +42,18 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     private DebugStepListener listener;
     private boolean initialised = false;
 
-    public GraphicalDebugger() {
+    public GraphicalDebugger(Disposable mapDisposer) {
         setTitle("Debugger - Massim 22 - Gruppe 3");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Free Resources after Close
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mapDisposer.dispose();
+                e.getWindow().dispose();
+            }
+        });
 
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

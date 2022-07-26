@@ -1,6 +1,5 @@
 package de.feu.massim22.group3.agents;
 
-import de.feu.massim22.group3.agents.Point;
 import java.util.List;
 import java.util.ArrayList;
 
