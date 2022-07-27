@@ -36,7 +36,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         precondition.add(new ActionDesire(belief, neededActions));
         precondition.add(new OrDesire(
             new AttachAbandonedBlockDesire(belief, block.type, supervisor),
-            new AttachSingleBlockFromDispenserDesire(belief, block, supervisor))
+            new AttachSingleBlockFromDispenserDesire(belief, block))
         );
         precondition.add(new GoToGoalZoneDesire(belief));
         // Create new Task for Rotation with single Block
@@ -48,7 +48,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
-        ActionInfo a = fullfillPreconditions();
+        ActionInfo a = fulfillPreconditions();
         if (a == null) {
             // Remove freedom desire to make connection possible
             precondition.removeIf(d -> d.getClass().equals(FreedomDesire.class));
@@ -102,47 +102,47 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
             }
 
             // Test if space around requirements
-            int obstacelCountAround = 0;
+            int obstacleCountAround = 0;
             for (Thing t : task.requirements) {
-                obstacelCountAround += obstacelCountAround(new Point(t.x, t.y));
+                obstacleCountAround += obstacleCountAround(new Point(t.x, t.y));
             }
 
             // Try to move to better location
-            if (obstacelCountAround > 0) {
+            if (obstacleCountAround > 0) {
                 // North
                 boolean goalZoneN = belief.getGoalZones().contains(new Point(0, -1));
                 int testN = 0;
                 for (Thing t : task.requirements) {
-                    testN += obstacelCountAround(new Point(t.x, t.y - 1));
+                    testN += obstacleCountAround(new Point(t.x, t.y - 1));
                 }
-                if (testN < obstacelCountAround && goalZoneN) {
+                if (testN < obstacleCountAround && goalZoneN) {
                     return getActionForMove("n", getName());
                 }
                 // East
                 boolean goalZoneE = belief.getGoalZones().contains(new Point(1, 0));
                 int testE = 0;
                 for (Thing t : task.requirements) {
-                    testE += obstacelCountAround(new Point(t.x + 1, t.y));
+                    testE += obstacleCountAround(new Point(t.x + 1, t.y));
                 }
-                if (testE < obstacelCountAround && goalZoneE) {
+                if (testE < obstacleCountAround && goalZoneE) {
                     return getActionForMove("e", getName());
                 }
                 // South
                 boolean goalZoneS = belief.getGoalZones().contains(new Point(0, 1));
                 int testS = 0;
                 for (Thing t : task.requirements) {
-                    testS += obstacelCountAround(new Point(t.x, t.y + 1));
+                    testS += obstacleCountAround(new Point(t.x, t.y + 1));
                 }
-                if (testS < obstacelCountAround && goalZoneS) {
+                if (testS < obstacleCountAround && goalZoneS) {
                     return getActionForMove("s", getName());
                 }
                 // West
                 boolean goalZoneW = belief.getGoalZones().contains(new Point(-1, 0));
                 int testW = 0;
                 for (Thing t : task.requirements) {
-                    testW += obstacelCountAround(new Point(t.x - 1, t.y));
+                    testW += obstacleCountAround(new Point(t.x - 1, t.y));
                 }
-                if (testW < obstacelCountAround && goalZoneW) {
+                if (testW < obstacleCountAround && goalZoneW) {
                     return getActionForMove("w", getName());
                 }
             }
@@ -215,7 +215,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         return new BooleanInfo(false, "not submitted yet");
     }
 
-    private int obstacelCountAround(Point p) {
+    private int obstacleCountAround(Point p) {
         // Try to avoid dispenser
         Thing atPos = belief.getThingWithTypeAt(new Point(0, 0), Thing.TYPE_DISPENSER);
         int result = atPos == null ? 0 : 20;

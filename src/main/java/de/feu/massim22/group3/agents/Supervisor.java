@@ -205,18 +205,18 @@ public class Supervisor implements ISupervisor {
         List<Entry<String, AgentReport>> agentsCarryingBlock3 = new ArrayList<>();
         List<Entry<String, AgentReport>> agentsCarryingBlock4 = new ArrayList<>();
 
-        int maxDistance = 50;
+        int maxDistance = 30;
         int maxDistanceGoalZone = 50;
         // put Repots in Lists
         for (Entry<String, AgentReport> entry : reports.entrySet()) {
             AgentReport r = entry.getValue();
 
             if (r.groupDesireType().equals(GroupDesireTypes.NONE) && !r.deactivated()) {
+                if (r.distanceGoalZone() < maxDistanceGoalZone) {
+                    agentsNearGoalZone.add(entry);
+                }
                 // Agent don't carry block
                 if (r.attachedThings().size() == 0) {
-                    if (r.distanceGoalZone() < maxDistanceGoalZone) {
-                        agentsNearGoalZone.add(entry);
-                    }
                     int[] distDispenser = r.distanceDispenser();
                     if (distDispenser[0] < maxDistance) {
                         agentsNearDispenser0.add(entry);
@@ -289,23 +289,23 @@ public class Supervisor implements ISupervisor {
             if (info.requirements.size() == 1) {
                 String blockDetail = info.requirements.get(0).type;
                 if (blockDetail.equals("b0")) {
-                    doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock0, "b0", info);
+                    //doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock0, "b0", info);
                 }
                 if (blockDetail.equals("b1")) {
-                    doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock1, "b1", info);
+                    //doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock1, "b1", info);
                 }
                 if (blockDetail.equals("b2")) {
-                    doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock2, "b2", info);
+                    //doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock2, "b2", info);
                 }
                 if (blockDetail.equals("b3")) {
-                    doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock3, "b3", info);
+                    //doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock3, "b3", info);
                 }
                 if (blockDetail.equals("b4")) {
-                    doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock4, "b4", info);
+                    //doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock4, "b4", info);
                 }
             }
             // Two Block Task - assign task or assign get block if not carrying already
-            if (info.requirements.size() == 2 && !singleBlockTaskExists) {
+            if (info.requirements.size() == 2) {
                 String block1 = info.requirements.get(0).type;
                 String block2 = info.requirements.get(1).type;
                 List<Entry<String, AgentReport>> agentsBlock1 = null;
@@ -327,7 +327,7 @@ public class Supervisor implements ISupervisor {
 
                 boolean sameBlock = block1.equals(block2);
                 if ((sameBlock && agentsBlock1.size() > 1) || (!sameBlock && agentsBlock1.size() > 0 && agentsBlock2.size() > 0)) {
-                    doTwoBlockTaskDecision(agentsBlock1, agentsBlock2, info, sameBlock);
+                    doTwoBlockTaskDecision(agentsBlock1, agentsBlock2, info, sameBlock, singleBlockTaskExists);
                 } else {
                     // Collect Blocks from Dispenser
                     if ((!sameBlock && agentsBlock1.size() == 0) || agentsBlock1.size() < 2) {
@@ -365,26 +365,32 @@ public class Supervisor implements ISupervisor {
         }
     }
 
-    private void doTwoBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, TaskInfo info, boolean identicalBlocks) {
-        List<String[]> taskAgents = new ArrayList<>(); 
-
-        while (taskAgents.size() < 2 && agents1.size() > 0 && agents2.size() > 0) {
-            String agent1 = agents1.get(0).getKey();
-            if (agentsWithTask.get(agent1) == null) {
-                String agentActionName = agents1.get(0).getValue().agentActionName();
-                String[] data = {agent1, agentActionName};
-                taskAgents.add(data);
+    private List<String[]> getAgentsFor2BlockTask(int maxWaitingTime, List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2) {
+        List<String[]> taskAgents = new ArrayList<>();
+        for (var agent1 : agents1) {
+            if (agentsWithTask.containsKey(agent1.getKey())) continue;
+            for (var agent2 : agents2) {
+                if (agentsWithTask.containsKey(agent2.getKey()) || agent2.getKey().equals(agent1.getKey())) continue;
+                var report1 = agent1.getValue();
+                var report2 = agent2.getValue();
+                var waitingTime = Math.abs(report1.distanceGoalZone() - report2.distanceGoalZone());
+                var distanceBetweenGoalZones = Math.abs(report1.nearestGoalZone().x - report2.nearestGoalZone().y) + Math.abs(report1.nearestGoalZone().y - report2.nearestGoalZone().y);
+                if (waitingTime < maxWaitingTime && distanceBetweenGoalZones < 25) {
+                    String[] data1 = {agent1.getKey(), report1.agentActionName()};
+                    taskAgents.add(data1);
+                    String[] data2 = {agent2.getKey(), report2.agentActionName()};
+                    taskAgents.add(data2);
+                    return taskAgents;
+                }
             }
-            agents1.remove(0);
-            String agent2 = agents2.get(0).getKey();
-            if (agentsWithTask.get(agent2) == null) {
-                String agentActionName = agents2.get(0).getValue().agentActionName();
-                String[] data = {agent2, agentActionName};
-                taskAgents.add(data);
-            }
-            agents2.remove(0);
         }
+        return taskAgents;
+    }
 
+    private void doTwoBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, TaskInfo info, boolean identicalBlocks, boolean singleBlockTaskExists) {
+        
+        int maxWaitingTime = singleBlockTaskExists ? 10 : 30;
+        List<String[]> taskAgents = getAgentsFor2BlockTask(maxWaitingTime, agents1, agents2);
         if (taskAgents.size() > 1) {
            String[] agent1 = taskAgents.get(0);
            String[] agent2 = taskAgents.get(1);

@@ -35,7 +35,7 @@ public abstract class BeliefDesire implements IDesire {
     }
     //Melinda Ende
 
-    protected ActionInfo fullfillPreconditions() {
+    protected ActionInfo fulfillPreconditions() {
         for (IDesire d : precondition) {
             if (!d.isFulfilled().value()) {
                 AgentLogger.info("Next action for agent " + belief.getAgentShortName() + " from " + d.getName());
@@ -101,12 +101,50 @@ public abstract class BeliefDesire implements IDesire {
         Thing w = belief.getThingAt("w");
         if (w != null && w.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(-1, 0), getName());
         
-        // TODO AGENT is STuck
+        // TODO AGENT is stuck
         return ActionInfo.SKIP("Agent is Stuck in getInteratedActionForMove");
     }
 
-    protected ActionInfo getActionForMove(String dir, String desire) {
+    private boolean roleAllowsTwoCellMove() {
+        var role = belief.getRole();
+        if (role == null) return false;
+        var attachedCount = belief.getOwnAttachedPoints().size();
+        return role.maxSpeed(attachedCount) >= 2;
+    }
+
+    private boolean mapAllowsTwoCellMove(String dir) {
+        List<Point> attached = belief.getOwnAttachedPoints();
+        Point dirPoint1 = DirectionUtil.getCellInDirection(dir.substring(0, 1));
+        Point dirPoint2 = DirectionUtil.getCellInDirection(dir.substring(1, 2));
+        // Test attached
+        for (Point p : attached) {
+            Point testPoint1 = new Point(p.x + dirPoint1.x, p.y + dirPoint1.y);
+            Point testPoint2 = new Point(p.x + dirPoint1.x + dirPoint2.x, p.y + dirPoint1.y + dirPoint2.y);
+            Thing t1 = belief.getThingAt(testPoint1);
+            Thing t2 = belief.getThingAt(testPoint2);
+            if (!isFree(t1) && !testPoint1.equals(new Point(0, 0))) return false;
+            if (!isFree(t2) && !testPoint2.equals(new Point(0, 0))) return false;
+        }
+        // Test agent
+        Point testPoint1 = new Point(dirPoint1.x, dirPoint1.y);
+        Point testPoint2 = new Point(dirPoint1.x + dirPoint2.x, dirPoint1.y + dirPoint2.y);
+        Thing t1 = belief.getThingAt(testPoint1);
+        Thing t2 = belief.getThingAt(testPoint2);
+        if (!isFree(t1) && !testPoint1.equals(new Point(0, 0))) return false;
+        if (!isFree(t2) && !testPoint2.equals(new Point(0, 0))) return false;
+        return true;
+    }
+
+    protected ActionInfo getActionForMove(String directions, String desire) {
+        String dir = directions.substring(0, 1);
         Point dirPoint = DirectionUtil.getCellInDirection(dir);
+
+        // 2 Cell Move (only if direct move is possible)
+        if (directions.length() > 1 && roleAllowsTwoCellMove() && mapAllowsTwoCellMove(directions)) {
+            String dir2 = directions.substring(1, 2);
+            return ActionInfo.MOVE(dir, dir2, desire);
+        }
+
         List<Point> attached = belief.getOwnAttachedPoints();
 
         // Rotate attached
@@ -302,6 +340,46 @@ public abstract class BeliefDesire implements IDesire {
             return "e";
         }
         if (p.y < 0) {
+            return "n";
+        }
+        return "s";
+    }
+
+    protected String getDirectionFromAndToRelativePoint(Point from, Point to) {
+        if (to == null || from.equals(to)) {
+            return "";
+        }
+        if (to.x == from.x) {
+            return to.y < from.y ? "n" : "s";
+        }
+        if (to.y == from.x) {
+            return to.x < from.x ? "w" : "e";
+        }
+        // Avoid obstacles if possible
+        Thing n = belief.getThingAt(new Point(from.x, from.y - 1));
+        Thing s = belief.getThingAt(new Point(from.x, from.y + 1));
+        Thing e = belief.getThingAt(new Point(from.x + 1, from.y));
+        Thing w = belief.getThingAt(new Point(from.x - 1, from.y));
+        if (to.x < from.x && isFree(w)) {
+            return "w";
+        }
+        if (to.x > from.x && isFree(e)) {
+            return "e";
+        }
+        if (to.y < from.y && isFree(n)) {
+            return "n";
+        }
+        if (to.y > from.y && isFree(s)) {
+            return "s";
+        }
+        // Go through wall
+        if (to.x < from.x) {
+            return "w";
+        }
+        if (to.x > from.x) {
+            return "e";
+        }
+        if (to.y < from.y) {
             return "n";
         }
         return "s";

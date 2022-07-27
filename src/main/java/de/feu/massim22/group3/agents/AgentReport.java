@@ -19,7 +19,8 @@ import java.awt.Point;
 import massim.protocol.data.Thing;
 
 public record AgentReport(List<Thing> attachedThings, int energy, boolean deactivated,
-        Set<String> actions, Point position, int[] distanceDispenser, int distanceGoalZone, String groupDesireType, int step, String agentActionName) {
+        Set<String> actions, Point position, int[] distanceDispenser, int distanceGoalZone,
+        String groupDesireType, int step, String agentActionName, Point nearestGoalZone) {
     
     public Function createMessage() {
         Parameter energyPara = new Numeral(energy);
@@ -52,9 +53,12 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         }
         Parameter distancePara = new ParameterList(distanceParas);
         Parameter stepPara = new Numeral(step);
+        Parameter pointXGoalZone = new Numeral(nearestGoalZone.x);
+        Parameter pointYGoalZone = new Numeral(nearestGoalZone.y);
         
         return new Function(SupervisorEventName.REPORT.name(), attachedPara, energyPara, deactivatedPara,
-            actionPara, posXPara, posYPara, distancePara, distanceGoalZonePara, groupDesirePara, stepPara, agentActionNamePara);
+            actionPara, posXPara, posYPara, distancePara, distanceGoalZonePara, groupDesirePara, stepPara,
+            agentActionNamePara, pointXGoalZone, pointYGoalZone);
     }
 
     public static AgentReport fromPercept(Percept f) {
@@ -75,7 +79,11 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         }
         int step = PerceptUtil.toNumber(paras, 9, Integer.class);
         String agentActionName  = PerceptUtil.toStr(paras, 10);
-        return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser, distanceGoalZone, groupDesire, step, agentActionName);
+        int goalX = PerceptUtil.toNumber(paras, 11, Integer.class);
+        int goalY = PerceptUtil.toNumber(paras, 11, Integer.class);
+        Point nearestGoalZone = new Point(goalX, goalY);
+        return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser,
+            distanceGoalZone, groupDesire, step, agentActionName, nearestGoalZone);
     }
 }
 

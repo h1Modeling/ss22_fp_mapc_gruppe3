@@ -23,7 +23,7 @@ import org.lwjgl.BufferUtils;
 public class GameMap {
     
     private Point initialSize;
-    private Point size = new Point(92, 64); // null;
+    private Point size = new Point(64, 92); // null;
     // First dimension are rows, second dimension are columns
     private MapCell[][] cells;
     private Point topLeft; // top left indices can be negative
@@ -607,26 +607,26 @@ public class GameMap {
                 break;
             }
 
-            if (cells[top][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y > 5) {
+            if (cells[top][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y > 6) {
                 possibleDirs.add("n");
                 if (cells[agentPos.y - 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("n");
                 }
             }
-            if (cells[bottom][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y < cells.length - 6) {
+            if (cells[bottom][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y < cells.length - 7) {
                 possibleDirs.add("s");
                 if (cells[agentPos.y + 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("s");
                 }
             }
-            if (cells[agentPos.y][left].getCellType() == CellType.UNKNOWN && agentPos.x > 5) {
+            if (cells[agentPos.y][left].getCellType() == CellType.UNKNOWN && agentPos.x > 6) {
                 possibleDirs.add("w");
                 if (cells[agentPos.y][agentPos.x - 1].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("w");
                 }
             }
             
-            if (cells[agentPos.y][right].getCellType() == CellType.UNKNOWN && agentPos.x < cells[0].length - 6) {
+            if (cells[agentPos.y][right].getCellType() == CellType.UNKNOWN && agentPos.x < cells[0].length - 7) {
                 possibleDirs.add("e");
                 if (cells[agentPos.y][agentPos.x + 1].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("e");

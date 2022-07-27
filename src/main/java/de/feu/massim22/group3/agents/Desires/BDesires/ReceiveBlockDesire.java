@@ -30,7 +30,7 @@ public class ReceiveBlockDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
-        ActionInfo a = fullfillPreconditions();
+        ActionInfo a = fulfillPreconditions();
         if (a == null) {
             submitted = true;
             return ActionInfo.SUBMIT(info.name, getName());

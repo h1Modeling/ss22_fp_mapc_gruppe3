@@ -20,7 +20,7 @@ public class DeliverBlockDesire extends BeliefDesire {
     }
 
     public ActionInfo getNextActionInfo() {
-        return fullfillPreconditions();
+        return fulfillPreconditions();
     }
 
     @Override
