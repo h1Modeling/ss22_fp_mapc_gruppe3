@@ -222,7 +222,7 @@ public class Belief {
                     simEnd = true;
                     break;
                 default:
-                    AgentLogger.warning("Percept not transfered to Belief: " + percept.getName());
+                    AgentLogger.warning("Percept not transferred to Belief: " + percept.getName());
                 }
             }
         updateOwnAttachedPoints();

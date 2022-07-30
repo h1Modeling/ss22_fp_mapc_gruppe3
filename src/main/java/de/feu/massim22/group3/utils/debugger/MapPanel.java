@@ -10,7 +10,7 @@ import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.GroupDebugData;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.GeneralPath;
@@ -19,6 +19,10 @@ import java.util.Map.Entry;
 import java.awt.*;
 import java.awt.event.*;
 
+/** The Class <code>MapPanel</code> defines a Panel which displays the simulation map. 
+ *
+ * @author Heinz Stadler
+ */
 public class MapPanel extends JPanel {
 
     private GroupDebugData data;
@@ -30,6 +34,11 @@ public class MapPanel extends JPanel {
     private String selectedAgentName = "";
     private int selectedInterestingPointIndex = -1;
 
+    /**
+     * Instantiates a new MapPanel.
+     * 
+     * @param debugger the debugger the panel is part of
+     */
     MapPanel(IGraphicalDebugger debugger) {
         this.debugger = debugger;
         
@@ -120,6 +129,11 @@ public class MapPanel extends JPanel {
         return -1;
     }
 
+    /**
+     * Paints the map.
+     * 
+     * @param g the graphics context
+     */
     @Override
     public synchronized void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -159,7 +173,7 @@ public class MapPanel extends JPanel {
             }
 
             // Goal Zones
-            for (int i = 0; i < data.goalzones().size(); i++) {
+            for (int i = 0; i < data.goalZones().size(); i++) {
                 Point p = getGoalZone(i);
                 if (p != null) {
                     Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
@@ -274,7 +288,7 @@ public class MapPanel extends JPanel {
     }
 
     private synchronized Point getGoalZone(int index) {
-        return data.goalzones().size() > index ? data.goalzones().get(index) : null;
+        return data.goalZones().size() > index ? data.goalZones().get(index) : null;
     }
 
     private synchronized Point getRoleZone(int index) {
@@ -285,6 +299,11 @@ public class MapPanel extends JPanel {
         return data.interestingPoints().size() > index ? data.interestingPoints().get(index) : null;
     }
 
+    /**
+     * Sets the debug data of the agent group.
+     * 
+     * @param data the data of the agent group
+     */
     synchronized void setData(GroupDebugData data) {
         this.data = data;
         this.safeRepaint();
@@ -302,6 +321,5 @@ public class MapPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             MapPanel.this.debugger.setActionForAgent(selectedAgentName, action);
         }
-
     } 
 }
