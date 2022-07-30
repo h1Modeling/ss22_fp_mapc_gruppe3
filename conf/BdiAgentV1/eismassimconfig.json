@@ -1,6 +1,6 @@
 {
   "scenario": "assemble2020",
-  "host": "132.176.66.116",
+  "host": "localhost",
   "port": 12300,
   "scheduling": false,
   "only-once": true,
