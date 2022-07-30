@@ -26,7 +26,10 @@ public class DigFreeDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isExecutable() {
-        boolean value = (atSamePosition >= limit || dir != null);
+        boolean value = ((atSamePosition >= limit || dir != null));
+        var isWaiting = belief.isWaiting();
+        belief.setWaiting(false);
+        value = value && !isWaiting;
         return new BooleanInfo(value, "");
     }
 

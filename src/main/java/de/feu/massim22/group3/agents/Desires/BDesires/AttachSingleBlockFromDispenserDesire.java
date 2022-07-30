@@ -13,14 +13,11 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
 
     private Thing block;
     private CellType dispenser;
-    private String supervisor;
 
-    public AttachSingleBlockFromDispenserDesire(Belief belief, Thing block, String supervisor) {
+    public AttachSingleBlockFromDispenserDesire(Belief belief, Thing block) {
         super(belief);
-        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start AttachSingleBlockFromDispenserDesire");
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
-        this.supervisor = supervisor;
     }
 
     @Override
@@ -68,73 +65,21 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
         if (w != null && wb == null && w.details.equals(block.type)) {
             return ActionInfo.REQUEST("w", getName());
         }
-        /*
-        // Attach (only if no other agent with higher number is present to avoid double connection)
-        Point pos = belief.getPosition();
-        String name = belief.getAgentShortName();
-        int id = Integer.parseInt(name.substring(1));
-        ActionInfo skip = ActionInfo.SKIP("waiting for other agent");
 
-        // North
-        if (nb != null && n != null && n.details.equals(block.type)) {
-            Point de = new Point(pos.x + 1, pos.y - 1);
-            Point dn = new Point(pos.x, pos.y - 2);
-            Point dw = new Point(pos.x - 1, pos.y - 1);
-            int deId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, de);
-            int dnId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dn);
-            int dwId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dw);
-            return id > deId && id > dnId && id > dwId ? ActionInfo.ATTACH("n", getName()) : skip;
-        }
-        // East
-        if (eb != null && e != null && e.details.equals(block.type)) {
-            Point dn = new Point(pos.x + 1, pos.y - 1);
-            Point ds = new Point(pos.x + 1, pos.y + 1);
-            Point de = new Point(pos.x + 2, pos.y);
-            int deId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, de);
-            int dsId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, ds);
-            int dnId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dn);
-            return id > deId && id > dnId && id > dsId ? ActionInfo.ATTACH("e", getName()) : skip;
-        }
-        // South
-        if (sb != null && s != null && s.details.equals(block.type)) {
-            Point de = new Point(pos.x + 1, pos.y - 1);
-            Point ds = new Point(pos.x, pos.y + 2);
-            Point dw = new Point(pos.x - 1, pos.y - 1);
-            int dwId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dw);
-            int dsId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, ds);
-            int deId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, de);
-            return id > dwId && id > deId && id > dsId ? ActionInfo.ATTACH("s", getName()) : skip;
-        }
-        // West
-        if (wb != null && w != null && w.details.equals(block.type)) {
-            Point dn = new Point(pos.x - 1, pos.y - 1);
-            Point ds = new Point(pos.x - 1, pos.y + 1);
-            Point dw = new Point(pos.x - 2, pos.y);
-            int dwId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dw);
-            int dsId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, ds);
-            int dnId = Navi.<INaviAgentV1>get().getAgentIdAtPoint(supervisor, dn);
-            return id > dwId && id > dnId && id > dsId ? ActionInfo.ATTACH("w", getName()) : skip;
-        }
-        */
         // Move
         Point p = belief.getNearestRelativeManhattenDispenser(block.type);
         int manhattenDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
         // From Pathfinding
-        if (rd != null && rd.distance() < 6 * manhattenDistance) {
+        if (rd != null && rd.distance() < 10 * manhattenDistance) {
             String dir = DirectionUtil.intToString(rd.direction());
             if (dir.length() > 0) {
-                return getActionForMove(dir.substring(0, 1), getName());
+                return getActionForMove(dir, getName());
             }
         }
 
         // Manhatten
         String dir = getDirectionToRelativePoint(p);
         return getActionForMove(dir, getName());
-    }
-
-    @Override
-    public void update(String supervisor) {
-        this.supervisor = supervisor;
     }
 }

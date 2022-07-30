@@ -86,8 +86,11 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         }
         
         // Move
-        String dir = getDirectionToRelativePoint(new Point(nearest.x, nearest.y));
-        return getActionForMove(dir, getName());
+        Point nearestPoint = new Point(nearest.x, nearest.y);
+        String dir = getDirectionToRelativePoint(nearestPoint);
+        Point p = getPointFromDirection(dir);
+        String dir2 = getDirectionFromAndToRelativePoint(p, nearestPoint);
+        return getActionForMove(dir + dir2, getName());
     }
 
     @Override

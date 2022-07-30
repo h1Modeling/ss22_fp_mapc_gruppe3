@@ -20,14 +20,14 @@ public class ProcessEasyTaskDesire extends BeliefDesire {
         precondition.add(new ActionDesire(belief, neededActions));
         precondition.add(new OrDesire(
             new AttachAbandonedBlockDesire(belief, blockDetail, supervisor),
-            new AttachSingleBlockFromDispenserDesire(belief, info.requirements.get(0), supervisor))
+            new AttachSingleBlockFromDispenserDesire(belief, info.requirements.get(0)))
         );
         precondition.add(new GoToGoalZoneDesire(belief));
         precondition.add(new GetBlocksInOrderDesire(belief, info));
     }
 
     public ActionInfo getNextActionInfo() {
-        ActionInfo a = fullfillPreconditions();
+        ActionInfo a = fulfillPreconditions();
         if (a == null) {
             return ActionInfo.SUBMIT(info.name, getName());
         }

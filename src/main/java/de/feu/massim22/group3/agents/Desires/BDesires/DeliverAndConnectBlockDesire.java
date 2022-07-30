@@ -17,14 +17,14 @@ public class DeliverAndConnectBlockDesire extends BeliefDesire {
         precondition.add(new ActionDesire(belief, neededActions));
         precondition.add(new OrDesire(
             new AttachAbandonedBlockDesire(belief, block.type, supervisor),
-            new AttachSingleBlockFromDispenserDesire(belief, block, supervisor))
+            new AttachSingleBlockFromDispenserDesire(belief, block))
         );
         precondition.add(new MeetAgentAtGoalZoneDesire(belief, agent));
         precondition.add(new ConnectBlockToAgentDesire(belief, agent, agentFullName, task, block, communicator));
     }
 
     public ActionInfo getNextActionInfo() {
-        return fullfillPreconditions();
+        return fulfillPreconditions();
     }
 
     @Override

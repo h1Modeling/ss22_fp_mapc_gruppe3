@@ -76,6 +76,8 @@ public class Belief {
     private List<ForbiddenThing> forbiddenThings = new ArrayList<>();
     private String groupDesireType = GroupDesireTypes.NONE;
     private List<ConnectionReport> connectionReports = new ArrayList<>();
+    private String groupTaskBlockDetail = "";
+    private boolean isWaiting = false;
 
     public Belief(String agentName) {
         this.agentShortName = agentName;
@@ -457,6 +459,22 @@ public class Belief {
         connectionReports.add(report);
     }
 
+    public String getGroupTaskBlockDetail() {
+        return groupTaskBlockDetail;
+    }
+
+    public void setGroupTaskBlockDetail(String groupTaskBlockDetail) {
+        this.groupTaskBlockDetail = groupTaskBlockDetail;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
+    }
+
+    public void setWaiting(boolean isWaiting) {
+        this.isWaiting = isWaiting;
+    }
+
     public boolean isSimEnd() {
         return simEnd;
     }
@@ -568,6 +586,7 @@ public class Belief {
     }
 
     public Role getRoleByActions(String[] actions) {
+        List<Role> possibleRoles = new ArrayList<>();
         for (Role r : roles.values()) {
             boolean allFound = true;
             for (String action : actions) {
@@ -576,10 +595,11 @@ public class Belief {
                 }
             }
             if (allFound) {
-                return r;
+                possibleRoles.add(r);
             }
         }
-        return null;
+        possibleRoles.sort((a, b) -> b.maxSpeed(0) - a.maxSpeed(0));
+        return possibleRoles.size() > 0 ? possibleRoles.get(0) : null;
     }
 
     public List<StepEvent> getStepEvents() {
@@ -800,10 +820,15 @@ public class Belief {
             distanceDispenser[i] = Math.min(distanceDispenser[i], dispenser.distance());
         }
         int distGoalZone = 999;
+        Point nearestGoalZone = new Point(0, 0);
         for (ReachableGoalZone goalZone : reachableGoalZones) {
-            distGoalZone = Math.min(distGoalZone, goalZone.distance());
+            if (goalZone.distance() < distGoalZone) {
+                distGoalZone = goalZone.distance();
+                nearestGoalZone = goalZone.position();
+            }
         }
-        return new AgentReport(attachedThings, energy, deactivated, availableActions, position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName);
+        return new AgentReport(attachedThings, energy, deactivated, availableActions,
+            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName, nearestGoalZone);
     }
 
     public void setGroupDesireType(String groupDesireType) {
@@ -946,20 +971,15 @@ public class Belief {
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
                 move(dir);
+                if (lastActionParams.size() == 2) {
+                    String dir2 = lastActionParams.get(1);
+                    move(dir2);
+                }
             }
             // Partial Success
-            /*
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                Role currentRole = roles.get(role);
-                // With max speed 2 we can be sure that agent moved one cell
-                if (currentRole != null && currentRole.speed()[1] < 3) {
-                    move(dir);
-                }
-                // TODO Partial Success with speed > 2
-                else {
-                    // Try to guess the position with information from last step
-                }
-            } */
+                move(dir);
+            }
         }
     }
 
@@ -1019,7 +1039,7 @@ public class Belief {
                 }
             }
 
-            // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
+            // Partial Success (Only really OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
                 move(lastActionParams.get(0));
             }

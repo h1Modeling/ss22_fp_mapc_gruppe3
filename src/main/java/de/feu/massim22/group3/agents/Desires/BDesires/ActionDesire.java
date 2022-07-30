@@ -31,7 +31,7 @@ public class ActionDesire extends BeliefDesire {
 
     @Override
     public ActionInfo getNextActionInfo() {
-        ActionInfo a = fullfillPreconditions();
+        ActionInfo a = fulfillPreconditions();
         if (a == null) {
             return ActionInfo.ADOPT(possibleRole.name(), getName());
         }

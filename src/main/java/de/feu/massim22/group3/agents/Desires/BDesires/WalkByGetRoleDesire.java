@@ -37,14 +37,22 @@ public class WalkByGetRoleDesire extends BeliefDesire {
 
     @Override
     public BooleanInfo isExecutable() {
-        boolean value = possibleRole != null && belief.getRoleZones().contains(new Point(0, 0));
-        String info = value ? getName() : "No Rolezone in vision";
+        boolean value = possibleRole != null && belief.getRoleZones().size() > 0;
+        String info = value ? getName() : "No role zone in vision";
         return new BooleanInfo(value, info);
     }
 
     @Override
     public ActionInfo getNextActionInfo() {
-        return ActionInfo.ADOPT(possibleRole.name(), getName());
+        // Adopt
+        if (belief.getRoleZones().contains(new Point(0, 0))) {
+            return ActionInfo.ADOPT(possibleRole.name(), getName());
+        }
+        // Move to Zone
+        belief.getRoleZones().sort((a, b) -> (Math.abs(a.x) + Math.abs(a.y)) - (Math.abs(b.x) + Math.abs(b.y)));
+        Point nearest = belief.getRoleZones().get(0);
+        String dir = getDirectionToRelativePoint(nearest);
+        return getActionForMove(dir, getName());
     }
 
     @Override
