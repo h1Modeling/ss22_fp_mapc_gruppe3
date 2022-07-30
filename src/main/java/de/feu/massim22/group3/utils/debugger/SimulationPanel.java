@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/** The Class <code>SimulationPanel</code> defines a Panel which displays information about the current simulation including
+ * norms and tasks. 
+ *
+ * @author Heinz Stadler
+ */
 public class SimulationPanel extends JPanel {
 
     private JPanel tasksPanel = new JPanel();
@@ -23,6 +28,9 @@ public class SimulationPanel extends JPanel {
     private int nextNormUpdate = 0;
     private int nextTaskUpdate = 0;
 
+    /**
+     * Instantiates a new SimulationPanel.
+     */
     SimulationPanel() {
 
         MigLayout layout = new MigLayout("insets 10", "[left]");
@@ -45,6 +53,12 @@ public class SimulationPanel extends JPanel {
         add(tasksPanel, "wrap, grow");
     }
 
+    /**
+     * Sets the current tasks of the simulation.
+     * 
+     * @param tasks the current tasks
+     * @param step the current step of the simulation
+     */
     synchronized void setTasks(Set<TaskInfo> tasks, int step) {
         if (step != currentTaskStep) {
             boolean needsUpdate = nextTaskUpdate <= step;
@@ -70,6 +84,12 @@ public class SimulationPanel extends JPanel {
         }
     }
 
+    /**
+     * Sets the current norms of the simulation.
+     * 
+     * @param norms the current norms
+     * @param step the current step of the simulation
+     */
     synchronized void setNorms(Set<NormInfo> norms, int step) {
         if (step != currentNormStep) {
             boolean needsUpdate = nextNormUpdate <= step;

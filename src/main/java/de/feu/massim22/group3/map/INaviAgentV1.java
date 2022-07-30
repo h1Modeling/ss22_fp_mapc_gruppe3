@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.List;
 import java.util.Set;
 
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
 import massim.protocol.data.*;
 
 /**
@@ -13,7 +13,7 @@ import massim.protocol.data.*;
  * @see INavi
  * @see INaviAgentV2
  * @see INaviTest
- * @see BdiAgentV1
+ * @see de.feu.massim22.group3.agents.BdiAgentV1
  * @author Heinz Stadler
  */
 public interface INaviAgentV1 extends INavi {

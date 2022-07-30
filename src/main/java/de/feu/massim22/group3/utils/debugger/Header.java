@@ -14,7 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.plaf.InsetsUIResource;
 
-
+/** The Class <code>Header</code> defines a Panel which displays general information about the simulation,
+ * controls for manual interaction with the simulation and the selection of the displayed agent group. 
+ *
+ * @author Heinz Stadler
+ */
 class Header extends JPanel {
     private JButton next;
     private JComboBox<String> groupSelection;
@@ -22,6 +26,11 @@ class Header extends JPanel {
     private JLabel pointLabel;
     private JCheckBox delay;
 
+    /**
+     * Instantiates a new Header.
+     * 
+     * @param debugger the debugger the panel is part of
+     */
     Header(IGraphicalDebugger debugger) {
 
         setLayout(new GridBagLayout());
@@ -74,11 +83,24 @@ class Header extends JPanel {
         add(delay, c);
     }
 
+    /**
+     * Sets the data which should be displayed by the panel.
+     * 
+     * @param currentStep the current step of the simulation
+     * @param maxSteps the last step of the simulation
+     * @param score the current score of the team
+     */
     void setData(int currentStep, int maxSteps, int score) {
         stepLabel.setText("Schritt: " + currentStep + " / " + maxSteps);
         pointLabel.setText("Punkte: " + score + " $");
     }
 
+    /**
+     * Sets the current groups including the selected one.
+     * 
+     * @param groups all groups
+     * @param selectedGroup the currently selected group
+     */
     void setGroups(Set<String> groups, String selectedGroup) {
         String[] items = groups.toArray(new String[groups.size()]);
         ComboBoxModel<String> model = new DefaultComboBoxModel<String>(items);
@@ -86,6 +108,9 @@ class Header extends JPanel {
         model.setSelectedItem(selectedGroup);
     }
 
+    /**
+     * Sets the visibility of the step buttons.
+     */
     void showStepButton() {
         next.setVisible(true);
     }

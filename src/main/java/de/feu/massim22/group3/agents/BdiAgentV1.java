@@ -28,7 +28,7 @@ import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.PerceptUtil;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;

@@ -8,6 +8,8 @@ import de.feu.massim22.group3.MailService;
 
 /**
  * An abstract Java agent.
+ * 
+ * @author massim team
  */
 public abstract class Agent {
 

@@ -12,7 +12,7 @@ import massim.protocol.data.*;
  * @see INavi
  * @see INaviAgentV1
  * @see INaviTest
- * @see BdiAgentV2
+ * @see de.feu.massim22.group3.agents.BdiAgentV2
  * @author Heinz Stadler
  * @author Melinda Betz (minor contribution)
  */

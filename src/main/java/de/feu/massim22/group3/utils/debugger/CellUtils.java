@@ -8,6 +8,11 @@ import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import java.awt.geom.Rectangle2D;
 
+/**
+ * The Class <code>CellUtils</code> contains helper methods to draw cells of the massim simulation.
+ *
+ * @author Heinz Stadler
+ */
 class CellUtils {
     private static Color black = new ColorUIResource(36, 36, 36);
     private static Color dispenser0 = new ColorUIResource(113, 117, 72);
@@ -16,10 +21,33 @@ class CellUtils {
     private static Color dispenser3 = new ColorUIResource(191, 184, 41);
     private static Color dispenser4 = new ColorUIResource(191, 184, 41);
 
+    /**
+     * Draws a cell with <code>GroupDesireType.NONE</code>.
+     * 
+     * @param g2d the <code>Graphics2D</code> context
+     * @param t the cell type
+     * @param rect the size of the cell
+     * @param x the x-position of the cell
+     * @param y the y-position of the cell
+     * @param name the name of the agent if the cell type reflects an agent
+     * @param selected true if the cell is currently selected
+     */
     static void draw(Graphics2D g2d, CellType t, Rectangle2D.Double rect, int x, int y, String name, boolean selected) {
         draw(g2d, t, rect, x, y, name, selected, GroupDesireTypes.NONE);
     }
 
+    /**
+     * Draws a cell.
+     * 
+     * @param g2d the <code>Graphics2D</code> context
+     * @param t the cell type
+     * @param rect the size of the cell
+     * @param x the x-position of the cell
+     * @param y the y-position of the cell
+     * @param name the name of the agent if the cell type reflects an agent
+     * @param selected true if the cell is currently selected
+     * @param groupDesire the group desire of the agent if the cell type reflects an agent
+     */
     static void draw(Graphics2D g2d, CellType t, Rectangle2D.Double rect, int x, int y, String name, boolean selected, String groupDesire) {
         int greyValue = (x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1) ? 238 : 221;
         int unknownValue = (x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1) ? 88 : 71;

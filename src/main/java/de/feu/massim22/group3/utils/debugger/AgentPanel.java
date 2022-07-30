@@ -5,15 +5,20 @@ import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
 import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.AgentDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * The Class <code>AgentPanel</code> defines a Panel to view debug information of an agent
+ * including its desires.
+ *
+ * @author Heinz Stadler
+ */
 class AgentPanel extends JPanel {
 
     private JLabel role;
@@ -26,6 +31,9 @@ class AgentPanel extends JPanel {
     private List<JLabel> desireLabels = new ArrayList<>();
     private int maxDesireCount = 10;
     
+    /**
+     * Instantiates a new AgentPanel.
+     */
     AgentPanel() {
 
         MigLayout layout = new MigLayout("insets 10", "[left] [left]");
@@ -104,6 +112,11 @@ class AgentPanel extends JPanel {
         }
     }
 
+    /**
+     * Sets the current information of an agents desires.
+     * @param list a List of <code>DesireDebugData</code> containing information about the 
+     * agent decision process.
+     */
     void setDesireData(List<DesireDebugData> list) {
         int easyTaskIndex = 0;
         for (DesireDebugData data : list) {
@@ -129,6 +142,9 @@ class AgentPanel extends JPanel {
         revalidate();
     }
 
+    /**
+     * Clears the content of the AgentPanel.
+     */
     void clear() {
         name.setText("");
         role.setText("");
@@ -137,6 +153,11 @@ class AgentPanel extends JPanel {
         lastActionSuccess.setText(""); 
     }
 
+    /**
+    * The inner Class <code>HeaderLabel</code> defines a header text for labeling different sections of a panel
+    *
+    * @author Heinz Stadler
+    */
     static class HeaderLabel extends JLabel {
         HeaderLabel(String title) {
             super(title);

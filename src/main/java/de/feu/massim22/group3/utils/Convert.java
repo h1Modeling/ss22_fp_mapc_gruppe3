@@ -3,7 +3,20 @@ package de.feu.massim22.group3.utils;
 import de.feu.massim22.group3.map.CellType;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>Convert</code> contains static methods to convert between massim definitions and definitions defined by the <code>GameMap</code>
+ * and its parts.
+ *
+ * @author Heinz Stadler
+ */
 public class Convert {
+
+    /**
+     * Translates a Thing to a CellType.
+     * 
+     * @param t the thing
+     * @return the cell type
+     */
     public static CellType thingToCellType(Thing t) {
         switch (t.type) {
             case Thing.TYPE_BLOCK: return blockToCellType(t.details);
@@ -14,6 +27,12 @@ public class Convert {
         } 
     }
 
+    /**
+     * Translates a task requirement to a cell type.
+     * 
+     * @param t the task requirement
+     * @return the cell type
+     */
     public static CellType blockNameToDispenser(Thing t) {
         switch (t.type) {
             case "b0": return CellType.DISPENSER_0;
@@ -25,6 +44,12 @@ public class Convert {
         }
     }
 
+    /**
+     * Translates a dispenser cell type to a thing type name.
+     * 
+     * @param t the cell type
+     * @return the thing type name
+     */
     public static String cellTypeToThingDetail(CellType t) {
         switch (t) {
             case DISPENSER_0: return "b0";
