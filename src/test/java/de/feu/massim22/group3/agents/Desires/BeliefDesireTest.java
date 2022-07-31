@@ -8,10 +8,10 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import de.feu.massim22.group3.agents.Belief;
-import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
-import de.feu.massim22.group3.agents.Desires.BDesires.BeliefDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
+import de.feu.massim22.group3.agents.belief.Belief;
+import de.feu.massim22.group3.agents.desires.ActionInfo;
+import de.feu.massim22.group3.agents.desires.BeliefDesire;
+import de.feu.massim22.group3.agents.desires.BooleanInfo;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;

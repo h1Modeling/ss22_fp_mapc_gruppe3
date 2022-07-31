@@ -7,27 +7,32 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import de.feu.massim22.group3.EisSender;
-import de.feu.massim22.group3.MailService;
-import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
-import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
-import de.feu.massim22.group3.agents.Desires.BDesires.DeliverAndConnectBlockDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.DeliverBlockDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.DigFreeDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.ExploreDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.FreedomDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.GetBlockDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
-import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.LooseWeightDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.ProcessEasyTaskDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.ReceiveAndConnectBlockDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.ReceiveBlockDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.WaitAtGoalZoneDesire;
-import de.feu.massim22.group3.agents.Desires.BDesires.WalkByGetRoleDesire;
-import de.feu.massim22.group3.EventName;
+import de.feu.massim22.group3.agents.desires.ActionInfo;
+import de.feu.massim22.group3.agents.desires.BooleanInfo;
+import de.feu.massim22.group3.agents.desires.DeliverAndConnectBlockDesire;
+import de.feu.massim22.group3.agents.desires.DeliverBlockDesire;
+import de.feu.massim22.group3.agents.desires.DigFreeDesire;
+import de.feu.massim22.group3.agents.desires.ExploreDesire;
+import de.feu.massim22.group3.agents.desires.FreedomDesire;
+import de.feu.massim22.group3.agents.desires.GetBlockDesire;
+import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.desires.IDesire;
+import de.feu.massim22.group3.agents.desires.LooseWeightDesire;
+import de.feu.massim22.group3.agents.desires.ProcessEasyTaskDesire;
+import de.feu.massim22.group3.agents.desires.ReceiveAndConnectBlockDesire;
+import de.feu.massim22.group3.agents.desires.ReceiveBlockDesire;
+import de.feu.massim22.group3.agents.desires.WaitAtGoalZoneDesire;
+import de.feu.massim22.group3.agents.desires.WalkByGetRoleDesire;
+import de.feu.massim22.group3.agents.events.EventName;
+import de.feu.massim22.group3.agents.supervisor.AgentReport;
+import de.feu.massim22.group3.agents.supervisor.ISupervisor;
+import de.feu.massim22.group3.agents.supervisor.Supervisable;
+import de.feu.massim22.group3.agents.supervisor.Supervisor;
+import de.feu.massim22.group3.communication.EisSender;
+import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -41,6 +46,15 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
+/**
+ * The class <code>BdiAgentV1</code> defines an agent implementation of group 3 in the massim agent contest 2022.
+ * The class is one variant out of two implementations of the group. The other implementation is <code>BdiAgentV2</code>.
+ * Please be aware, that <code>BdiAgentV1</code> is no predecessor of <code>BdiAgentV2</code>. Both implementations
+ * define a separate approach and are not connected to each other.
+ * 
+ * @see BdiAgentV2
+ * @author Heinz Stadler
+ */
 public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisable {
     
     private Queue<BdiAgentV1.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
@@ -49,6 +63,14 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     private int index;
     private boolean merging = false;
     
+    /**
+     * Initializes a new Instance of BdiAgentV1.
+     * 
+     * @param name the name of the agent
+     * @param mailbox the mail service of the agent
+     * @param eisSender the object which sends the calculated action to the server
+     * @param index the index of the agent in the agent team
+     */
     public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
         super(name, mailbox);
         this.eisSender = eisSender;
@@ -57,26 +79,37 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         addBasicDesires();
     }
     
-    // Not needed for multi-threaded Agent 
+    /**
+     * This method functionality is not implemented in the agent and should not be used.
+     * @deprecated
+     */
     @Override
     public Action step() {
         return null;
     }
 
+    /**
+     * This method functionality is not implemented in the agent and should not be used.
+     * @deprecated
+     */
     @Override
     public void handlePercept(Percept percept) {
-        // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handleMessage(Percept message, String sender) {
         queue.add(new PerceptMessage(sender, message));
     }
 
     @Override
+    /**
+     * Permanently checks for new messages, handles them and calculates the current intention of the agent. 
+     */
     public void run() {
         while (true) {
-
             // Send Action if already calculated
             if (intention != null) {
                 ActionInfo info = intention.getNextActionInfo();
@@ -299,7 +332,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     }
 
     private void updateDesires() {
-
         // Create new Task Desires
         for (TaskInfo info : belief.getTaskInfo()) {
             // Simple Task
@@ -387,11 +419,17 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     private record PerceptMessage(String sender, Percept percept) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void forwardMessage(Percept message, String receiver, String sender) {
         this.sendMessage(message, receiver, sender);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initSupervisorStep() {
         int step = belief.getStep();

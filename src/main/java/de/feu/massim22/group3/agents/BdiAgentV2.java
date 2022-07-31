@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 import de.feu.massim22.group3.*;
-import de.feu.massim22.group3.agents.Desires.BDesires.IDesire;
+import de.feu.massim22.group3.agents.desires.IDesire;
+import de.feu.massim22.group3.agents.supervisor.Supervisable;
+import de.feu.massim22.group3.agents.supervisor.Supervisor;
+import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;

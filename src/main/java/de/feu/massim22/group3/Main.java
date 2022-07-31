@@ -7,6 +7,7 @@ import massim.eismassim.EnvironmentInterface;
 import java.io.File;
 import java.util.Scanner;
 
+import de.feu.massim22.group3.communication.Scheduler;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**

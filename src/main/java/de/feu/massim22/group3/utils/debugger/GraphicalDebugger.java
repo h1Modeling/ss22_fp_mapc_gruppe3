@@ -16,7 +16,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.Toolkit;
 import java.awt.event.*;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.map.Disposable;
 import de.feu.massim22.group3.utils.debugger.debugData.AgentDebugData;
 import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
@@ -25,11 +25,12 @@ import eis.iilang.Action;
 import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 
-/** The Class <code>GraphicalDebugger</code> defines a Frame to view debug information of the current simulation
-* and especially of Agents, their path finding and decision making. 
-*
-* @author Heinz Stadler
-*/
+/** 
+ * The Class <code>GraphicalDebugger</code> defines a Frame to view debug information of the current simulation
+ * and especially of Agents, their path finding and decision making. 
+ *
+ * @author Heinz Stadler
+ */
 public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDebugger {
 
     private Header header;

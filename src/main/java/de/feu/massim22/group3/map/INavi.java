@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.map;
 
-import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 
 import java.awt.Point;

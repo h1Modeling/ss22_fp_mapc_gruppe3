@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.utils.debugger.debugData;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
+import de.feu.massim22.group3.agents.desires.BooleanInfo;
 
 /**
  * The Record <code>DesireDebugData</code> provides a data structure to store information about a desire of an agent.

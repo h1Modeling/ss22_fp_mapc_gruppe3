@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
+import de.feu.massim22.group3.agents.desires.BooleanInfo;
 import de.feu.massim22.group3.utils.debugger.debugData.AgentDebugData;
 import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
 import net.miginfocom.swing.MigLayout;
