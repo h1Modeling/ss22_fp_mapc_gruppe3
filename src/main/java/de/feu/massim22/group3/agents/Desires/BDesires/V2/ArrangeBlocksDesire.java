@@ -107,7 +107,10 @@ public class ArrangeBlocksDesire extends BeliefDesire {
     
     private boolean existsTask(Thing block) {
         for (TaskInfo task : belief.getTaskInfo()) {
-            if (task.requirements.size() == 1 && block.details.equals(task.requirements.get(0).type)) {
+            if ((task.requirements.size() == 1 
+                    && (block.details.equals(task.requirements.get(0).type)))
+                    || (task.requirements.size() == 2 
+                    && (block.details.equals(task.requirements.get(0).type) || block.details.equals(task.requirements.get(1).type)))) {
                 return true;
             }
         }

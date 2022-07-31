@@ -423,6 +423,20 @@ public static BdiAgentV2 getAgent(String inAgent) {
 
     return result;
 }
+
+public static String[] attachedBlock = new String[11];
+
+public static int getNumberAttachedBlocks(String type) {
+    int result = 0;
+    
+    for (int i = 1; i <= 10; i++) {
+        if (attachedBlock[i] != null && attachedBlock[i].equals(type)) {
+            result++;
+        }
+    }
+    
+    return result;
+}
 }
 
 class AgentMeeting {

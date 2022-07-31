@@ -44,7 +44,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     
     public Supervisor supervisor;
     public int index;
-    boolean absolutePositions = true;
+    public boolean absolutePositions = true;
     public Point startPosition = new Point(Point.zero());
     public Meeting[] firstMeeting = new Meeting[11];
     private Point[] startPositions = {Point.zero()
@@ -58,7 +58,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             , new Point(1, 79)
             , new Point(15, 25)
             , new Point(61, 14)};
-
 
     /**
      * Constructor.
@@ -183,11 +182,13 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             if (belief.getLastAction().equals(Actions.ATTACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = true;
+                StepUtilities.attachedBlock[index] = getAttachedThings().get(0).type;
             }
 
             if (belief.getLastAction().equals(Actions.DETACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
+                StepUtilities.attachedBlock[index] = "";
                 
                 if (AgentCooperations.exists(this)) {
                     Cooperation coop = AgentCooperations.get(this);
@@ -203,6 +204,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             if (belief.getLastAction().equals(Actions.SUBMIT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
+                StepUtilities.attachedBlock[index] = "";
 
                 if (AgentCooperations.exists(this)) {
                     Cooperation coop = AgentCooperations.get(this);

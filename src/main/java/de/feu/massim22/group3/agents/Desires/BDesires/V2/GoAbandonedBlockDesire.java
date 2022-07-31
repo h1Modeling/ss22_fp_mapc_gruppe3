@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Desires.BDesires.*;
+import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
 public class GoAbandonedBlockDesire extends BeliefDesire {
@@ -53,7 +54,9 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
                     && (s == null || !s.type.equals(Thing.TYPE_ENTITY))
                     && (w == null || !w.type.equals(Thing.TYPE_ENTITY))
                     && (e == null || !e.type.equals(Thing.TYPE_ENTITY))) {
-                    possibleThings.add(t);
+                    
+                   if (existsTask(t))
+                       possibleThings.add(t);
                 }
             }
         }
@@ -94,4 +97,16 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
         String dir = getDirectionToRelativePoint(new Point(nearest.x, nearest.y));
         return getActionForMove(dir, getName());
     }
+        
+    private boolean existsTask(Thing block) {
+        for (TaskInfo task : belief.getTaskInfo()) {
+            if ((task.requirements.size() == 1 
+                    && (block.details.equals(task.requirements.get(0).type)))
+                    || (task.requirements.size() == 2 
+                    && (block.details.equals(task.requirements.get(0).type) || block.details.equals(task.requirements.get(1).type)))) {
+                return true;
+            }
+        }
+        return false;
+    } 
 }

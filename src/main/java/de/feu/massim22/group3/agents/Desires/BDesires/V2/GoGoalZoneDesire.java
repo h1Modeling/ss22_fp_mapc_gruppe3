@@ -75,12 +75,12 @@ public class GoGoalZoneDesire extends BeliefDesire {
             
             defaultGoalZone = true;
             result = true;
-            
-            if (agent.belief.getPosition().y < 28) 
+
+            if (Point.distance(Point.castToPoint(agent.belief.getPosition()), posDefaultGoalZone1) 
+                    < Point.distance(Point.castToPoint(agent.belief.getPosition()), posDefaultGoalZone2)) 
                 nearestGoalZone = posDefaultGoalZone1;
             else
-                nearestGoalZone = posDefaultGoalZone2;
-                
+                nearestGoalZone = posDefaultGoalZone2;               
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 7");

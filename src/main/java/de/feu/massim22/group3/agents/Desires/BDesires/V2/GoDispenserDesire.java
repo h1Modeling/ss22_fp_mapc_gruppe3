@@ -18,19 +18,19 @@ import massim.protocol.messages.scenario.Actions;
 public class GoDispenserDesire extends BeliefDesire {
     private List<ReachableDispenser> typeDispensers = new ArrayList<ReachableDispenser>();
     private BdiAgentV2 agent;
-    private Thing block;
-    private CellType dispenser;
+    private String block;
+//    private CellType dispenser;
     private String supervisor;
     private int distance;
     private boolean strangeAgent = false;
     //private StepUtilities stepUtilities;
 
-    public GoDispenserDesire(Belief belief, Thing block, String supervisor, BdiAgentV2 agent) {
+    public GoDispenserDesire(Belief belief, String block, String supervisor, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoDispenserDesire, Step: " + belief.getStep());
         this.agent = agent;
         this.block = block;
-        this.dispenser = Convert.blockNameToDispenser(block);
+//        this.dispenser = Convert.blockNameToDispenser(block);
         this.supervisor = supervisor;
         //this.stepUtilities = stepUtilities;
     }
@@ -44,63 +44,64 @@ public class GoDispenserDesire extends BeliefDesire {
                 return new BooleanInfo(true, "");
             }
         }
-        return new BooleanInfo(false, "No block " + block.type + " attached");
+        return new BooleanInfo(false, "No block " + block + " attached");
     }
 
     @Override
-	public BooleanInfo isExecutable() {
-		AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.isExecutable() Start - Agent: "
-				+ agent.getName());
-		if (agent.belief.getRole().actions().contains(Actions.REQUEST)
-				&& agent.belief.getRole().actions().contains(Actions.ATTACH)) {
-			if (belief.getReachableDispensersX().size() > 0) {
-				// es existiert ein Dispenser ( den der Agent erreichen kann)
-				List<ReachableDispenser> reachableDispensers = belief.getReachableDispensersX();
+    public BooleanInfo isExecutable() {
+        AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.isExecutable() Start - Agent: "
+                + agent.getName());
+        if (agent.belief.getRole().actions().contains(Actions.REQUEST)
+                && agent.belief.getRole().actions().contains(Actions.ATTACH)) {
+            if (belief.getReachableDispensersX().size() > 0) {
+                // es existiert ein Dispenser ( den der Agent erreichen kann)
+                List<ReachableDispenser> reachableDispensers = belief.getReachableDispensersX();
 
-				AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block.type);
-				// bestimmter Blocktyp wird gesucht
-				// AgentLogger.info(Thread.currentThread().getName() + ".isExecutable()
-				// Dispenser: " + reachableDispensers);
+                AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block);
+                // AgentLogger.info(Thread.currentThread().getName() + ".isExecutable()
+                // Dispenser: " + reachableDispensers);
 
-				for (ReachableDispenser reachableDispenser : reachableDispensers) {
-					// alle Dispenser vom gesuchten Typ
-					String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
+                for (ReachableDispenser reachableDispenser : reachableDispensers) {
+                    // alle Dispenser vom gesuchten Typ
+                    String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
 
-					if (typeDispenser.equals(block.type)) {
-						typeDispensers.add(reachableDispenser);
-					}
-				}
-				AgentLogger
-						.info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
-				if (typeDispensers.size() > 0) {
-					// es wurde ein Dispenser vom gesuchten Typ gefunden
-					return new BooleanInfo(true, "");
-				} else {
-				    for (Supervisor a : StepUtilities.allSupervisors) {
-				        if (!a.equals(agent.supervisor)) {
-				            reachableDispensers = a.getParent().belief.getReachableDispensersX();
-				            
-				            for (ReachableDispenser reachableDispenser : reachableDispensers) {
-			                    // alle Dispenser vom gesuchten Typ
-			                    String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
+                    if (typeDispenser.equals(block)) {
+                        typeDispensers.add(reachableDispenser);
+                    }
+                }
+                AgentLogger
+                        .info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
+                if (typeDispensers.size() > 0) {
+                    // es wurde ein Dispenser vom gesuchten Typ gefunden
+                    return new BooleanInfo(true, "");
+                } else {
+                    if (agent.absolutePositions) {
+                        for (Supervisor a : StepUtilities.allSupervisors) {
+                            if (!a.equals(agent.supervisor)) {
+                                reachableDispensers = a.getParent().belief.getReachableDispensersX();
 
-			                    if (typeDispenser.equals(block.type)) {
-			                        typeDispensers.add(reachableDispenser);
-			                    }
-			                }
-				            
-			                if (typeDispensers.size() > 0) {
-			                    // es wurde ein Dispenser vom gesuchten Typ gefunden
-			                    strangeAgent = true;
-			                    return new BooleanInfo(true, "");
-			                }
-				        }
-				    }
-				}
-			}
-		}
-		return new BooleanInfo(false, "");
-	}
+                                for (ReachableDispenser reachableDispenser : reachableDispensers) {
+                                    // alle Dispenser vom gesuchten Typ
+                                    String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
+
+                                    if (typeDispenser.equals(block)) {
+                                        typeDispensers.add(reachableDispenser);
+                                    }
+                                }
+
+                                if (typeDispensers.size() > 0) {
+                                    // es wurde ein Dispenser vom gesuchten Typ gefunden
+                                    strangeAgent = true;
+                                    return new BooleanInfo(true, "");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return new BooleanInfo(false, "");
+    }
 
     @Override
     public ActionInfo getNextActionInfo() {
@@ -113,7 +114,7 @@ public class GoDispenserDesire extends BeliefDesire {
         
         // Dispenser mit der kürzesten Entfernung zum Agenten
         AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,1");
-        Point visionDispenser = Point.castToPoint(belief.getNearestRelativeManhattenDispenser(block.type));
+        Point visionDispenser = Point.castToPoint(belief.getNearestRelativeManhattenDispenser(block));
         AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,2");
         
         if (visionDispenser != null) {
@@ -234,23 +235,12 @@ public class GoDispenserDesire extends BeliefDesire {
         }
     }
     
-    /*private boolean attachMade(Point dispenser) {
-    	boolean result = false;
-    	for(DispenserFlag dFlag : agent.desireProcessing.dFlags ) {
-    		if((dFlag.position().equals(dispenser) && dFlag.attachMade())) {
-    			result = true;
-    			break;
-    		}
-    	}
-    	return result;
-    }*/
-    
     @Override
     public int getPriority() {
         return distance - 1;
     }
     
-    public Thing getBlock() {
+    public String getBlock() {
         return block;
     }
 

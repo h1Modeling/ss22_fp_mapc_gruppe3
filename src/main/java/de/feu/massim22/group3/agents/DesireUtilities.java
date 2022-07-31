@@ -199,8 +199,10 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoAbandonedBlockDesire");
                 
+                String bType = (StepUtilities.getNumberAttachedBlocks(getTaskBlock(agent, task).type) < 4 ? getTaskBlock(agent, task).type : "b2");
+                
                 if (!agent.blockAttached 
-                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlock(agent, task), supervisor.getName(), agent))) {
+                    && doDecision(agent, new GoDispenserDesire(agent.belief, bType, supervisor.getName(), agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoDispenserDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
@@ -332,14 +334,14 @@ public class DesireUtilities {
             else {
                 result = 250 - desire.getPriority();
                 
-               switch (((GoDispenserDesire) desire).getBlock().type) {
+               switch (((GoDispenserDesire) desire).getBlock()) {
                case "b0":
-                   if (agent.index % 2 == 0)
-                       result -= 10; 
+                   break;
                case "b1":
+                   break;
                case "b2":
-                   if (agent.index % 2 != 0)
-                       result += 10;
+                   result = 290;
+                   break;
                }
             }
             break;
@@ -596,6 +598,7 @@ public class DesireUtilities {
         Thing result = task.requirements.get(0);
         // ein Block Task
         if (task.requirements.size() > 1) {
+            // 2 Block Task
             for (Meeting meeting : AgentMeetings.find(agent)) {
                 if (!meeting.agent2().getAttachedThings().isEmpty()) {
                     for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
