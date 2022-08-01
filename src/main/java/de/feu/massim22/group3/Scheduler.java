@@ -18,7 +18,7 @@ import de.feu.massim22.group3.agents.BasicAgent;
 import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.Supervisable;
-import de.feu.massim22.group3.agents.Desires.ActionInfo;
+import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.map.INavi;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;

@@ -8,11 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.Desires.GroupDesireTypes;
-import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
-import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
-import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;
-import de.feu.massim22.group3.agents.Reachable.ReachableTeammate;
+import de.feu.massim22.group3.agents.belief.reachable.*;
+import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.Convert;

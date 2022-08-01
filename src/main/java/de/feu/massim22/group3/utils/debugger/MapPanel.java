@@ -6,8 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.event.MouseInputAdapter;
 
-import de.feu.massim22.group3.agents.Desires.ActionInfo;
-import de.feu.massim22.group3.agents.Desires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.desires.ActionInfo;
+import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;

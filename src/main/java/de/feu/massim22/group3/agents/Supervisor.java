@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.SupervisorEventName;
-import de.feu.massim22.group3.agents.Desires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
