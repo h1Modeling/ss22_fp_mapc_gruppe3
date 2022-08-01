@@ -486,11 +486,11 @@ public class Belief {
         return step;
     }
 
-    int getSteps() {
+    public int getSteps() {
         return steps;
     }
 
-    int getTeamSize() {
+    public int getTeamSize() {
         return teamSize;
     }
 
@@ -769,7 +769,7 @@ public class Belief {
         forbiddenThings.add(t);
     }
 
-    void setPosition(Point position) {
+    public void setPosition(Point position) {
         this.position = position;
     }
 
