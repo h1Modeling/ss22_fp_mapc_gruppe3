@@ -4,12 +4,13 @@ import eis.iilang.Percept;
 
 import java.util.*;
 
-import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.communication.MailService;
 
 /**
  * An abstract Java agent.
  * 
  * @author massim team
+ * @author Heinz Stadler (minor contribution)
  */
 public abstract class Agent {
 
@@ -36,6 +37,7 @@ public abstract class Agent {
 
     /**
      * Called for each step.
+     * @return the action which should be send to the server
      */
     public abstract eis.iilang.Action step();
 

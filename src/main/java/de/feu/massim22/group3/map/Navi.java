@@ -11,10 +11,10 @@ import javax.swing.SwingUtilities;
 
 import org.lwjgl.BufferUtils;
 
-import de.feu.massim22.group3.EventName;
-import de.feu.massim22.group3.MailService;
-import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.events.EventName;
+import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
 import de.feu.massim22.group3.utils.debugger.IGraphicalDebugger;
