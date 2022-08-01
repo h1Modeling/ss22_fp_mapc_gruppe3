@@ -3,9 +3,8 @@ package de.feu.massim22.group3.agents.desires;
 import java.util.ArrayList;
 import java.util.List;
 import eis.iilang.Action;
-
-import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;

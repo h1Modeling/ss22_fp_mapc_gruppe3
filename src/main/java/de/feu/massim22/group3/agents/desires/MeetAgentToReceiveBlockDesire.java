@@ -3,8 +3,8 @@ package de.feu.massim22.group3.agents.desires;
 import java.util.List;
 import java.util.Set;
 
-import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import massim.protocol.data.Thing;
 

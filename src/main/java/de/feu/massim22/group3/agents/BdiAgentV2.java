@@ -4,6 +4,7 @@ import eis.iilang.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.IDesire;
+import de.feu.massim22.group3.communication.MailService;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;

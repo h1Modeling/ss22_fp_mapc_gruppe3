@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;

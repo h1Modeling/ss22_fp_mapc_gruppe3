@@ -2,8 +2,8 @@ package de.feu.massim22.group3.agents.desires;
 
 import java.util.List;
 
-import de.feu.massim22.group3.agents.Belief;
 import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 
 import java.awt.Point;

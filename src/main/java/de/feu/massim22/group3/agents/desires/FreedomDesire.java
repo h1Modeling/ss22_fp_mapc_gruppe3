@@ -2,7 +2,7 @@ package de.feu.massim22.group3.agents.desires;
 
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.agents.belief.Belief;
 import massim.protocol.data.Thing;
 
 public class FreedomDesire extends BeliefDesire {

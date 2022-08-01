@@ -1,10 +1,11 @@
 package de.feu.massim22.group3.agents.desires;
 
-import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.Thing;
 
 import java.awt.Point;
 import java.util.List;
+
+import de.feu.massim22.group3.agents.belief.Belief;
 
 public class DigFreeDesire extends BeliefDesire {
 

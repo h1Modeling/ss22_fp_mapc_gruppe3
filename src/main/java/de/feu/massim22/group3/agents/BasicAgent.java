@@ -4,7 +4,7 @@ import eis.iilang.*;
 
 import java.util.List;
 
-import de.feu.massim22.group3.MailService;
+import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**

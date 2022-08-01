@@ -1,4 +1,4 @@
-package de.feu.massim22.group3;
+package de.feu.massim22.group3.communication;
 
 import eis.iilang.Percept;
 import java.util.HashMap;

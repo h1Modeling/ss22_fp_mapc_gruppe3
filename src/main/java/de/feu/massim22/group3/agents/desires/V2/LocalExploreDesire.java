@@ -1,10 +1,8 @@
 package de.feu.massim22.group3.agents.desires.V2;
 
-import de.feu.massim22.group3.agents.Point;
+import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
-import de.feu.massim22.group3.agents.Belief;
-import de.feu.massim22.group3.agents.DirectionUtil;
-import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
 

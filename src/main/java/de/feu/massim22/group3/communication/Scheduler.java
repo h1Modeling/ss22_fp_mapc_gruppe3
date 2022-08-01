@@ -1,4 +1,4 @@
-package de.feu.massim22.group3;
+package de.feu.massim22.group3.communication;
 
 import eis.AgentListener;
 import eis.EnvironmentListener;

@@ -1,9 +1,10 @@
 package de.feu.massim22.group3.agents.desires;
 
-import de.feu.massim22.group3.agents.Belief;
 import massim.protocol.data.Role;
 
 import java.awt.Point;
+
+import de.feu.massim22.group3.agents.belief.Belief;
 
 public class WalkByGetRoleDesire extends BeliefDesire {
 

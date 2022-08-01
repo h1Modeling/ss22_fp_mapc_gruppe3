@@ -5,6 +5,7 @@ import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.utils.logging.AgentLogger;

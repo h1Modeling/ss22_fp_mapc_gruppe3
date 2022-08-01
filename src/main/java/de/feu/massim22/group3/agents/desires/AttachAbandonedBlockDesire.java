@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.Belief;
+import de.feu.massim22.group3.agents.belief.Belief;
 import massim.protocol.data.Thing;
 
 public class AttachAbandonedBlockDesire extends BeliefDesire {
