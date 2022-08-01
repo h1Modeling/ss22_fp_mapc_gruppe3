@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.AgentReport;
 import de.feu.massim22.group3.agents.belief.reachable.*;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.PerceptUtil;
+import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Parameter;

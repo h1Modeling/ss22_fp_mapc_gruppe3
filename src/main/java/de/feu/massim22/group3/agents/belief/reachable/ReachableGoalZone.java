@@ -1,8 +1,8 @@
 package de.feu.massim22.group3.agents.belief.reachable;
 
-import de.feu.massim22.group3.agents.DirectionUtil;
-
 import java.awt.Point;
+
+import de.feu.massim22.group3.utils.DirectionUtil;
 
 public record ReachableGoalZone(Point position, int distance, int direction) {
     public String toString() {

@@ -3,6 +3,7 @@ package de.feu.massim22.group3;
 import eis.exceptions.ManagementException;
 import eis.iilang.EnvironmentState;
 import massim.eismassim.EnvironmentInterface;
+import de.feu.massim22.group3.communication.Scheduler;
 
 import java.io.File;
 import java.util.Scanner;

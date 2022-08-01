@@ -1,9 +1,10 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.utils;
 
 import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 
 public class DirectionUtil {
 	public static String intToString(int direction) {
