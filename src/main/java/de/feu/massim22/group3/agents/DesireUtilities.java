@@ -6,9 +6,8 @@ import java.util.*;
 import javax.management.relation.RoleStatus;
 import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
-import de.feu.massim22.group3.agents.Desires.BDesires.*;
-import de.feu.massim22.group3.agents.Desires.BDesires.V2.*;
-
+import de.feu.massim22.group3.agents.Desires.*;
+import de.feu.massim22.group3.agents.Desires.V2.*;
 import de.feu.massim22.group3.agents.Reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.Reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.Reachable.ReachableRoleZone;

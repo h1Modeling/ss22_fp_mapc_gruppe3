@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.plaf.ColorUIResource;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.Desires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import java.awt.geom.Rectangle2D;
 

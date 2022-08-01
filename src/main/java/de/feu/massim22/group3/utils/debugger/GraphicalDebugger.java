@@ -16,8 +16,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
-import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.Desires.BooleanInfo;
+import de.feu.massim22.group3.agents.Desires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.InterestingPoint;
 import de.feu.massim22.group3.map.PathFindingResult;

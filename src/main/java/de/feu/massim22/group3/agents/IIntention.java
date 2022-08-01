@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.agents;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.ActionInfo;
+import de.feu.massim22.group3.agents.Desires.ActionInfo;
 import eis.iilang.Action;
 
 public interface IIntention {
