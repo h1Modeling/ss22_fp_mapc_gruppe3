@@ -211,7 +211,8 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
                 
-                if (maxTaskBlocks > 1 && agent.blockAttached 
+               // if (maxTaskBlocks > 1 && agent.blockAttached 
+                if (maxTaskBlocks == 2 && agent.blockAttached 
                         && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , HelpMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
@@ -220,6 +221,16 @@ public class DesireUtilities {
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , HelpMultiBlocksDesire");
+                
+                if (maxTaskBlocks == 3 && agent.blockAttached 
+                        && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task, agent)) && doDecision(agent, new HelpMultiBlocksDesire2(agent.belief, task, agent))) {
+                    AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
+                    + " , HelpMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                        } else
+                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        + " , HelpMultiBlocksDesire"   + " , HelpMultiBlocksDesire2");
 
                 if (agent.blockAttached && !agent.belief.getGoalZones().contains(Point.zero()) 
                     && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
@@ -360,6 +371,16 @@ public class DesireUtilities {
                 result = 500;
             break;
         case "HelpMultiBlocksDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 1000;
+            else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
+                result = 1000;
+            else if (desire.getOutputAction().getName().equals(Actions.DETACH))
+                result = 1000;
+            else
+                result = 600;
+            break;
+        case "HelpMultiBlocksDesire2":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
