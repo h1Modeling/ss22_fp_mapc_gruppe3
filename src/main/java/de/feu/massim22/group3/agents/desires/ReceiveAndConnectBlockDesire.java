@@ -4,9 +4,9 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.feu.massim22.group3.EventName;
-import de.feu.massim22.group3.agents.Supervisable;
 import de.feu.massim22.group3.agents.belief.Belief;
+import de.feu.massim22.group3.agents.events.EventName;
+import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Parameter;

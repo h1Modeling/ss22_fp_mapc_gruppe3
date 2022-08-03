@@ -8,9 +8,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.agents.events.EventName;
+import de.feu.massim22.group3.agents.supervisor.*;
 import de.feu.massim22.group3.communication.EisSender;
 import de.feu.massim22.group3.communication.MailService;
-import de.feu.massim22.group3.EventName;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.DirectionUtil;

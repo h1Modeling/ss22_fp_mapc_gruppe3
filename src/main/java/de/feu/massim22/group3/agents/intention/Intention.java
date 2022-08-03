@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.intention;
 
 import eis.iilang.Action;
 

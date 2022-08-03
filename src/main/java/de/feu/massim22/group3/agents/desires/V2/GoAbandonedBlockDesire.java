@@ -4,10 +4,13 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.desires.*;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.ActionResults;
+import massim.protocol.messages.scenario.Actions;
 
 public class GoAbandonedBlockDesire extends BeliefDesire {
 
@@ -40,31 +43,47 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
         nearest = null;
         int vision = belief.getVision();
         List<Thing> possibleThings = new ArrayList<>();
-        
+
         for (Thing t : belief.getThings()) {
             int distance = Math.abs(t.x) + Math.abs(t.y);
-            
+
             if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block) && distance < vision) {
-                Thing n = t.x == 0 && t.y == 1 ? null : belief.getThingAt(new Point(t.x, t.y -1));
+                Thing n = t.x == 0 && t.y == 1 ? null : belief.getThingAt(new Point(t.x, t.y - 1));
                 Thing s = t.x == 0 && t.y == -1 ? null : belief.getThingAt(new Point(t.x, t.y + 1));
                 Thing e = t.x == -1 && t.y == 0 ? null : belief.getThingAt(new Point(t.x + 1, t.y));
                 Thing w = t.x == 1 && t.y == 0 ? null : belief.getThingAt(new Point(t.x - 1, t.y));
                 // Test if agent is around
-                if ((n == null || !n.type.equals(Thing.TYPE_ENTITY))
-                    && (s == null || !s.type.equals(Thing.TYPE_ENTITY))
-                    && (w == null || !w.type.equals(Thing.TYPE_ENTITY))
-                    && (e == null || !e.type.equals(Thing.TYPE_ENTITY))) {
-                    
-                   if (existsTask(t))
-                       possibleThings.add(t);
+                if ((n == null || !n.type.equals(Thing.TYPE_ENTITY)) && (s == null || !s.type.equals(Thing.TYPE_ENTITY))
+                        && (w == null || !w.type.equals(Thing.TYPE_ENTITY))
+                        && (e == null || !e.type.equals(Thing.TYPE_ENTITY))) {
+
+                    if (existsTask(t)) {
+                        boolean add = true;
+
+                        if (belief.getLastAction().equals(Actions.DETACH)
+                                && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+                            if (AgentCooperations.exists(agent)) {
+                                Cooperation coop = AgentCooperations.get(agent);
+                                if ((coop.helper().equals(agent) && coop.statusHelper().equals(Status.Detached))
+                                        || (coop.helper2() != null && coop.helper2().equals(agent)
+                                                && coop.statusHelper2().equals(Status.Detached))) {
+                                    add = false;
+                                }
+                            }
+                        }
+
+                        if (add) possibleThings.add(t);
+                    }
                 }
             }
         }
+
         if (possibleThings.size() > 0) {
             possibleThings.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
             nearest = possibleThings.get(0);
             return new BooleanInfo(true, "");
-        } 
+        }
+
         return new BooleanInfo(false, "No abandoned block in vision");
     }
 

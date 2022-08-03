@@ -4,6 +4,7 @@ package de.feu.massim22.group3.agents;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
@@ -26,6 +27,7 @@ public class StepUtilities {
     //public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
     boolean mergeGroups = true;
     boolean alwaysAgentMeetings = true;
+    public static int countMaster = 0;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
@@ -353,8 +355,6 @@ public class StepUtilities {
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos = Point.castToPoint(interestingPoints.get(j).point());
-                    //targetPos.x = (((targetPos.x % 64) + 64) % 64);
-                    //targetPos.y = (((targetPos.y % 92) + 92) % 92);
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
@@ -426,6 +426,16 @@ public static BdiAgentV2 getAgent(String inAgent) {
 }
 
 public static String[] attachedBlock = new String[11];
+
+public static String getAttachedBlocks() {
+    String result = "";
+    
+    for (int i = 1; i <= 10; i++) {
+        result = result + "[" + attachedBlock[i] + "] , ";
+    }
+    
+    return result;
+}
 
 public static int getNumberAttachedBlocks(String type) {
     int result = 0;

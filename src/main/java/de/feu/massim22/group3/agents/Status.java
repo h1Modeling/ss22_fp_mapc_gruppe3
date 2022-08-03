@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents;
 
 public enum Status {
+    No2("no2"),
     Open("ope"),
     New("new"),
     GoGoalZone("ggz"),

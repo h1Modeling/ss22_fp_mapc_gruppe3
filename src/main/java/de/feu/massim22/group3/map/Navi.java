@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 
 import org.lwjgl.BufferUtils;
 
-import de.feu.massim22.group3.EventName;
+import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.DirectionUtil;

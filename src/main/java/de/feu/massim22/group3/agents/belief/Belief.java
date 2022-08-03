@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.AgentReport;
 import de.feu.massim22.group3.agents.belief.reachable.*;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.supervisor.AgentReport;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.Convert;
@@ -76,6 +76,9 @@ public class Belief {
     private List<ForbiddenThing> forbiddenThings = new ArrayList<>();
     private String groupDesireType = GroupDesireTypes.NONE;
     private List<ConnectionReport> connectionReports = new ArrayList<>();
+    
+    //private Point mapSize = new Point(64, 92);
+    private Point mapSize = new Point(32, 32);
 
     public Belief(String agentName) {
         this.agentShortName = agentName;
@@ -312,7 +315,7 @@ public class Belief {
         }
     }
 
-    void updateFromPathFinding(List<Parameter> points) {
+    public void updateFromPathFinding(List<Parameter> points) {
         reachableDispensers.clear();
         reachableGoalZones.clear();
         reachableRoleZones.clear();
@@ -692,6 +695,15 @@ public class Belief {
         }
         return null;
     }
+    
+    public Thing getBlockAt(Point p) {
+        for (Thing t : things) {
+            if (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) {
+                return t;
+            }
+        }
+        return null;
+    }
 
     public Thing getConnectedThingAt(Point p) {
         for (Point oap : ownAttachedPoints) {
@@ -773,7 +785,7 @@ public class Belief {
         this.position = position;
     }
 
-    String reachablesToString() {
+    public String reachablesToString() {
         StringBuilder b = new StringBuilder();
         for (ReachableDispenser d : reachableDispensers) {
             b.append(d);
@@ -790,7 +802,7 @@ public class Belief {
         return b.toString();
     }
 
-    AgentReport getAgentReport() {
+    public AgentReport getAgentReport() {
         // Calculate available Actions
         Set<String> availableActions = new HashSet<>();
         Role d = roles.get("default");
@@ -1038,10 +1050,8 @@ public class Belief {
             }
         }
         
-        position.x = (((position.x % 64) + 64) % 64);
-        position.y = (((position.y % 92) + 92) % 92);
-        //position.x = (((position.x % 32) + 32) % 32);
-        //position.y = (((position.y % 32) + 32) % 32);
+        position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
+        position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     
@@ -1083,8 +1093,8 @@ public class Belief {
         for (ReachableDispenser rd : reachableDispensers) {
             if (rd.data().equals("x")) {
                 Point agentPos = getPosition();
-                int posx = (((rd.position().x % 64) + 64) % 64);
-                int posy = (((rd.position().y % 92) + 92) % 92);
+                int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
+                int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
                 int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
                 int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));             
                 ReachableDispenser rdnew = new ReachableDispenser(new Point(posx, posy), rd.type(),  distance,  direction, rd.data());
@@ -1100,8 +1110,8 @@ public class Belief {
         
         for (ReachableGoalZone rd : this.reachableGoalZones) {
             Point agentPos = getPosition();
-            int posx = (((rd.position().x % 64) + 64) % 64);
-            int posy = (((rd.position().y % 92) + 92) % 92);
+            int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
+            int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
             int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
             int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
             ReachableGoalZone rdnew = new ReachableGoalZone(new Point(posx, posy), distance, direction);
@@ -1116,8 +1126,8 @@ public class Belief {
         
         for (ReachableRoleZone rd : this.reachableRoleZones) {
             Point agentPos = getPosition();
-            int posx = (((rd.position().x % 64) + 64) % 64);
-            int posy = (((rd.position().y % 92) + 92) % 92);
+            int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
+            int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
             int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
             int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
             ReachableRoleZone rdnew = new ReachableRoleZone(new Point(posx, posy), distance, direction);

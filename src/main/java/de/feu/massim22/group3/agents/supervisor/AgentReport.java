@@ -1,11 +1,11 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.supervisor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.feu.massim22.group3.SupervisorEventName;
+import de.feu.massim22.group3.agents.events.SupervisorEventName;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import eis.iilang.Function;
 import eis.iilang.Identifier;

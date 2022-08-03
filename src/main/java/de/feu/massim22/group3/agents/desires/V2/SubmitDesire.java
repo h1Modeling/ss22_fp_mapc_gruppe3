@@ -18,7 +18,7 @@ public class SubmitDesire extends BeliefDesire {
     
     public SubmitDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Start SubmitDesire, Step: " + belief.getStep());
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
         this.info = info;
         this.agent = agent;
     }
@@ -36,18 +36,28 @@ public class SubmitDesire extends BeliefDesire {
                 for (Thing t : this.info.requirements) {
                     Thing atAgent = belief.getThingAt(new Point(t.x, t.y));
                     if (atAgent == null || !atAgent.type.equals(Thing.TYPE_BLOCK) || !atAgent.details.equals(t.type)) {
-                        return new BooleanInfo(false, "");
+                        result = false;
                     }
                 }
             }
             
-            if (AgentCooperations.exists(this.info, agent, 1)) {
-                AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - proofBlockStructure - ist master");
-             // Agent ist als master in einer cooperation 
-                Cooperation coop = AgentCooperations.get(this.info, agent, 1);
-                
-                if (!(coop.statusMaster().equals(Status.Connected) && coop.statusHelper().equals(Status.Detached))) {
-                    return new BooleanInfo(false, "");
+            if (result == true) {
+                if (this.info.requirements.size() > 1) {
+                    if (!AgentCooperations.exists(this.info, agent, 1)) {
+                        result = false;
+                    } else {
+                        AgentLogger.info(Thread.currentThread().getName()
+                                + " runSupervisorDecisions - proofBlockStructure - ist master");
+                        // Agent ist als master in einer cooperation dieser task
+                        Cooperation coop = AgentCooperations.get(this.info, agent, 1);
+
+                        if (!(coop.statusMaster().equals(Status.Connected)
+                                && coop.statusHelper().equals(Status.Detached)
+                                && (coop.statusHelper2().equals(Status.Detached)
+                                        || coop.statusHelper2().equals(Status.No2)))) {
+                            result = false;
+                        }
+                    }
                 }
             }
         }

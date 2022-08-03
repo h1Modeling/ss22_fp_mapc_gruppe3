@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.supervisor;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import de.feu.massim22.group3.EventName;
-import de.feu.massim22.group3.SupervisorEventName;
+import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
+import de.feu.massim22.group3.agents.events.EventName;
+import de.feu.massim22.group3.agents.events.SupervisorEventName;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;

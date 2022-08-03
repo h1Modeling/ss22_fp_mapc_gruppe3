@@ -52,7 +52,7 @@ public class DirectionUtil {
            
            return result;
     }
-	
+		
 	   public static int getDirectionForCell(Point inCell) {
            if (inCell.equals(new Point(0, -1)))
                return 1;

@@ -1,9 +1,9 @@
 package de.feu.massim22.group3.agents.desires;
 
-import de.feu.massim22.group3.EventName;
-import de.feu.massim22.group3.agents.Supervisable;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
+import de.feu.massim22.group3.agents.events.EventName;
+import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import eis.iilang.Percept;
 import massim.protocol.data.Thing;
 

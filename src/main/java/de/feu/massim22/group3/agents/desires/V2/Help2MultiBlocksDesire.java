@@ -14,14 +14,14 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
-public class HelpMultiBlocksDesire extends BeliefDesire {
+public class Help2MultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
     private BdiAgentV2 agent;
     private Cooperation coop;
     private int distanceMaster;
     
-    private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>(); 
+    private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>();
     private int distanceAgent;
     private Meeting nearestMeeting;
     private boolean onTarget;
@@ -29,21 +29,20 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
     private int nearestTarget;
     private Point target;
     private Point myBlock;
-    private Point block1;
     private Point block2;
-    private String dirBlock2;
-    private List<Point> targets = new ArrayList<Point>();
+    private Point block3;
+    private String dirblock3;
     
-    public HelpMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
+    public Help2MultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start HelpMultiBlocksDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start Help2MultiBlocksDesire");
         this.info = info;
         this.agent = agent;
     }
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isFulfilled");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isFulfilled");
 
         return new BooleanInfo(false, "");
     }
@@ -51,15 +50,15 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable");
+                Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isExecutable");
         onTarget = false;
 
         if (belief.getRole().actions().contains(Actions.DETACH) 
                 && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
-            // Mehr Block Task
-            if (info.requirements.size() >= 2) {
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable - Mehr-Block-Task: " + info.name);
+            // 3 Block Task
+            if (info.requirements.size() == 3) {
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isExecutable - 3-Block-Task: " + info.name);
                 // Die Blöcke für die Task sind vorhanden
                 if (proofBlockStructure(info)) {                    
                     distanceNearestTarget = 1000;
@@ -74,48 +73,44 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                         nearestMeeting = new Meeting(agent, Point.zero(), Point.zero(), Point.zero(), coop.master(), Point.zero(), Point.zero(), Point.zero());
                     }
                     
-                    AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable - meeting: " 
+                    AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isExecutable - meeting: " 
                     + distanceAgent + " , " + nearestMeeting.toString());
 
-                    if (distanceAgent <= 3 || agent.alwaysToTarget) {
+                    if (distanceAgent <= 4 || agent.alwaysToTarget) {
                         // Agent1 hat Agent2 in connect-Entfernung
                         ArrayList<java.awt.Point> dirs = DirectionUtil.getCellsIn4Directions();
 
                         for (int i = 0; i < dirs.size(); i++) {
-                            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable - block2: " 
-                                    + block2.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + i);
+                            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isExecutable - block3: " 
+                                    + block3.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + i);
                             
                             Thing t = coop.master().belief
-                                    .getThingAt(new Point(new Point(block2).add(Point.castToPoint(dirs.get(i)))));
+                                    .getThingAt(new Point(new Point(block3).add(Point.castToPoint(dirs.get(i)))));
                             
-                            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable - block2: " 
-                                    + block2.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + t + " , " 
+                            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isExecutable - block3: " 
+                                    + block3.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + t + " , " 
                                     + AgentMeetings.getPositionAgent2(nearestMeeting).toString());
                             
-                            //target = AgentMeetings.getPositionAgent2(nearestMeeting).add(block2).add(Point.castToPoint(dirs.get(i)));
+                            //target = AgentMeetings.getPositionAgent2(nearestMeeting).add(block3).add(Point.castToPoint(dirs.get(i)));
                             //target = Point.castToPoint(coop.master().belief.getPosition()).translate2To1(nearestMeeting);  
                             target = Point.castToPoint(coop.master().belief.getPosition()); 
-                            target = target.add(block2);
+                            target = target.add(block3);
                             target = target.add(Point.castToPoint(dirs.get(i)));
                             
-                            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable - block2: " 
-                                    + block2.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + target.toString());
+                            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isExecutable - block3: " 
+                                    + block3.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + target.toString());
                             
                             int distanceTarget = Point.distance(Point.castToPoint(agent.belief.getPosition()),target);
 
                             if (distanceTarget == 0) {
-                                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.isExecutable - on Target ");
+                                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.isExecutable - on Target ");
                                 onTarget = true;
-                                dirBlock2 = DirectionUtil.oppositeDirection(DirectionUtil.intToString(i));
+                                dirblock3 = DirectionUtil.oppositeDirection(DirectionUtil.intToString(i));
                                 break;
                             } else {
-                                if (isFree(t)) {
-                                    targets.add(new Point(dirs.get(i).x, dirs.get(i).y));
-                                    
-                                    if (distanceTarget < distanceNearestTarget) {
-                                        distanceNearestTarget = distanceTarget;
-                                        nearestTarget = i;
-                                    }
+                                if (isFree(t) && distanceTarget < distanceNearestTarget) {
+                                    distanceNearestTarget = distanceTarget;
+                                    nearestTarget = i;
                                 }
                             }
                         }
@@ -134,31 +129,31 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo");
+                Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo");
     
         if (onTarget) {     //Agent2 steht auf einer der Target-Positionen für den Connect
-            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - AA: " 
-        + DirectionUtil.getDirectionForCell(myBlock) + " , " + dirBlock2);
+            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - AA: " 
+        + DirectionUtil.getDirectionForCell(myBlock) + " , " + dirblock3);
             
-            if (DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)).equals(dirBlock2)) {
+            if (DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)).equals(dirblock3)) {
                 //Block ist bereits an der richtigen Position
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - BB");
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - BB");
                 
-                if (coop.statusHelper().equals(Status.Connected) || coop.statusHelper().equals(Status.ReadyToDetach)) {                   
-                    AgentCooperations.setStatusHelper(info, coop.helper(), Status.ReadyToDetach);                  
+                if (coop.statusHelper2().equals(Status.Connected) || coop.statusHelper2().equals(Status.ReadyToDetach)) {                   
+                    AgentCooperations.setStatusHelper2(info, coop.helper2(), Status.ReadyToDetach);                  
                     return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)), getName());
                     
                 } else {
-                    AgentCooperations.setStatusHelper(info, coop.helper(), Status.ReadyToConnect);
+                    AgentCooperations.setStatusHelper2(info, coop.helper(), Status.ReadyToConnect);
                     return ActionInfo.SKIP("1000 waiting for master to be ready to connect");
                 }
             } else {
                 //Block muss noch gedreht werden
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - CC");
-                Point taskBlock = Point.castToPoint(DirectionUtil.getCellInDirection(dirBlock2));
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - CC");
+                Point taskBlock = Point.castToPoint(DirectionUtil.getCellInDirection(dirblock3));
                 Point agentBlock = myBlock;
                 
-                AgentCooperations.setStatusHelper(info, nearestMeeting.agent1(), Status.Arranging);
+                AgentCooperations.setStatusHelper2(info, nearestMeeting.agent1(), Status.Arranging);
                 String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);
 
                 if (clockDirection == "") {
@@ -191,38 +186,22 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 }
             }
         } else {
-            AgentLogger.info(Thread.currentThread().getName() + " vor getStatusMaster - para: " + info.name + " , " + nearestMeeting.toString());
+            AgentLogger.info(Thread.currentThread().getName() + " vor getStatusHelper - para: " + info.name + " , " + nearestMeeting.toString());
             
             if (distanceNearestTarget <= 3 || agent.alwaysToTarget) {
               //gehe zur Target-Position für den Connect
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - DD");
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - DD");
                 String direction = DirectionUtil.getDirection(agent.belief.getPosition(), target);
-                AgentCooperations.setStatusHelper(info, nearestMeeting.agent1(), Status.GoTarget);
-                agent.alwaysToTarget = true; 
-                String dirAlt = "";
-                AgentLogger.info(Thread.currentThread().getName() + "HelpMultiBlocksDesire - nextActionDirectionManhatten: "
-                        + direction + " , altdir: " + dirAlt);
-                return agent.desireProcessing.getActionForMove(agent, direction, getName());
-
-                /*for (int i = 1; i < targets.size(); i++) {
-                    dirAlt = getDirectionToRelativePoint(targets.get(i));
-
-                    if (!dirAlt.equals(direction)) {
-                        break;
-                    }
-                } 
-                
-                if (dirAlt.equals(""))
-                    return agent.desireProcessing.getActionForMove(agent, direction, getName());
-                else
-                    return agent.desireProcessing.getActionForMoveWithAlternate(agent, direction, "s", getName());*/
+                AgentCooperations.setStatusHelper2(info, nearestMeeting.agent1(), Status.GoTarget);
+                agent.alwaysToTarget = true;
+                return this.agent.desireProcessing.getActionForMove(agent, direction, getName());
                 
             } else {
              //gehe Richtung Agent 
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - EE");
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - EE");
                  Point posAgent2 = AgentMeetings.getPositionAgent2(nearestMeeting);
                  String direction = DirectionUtil.getDirection(agent.belief.getPosition(), posAgent2);
-                 AgentCooperations.setStatusHelper(info, nearestMeeting.agent1(), Status.GoMaster);
+                 AgentCooperations.setStatusHelper2(info, nearestMeeting.agent1(), Status.GoMaster);
                 return this.agent.desireProcessing.getActionForMove(agent, direction, getName());
             }
         }
@@ -233,29 +212,42 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure");
         boolean result = false;
         boolean found = false;
-        int indexFound = 0;
         
-        if (agent.isBusy && AgentCooperations.exists(task, agent, 2)) {
-            // Agent ist als helper in einer cooperation
-            this.coop = AgentCooperations.get(task, agent, 2);
+        if (AgentCooperations.exists(task, agent, 3)) {
+            // Agent ist als helper2 in einer cooperation
+            this.coop = AgentCooperations.get(task, agent, 3);
             result = true;
             AgentLogger.info(Thread.currentThread().getName()
-                    + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - proofBlockStructure - coop: "
+                    + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - proofBlockStructure - coop: "
                     + AgentCooperations.toString(coop));
             
             for (Thing attachedThing : agent.getAttachedThings()) {
-                // ich habe einen passenden 2.Block
+                // was ist der 2.Block
                 for (int i = 0; i < task.requirements.size(); i++) {
                     AgentLogger.info(Thread.currentThread().getName()
-                            + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - proofBlockStructure - attached: "
+                            + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - proofBlockStructure - attached: "
                             + attachedThing + " , task: " + task.requirements.get(i));
                     
                     if (task.requirements.get(i).type.equals(attachedThing.details)
                             && !DirectionUtil.getCellsIn4Directions().contains(new java.awt.Point (task.requirements.get(i).x, task.requirements.get(i).y))
                             && existsCommonEdge(new Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
+                        block2 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
+                        break;
+                    }
+                }
+                
+                // ich habe einen passenden 3.Block
+                for (int i = 0; i < task.requirements.size(); i++) {
+                    AgentLogger.info(Thread.currentThread().getName()
+                            + " runSupervisorDecisions - Help2MultiBlocksDesire.getNextActionInfo - proofBlockStructure - attached: "
+                            + attachedThing + " , task: " + task.requirements.get(i));
+                    
+                    if (task.requirements.get(i).type.equals(attachedThing.details)
+                            && !DirectionUtil.getCellsIn4Directions().contains(new java.awt.Point (task.requirements.get(i).x, task.requirements.get(i).y))
+                            && !existsCommonEdge(new Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
                         found = true;
                         myBlock = new Point(attachedThing.x, attachedThing.y);
-                        block2 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
+                        block3 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
                         break;
                     }
                 }
@@ -265,7 +257,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
             }
             
             if (!found) {
-                // trotz Cooperation kein passender 2.Block (sollte nicht passieren, kommt aber leider vor)
+                // trotz Cooperation kein passender 3.Block (sollte nicht passieren, kommt aber leider vor)
                 result = false;
                 AgentCooperations.remove(coop);
             }

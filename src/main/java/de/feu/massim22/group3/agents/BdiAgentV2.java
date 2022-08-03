@@ -4,6 +4,8 @@ import eis.iilang.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.IDesire;
+import de.feu.massim22.group3.agents.supervisor.Supervisable;
+import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.communication.MailService;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
@@ -17,6 +19,7 @@ import de.feu.massim22.group3.*;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
@@ -158,7 +161,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
         belief.updatePositionFromExternal();
-        refreshAttached();
+        //refreshAttached();
         
         if (belief.getStep() == 0) {
             if (absolutePositions) {
@@ -180,15 +183,37 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
    
         if (belief.getLastAction() != null) {
+            if (belief.getLastAction().equals(Actions.ROTATE)
+                    && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+                if (blockAttached) {
+                    Point p = null;
+                    
+                    if (belief.getLastActionParams().get(0).equals("cw")) {
+                        p = this.desireProcessing.getCRotatedPoint(attachedPoints.get(0));
+                    } else {
+                        p = this.desireProcessing.getCCRotatedPoint(attachedPoints.get(0));                       
+                    }  
+                    
+                    refreshAttached();
+                    Thing t = belief.getThingAt(p);
+                    attachedThings.add(t);
+                    attachedPoints.add(p);
+                }
+            }
+            
             if (belief.getLastAction().equals(Actions.ATTACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = true;
-                StepUtilities.attachedBlock[index] = getAttachedThings().get(0).type;
+                Thing t = belief.getBlockAt(DirectionUtil.getCellInDirection(belief.getLastActionParams().get(0)));
+                attachedThings.add(t);
+                attachedPoints.add(new Point(t.x, t.y));
+                StepUtilities.attachedBlock[index] = t.details;
             }
 
             if (belief.getLastAction().equals(Actions.DETACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
+                refreshAttached();
                 StepUtilities.attachedBlock[index] = "";
                 
                 if (AgentCooperations.exists(this)) {
@@ -199,12 +224,19 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                         alwaysToTarget = false;
                         isBusy = false;
                     }
+                    
+                    if ((coop.helper2() != null && coop.helper2().equals(this))) {
+                        AgentCooperations.setStatusHelper2(coop.task(), coop.helper2(), Status.Detached);
+                        alwaysToTarget = false;
+                        isBusy = false;
+                    }
                 }
             }
 
             if (belief.getLastAction().equals(Actions.SUBMIT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
+                refreshAttached();
                 StepUtilities.attachedBlock[index] = "";
 
                 if (AgentCooperations.exists(this)) {
@@ -237,6 +269,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                         AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - helper");
                         AgentCooperations.setStatusHelper(coop.task(), coop.helper(), Status.Connected);
                     }
+                    
+                    if ((coop.helper2() != null && coop.helper2().getName().equals(this.getName()))) {
+                        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - helper2");
+                        AgentCooperations.setStatusHelper2(coop.task(), coop.helper2(), Status.Connected);
+                    }
                     coop = AgentCooperations.get(this);
                     AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop);
                 }
@@ -245,8 +282,9 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         
         
         
-        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " isBusy: " + isBusy + " , Agent: " + this.getName()+ " , Step: " + belief.getStep());
-        
+        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " isBusy: " + isBusy 
+                + " , Agent: " + this.getName()+ " , Step: " + belief.getStep() + " , attBlocks: " + StepUtilities.getAttachedBlocks());
+              
         for (Percept percept : percepts) {
             if (percept.getName() == "attached"){
             AgentLogger.info(this.getName(),
@@ -283,11 +321,15 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         return attachedPoints;
     }
     
+    public void removeAttached(Thing t) {     
+  
+    }
+    
     public void refreshAttached() {
         attachedPoints = new ArrayList<Point>();
         attachedThings = new ArrayList<Thing>();
         
-        for (java.awt.Point p : belief.getAttachedPoints()) {
+        /*for (java.awt.Point p : belief.getAttachedPoints()) {
             Point attachedPoint = Point.castToPoint(p);
             
             if ((attachedPoint.x == 0 || attachedPoint.y == 0)
@@ -303,7 +345,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     }                   
                 }
             }
-        }
+        }*/
     }
 
     @Override

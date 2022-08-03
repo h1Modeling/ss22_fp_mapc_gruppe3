@@ -1,6 +1,6 @@
 package de.feu.massim22.group3.agents.desires;
 
-import de.feu.massim22.group3.agents.IIntention;
+import de.feu.massim22.group3.agents.intention.IIntention;
 import eis.iilang.Action;
 
 public interface IDesire extends IIntention {

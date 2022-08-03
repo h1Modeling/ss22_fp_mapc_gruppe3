@@ -23,18 +23,18 @@ public class GoGoalZoneDesire extends BeliefDesire {
     Point realtiveGoalZoneAgentOld;*/
     Point nearestGoalZone;
     boolean defaultGoalZone = false;
-    Point posDefaultGoalZone1 = new Point(9, 1);
-    Point posDefaultGoalZone2 = new Point(28, 54);
+    Point posDefaultGoalZone1 = new Point(18, 14);
+    Point posDefaultGoalZone2 = new Point(18, 14);
 
     public GoGoalZoneDesire(Belief belief, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Start GoGoalZoneDesire, Step: " + belief.getStep());
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoGoalZoneDesire, Step: " + belief.getStep());
         this.agent = agent;
     }
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - GoGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
         boolean result = belief.getGoalZones().contains(Point.zero());
         String info = result ? "" : "not on goal zone";
         return new BooleanInfo(result, info);
@@ -43,7 +43,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - GoGoalZoneDesire.isExecutable, Step: " + belief.getStep());
+                + " runSupervisorDecisions - GoGoalZoneDesire.isExecutable, Step: " + belief.getStep());
         BooleanInfo resultBack = null;
         boolean result = false;
         Point goalZone = null;
@@ -92,7 +92,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
     public ActionInfo getNextActionInfo() {
         if (goalZoneAgent == null && !defaultGoalZone) {
             AgentLogger.info(Thread.currentThread().getName()
-                    + " runAgentDecisionsWithTask - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
+                    + " runSupervisorDecisions - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
             AgentLogger.info(
                     Thread.currentThread().getName() + "GoGoalZoneDesire - AgentPosition: " + belief.getPosition());
             AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - reachableGoalZones: "

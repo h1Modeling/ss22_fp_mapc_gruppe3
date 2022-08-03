@@ -8,6 +8,7 @@ import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
@@ -25,14 +26,14 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
     
     public ConnectMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - Start ConnectMultiBlocksDesire");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ConnectMultiBlocksDesire");
         this.info = info;
         this.agent = agent;
     }
 
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisionsWithTask - ConnectMultiBlocksDesire.isFulfilled");
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ConnectMultiBlocksDesire.isFulfilled");
         
         if (AgentCooperations.exists(info, agent)) {
          // Agent ist als master in einer cooperation 
@@ -50,17 +51,18 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(
-                Thread.currentThread().getName() + " runAgentDecisionsWithTask - ConnectMultiBlocksDesire.isExecutable");
+                Thread.currentThread().getName() + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable");
         if (belief.getRole().actions().contains(Actions.DETACH) && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
 
             if (AgentCooperations.exists(info, agent)) {
                 AgentLogger.info(Thread.currentThread().getName()
-                        + " runAgentDecisionsWithTask - proofBlockStructure - ist master");
-                // Agent ist als master in einer cooperation
+                        + " runSupervisorDecisions - proofBlockStructure - ist master");
+                // Agent ist in einer cooperation
 
                 if (coop.statusMaster().equals(Status.ReadyToConnect)
-                        && coop.statusHelper().equals(Status.ReadyToConnect)) {
+                        && (coop.statusHelper().equals(Status.ReadyToConnect)
+                        || coop.statusHelper2().equals(Status.ReadyToConnect))) {
                     return new BooleanInfo(true, "");
                 }
             }
@@ -72,16 +74,27 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - ConnectMultiBlocksDesire.getNextActionInfo");
+                + " runSupervisorDecisions - ConnectMultiBlocksDesire.getNextActionInfo");
 
         Point agentBlock = agent.getAttachedPoints().get(0);
 
         AgentLogger.info(Thread.currentThread().getName()
-                + " runAgentDecisionsWithTask - ConnectMultiBlocksDesire.getNextActionInfo agentBlocks: "
+                + " runSupervisorDecisions - ConnectMultiBlocksDesire.getNextActionInfo agentBlocks: "
                 + agent.getAttachedThings() + " , taskBlocks: " + info.requirements);
 
         if (agent.getName().equals(coop.master().getName())) {
-            return ActionInfo.CONNECT(coop.helper().belief.getAgentFullName(), new java.awt.Point(agentBlock.x, agentBlock.y), getName());
+            if ( coop.statusHelper2().equals(Status.ReadyToConnect)) {
+                for (int i = 0; i < agent.getAttachedPoints().size(); i++) {
+                    if (!DirectionUtil.getCellsIn4Directions().contains(agent.getAttachedPoints().get(i))) {
+                        agentBlock = agent.getAttachedPoints().get(i);
+                        break;
+                    }
+                }
+                
+                return ActionInfo.CONNECT(coop.helper2().belief.getAgentFullName(), new java.awt.Point(agentBlock.x, agentBlock.y), getName());               
+            } else {
+                return ActionInfo.CONNECT(coop.helper().belief.getAgentFullName(), new java.awt.Point(agentBlock.x, agentBlock.y), getName());              
+            }
         } else {
             return ActionInfo.CONNECT(coop.master().belief.getAgentFullName(), new java.awt.Point(agentBlock.x, agentBlock.y), getName());
         }

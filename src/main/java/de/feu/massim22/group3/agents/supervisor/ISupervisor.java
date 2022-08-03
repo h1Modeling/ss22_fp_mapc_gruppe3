@@ -1,8 +1,8 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.supervisor;
 
 import java.util.Set;
 
-import de.feu.massim22.group3.EventName;
+import de.feu.massim22.group3.agents.events.EventName;
 import eis.iilang.Percept;
 import massim.protocol.data.TaskInfo;
 import java.awt.Point;

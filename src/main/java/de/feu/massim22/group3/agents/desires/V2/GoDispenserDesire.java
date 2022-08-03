@@ -10,6 +10,7 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.DirectionUtil;
@@ -192,6 +193,7 @@ public class GoDispenserDesire extends BeliefDesire {
 
                 ArrayList<Integer> met = new ArrayList<Integer>();
                 int i = 0;
+                boolean alreadyAttached = false;
 
                 for (Meeting meeting : AgentMeetings.find(agent)) {
                     Point metAgent = Point.castToPoint(meeting.agent2().belief.getPosition()).translate2To1(meeting);
@@ -201,13 +203,18 @@ public class GoDispenserDesire extends BeliefDesire {
                     if (d1.equals(metAgent) || d2.equals(metAgent) || d3.equals(metAgent)) {
                         met.add(meeting.agent2().index);
                         i++;
+                        
+                        if ((d1.equals(metAgent) && meeting.agent2().attachedPoints.contains(r1))
+                        || (d2.equals(metAgent) && meeting.agent2().attachedPoints.contains(r2))
+                        || (d3.equals(metAgent) && meeting.agent2().attachedPoints.contains(r3)))
+                            return ActionInfo.SKIP("block already attached by other agent");
                     }
                 }
                 AgentLogger.info(Thread.currentThread().getName() + " Test.getNextAction() 8.2: " + agent.index
                         + " , " + met);
 
                 for (int metIndex : met) {
-                    if (agent.index < metIndex) return ActionInfo.SKIP(getName());
+                    if (agent.index < metIndex) return ActionInfo.SKIP("other agent is attaching");
                 }
 
                 return ActionInfo.ATTACH(direction, getName());            
