@@ -13,27 +13,54 @@ import massim.protocol.data.Thing;
 
 import java.awt.Point;
 
+/**
+ * The abstract Class <code>BeliefDesire</code> defines a basic framework for implementing a desire which gets it's information
+ * from an agents belief.
+ * 
+ * @author Heinz Stadler
+ * @author Melinda Betz (minor contribution)
+ */
 public abstract class BeliefDesire implements IDesire {
     protected Belief belief;
     protected List<IDesire> precondition = new ArrayList<>();
-
+    private Action outputAction;
     private int moveIteration = 0;
 
+    /**
+     * Instantiates a new BeliefDesire.
+     * 
+     * @param belief the belief of the agent
+     */
     public BeliefDesire(Belief belief) {
         this.belief = belief;
     }
     
-    private Action outputAction;
+
+    /**
+     * Fills the action cache with the calculated action.
+     * 
+     * @param action the calculated action
+     */
     @Override
     public void setOutputAction(Action action) {
         this.outputAction = action;
     }
+
+    /**
+     * Gets the calculated action from the action cache.
+     * 
+     * @return the calculated action
+     */
     @Override
     public Action getOutputAction() {
         return this.outputAction;
     }
-    //Melinda Ende
 
+    /**
+     * Gets the next ActionInfo from the desires subdesires.
+     * 
+     * @return the next ActionInfo from the desires subdesires or null if all subdesires are already fulfilled.
+     */
     protected ActionInfo fulfillPreconditions() {
         for (IDesire d : precondition) {
             if (!d.isFulfilled().value()) {
@@ -44,6 +71,9 @@ public abstract class BeliefDesire implements IDesire {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         for (IDesire d : precondition) {
@@ -57,16 +87,25 @@ public abstract class BeliefDesire implements IDesire {
         return new BooleanInfo(true, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return getClass().getSimpleName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(String supervisor) {
         moveIteration = 0;
@@ -75,14 +114,33 @@ public abstract class BeliefDesire implements IDesire {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isGroupDesire() {
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BooleanInfo isUnfulfillable() {
+        for (IDesire d : precondition) {
+            if (d.isUnfulfillable().value()) {
+                return d.isUnfulfillable();
+            }
+        }
+        return new BooleanInfo(false, "");
     }
 
     private ActionInfo getIteratedActionForMove(String dir, String desire) {
@@ -134,6 +192,14 @@ public abstract class BeliefDesire implements IDesire {
         return true;
     }
 
+    /**
+     * Gets an ActionInfo to perform a move in a provided direction.
+     * The ActionInfo can contain a move, rotate, skip or clear depending on the surroundings of the agent.
+     *  
+     * @param directions one or multiple directions encoded into a String. Each character of the String defines a single move
+     * @param desire the name of the desire which requests the ActionInfo
+     * @return the calculated ActionInfo
+     */
     protected ActionInfo getActionForMove(String directions, String desire) {
         String dir = directions.substring(0, 1);
         Point dirPoint = DirectionUtil.getCellInDirection(dir);
@@ -239,6 +305,14 @@ public abstract class BeliefDesire implements IDesire {
         return true;
     } */
 
+    /**
+     * Gets an ActionInfo to perform a move to a provided Point.
+     * The ActionInfo can contain a move, rotate, skip or clear depending on the surroundings of the agent.
+     * 
+     * @param absolutePoint the position to which the agent should move in the agents coordinate system
+     * @param desire the name of the desire which requests the ActionInfo
+     * @return the calculated ActionInfo
+     */
     protected ActionInfo getActionForMove(Point absolutePoint, String desire) {
         Point position = belief.getPosition();
         Point relativePoint = new Point(absolutePoint.x - position.x, absolutePoint.y - position.y);
@@ -246,6 +320,13 @@ public abstract class BeliefDesire implements IDesire {
         return getActionForMove(dir, desire);
     }
 
+    /**
+     * Gets an ActionInfo to perform a clock wise rotation.
+     * The ActionInfo can contain a clear, rotate, or skip depending on the surroundings of the agent.
+     * 
+     * @param desire the name of the desire which requests the ActionInfo
+     * @return the calculated ActionInfo
+     */
     protected ActionInfo getActionForCWRotation(String desire) {
         var things = belief.getAttachedThings();
         if (things.size() > 0) {
@@ -275,6 +356,13 @@ public abstract class BeliefDesire implements IDesire {
         return ActionInfo.ROTATE_CW(desire);
     }
 
+    /**
+     * Gets an ActionInfo to perform a counter clock wise rotation.
+     * The ActionInfo can contain a clear, rotate, or skip depending on the surroundings of the agent.
+     * 
+     * @param desire the name of the desire which requests the ActionInfo
+     * @return the calculated ActionInfo
+     */
     protected ActionInfo getActionForCCWRotation(String desire) {
         var things = belief.getAttachedThings();
         if (things.size() > 0) {
@@ -304,6 +392,12 @@ public abstract class BeliefDesire implements IDesire {
         return ActionInfo.ROTATE_CW(desire);
     }
 
+    /**
+     * Gets the direction to a provided point.
+     * 
+     * @param p the Point to which the direction should be calculated
+     * @return the direction to the Point
+     */
     protected String getDirectionToRelativePoint(Point p) {
         if (p == null) {
             return "";
@@ -344,6 +438,13 @@ public abstract class BeliefDesire implements IDesire {
         return "s";
     }
 
+    /**
+     * Gets the direction from a Point to another Point.
+     * 
+     * @param from the Point from which the direction should be calculated 
+     * @param to the Point to which the direction should be calculated
+     * @return the calculated direction
+     */
     protected String getDirectionFromAndToRelativePoint(Point from, Point to) {
         if (to == null || from.equals(to)) {
             return "";
@@ -384,10 +485,22 @@ public abstract class BeliefDesire implements IDesire {
         return "s";
     }
 
+    /**
+     * Tests if the provided Thing is traversable.
+     * 
+     * @param t the Thing to test
+     * @return true if the provided thing is traversable or if the thing is the agent itself
+     */
     protected boolean isFree(Thing t) {
         return t == null || t.type.equals(Thing.TYPE_DISPENSER) || (t.x == 0 && t.y == 0);
     }
 
+    /**
+     * Test if the provided point in vision is traversable.
+     * 
+     * @param p the Point in vision
+     * @return true if the provided position is traversable or if the position is at the agents position
+     */
     protected boolean isFreeInVision(Point p) {
         for (Thing t: belief.getThings()) {
             if (t.x == p.x && t.y == p.y && !isFree(t)) {
@@ -397,23 +510,32 @@ public abstract class BeliefDesire implements IDesire {
         return true;
     }
 
+    /**
+     * Tests if the provided Thing is clearable, is a block or an obstacle.
+     * 
+     * @param t the thing to test
+     * @return true if the provided thing is a block or an obstacle
+     */
     protected boolean isClearable(Thing t) {
         return t != null && (t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_OBSTACLE));
     }
 
-    public BooleanInfo isUnfulfillable() {
-        for (IDesire d : precondition) {
-            if (d.isUnfulfillable().value()) {
-                return d.isUnfulfillable();
-            }
-        }
-        return new BooleanInfo(false, "");
-    }
-
+    /**
+     * Rotates a provided Point clock wise around the origin.
+     * 
+     * @param p the Point to rotate
+     * @return the rotated Point
+     */
     protected Point getCRotatedPoint(Point p) {
         return new Point(-p.y, p.x);
     }
 
+    /**
+     * Rotates a provided direction clock wise.
+     * 
+     * @param dir the direction to rotate
+     * @return the rotated direction
+     */
     protected String getCRotatedDirection(String dir) {
         switch (dir) {
             case "n": return "e";
@@ -423,6 +545,12 @@ public abstract class BeliefDesire implements IDesire {
         }
     }
 
+    /**
+     * Rotates a provided direction counter clock wise.
+     * 
+     * @param dir the direction to rotate
+     * @return the rotated direction
+     */
     protected String getCCRotatedDirection(String dir) {
         switch (dir) {
             case "n": return "w";
@@ -432,6 +560,12 @@ public abstract class BeliefDesire implements IDesire {
         }
     }
 
+    /**
+     * Translates a provided Point into a direction.
+     * 
+     * @param p the Point to translate
+     * @return the direction at the point
+     */
     protected String getDirectionFromPoint(Point p) {
         if (p.x == 0 || Math.abs(p.y) > Math.abs(p.x)) {
             return p.y < 0 ? "n" : "s";
@@ -439,6 +573,12 @@ public abstract class BeliefDesire implements IDesire {
         return p.x < 0 ? "w" : "e";
     }
 
+    /**
+     * Translates a direction into a Point.
+     * 
+     * @param dir the direction to translate
+     * @return the point at the direction
+     */
     protected Point getPointFromDirection(String dir) {
         switch (dir) {
             case "n": return new Point(0, -1);
@@ -448,18 +588,43 @@ public abstract class BeliefDesire implements IDesire {
         }
     }
 
+    /**
+     * Gets the Manhattan distance from the origin to the provided point.
+     * 
+     * @param p the Point to which the distance should be calculated
+     * @return the Manhattan distance to the point
+     */
     protected int getDistance(Point p) {
         return Math.abs(p.x) + Math.abs(p.y);
     }
 
+    /**
+     * Gets the Manhattan distance from the origin to the provided Thing.
+     * 
+     * @param t the Thing to which the distance should be calculated
+     * @return the Manhattan distance to the thing
+     */
     protected int getDistance(Thing t) {
         return Math.abs(t.x) + Math.abs(t.y);
     }
 
+    /**
+     * Gets the Manhattan distance between two Points.
+     * 
+     * @param a the start Point
+     * @param b the end Point
+     * @return the Manhattan distance between the points.
+     */
     protected int getDistance(Point a, Point b) {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
 
+    /**
+     * Gets the distance from the agent to another agent.
+     * 
+     * @param agent the name of the agent to which the distance should be calculated
+     * @return the distance to the agent
+     */
     protected int getDistanceToAgent(String agent) {
         List<ReachableTeammate> mates = belief.getReachableTeammates();
         for (ReachableTeammate m : mates) {
@@ -470,6 +635,12 @@ public abstract class BeliefDesire implements IDesire {
         return 0;
     }
 
+    /**
+     * Gets the position of an agent.
+     * 
+     * @param agent the name of the agent
+     * @return the position of the agent
+     */
     protected Point getAgentPosition(String agent) {
         List<ReachableTeammate> mates = belief.getReachableTeammates();
         for (ReachableTeammate m : mates) {
@@ -480,6 +651,13 @@ public abstract class BeliefDesire implements IDesire {
         return null;
     }
 
+    /**
+     * Gets the biggest agent index of all agents which are adjacent to a certain position.
+     * 
+     * @param p the position to test
+     * @param supervisor the name of the supervisor of the agent group
+     * @return the biggest agent index of all agents which are adjacent to the provided position
+     */
     protected int getBiggestAdjacentAgentId(Point p, String supervisor) {
         Point e = new Point(p.x + 1, p.y);
         Point n = new Point(p.x, p.y - 1);
@@ -492,11 +670,24 @@ public abstract class BeliefDesire implements IDesire {
         return Math.max(Math.max(Math.max(eId, nId), wId), sId);
     }
 
+    /**
+     * Gets the biggest agent index of all agents which are adjacent to a certain Thing.
+     * 
+     * @param t the thing to test
+     * @param supervisor the name of the supervisor of the agent group
+     * @return the biggest agent index of all agents which are adjacent to the provided thing
+     */
     protected int getBiggestAdjacentAgentId(Thing t, String supervisor) {
         if (t == null) return 0;
         return getBiggestAdjacentAgentId(new Point(t.x, t.y), supervisor);
     }
 
+    /**
+     * Counter clockwise rotates a Point around the origin.
+     *  
+     * @param p the Point to rotate
+     * @return the rotated point
+     */
     public Point getCCRotatedPoint(Point p) {
         return new Point(p.y, -p.x);
     }

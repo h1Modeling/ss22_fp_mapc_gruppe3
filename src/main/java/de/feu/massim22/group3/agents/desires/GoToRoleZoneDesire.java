@@ -6,12 +6,25 @@ import de.feu.massim22.group3.utils.DirectionUtil;
 
 import java.awt.Point;
 
+/**
+ * The Class <code>GoToRoleZoneDesire</code> models the desire to be positioned inside of a role zone.
+ * 
+ * @author Heinz Stadler
+ */
 public class GoToRoleZoneDesire extends BeliefDesire {
 
+    /**
+     * Instantiates a new GoToRoleZoneDesire.
+     * 
+     * @param belief the belief of the agent
+     */
     public GoToRoleZoneDesire(Belief belief) {
         super(belief);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         for (Point p : belief.getRoleZones()) {
@@ -22,6 +35,9 @@ public class GoToRoleZoneDesire extends BeliefDesire {
         return new BooleanInfo(false, "Not on role zone");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         ReachableRoleZone zone = belief.getNearestRoleZone();
@@ -29,6 +45,9 @@ public class GoToRoleZoneDesire extends BeliefDesire {
         return getActionForMove(direction.substring(0, 1), getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         return new BooleanInfo(belief.getReachableRoleZones().size() > 0, "Known role zones: " + belief.getReachableRoleZones().size());

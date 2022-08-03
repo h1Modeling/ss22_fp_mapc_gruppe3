@@ -1,25 +1,40 @@
 package de.feu.massim22.group3.agents.desires;
 
 import de.feu.massim22.group3.agents.belief.Belief;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>ProcessOnlySubmittableTaskDesire</code> models the desire to only work on tasks which deadline hasn't passed already.
+ * 
+ * @author Heinz Stadler
+ */
 class ProcessOnlySubmittableTaskDesire extends BeliefDesire {
 
     private TaskInfo info;
 
+    /**
+     * Instantiates a new ProcessOnlySubmittableTaskDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the task which the desire is based on
+     */
     public ProcessOnlySubmittableTaskDesire(Belief belief, TaskInfo info) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ProcessOnlySubmittableTaskDesire");
         this.info = info;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         return isExecutable();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         boolean zone = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;

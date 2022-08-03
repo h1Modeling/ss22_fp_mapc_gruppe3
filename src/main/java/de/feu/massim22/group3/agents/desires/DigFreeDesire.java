@@ -7,6 +7,12 @@ import java.util.List;
 
 import de.feu.massim22.group3.agents.belief.Belief;
 
+/**
+ * The Class <code>DigFreeDesire</code> models the desire to free the agent from a deadlock
+ * where the agent unintentionally hasn't moved a while.
+ * 
+ * @author Heinz Stadler
+ */
 public class DigFreeDesire extends BeliefDesire {
 
     private Point beforeLastPosition = new Point(0, 0);
@@ -15,16 +21,27 @@ public class DigFreeDesire extends BeliefDesire {
     private int atSamePosition = 0;
     private String dir;
 
+    /**
+     * Instantiates a new DigFreeDesire.
+     * 
+     * @param belief the belief of the agent
+     */
     public DigFreeDesire(Belief belief) {
         super(belief);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         boolean value = (atSamePosition < limit && dir == null);
         return new BooleanInfo(value, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         boolean value = ((atSamePosition >= limit || dir != null));
@@ -34,6 +51,9 @@ public class DigFreeDesire extends BeliefDesire {
         return new BooleanInfo(value, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(String supervisor) {
         Point p = belief.getPosition();
@@ -42,9 +62,12 @@ public class DigFreeDesire extends BeliefDesire {
         lastPosition = (Point)p.clone();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
-        // Remove Attachements
+        // Remove Attachments
         List<Point> attached = belief.getOwnAttachedPoints();
         if (attached.size() > 0) {
             for (Point p : attached) {
@@ -65,7 +88,7 @@ public class DigFreeDesire extends BeliefDesire {
             Thing t = belief.getThingAt(dir);
             if (isFree(t)) {
                 String dir2 = dir;
-                // Make random decision to avoid similar behaviour between agents in stuck group
+                // Make random decision to avoid similar behavior between agents in stuck group
                 dir = Math.random() > 0.5 ? null : dir2;
                 return ActionInfo.MOVE(dir2, "");
             }
@@ -110,6 +133,9 @@ public class DigFreeDesire extends BeliefDesire {
         return ActionInfo.SKIP("Dig out failed");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 1000;

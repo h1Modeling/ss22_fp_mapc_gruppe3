@@ -5,14 +5,27 @@ import java.awt.Point;
 import de.feu.massim22.group3.agents.belief.Belief;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>FreedomDesire</code> models the desire to stay unconnected to other agents.
+ * 
+ * @author Heinz Stadler
+ */
 public class FreedomDesire extends BeliefDesire {
 
     private Thing attached;
 
+    /**
+     * Instantiates a new FreedomDesire.
+     *
+     * @param belief the belief of the agent
+     */
     public FreedomDesire(Belief belief) {
         super(belief);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         attached = null;
@@ -27,11 +40,17 @@ public class FreedomDesire extends BeliefDesire {
         return new BooleanInfo(true, "Connected to Teammate");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 1400;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         // indirect connection
@@ -45,7 +64,7 @@ public class FreedomDesire extends BeliefDesire {
         }
         // possible direct connection
         else {
-            // Avoid wrong deconnection if Agents stand side by side and are connected via 2 blocks
+            // Avoid wrong connection if Agents stand side by side and are connected via 2 blocks
             for (Point p : belief.getOwnAttachedPoints()) {
                 if (getDistance(p) == 1) {
                     String dir = getDirectionFromPoint(p);

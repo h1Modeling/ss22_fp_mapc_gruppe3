@@ -245,7 +245,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             String task = PerceptUtil.toStr(parameters, 0);
             String agent = PerceptUtil.toStr(parameters, 1);
             TaskInfo taskInfo = belief.getTask(task);
-            desires.add(new ReceiveBlockDesire(belief, taskInfo, agent, getName(), supervisor.getName()));
+            desires.add(new ReceiveBlockDesire(belief, taskInfo, agent, supervisor.getName()));
             break;
         }
         case SUPERVISOR_PERCEPT_DELIVER_TWO_BLOCK: {

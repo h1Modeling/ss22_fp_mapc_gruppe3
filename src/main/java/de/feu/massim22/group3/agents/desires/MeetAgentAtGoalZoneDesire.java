@@ -7,15 +7,29 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import de.feu.massim22.group3.utils.DirectionUtil;
 
 import java.awt.Point;
+/**
+ * The Class <code>MeetAgentAtGoalZoneDesire</code> models the desire to meet a team mate at a goal zone.
+ * 
+ * @author Heinz Stadler
+ */
 public class MeetAgentAtGoalZoneDesire extends BeliefDesire {
 
     private String agent;
 
+    /**
+     * Instantiates a new MeetAgentAtGoalZoneDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param agent the name of the agent to meet
+     */
     public MeetAgentAtGoalZoneDesire(Belief belief, String agent) {
         super(belief);
         this.agent = agent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         List<ReachableTeammate> mates = belief.getReachableTeammates();
@@ -40,6 +54,9 @@ public class MeetAgentAtGoalZoneDesire extends BeliefDesire {
         return new BooleanInfo(false, "Teammate not reachable");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         for (ReachableTeammate mate : belief.getReachableTeammates()) {

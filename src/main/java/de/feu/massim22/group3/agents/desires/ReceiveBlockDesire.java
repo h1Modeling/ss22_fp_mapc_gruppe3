@@ -4,12 +4,26 @@ import de.feu.massim22.group3.agents.belief.Belief;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.messages.scenario.ActionResults;
 
+/**
+ * The Class <code>ReceiveBlockDesire</code> models the desire to receive a block from a team mate
+ * and use the block to submit a single block task.
+ * 
+ * @author Heinz Stadler
+ */
 public class ReceiveBlockDesire extends BeliefDesire {
 
     private TaskInfo info;
     private boolean submitted;
 
-    public ReceiveBlockDesire(Belief belief, TaskInfo info, String teammate, String agent, String supervisor) {
+    /**
+     * Instantiates a new ReceiveBlockDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the task the belief is based on
+     * @param teammate the name of the team mate which provides the block
+     * @param supervisor the supervisor of the agent group
+     */
+    public ReceiveBlockDesire(Belief belief, TaskInfo info, String teammate, String supervisor) {
         super(belief);
         this.info = info;
         String[] neededActions = {"submit"};
@@ -22,12 +36,18 @@ public class ReceiveBlockDesire extends BeliefDesire {
         precondition.add(new GetBlocksInOrderDesire(belief, info));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         boolean lastActionSuccess = belief.getLastActionResult().equals(ActionResults.SUCCESS);
         return new BooleanInfo(submitted && lastActionSuccess, getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         ActionInfo a = fulfillPreconditions();
@@ -38,6 +58,9 @@ public class ReceiveBlockDesire extends BeliefDesire {
         return a;
     }   
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isUnfulfillable() {
         if (belief.getStep() > info.deadline) {
@@ -46,6 +69,9 @@ public class ReceiveBlockDesire extends BeliefDesire {
         return isFulfilled();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(String supervisor) {
         super.update(supervisor);
@@ -55,11 +81,17 @@ public class ReceiveBlockDesire extends BeliefDesire {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isGroupDesire() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 950;

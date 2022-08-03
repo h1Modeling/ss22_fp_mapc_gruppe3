@@ -6,16 +6,31 @@ import java.awt.Point;
 
 import de.feu.massim22.group3.agents.belief.Belief;
 
+/**
+ * The Class <code>WalkByGetRoleDesire</code> models the desire to get a role which enables certain actions
+ * if the agent has a role zone in vision.
+ * 
+ * @author Heinz Stadler
+ */
 public class WalkByGetRoleDesire extends BeliefDesire {
 
     private String[] actions;
     private Role possibleRole;
 
+    /**
+     * Instantiates a new WalkByGetRoleDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param actions the actions which are desireable 
+     */
     public WalkByGetRoleDesire(Belief belief, String[] actions) {
         super(belief);
         this.actions = actions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         if (possibleRole == null) {
@@ -36,6 +51,9 @@ public class WalkByGetRoleDesire extends BeliefDesire {
         return new BooleanInfo(true, getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         boolean value = possibleRole != null && belief.getRoleZones().size() > 0;
@@ -43,6 +61,9 @@ public class WalkByGetRoleDesire extends BeliefDesire {
         return new BooleanInfo(value, info);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         // Adopt
@@ -56,9 +77,11 @@ public class WalkByGetRoleDesire extends BeliefDesire {
         return getActionForMove(dir, getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 3000;
     }
-    
 }

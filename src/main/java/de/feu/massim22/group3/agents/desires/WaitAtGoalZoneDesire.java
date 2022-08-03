@@ -6,17 +6,34 @@ import java.awt.Point;
 
 import de.feu.massim22.group3.agents.belief.Belief;
 
+/**
+ * The Class <code>WaitAtGoalZoneDesire</code> models the desire to wait at a goal zone
+ * for another agent to construct a two block task.
+ * 
+ * @author Heinz Stadler
+ */
 public class WaitAtGoalZoneDesire extends BeliefDesire {
 
+    /**
+     * Instantiates a new WaitAtGoalZoneDesire.
+     * 
+     * @param belief the belief of the agent
+     */
     public WaitAtGoalZoneDesire(Belief belief) {
         super(belief);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         var atGoalZone = belief.getGoalZones().contains(new Point(0, 0));
@@ -25,6 +42,9 @@ public class WaitAtGoalZoneDesire extends BeliefDesire {
         return new BooleanInfo(value, getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         belief.setWaiting(true);
@@ -82,6 +102,9 @@ public class WaitAtGoalZoneDesire extends BeliefDesire {
         return ActionInfo.SKIP(getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 15;

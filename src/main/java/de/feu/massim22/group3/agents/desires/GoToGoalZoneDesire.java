@@ -3,51 +3,59 @@ package de.feu.massim22.group3.agents.desires;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.DirectionUtil;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.awt.Point;
-
+/**
+ * The Class <code>GoToGoalZoneDesire</code> models the desire to be positioned inside of a goal zone.
+ * 
+ * @author Heinz Stadler
+ */
 public class GoToGoalZoneDesire extends BeliefDesire {
 
+    /**
+     * Instantiates a new GoToGoalZoneDesire.
+     * 
+     * @param belief the belief of the agent
+     */
     public GoToGoalZoneDesire(Belief belief) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoToGoalZoneDesire, Step: " + belief.getStep());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoToGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
         boolean result = belief.getGoalZones().contains(new Point(0, 0));
         String info = result ? "" : "not on goal zone";
         return new BooleanInfo(result, info);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoToGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
         ReachableGoalZone zone = belief.getNearestGoalZone();
-        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - AgentPosition: " + belief.getPosition());
-        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - reachableGoalZones: " + belief.getReachableGoalZones());
-        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - GoalZones: " + belief.getGoalZones());
         Point p = belief.getNearestRelativeManhattanGoalZone();
-        int manhattenDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
+        int manhattanDistance = p == null ? 1000 : Math.abs(p.x) + Math.abs(p.y);
         // Data from Pathfinding
-        if (zone != null && zone.distance() < 4 * manhattenDistance) {
+        if (zone != null && zone.distance() < 4 * manhattanDistance) {
             String direction = DirectionUtil.intToString(zone.direction());
             if (direction.length() > 0) {
-            	 AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - nextActionDirectionPathfinding: " + direction);
                 return getActionForMove(direction.substring(0, 1), getName());
             }
         }
-        // Manhatten
+        // Manhattan
         String dir = getDirectionToRelativePoint(p);
-        AgentLogger.info(Thread.currentThread().getName() + "GoToGoalZoneDesire - nextActionDirection: " + dir);
         return getActionForMove(dir, getName());
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoToGoalZoneDesire.isExecutable, Step: " + belief.getStep());
         boolean result = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
         String info = result ? "" : "no reachable goal zones";
         return new BooleanInfo(result, info);

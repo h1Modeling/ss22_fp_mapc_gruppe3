@@ -7,11 +7,25 @@ import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import eis.iilang.Percept;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>DeliverBlockDesire</code> models the desire to deliver a block to another agent.
+ * 
+ * @author Heinz Stadler
+ */
 public class DeliverBlockDesire extends BeliefDesire {
 
     private Supervisable communicator;
     private String agent;
 
+    /**
+     * Instantiates an new DeliverBlockDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param block the block which should be delivered
+     * @param supervisor the supervisor of the agent group
+     * @param agent the name of the agent to which the block should be delivered
+     * @param communicator an instance which can send messages to other agents which is normally the agent which holds the desire
+     */
     public DeliverBlockDesire(Belief belief, Thing block, String supervisor, String agent, Supervisable communicator) {
         super(belief);
         this.agent = agent;
@@ -19,10 +33,17 @@ public class DeliverBlockDesire extends BeliefDesire {
         precondition.add(new MeetAgentToDeliverBlockDesire(belief, agent));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ActionInfo getNextActionInfo() {
         return fulfillPreconditions();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         // Cancel delivery if goal is nearer than teammate
@@ -51,16 +72,25 @@ public class DeliverBlockDesire extends BeliefDesire {
         return new BooleanInfo(true, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isUnfulfillable() {
         return isFulfilled();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 950;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isGroupDesire() {
         return true;

@@ -14,6 +14,12 @@ import eis.iilang.Percept;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>ReceiveAndConnectBlockDesire</code> models the desire to receive and connect
+ * a block from a team mate to prepare for a two block task.
+ * 
+ * @author Heinz Stadler
+ */
 public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     
     private String agent;
@@ -23,6 +29,17 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     private Thing block;
     private Supervisable communicator;
 
+    /**
+     * Instantiates a new ReceiveAndConnectBlockDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param task the task the belief is based on
+     * @param agent the agent to meet
+     * @param agentFullName the full name of the agent to meet
+     * @param supervisor the supervisor of the agent group
+     * @param block the block which should be transferred
+     * @param communicator an instance which can send messages to other agents which is normally the agent which holds the desire
+     */
     public ReceiveAndConnectBlockDesire(Belief belief, TaskInfo task, String agent, String agentFullName, String supervisor, Thing block, Supervisable communicator) {
         super(belief);
         this.agent = agent;
@@ -36,7 +53,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         precondition.add(new ActionDesire(belief, neededActions));
         precondition.add(new OrDesire(
             new AttachAbandonedBlockDesire(belief, block.type, supervisor),
-            new AttachSingleBlockFromDispenserDesire(belief, block))
+            new RequestBlockFromDispenserDesire(belief, block))
         );
         precondition.add(new GoToGoalZoneDesire(belief));
         // Create new Task for Rotation with single Block
@@ -46,6 +63,9 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         precondition.add(new GetBlocksInOrderDesire(belief, info));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         ActionInfo a = fulfillPreconditions();
@@ -170,6 +190,9 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         return a;
     }   
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isUnfulfillable() {
         if (belief.getStep() > task.deadline) {
@@ -184,6 +207,9 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(String supervisor) {
         super.update(supervisor);
@@ -193,16 +219,25 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isGroupDesire() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 1500;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         boolean value = submitted && belief.getAttachedPoints().size() < task.requirements.size();
