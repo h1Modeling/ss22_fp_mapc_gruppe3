@@ -1,3 +1,15 @@
+/**
+ * A custom implementation of the A* algorithm.
+ * The implementation defines a compute shader which calculates the path between a set of start points
+ * and a set of goal points. The input values are provided by two data buffers. The map buffer holds
+ * information about obstacles which need to be avoided. The data buffer holds information about the
+ * start and finish points. The result will be written back to the map buffer.
+ *
+ * This version uses a custom implementation of a linked list to simulate the original algorithmus as
+ * close as possible.
+ *
+ * @author: Heinz Stadler
+ */
 #version 430
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 layout(rg32f, binding = 0) uniform coherent image3D map;

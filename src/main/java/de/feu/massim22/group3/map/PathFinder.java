@@ -50,7 +50,7 @@ class PathFinder {
     }
 
     /**
-     * Initializes the GLFW library and loads the compute shader.
+     * Instantiates the GLFW library and loads the compute shader.
      * This method must be called from the main thread.
      */
     static void init() {

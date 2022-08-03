@@ -41,7 +41,7 @@ public class Supervisor implements ISupervisor {
     private Map<String, Boolean> agentsWithTask = new HashMap<>();
     
     /**
-     * Initializes a new Supervisor.
+     * Instantiates a new Supervisor.
      * 
      * @param parent the parent agent
      */

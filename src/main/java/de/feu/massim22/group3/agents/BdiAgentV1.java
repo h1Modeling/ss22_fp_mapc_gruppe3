@@ -64,7 +64,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     private boolean merging = false;
     
     /**
-     * Initializes a new Instance of BdiAgentV1.
+     * Instantiates a new Instance of BdiAgentV1.
      * 
      * @param name the name of the agent
      * @param mailbox the mail service of the agent
@@ -104,10 +104,10 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         queue.add(new PerceptMessage(sender, message));
     }
 
-    @Override
     /**
      * Permanently checks for new messages, handles them and calculates the current intention of the agent. 
      */
+    @Override
     public void run() {
         while (true) {
             // Send Action if already calculated

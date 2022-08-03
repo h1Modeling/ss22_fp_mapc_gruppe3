@@ -15,7 +15,7 @@ public class ReportList
     private int maxSize;
 
     /**
-     * Initializes a new ReportList.
+     * Instantiates a new ReportList.
      * @param size the initial size of the list
      */
     ReportList(int size) {

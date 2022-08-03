@@ -87,7 +87,7 @@ public class Belief {
     private boolean isWaiting = false;
 
     /**
-     * Initializes a new Belief.
+     * Instantiates a new Belief.
      * 
      * @param agentName the name of the agent
      */
