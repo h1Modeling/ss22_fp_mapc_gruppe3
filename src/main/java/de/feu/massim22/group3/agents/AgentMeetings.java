@@ -7,9 +7,20 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * The class <code>AgentMeetings</code> contains all the important methods for a AgentMeeting. 
+ * When two agents have met they will most of the time merge into one group.
+ * 
+ * @author Melinda Betz
+ */
 public class AgentMeetings {
     public static List<Meeting> meetings = new ArrayList<Meeting>();
     
+    /**
+     * A meeting is being added.
+     * 
+     * @param meeting the meeting to add
+     */
     public static synchronized void add(Meeting meeting) {
         if (remove(meeting))
             evaluateMapSize(meeting);
@@ -19,6 +30,13 @@ public class AgentMeetings {
         meetings.add(meeting);
     }
     
+    /**
+     * Proves if a meeting already exists.
+     * 
+     * @param meeting the meeting to be proved
+     * 
+     * @result if the meeting is already existing or not
+     */
     public static boolean exists(Meeting meeting) {
         boolean result = false;
         
@@ -32,6 +50,13 @@ public class AgentMeetings {
         return result;
     }
     
+    /**
+     * Converts a meeting into a String.
+     * 
+     * @param meeting the meeting to convert to String
+     * 
+     * @return the converted meeting
+     */
     public static String toString(Meeting meeting) {
         String result = "";
         
@@ -45,6 +70,13 @@ public class AgentMeetings {
         return result;
     }
     
+    /**
+     * Removes a meeting.
+     * 
+     * @param meeting the meeting to be removed
+     * 
+     * @return if the removing was successful or not
+     */
     public static boolean remove(Meeting meeting) { 
         boolean result = false;
         
@@ -59,6 +91,13 @@ public class AgentMeetings {
         return result;
     }
     
+    /**
+     * Gets the distance between the two agents in a certain meeting.
+     * 
+     * @param meeting the meeting in which the two agents are
+     * 
+     * @return the distance between them
+     */
     public static int getDistance(Meeting meeting) {
         int distance = 0;
         Point nowAgent1 = Point.castToPoint(meeting.agent1().belief.getPosition());
@@ -68,11 +107,25 @@ public class AgentMeetings {
         return distance;
     }
     
+    /**
+     * Gets the position of the second agent in a certain meeting.
+     * 
+     * @param meeting the meeting in which the second agent is
+     * 
+     * @return the position of the second agent
+     */
     public static Point getPositionAgent2(Meeting meeting) {
         return new Point(Point.castToPoint(meeting.agent2().belief.getPosition()))
                 .add(new Point(meeting.posAgent1()).add(new Point(meeting.relAgent2()).sub(meeting.posAgent2())));
     }
     
+    /**
+     * Searches for a certain agent in all meetings.
+     * 
+     * @param agent the agent that is being searched for
+     * 
+     * @return the entry in the meeting list which contains the agent
+     */
     public static List<Meeting> find(BdiAgentV2 agent) {
         List<Meeting> resultList = new ArrayList<Meeting>(); 
         
@@ -85,6 +138,14 @@ public class AgentMeetings {
         return resultList;
     }  
     
+    /**
+     * Gets a meeting for two certain agents.
+     * 
+     * @param agent1 the first agent
+     * @param agent2 the second agent
+     * 
+     * @return the meeting record of the two agents
+     */
     public static Meeting get(BdiAgentV2 agent1, BdiAgentV2 agent2) {
        Meeting result = null; 
         
@@ -116,6 +177,18 @@ public class AgentMeetings {
         return new Meeting(meeting.agent1, meeting.relAgent1,  meeting.posAgent1,  meeting.nmpAgent1, meeting.agent2, meeting.relAgent2,  meeting.posAgent2,  meeting.nmpAgent2);
     }
     
+    /**
+     * The meeting record of all agent meetings.
+     * 
+     * @param agent1 the first agent
+     * @param relAgent1 the relative position of the first agent
+     * @param posAgent1 the actual position of the first agent
+     * @param nmpAgent1 non modulo position of the first agent
+     * @param agent2 the second agent
+     * @param relAgent2 the relative position of the second agent
+     * @param posAgent2 the actual position of the second agent
+     * @param nmpAgent2 non modulo position of the second agent
+     */
     public record Meeting(BdiAgentV2 agent1, Point relAgent1,  Point posAgent1,  Point nmpAgent1, BdiAgentV2 agent2, Point relAgent2,  Point posAgent2,  Point nmpAgent2) {       
         @Override
         public String toString() {

@@ -1,5 +1,11 @@
 package de.feu.massim22.group3.agents;
 
+/**
+ * The enum <code>Status</code> is a important part of the communication of BdiAgentV2. 
+ * All these states are being checked and compared for Multi Block Tasks. 
+ * 
+ * @author Melinda Betz
+ */
 public enum Status {
     No2("no2"),
     Open("ope"),

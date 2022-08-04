@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents.desires.V2;
 import java.awt.Point;
 import java.util.*;
 
+import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.Belief;
@@ -15,11 +16,23 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
+/**
+ * The class <code>BdiAgentV2</code> models the desire to arrange a block.
+ * 
+ * @author Melinda Betz
+ */
 public class ArrangeBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
     private BdiAgentV2 agent;
     
+    /**
+     * Instantiates a new ArrangeBlockDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the info of the task
+     * @param agent the agent himself
+     */
     public ArrangeBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlocksDesire");
@@ -27,7 +40,11 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         this.agent = agent;
     }
 
-
+    /**
+     * Proves if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
 	@Override
 	public BooleanInfo isExecutable() {
 		AgentLogger
@@ -41,6 +58,11 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 		return new BooleanInfo(false, "");
 	}
 
+	 /**
+     * Proves if the desire is fulfilled .
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlocksDesire.isFulfilled");
@@ -54,6 +76,11 @@ public class ArrangeBlocksDesire extends BeliefDesire {
         return new BooleanInfo(true, "");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(
