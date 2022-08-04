@@ -630,7 +630,7 @@ public class Belief {
         return reachableRoleZones.size() > 0 ? reachableRoleZones.get(0) : null;
     }
     
-    //Melinda
+    //Melinda start
     
     /**
      * Gets the nearest relative Manhatten RoleZone .
@@ -650,7 +650,7 @@ public class Belief {
     public Point getAbsolutePosition() {
         return absolutePosition;
     }
-    //Melinda Ende
+    //Melinda end
 
     public ReachableGoalZone getNearestGoalZone() {
         // Zone is sorted
@@ -701,15 +701,6 @@ public class Belief {
     public Thing getThingAt(Point p) {
         for (Thing t : things) {
             if (t.x == p.x && t.y == p.y) {
-                return t;
-            }
-        }
-        return null;
-    }
-    
-    public Thing getBlockAt(Point p) {
-        for (Thing t : things) {
-            if (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) {
                 return t;
             }
         }
@@ -1037,10 +1028,10 @@ public class Belief {
     private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
 
-    // Melinda
+    // Melinda start
     
     /**
-     * Updates the position of a agent from its position before.
+     * Updates the position of a agent (used from the outside).
      * 
      */
     public void updatePositionFromExternal() {
@@ -1176,6 +1167,22 @@ public class Belief {
         
         return reachableRoleZones;
     }
+    
+    /**
+     * Gets a block at a certain point.
+     * 
+     * @param p the point where the block is at
+     * 
+     * @return a block ( thing) at a certain point
+     */
+    public Thing getBlockAt(Point p) {
+        for (Thing t : things) {
+            if (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) {
+                return t;
+            }
+        }
+        return null;
+    }
 
-    // Melinda Ende
+    // Melinda end
 }
