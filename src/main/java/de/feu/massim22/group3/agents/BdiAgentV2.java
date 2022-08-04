@@ -28,7 +28,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * Please be aware, that <code>BdiAgentV2</code> is no successor of <code>BdiAgentV1</code>. Both implementations
  * define a separate approach and are not connected to each other.
  * 
- * @see BdiAgentV1
+ *@see BdiAgentV1
  * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
@@ -85,7 +85,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     }
 
     /**
-     * All that happens in one step.
+     * All that happens in one step.( Complete agent processing per step)
      * 
      * @return the action for that step
      */
