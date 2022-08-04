@@ -631,6 +631,16 @@ public class Belief {
     }
     
     //Melinda
+    
+    /**
+     * .
+     * 
+     * @param name the name of the agent
+     * @param mailbox the mail service of the agent
+     * @param index the index of the agent in the agent team
+     * 
+     * @return 
+     */
     public Point getNearestRelativeManhattenRoleZone() {
         roleZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
         return roleZones.size() > 0 ? roleZones.get(0) : null;

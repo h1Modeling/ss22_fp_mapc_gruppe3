@@ -23,7 +23,13 @@ import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
- * An agent that uses the step()-Method.
+ * The class <code>BdiAgentV2</code> defines an agent implementation of group 3 in the massim agent contest 2022.
+ * The class is one variant out of two implementations of the group. The other implementation is <code>BdiAgentV1</code>.
+ * Please be aware, that <code>BdiAgentV2</code> is no successor of <code>BdiAgentV1</code>. Both implementations
+ * define a separate approach and are not connected to each other.
+ * 
+ * @see BdiAgentV1
+ * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
 
@@ -64,10 +70,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             , new Point(61, 14)};
 
     /**
-     * Constructor.
+     * Initializes a new Instance of BdiAgentV2.
      * 
-     * @param name    - the agent's name
-     * @param mailbox - the mail facility
+     * @param name the name of the agent
+     * @param mailbox the mail service of the agent
+     * @param index the index of the agent in the agent team
      */
     public BdiAgentV2(String name, MailService mailbox, int index) {
         super(name, mailbox);
@@ -86,16 +93,16 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         beliefsDone = false; // Agent
 
         AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
-        // Mapupdate über updateAgent (wenn möglich, ohne startCalculation auszulösen?)
+        // map update with updateAgent (wenn möglich, ohne startCalculation auszulösen?)
         updateMap();
 
-        // Wenn es der letzte Agent war kommt die Gruppenverarbeitung
+        // If the last agent is done then do Group processing 
         if (StepUtilities.reportMapUpdate(this, belief.getStep(), belief.getTeamSize())) {
            Thread t2 = new Thread(() -> new StepUtilities(new DesireUtilities()).doGroupProcessing(belief.getStep()));
             t2.start();
         }
 
-        // warten auf PATHFINDER_RESULT 
+        // wating for PATHFINDER_RESULT 
         AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
             if (!beliefsDone) {
@@ -112,7 +119,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             }
         }
 
-        // warten auf decisions (agent und supervisor)
+        // wating for decisions done (agent and supervisor)
         AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for decisionsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         
         while (true) {
@@ -133,7 +140,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             }
         }
         
-        // sind Cooperations abgelaufen?
+        // cooperations expired?
         if (this.getName().equals("31")) {
              List<Cooperation> cooperations = new ArrayList<Cooperation>(AgentCooperations.cooperations);
             
