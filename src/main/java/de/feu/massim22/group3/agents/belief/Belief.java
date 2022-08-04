@@ -1040,7 +1040,7 @@ public class Belief {
     // Melinda
     
     /**
-     * Updates 
+     * Updates the position of a agent from its position before.
      * 
      */
     public void updatePositionFromExternal() {
@@ -1071,6 +1071,10 @@ public class Belief {
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     
+    /**
+     * Updates the agent position from absolute position.
+     * 
+     */
     public void updatePositionFromAbsolutePosition() {
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
         if (absolutePosition != null) {
@@ -1082,6 +1086,11 @@ public class Belief {
     
     private Point nonModuloPosition = new Point(0, 0);
     
+    /**
+     * Gets the non modulo position of an agent as point.
+     * 
+     * @return the non modulo position of an agent as point
+     */
     public Point getNonModuloPosition() {
         return nonModuloPosition;
     }
@@ -1103,6 +1112,11 @@ public class Belief {
         }
     }
     
+    /**
+     * Gets a list of all reachable dispensers.
+     * 
+     * @return list of all reachable dispensers
+     */
     public List<ReachableDispenser> getReachableDispensersX() {
         List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
         
@@ -1121,6 +1135,11 @@ public class Belief {
         return reachableDispensersX;
     }
     
+    /**
+     * Gets a list of all reachable goal zones.
+     * 
+     * @return list of all reachable goal zones
+     */
     public List<ReachableGoalZone> getReachableGoalZonesX() {
         List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
         
@@ -1137,6 +1156,11 @@ public class Belief {
         return reachableGoalZones;
     }
     
+    /**
+     * Gets a list of all reachable role zones.
+     * 
+     * @return list of all reachable role zones
+     */
     public List<ReachableRoleZone> getReachableRoleZonesX() {
         List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
         

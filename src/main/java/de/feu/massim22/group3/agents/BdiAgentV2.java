@@ -84,6 +84,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         StepUtilities.allSupervisors.add((Supervisor)this.supervisor);
     }
 
+    /**
+     * All that happens in one step.
+     * 
+     * @return the action for that step
+     */
     @Override
     public Action step() {
         desires = new ArrayList<IDesire>();
@@ -93,7 +98,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         beliefsDone = false; // Agent
 
         AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
-        // map update with updateAgent (wenn möglich, ohne startCalculation auszulösen?)
+        // map update with updateAgent (without startCalculating?)
         updateMap();
 
         // If the last agent is done then do Group processing 
@@ -305,7 +310,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     }
 
     /**
-     * Update the Map.
+     * Updates the map.
      * 
      */
     public void updateMap() {
@@ -316,18 +321,37 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 belief.getTaskInfo(), belief.getAttachedPoints());
     }
     
+    /**
+     * Gets a list of all attached things.
+     * 
+     * @return list of all attached things
+     */
     public List<Thing> getAttachedThings() {
         return attachedThings;
     }
 
+    /**
+     * Gets a list of all attached points.
+     * 
+     * @return list of all attached points
+     */
     public List<Point> getAttachedPoints() {     
         return attachedPoints;
     }
     
+    /**
+     * Removes a certain attached thing.
+     * 
+     * @param t the attached thing that is supposed to be removed
+     */
     public void removeAttached(Thing t) {     
   
     }
     
+    /**
+     * Refreshes all attached things and points.
+     * 
+     */
     public void refreshAttached() {
         attachedPoints = new ArrayList<Point>();
         attachedThings = new ArrayList<Thing>();
@@ -351,18 +375,34 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }*/
     }
 
+    /**
+     * This method functionality is not implemented in the agent and should not be used.
+     * @deprecated
+     */
     @Override
     public void initSupervisorStep() {
     }
 
+    /**
+     * This method functionality is not implemented in the agent and should not be used.
+     * @deprecated
+     */
     @Override
     public void forwardMessage(Percept message, String receiver, String sender) {
     }
 
+    /**
+     * This method functionality is not implemented in the agent and should not be used.
+     * @deprecated
+     */
     @Override
     public void handlePercept(Percept percept) {
     }
 
+    /**
+     * This method functionality is not implemented in the agent and should not be used.
+     * @deprecated
+     */
     @Override
     public void handleMessage(Percept message, String sender) {
     }

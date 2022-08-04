@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents;
 //import java.awt.Point;
 import java.util.*;
 
+
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.agents.Point;
@@ -15,6 +16,10 @@ import massim.protocol.data.*;
 //import java.awt.*;
 import java.nio.FloatBuffer;
 
+/**
+ * The class <code>StepUtilities</code> contains .
+ * @author Melinda Betz
+ */
 public class StepUtilities {
     DesireUtilities desireProcessing;
     INaviAgentV2 navi;
@@ -38,11 +43,11 @@ public class StepUtilities {
     /**
      * The agent has initiated his map update.
      * 
-     * @param agent    - the agent which has updated the map
-     * @param step     - the step in which the program is at the moment
-     * @param teamSize - the size of the team of which the agent is part of
+     * @param agent the agent which has updated the map
+     * @param step the step in which the program is at the moment
+     * @param teamSize the size of the team of which the agent is part of
      * 
-     * @return boolean - the agent is done updating the map
+     * @return the agent is done updating the map
      */
     public static synchronized boolean reportMapUpdate(BdiAgentV2 agent, int step, int teamSize) {
         boolean result = false;
@@ -57,13 +62,13 @@ public class StepUtilities {
     }
     
     /**
-     * The agent has initiated his map update.
+     * The agent has initiated the decisions.
      * 
-     * @param agent    - the agent which has updated the map
-     * @param step     - the step in which the program is at the moment
-     * @param teamSize - the size of the team of which the agent is part of
+     * @param agent  the agent which has updated the map
+     * @param step the step in which the program is at the moment
+     * @param teamSize the size of the team of which the agent is part of
      * 
-     * @return boolean - the agent is done updating the map
+     * @return the agent is done updating the map
      */
     public static synchronized void reportDecisionsDone(BdiAgentV2 agent, int step, int teamSize) {
         countAgent2++;
@@ -269,7 +274,7 @@ public class StepUtilities {
     /**
      * Update the Map.
      * 
-     * @param agent - the Agent that wants to update the map
+     * @param agent the Agent that wants to update the map
      *
      */
     public void updateMap(BdiAgentV2 agent) {
@@ -283,9 +288,9 @@ public class StepUtilities {
     /**
      * The method merges two groups together
      *
-     * @param supervisorGroup   - the supervisor of the group that the other group
+     * @param supervisorGroup the supervisor of the group that the other group
      *                          is going to be merged into
-     * @param supervisorToMerge - the supervisor of the group that is going to be
+     * @param supervisorToMerge the supervisor of the group that is going to be
      *                          merged into the other group
      * 
      */
