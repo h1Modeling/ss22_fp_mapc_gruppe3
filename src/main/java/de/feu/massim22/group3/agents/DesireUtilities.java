@@ -600,7 +600,7 @@ public class DesireUtilities {
     }
     
     /**
-     *Converts a block into a task requirement.
+     *Converts a block ( that has been converted into a thing) into a task requirement.
      *
      *@param toThingBlock block that is being converted
      * 
