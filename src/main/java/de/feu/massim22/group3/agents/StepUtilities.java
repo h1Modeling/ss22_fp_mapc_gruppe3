@@ -18,6 +18,7 @@ import java.nio.FloatBuffer;
 
 /**
  * The class <code>StepUtilities</code> contains all the methods that are necessary for the correct sequence of a single step .
+ * 
  * @author Melinda Betz
  */
 public class StepUtilities {
@@ -268,9 +269,9 @@ public class StepUtilities {
     }
 
     /**
-     * Update the Map.
+     * Update the map.
      * 
-     * @param agent the Agent that wants to update the map
+     * @param agent the agent that wants to update the map
      *
      */
     public void updateMap(BdiAgentV2 agent) {
@@ -306,7 +307,7 @@ public class StepUtilities {
                 baseAgent.belief.getPosition().y + foundPosition.y);     
         Point newPosAgent = null;
 
-        // neuer Supervisor für agents der agentsSupervisorToMerge Liste
+        // new supervisor for the agents of the list agentsSupervisorToMerge 
         for (BdiAgentV2 agent : allAgents) {
             if (agentsSupervisorToMerge.contains(agent.getName())) {
                 agent.supervisor = supervisorGroup;
@@ -326,11 +327,11 @@ public class StepUtilities {
     }
 
     /**
-     * 
+     * Calculates the interesting points on the map for a certain supervisor.
      *
-     * @param supervisor - the supervisor of the group
-     * @return List<CalcResult>
+     * @param supervisor the supervisor of the group
      * 
+     * @return the result of the calculation in a list
      */
     public synchronized List<CalcResult> calcGroup(Supervisor supervisor) {
         AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Start - Supervisor: " + supervisor.getName() + " Agents: " + supervisor.getAgents());
@@ -349,7 +350,7 @@ public class StepUtilities {
 
             for (int i = 0; i < agents.size(); i++) {
                 //Point agentPos = Point.castToPoint(navi.getInternalAgentPosition(supervisor.getName(), agents.get(i)));
-                //entspricht mit absolute Position bereits der internal Position
+                //absolute position equals internal position
                 Point agentPos = Point.castToPoint(getAgent(agents.get(i)).belief.getPosition());
                 AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - agent: " + agents.get(i) + " , agentPos: " + agentPos);
 
@@ -403,15 +404,16 @@ public class StepUtilities {
         return new Percept("PATHFINDER_RESULT", data);
     }
 
-    public record DispenserFlag(Point position, Boolean attachMade) {}
+   // public record DispenserFlag(Point position, Boolean attachMade) {}
 
-/**
- * 
- *
- * 
- * 
- * 
- */
+    /**
+     * Gets all the agents with a certain name.
+     * 
+     * @param inAgent the name of the agent that we want to get
+     * 
+     * @result all the agents with the param name
+     *
+     */
 public static BdiAgentV2 getAgent(String inAgent) {
     BdiAgentV2 result = null;
 
@@ -425,8 +427,15 @@ public static BdiAgentV2 getAgent(String inAgent) {
     return result;
 }
 
+// array to write all attached blocks into
 public static String[] attachedBlock = new String[11];
 
+/**
+ * Gets all the attached blocks.
+ * 
+ * @result all the attached blocks
+ *
+ */
 public static String getAttachedBlocks() {
     String result = "";
     
@@ -437,6 +446,13 @@ public static String getAttachedBlocks() {
     return result;
 }
 
+/**
+ * Gets the amount of attached blocks from one block type.
+ * 
+ * @param type the block type that we want to know the amount off attached blocks of
+ *
+ *@return number off attached blocks
+ */
 public static int getNumberAttachedBlocks(String type) {
     int result = 0;
     
@@ -450,16 +466,27 @@ public static int getNumberAttachedBlocks(String type) {
 }
 }
 
+/**
+ * The class <code>AgentMeeting</code> defines the structure of an AgentMeeting.
+ * @author Melinda Betz
+ */
 class AgentMeeting {
     BdiAgentV2 agent;
     Point position;
-
+    
+    /**
+     * Initializes a new Instance of AgentMeeting.
+     * 
+     * @param agent the name of the agent
+     * @param position the mail service of the agent
+     */
     AgentMeeting(BdiAgentV2 agent, Point position) {
         this.agent = agent;
         this.position = position;
     }
 }
 
+//record for pathfinding result with distance and direction
 record PathFindingResult(int distance, String direction) {}
 
 //record CalcResult(String agent, Percept percepts) {}
