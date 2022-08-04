@@ -1,3 +1,17 @@
+/**
+ * A custom implementation of the A* algorithm.
+ * The implementation defines a compute shader which calculates the path between a set of start points
+ * and a set of goal points. The input values are provided by two data buffers. The map buffer holds
+ * information about obstacles which need to be avoided. The data buffer holds information about the
+ * start and finish points. The result will be written back to the map buffer.
+ *
+ * This version uses an array structure to store node references. Because of this, the implementation
+ * is limited in performance and can crash at big maps.
+ * 
+ * Please use shader2.glsl which is an improved version of this implementation.
+ *
+ * @author: Heinz Stadler
+ */
 #version 430
 layout(local_size_x = VAR1, local_size_y = VAR2, local_size_z = VAR3) in;
 layout(rg32f, binding = 0) uniform image3D map;

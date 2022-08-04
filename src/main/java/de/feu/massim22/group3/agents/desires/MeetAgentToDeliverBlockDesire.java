@@ -10,20 +10,37 @@ import massim.protocol.data.Thing;
 
 import java.awt.Point;
 
+/**
+ * The Class <code>MeetAgentToDeliverBlockDesire</code> models the desire to meet a team mate to transfer an attached block.
+ * 
+ * @author Heinz Stadler
+ */
 public class MeetAgentToDeliverBlockDesire extends BeliefDesire {
 
     private String agent;
 
+    /**
+     * Instantiates a new MeetAgentToDeliverBlockDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param agent the agent to meet
+     */
     public MeetAgentToDeliverBlockDesire(Belief belief, String agent) {
         super(belief);
         this.agent = agent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(belief.getOwnAttachedPoints().size() == 0, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         // Test if teammate is in vision

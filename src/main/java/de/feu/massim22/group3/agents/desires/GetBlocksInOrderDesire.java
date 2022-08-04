@@ -3,20 +3,32 @@ package de.feu.massim22.group3.agents.desires;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.belief.Belief;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>GetBlocksInOrderDesire</code> models the desire to rotate attached blocks to fit the requirements of a certain task.
+ * 
+ * @author Heinz Stadler
+ */
 public class GetBlocksInOrderDesire extends BeliefDesire {
 
     private TaskInfo info;
     
+    /**
+     * Instantiates a new GetBlocksInOrderDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the task which requirements should be met
+     */
     public GetBlocksInOrderDesire(Belief belief, TaskInfo info) {
         super(belief);
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GetBlocksInOrderDesire, Step: " + belief.getStep());
         this.info = info;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         for (Thing t : info.requirements) {
@@ -30,6 +42,9 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
         return new BooleanInfo(true, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         Thing t = belief.getAttachedThings().get(0);

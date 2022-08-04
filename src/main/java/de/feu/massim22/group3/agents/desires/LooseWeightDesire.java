@@ -6,12 +6,25 @@ import de.feu.massim22.group3.agents.belief.Belief;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>LooseWeightDesire</code> models the desire to only have blocks attached which can be used für active tasks.
+ * 
+ * @author Heinz Stadler
+ */
 public class LooseWeightDesire extends BeliefDesire {
 
+    /**
+     * Instantiates a new LooseWeightDesire.
+     * 
+     * @param belief the belief of the agent
+     */
     public LooseWeightDesire(Belief belief) {
         super(belief);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         int attached = belief.getOwnAttachedPoints().size();
@@ -34,6 +47,9 @@ public class LooseWeightDesire extends BeliefDesire {
         return new BooleanInfo(false, info);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ActionInfo getNextActionInfo() {
         for (Point p: belief.getOwnAttachedPoints()) {
             if (p.x == 0 &&  p.y == 1) {
@@ -52,6 +68,9 @@ public class LooseWeightDesire extends BeliefDesire {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 20;

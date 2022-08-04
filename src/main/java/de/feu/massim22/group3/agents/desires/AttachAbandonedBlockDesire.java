@@ -7,18 +7,33 @@ import java.util.List;
 import de.feu.massim22.group3.agents.belief.Belief;
 import massim.protocol.data.Thing;
 
+/**
+ * The Class <code>AttachAbandonedBlockDesire</code> models the desire to attach an unattached block in vision.
+ * 
+ * @author Heinz Stadler
+ */
 public class AttachAbandonedBlockDesire extends BeliefDesire {
 
     private String block;
     private Thing nearest;
     private String supervisor;
 
+    /**
+     * Instantiates a new AttachAbandonedBlockDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param block the type of the block which should be attached
+     * @param supervisor the supervisor of the agent
+     */
     public AttachAbandonedBlockDesire(Belief belief, String block, String supervisor) {
         super(belief);
         this.block = block;
         this.supervisor = supervisor;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         for (Thing t : belief.getAttachedThings()) {
@@ -30,6 +45,9 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         return new BooleanInfo(false, "No block " + block + " attached");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         nearest = null;
@@ -61,6 +79,9 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         return new BooleanInfo(false, "No abandoned block in vision");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
 
@@ -93,6 +114,9 @@ public class AttachAbandonedBlockDesire extends BeliefDesire {
         return getActionForMove(dir + dir2, getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(String supervisor) {
         this.supervisor = supervisor;

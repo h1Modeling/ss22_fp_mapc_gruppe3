@@ -64,7 +64,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     private boolean merging = false;
     
     /**
-     * Initializes a new Instance of BdiAgentV1.
+     * Instantiates a new Instance of BdiAgentV1.
      * 
      * @param name the name of the agent
      * @param mailbox the mail service of the agent
@@ -104,10 +104,10 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         queue.add(new PerceptMessage(sender, message));
     }
 
-    @Override
     /**
      * Permanently checks for new messages, handles them and calculates the current intention of the agent. 
      */
+    @Override
     public void run() {
         while (true) {
             // Send Action if already calculated
@@ -245,7 +245,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             String task = PerceptUtil.toStr(parameters, 0);
             String agent = PerceptUtil.toStr(parameters, 1);
             TaskInfo taskInfo = belief.getTask(task);
-            desires.add(new ReceiveBlockDesire(belief, taskInfo, agent, getName(), supervisor.getName()));
+            desires.add(new ReceiveBlockDesire(belief, taskInfo, agent, supervisor.getName()));
             break;
         }
         case SUPERVISOR_PERCEPT_DELIVER_TWO_BLOCK: {

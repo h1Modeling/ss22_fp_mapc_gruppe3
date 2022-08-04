@@ -9,17 +9,32 @@ import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import massim.protocol.data.Thing;
 
-public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
+/**
+ * The Class <code>RequestBlockFromDispenserDesire</code> models the desire to request a block from
+ * a dispenser.
+ * 
+ * @author Heinz Stadler
+ */
+public class RequestBlockFromDispenserDesire extends BeliefDesire {
 
     private Thing block;
     private CellType dispenser;
 
-    public AttachSingleBlockFromDispenserDesire(Belief belief, Thing block) {
+    /**
+     * Instantiates a new RequestBlockFromDispenserDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param block the block which should be requested
+     */
+    public RequestBlockFromDispenserDesire(Belief belief, Thing block) {
         super(belief);
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         for (Thing t : belief.getAttachedThings()) {
@@ -31,6 +46,9 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
         return new BooleanInfo(false, "No block " + block.type + " attached");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isExecutable() {
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
@@ -40,6 +58,9 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
         return new BooleanInfo(value, info);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         // Request from Dispenser
@@ -68,17 +89,17 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
 
         // Move
         Point p = belief.getNearestRelativeManhattanDispenser(block.type);
-        int manhattenDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
+        int manhattanDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
         // From Pathfinding
-        if (rd != null && rd.distance() < 10 * manhattenDistance) {
+        if (rd != null && rd.distance() < 10 * manhattanDistance) {
             String dir = DirectionUtil.intToString(rd.direction());
             if (dir.length() > 0) {
                 return getActionForMove(dir, getName());
             }
         }
 
-        // Manhatten
+        // Manhattan
         String dir = getDirectionToRelativePoint(p);
         return getActionForMove(dir, getName());
     }

@@ -18,9 +18,9 @@ public interface IIntention {
     ActionInfo getNextActionInfo();
 
     /**
-     * Gets the name of the intention.
+     * Gets the name of the intention / desire.
      * 
-     * @return the name of the intention
+     * @return the name of the intention / desire
      */
     String getName();
     

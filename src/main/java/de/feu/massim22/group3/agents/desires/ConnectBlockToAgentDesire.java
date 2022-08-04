@@ -13,6 +13,11 @@ import massim.protocol.messages.scenario.ActionResults;
 
 import java.awt.Point;
 
+/**
+ * The Class <code>ConnectBlockToAgentDesire</code> models the desire to connect a block to another agent.
+ * 
+ * @author Heinz Stadler
+ */
 public class ConnectBlockToAgentDesire extends BeliefDesire {
 
     private String agent;
@@ -22,6 +27,16 @@ public class ConnectBlockToAgentDesire extends BeliefDesire {
     private Supervisable communicator;
     private boolean detached = false;
 
+    /**
+     * Instantiates a new ConnectBlockToAgentDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param agent the name of the agent to which the block should be attached
+     * @param agentFullName the full name of the agent to which the block should be attache - this is the name provided by the server
+     * @param info the task on which the desire is based on
+     * @param block the block which should be attached
+     * @param communicator an instance which can send messages to other agents which is normally the agent which holds the desire
+     */
     public ConnectBlockToAgentDesire(Belief belief, String agent, String agentFullName, TaskInfo info, Thing block, Supervisable communicator) {
         super(belief);
         this.agent = agent;
@@ -31,6 +46,10 @@ public class ConnectBlockToAgentDesire extends BeliefDesire {
         this.communicator = communicator;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ActionInfo getNextActionInfo() {
         // Detach
         if (belief.getOwnAttachedPoints().size() > info.requirements.size()) {
@@ -134,6 +153,9 @@ public class ConnectBlockToAgentDesire extends BeliefDesire {
         return ActionInfo.SKIP(getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         boolean value = detached && belief.getLastActionResult().equals(ActionResults.SUCCESS);

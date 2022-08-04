@@ -12,7 +12,7 @@ public class MapCell {
     private MapCellReport recentReport;
     
     /**
-     * Initializes a new <code>MapCell</code>.
+     * Instantiates a new <code>MapCell</code>.
      */
     MapCell() {
         // initialize Reports with empty cell

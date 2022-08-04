@@ -14,7 +14,7 @@ public class MapCellReport {
     private int step;
 
     /**
-     * Initializes a new MapCellReport.
+     * Instantiates a new MapCellReport.
      * 
      * @param cellType the cell type of the cell
      * @param zoneType the zone type of the cell
