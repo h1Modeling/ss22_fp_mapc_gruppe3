@@ -3,6 +3,7 @@ package de.feu.massim22.group3.agents;
 //import java.awt.Point;
 import java.util.*;
 
+
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.agents.Point;
@@ -15,6 +16,10 @@ import massim.protocol.data.*;
 //import java.awt.*;
 import java.nio.FloatBuffer;
 
+/**
+ * The class <code>StepUtilities</code> contains all the methods that are necessary for the correct sequence of a single step .
+ * @author Melinda Betz
+ */
 public class StepUtilities {
     DesireUtilities desireProcessing;
     INaviAgentV2 navi;
@@ -38,11 +43,11 @@ public class StepUtilities {
     /**
      * The agent has initiated his map update.
      * 
-     * @param agent    - the agent which has updated the map
-     * @param step     - the step in which the program is at the moment
-     * @param teamSize - the size of the team of which the agent is part of
+     * @param agent the agent which has updated the map
+     * @param step the step in which the program is at the moment
+     * @param teamSize the size of the team of which the agent is part of
      * 
-     * @return boolean - the agent is done updating the map
+     * @return the agent is done updating the map
      */
     public static synchronized boolean reportMapUpdate(BdiAgentV2 agent, int step, int teamSize) {
         boolean result = false;
@@ -57,13 +62,11 @@ public class StepUtilities {
     }
     
     /**
-     * The agent has initiated his map update.
+     * The agent has initiated the decisions done.
      * 
-     * @param agent    - the agent which has updated the map
-     * @param step     - the step in which the program is at the moment
-     * @param teamSize - the size of the team of which the agent is part of
-     * 
-     * @return boolean - the agent is done updating the map
+     * @param agent  the agent which has done the decisions
+     * @param step the step in which the program is at the moment
+     * @param teamSize the size of the team of which the agent is part of
      */
     public static synchronized void reportDecisionsDone(BdiAgentV2 agent, int step, int teamSize) {
         countAgent2++;
@@ -78,9 +81,7 @@ public class StepUtilities {
      * All the things that have to be done to merge two groups together, update the
      * maps for the resulting groups and do some group/supervisor decisions.
      *
-     * @param step - the step in which the program is at the moment
-     * 
-     * @return boolean - group merge was a success
+     * @param step the step in which the program is at the moment
      */
     public void doGroupProcessing(int step) {
         BdiAgentV2 agent1;
@@ -108,23 +109,23 @@ public class StepUtilities {
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() allSupervisors: " + allSupervisorNames);
 
         if (allSupervisors.size() > 1 || alwaysAgentMeetings) {
-            // Noch gibt es mehr als einen Supervisor
+            //more than one supervisor at the moment
             for (BdiAgentV2 agent : allAgents) {
                 AgentLogger.info(
                         Thread.currentThread().getName() + " doGroupProcessing() Start - Agent: " + agent.getName() + " , Position: " + agent.belief.getPosition());
                 things = agent.belief.getThings();
                 
                 for (Thing thing : things) {
-                    // Agent hat in seiner Vision einen anderen Agent
+                    // agent has another agent in his vision
                     if (thing.type.equals(Thing.TYPE_ENTITY)) {
-                        // dieser ist aus dem gleichen Team
+                        // that is from the same team
                         if (thing.details.equals(agent.belief.getTeam())) {
-                            // und nicht er selbst
+                            //that is not the agent personally
                             if (thing.x != 0 && thing.y != 0) {
                                 AgentLogger
                                         .info(Thread.currentThread().getName() + " doGroupProcessing() Found - Agent: "
                                                 + agent.getName() + " , FoundPos: " + new Point(thing.x, thing.y));
-                                // also ein Kandidat zum mergen
+                                // found a candidate for merging
                                 foundAgent.add(new AgentMeeting(agent, new Point(thing.x, thing.y)));
                             }
                         }
@@ -132,11 +133,11 @@ public class StepUtilities {
                 }
             }
 
-            // Agents suchen die sich getroffen haben
+            // search for agents that have found each other
             for (int j = 0; j < foundAgent.size(); j++) {
                 for (int k = j + 1; k < foundAgent.size(); k++) {
-                    // bei einem Treffen müssen sich beide gesehen haben und die relativen
-                    // Koordinaten dürfen sich nur im Vorzeichen unterscheiden
+                    // to call it a meeting both agents have to have seen each other and 
+                    // the coordinates can only differ by the signs
                     if ((foundAgent.get(k).position.x == -foundAgent.get(j).position.x)
                             && (foundAgent.get(k).position.y == -foundAgent.get(j).position.y)) {
                         agent1 = foundAgent.get(j).agent;
@@ -146,20 +147,20 @@ public class StepUtilities {
                                 Thread.currentThread().getName() + " doGroupProcessing() meeting in vision - Agent1: "
                                         + agent1.getName() + " , Agent2: " + agent2.getName());
 
-                        // Agents sind eindeutig zu identifizieren ?
+                        // Can the agents be clearly identified? 
                         if (countMeetings(foundAgent, foundAgent.get(j).position) == 1) {
                             recordAgentMeeting( agent1, agent2, foundAgent.get(j).position);
                             recordAgentMeeting( agent2, agent1, foundAgent.get(k).position);
                         //}
-                            // Agents sind aus unterschiedlichen Gruppen ?
+                            // Are the agents both from different groups ?
                             if (mergeGroups && !(agent1.supervisor == agent2.supervisor)) {
-                                // dann die kleinere in die größere Gruppe mergen
+                                // if true then, merge the smaller group into the bigger group
                                 if (agent1.supervisor.getAgents().size() >= agent2.supervisor.getAgents().size()) {
                                     AgentLogger.info(Thread.currentThread().getName()
                                             + " doGroupProcessing() merge 2 in 1 - Supervisor1: "
                                             + agent1.supervisor.getName() + " , Supervisor2: "
                                             + agent2.supervisor.getName());
-                                    // Gruppe von agent2 in Gruppe von agent1 mergen
+                                    // merge group from agent2 into group from agent1 
                                     exSupervisors.add(agent2.supervisor);
                                     Point posOld = Point.castToPoint(agent2.belief.getPosition());
                                     mergeGroups(agent1.supervisor, agent2.supervisor, agent1, agent2, foundAgent.get(j).position);
@@ -173,7 +174,7 @@ public class StepUtilities {
                                             + " doGroupProcessing() merge 1 in 2 - Supervisor1: "
                                             + agent1.supervisor.getName() + " , Supervisor2: "
                                             + agent2.supervisor.getName());
-                                    // Gruppe von agent1 in Gruppe von agent2 mergen
+                                    // merge group from agent1 into group from agent2
                                     exSupervisors.add(agent1.supervisor);
                                     Point posOld = Point.castToPoint(agent1.belief.getPosition());
                                     mergeGroups(agent2.supervisor, agent1.supervisor, agent2, agent1, foundAgent.get(k).position);
@@ -218,7 +219,7 @@ public class StepUtilities {
             AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - Supervisor: "
                     + supervisor.getName());
 
-            Runnable runnable = () -> { // Gruppenmap berechnen             
+            Runnable runnable = () -> { //calculate group map           
                 List<CalcResult> agentCalcResults = calcGroup(supervisor);                
                 //List<CalcResult> agentCalcResults = Navi.<INaviAgentV2>get().updateSupervisor(supervisor.getName());
 
@@ -269,7 +270,7 @@ public class StepUtilities {
     /**
      * Update the Map.
      * 
-     * @param agent - the Agent that wants to update the map
+     * @param agent the Agent that wants to update the map
      *
      */
     public void updateMap(BdiAgentV2 agent) {
@@ -283,9 +284,9 @@ public class StepUtilities {
     /**
      * The method merges two groups together
      *
-     * @param supervisorGroup   - the supervisor of the group that the other group
+     * @param supervisorGroup the supervisor of the group that the other group
      *                          is going to be merged into
-     * @param supervisorToMerge - the supervisor of the group that is going to be
+     * @param supervisorToMerge the supervisor of the group that is going to be
      *                          merged into the other group
      * 
      */
@@ -297,8 +298,7 @@ public class StepUtilities {
         List<String> agentsSupervisorGroup = supervisorGroup.getAgents();        
         List<String> agentsSupervisorToMerge = supervisorToMerge.getAgents();
         
-        // Agents von agentsSupervisorToMerge in die Liste der Agents von
-        // agentsSupervisorGroup
+        // add agents from agentsSupervisorToMerge to the list of agents from agentsSupervisorGroup
         agentsSupervisorGroup.addAll(agentsSupervisorToMerge);      
         supervisorGroup.setAgents(agentsSupervisorGroup); 
 

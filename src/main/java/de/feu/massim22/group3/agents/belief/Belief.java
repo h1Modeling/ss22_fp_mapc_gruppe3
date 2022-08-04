@@ -630,16 +630,27 @@ public class Belief {
         return reachableRoleZones.size() > 0 ? reachableRoleZones.get(0) : null;
     }
     
-    //Melinda
+    //Melinda start
+    
+    /**
+     * Gets the nearest relative Manhatten RoleZone .
+     * 
+     * @return the nearest relative Manhatten RoleZone
+     */
     public Point getNearestRelativeManhattenRoleZone() {
         roleZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
         return roleZones.size() > 0 ? roleZones.get(0) : null;
     }
     
+    /**
+     * Gets the absolute position from a agent.
+     * 
+     * @return the absolute position
+     */
     public Point getAbsolutePosition() {
         return absolutePosition;
     }
-    //Melinda Ende
+    //Melinda end
 
     public ReachableGoalZone getNearestGoalZone() {
         // Zone is sorted
@@ -690,15 +701,6 @@ public class Belief {
     public Thing getThingAt(Point p) {
         for (Thing t : things) {
             if (t.x == p.x && t.y == p.y) {
-                return t;
-            }
-        }
-        return null;
-    }
-    
-    public Thing getBlockAt(Point p) {
-        for (Thing t : things) {
-            if (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) {
                 return t;
             }
         }
@@ -1026,7 +1028,12 @@ public class Belief {
     private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
 
-    // Melinda
+    // Melinda start
+    
+    /**
+     * Updates the position of a agent (used from the outside).
+     * 
+     */
     public void updatePositionFromExternal() {
         String dir = null;
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
@@ -1055,6 +1062,10 @@ public class Belief {
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
     
+    /**
+     * Updates the agent position from absolute position.
+     * 
+     */
     public void updatePositionFromAbsolutePosition() {
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
         if (absolutePosition != null) {
@@ -1066,6 +1077,11 @@ public class Belief {
     
     private Point nonModuloPosition = new Point(0, 0);
     
+    /**
+     * Gets the non modulo position of an agent as point.
+     * 
+     * @return the non modulo position of an agent as point
+     */
     public Point getNonModuloPosition() {
         return nonModuloPosition;
     }
@@ -1087,6 +1103,11 @@ public class Belief {
         }
     }
     
+    /**
+     * Gets a list of all reachable dispensers.
+     * 
+     * @return list of all reachable dispensers
+     */
     public List<ReachableDispenser> getReachableDispensersX() {
         List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
         
@@ -1105,6 +1126,11 @@ public class Belief {
         return reachableDispensersX;
     }
     
+    /**
+     * Gets a list of all reachable goal zones.
+     * 
+     * @return list of all reachable goal zones
+     */
     public List<ReachableGoalZone> getReachableGoalZonesX() {
         List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
         
@@ -1121,6 +1147,11 @@ public class Belief {
         return reachableGoalZones;
     }
     
+    /**
+     * Gets a list of all reachable role zones.
+     * 
+     * @return list of all reachable role zones
+     */
     public List<ReachableRoleZone> getReachableRoleZonesX() {
         List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
         
@@ -1136,6 +1167,22 @@ public class Belief {
         
         return reachableRoleZones;
     }
+    
+    /**
+     * Gets a block at a certain point.
+     * 
+     * @param p the point where the block is at
+     * 
+     * @return a block ( thing) at a certain point
+     */
+    public Thing getBlockAt(Point p) {
+        for (Thing t : things) {
+            if (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) {
+                return t;
+            }
+        }
+        return null;
+    }
 
-    // Melinda Ende
+    // Melinda end
 }
