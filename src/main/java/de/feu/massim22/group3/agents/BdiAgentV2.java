@@ -160,10 +160,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         return intention.getOutputAction();
     }
 
-    /**
-     * Update all the beliefs.
-     *
-     */
     private void updateBeliefs() {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);

@@ -633,19 +633,20 @@ public class Belief {
     //Melinda
     
     /**
-     * .
+     * Gets the nearest relative Manhatten RoleZone .
      * 
-     * @param name the name of the agent
-     * @param mailbox the mail service of the agent
-     * @param index the index of the agent in the agent team
-     * 
-     * @return 
+     * @return the nearest relative Manhatten RoleZone
      */
     public Point getNearestRelativeManhattenRoleZone() {
         roleZones.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
         return roleZones.size() > 0 ? roleZones.get(0) : null;
     }
     
+    /**
+     * Gets the absolute position from a agent.
+     * 
+     * @return the absolute position
+     */
     public Point getAbsolutePosition() {
         return absolutePosition;
     }
@@ -1037,6 +1038,11 @@ public class Belief {
     }
 
     // Melinda
+    
+    /**
+     * Updates 
+     * 
+     */
     public void updatePositionFromExternal() {
         String dir = null;
         //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
