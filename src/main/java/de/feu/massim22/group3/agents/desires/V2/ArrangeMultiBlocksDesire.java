@@ -27,6 +27,9 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
     Point block1;
     Point block2;
     Point block3;
+    Thing block1Thing;
+    Thing block2Thing;
+    Thing block3Thing;
 
     public ArrangeMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
@@ -52,8 +55,19 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
             // Agent ist als master in einer cooperation
             this.coop = AgentCooperations.get(info, agent, 1);
 
-            if (!(coop.statusMaster().equals(Status.Connected) && coop.statusHelper().equals(Status.Detached))) {
+            if (info.requirements.size() == 2) {
+            if (!(coop.statusMaster().equals(Status.Connected) 
+                    && coop.statusHelper().equals(Status.Detached))) {
                 return new BooleanInfo(false, "");
+            }
+            }
+            
+            if (info.requirements.size() == 3) {
+            if (!(coop.statusMaster().equals(Status.Connected) 
+                    && coop.statusHelper().equals(Status.Detached) 
+                    && coop.statusHelper2().equals(Status.Detached))) {
+                return new BooleanInfo(false, "");
+            }
             }
         }
 
@@ -111,13 +125,13 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                 if (coop.statusHelper().equals(Status.Connected) || coop.statusHelper().equals(Status.ReadyToDetach)) {
                     return ActionInfo.SKIP("1000 waiting for helper to detach");
                 } else {
-                    return ActionInfo.SKIP("1000 problem?");
+                    return ActionInfo.SKIP("1000 waiting for helper");
                 }
             } else {
                 if (coop.statusHelper2().equals(Status.Connected) || coop.statusHelper2().equals(Status.ReadyToDetach)) {
                     return ActionInfo.SKIP("1000 waiting for helper2 to detach");
                 } else {
-                    return ActionInfo.SKIP("1000  problem?");
+                    return ActionInfo.SKIP("1000  waiting for helper2");
                 }
             }
         } else if (coop.statusMaster().equals(Status.ReadyToConnect)) {
@@ -180,6 +194,14 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
                 + " runSupervisorDecisions - proofBlockStructure - agent.isBusy: " + agent.isBusy + " , " + task.name);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure - coops: "
                 + AgentCooperations.toString(AgentCooperations.cooperations));
+        
+        List<Thing> list = agent.desireProcessing.getTaskReqsOrdered(task);
+        block1 = new Point(list.get(0).x, list.get(0).y);
+        block2 = new Point(list.get(1).x, list.get(1).y);
+        block3 = new Point(list.get(2).x, list.get(2).y);
+        block1Thing = list.get(0);
+        block2Thing = list.get(1);
+        block3Thing = list.get(2);
 
         if (AgentCooperations.exists(task, agent, 1)) {
             AgentLogger.info(
@@ -275,7 +297,7 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - possible Helper: "
                 + (possibleHelper == null ? "" : possibleHelper.getName()));
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure: " + found
-                + " , " + result + " , " + this.coop.toString());
+                + " , " + result + " , " + (this.coop == null ? "" : this.coop.toString()));
         return result;
     }
 
@@ -284,9 +306,10 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
         BooleanInfo result = new BooleanInfo(false, "");
         boolean found = false;
         int indexFound = 0;
+        foundMeetings = new TreeMap<>();
 
         AgentLogger.info(Thread.currentThread().getName()
-                + " runSupervisorDecisions - proofBlockStructure - agent.isBusy: " + agent.isBusy + " , " + task.name);
+                + " runSupervisorDecisions - proofBlockStructureGt2 - agent.isBusy: " + agent.isBusy + " , " + task.name);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructureGt2 - coops: "
                 + AgentCooperations.toString(AgentCooperations.cooperations));
         
@@ -294,65 +317,92 @@ public class ArrangeMultiBlocksDesire extends BeliefDesire {
             //es handelt sich um eine 3-Block-Task
             if (AgentCooperations.exists(task, agent, 1) 
                     && !AgentCooperations.get(task, agent, 1).statusHelper2().equals(Status.No2)) {
+                // Agent ist als master in einer cooperation dieser task und die task hat schon einen helper2
                 AgentLogger.info(Thread.currentThread().getName()
                         + " runSupervisorDecisions - proofBlockStructureGt2 - ist master");
-                // Agent ist als master in einer cooperation dieser task und die task hat schon eine helper2
-                this.coop = AgentCooperations.get(task, agent, 1);
+                //this.coop = AgentCooperations.get(task, agent, 1);
                 result = new BooleanInfo(true, "");
 
             } else {
-                if (agent.desireProcessing.isPossibleMaster() && !AgentCooperations.exists(agent)) {
-                    // Es gibt noch keine 3 master und Agent ist weder als master noch als helper in
-                    // einer cooperation
+                if (AgentCooperations.exists(task, agent, 1) || !AgentCooperations.exists(agent)) {
+                    // Agent ist entweder master ohne helper2 oder gar nicht in cooperation
                     for (Meeting meeting : AgentMeetings.find(agent)) {
-                        if (!meeting.agent2().equals(this.coop.helper())
-                                && !AgentCooperations.exists(meeting.agent2())
+                        AgentLogger.info(Thread.currentThread().getName()
+                                + " runSupervisorDecisions - proofBlockStructureGt2 - met: "
+                                + meeting.agent2().getName() + " , helper: " + this.coop.helper().getName());
+
+                        if ((!meeting.agent2().equals(this.coop.helper()) && !AgentCooperations.exists(meeting.agent2())
+                                || meeting.agent2().equals(this.coop.helper())
+                                        && this.coop.statusHelper().equals(Status.Detached))
                                 && !meeting.agent2().getAttachedThings().isEmpty()) {
+
                             for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
-                                // anderer Agent hat den Block der mir noch fehlt
-                                for (int i = 0; i < task.requirements.size(); i++) {
+                                AgentLogger.info(Thread.currentThread().getName()
+                                        + " runSupervisorDecisions - proofBlockStructureGt2 - in1 ");
+
+                                if (block3Thing.type.equals(attachedThing2.details)) {
+                                    // anderer Agent hat den Block der mir noch fehlt
+                                    /*
+                                     * for (int i = 0; i < task.requirements.size(); i++) {
+                                     * AgentLogger.info(Thread.currentThread().getName() +
+                                     * " runSupervisorDecisions - proofBlockStructureGt2 - attached: " +
+                                     * attachedThing2 + " , task: " + task.requirements.get(i));
+                                     * 
+                                     * if (task.requirements.get(i).type.equals(attachedThing2.details) &&
+                                     * (task.requirements.get(i).x != block1.x || task.requirements.get(i).y !=
+                                     * block1.y) && (task.requirements.get(i).x != block2.x ||
+                                     * task.requirements.get(i).y != block2.y) && task.requirements.get(i).x != 0 &&
+                                     * task.requirements.get(i).y != 0 && existsCommonEdge(block2, new
+                                     * Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
+                                     */
                                     AgentLogger.info(Thread.currentThread().getName()
-                                            + " runSupervisorDecisions - proofBlockStructure - attached: "
-                                            + attachedThing2 + " , task: " + task.requirements.get(i));
-
-                                    if (task.requirements.get(i).type.equals(attachedThing2.details)
-                                            && (task.requirements.get(i).x != block1.x || task.requirements.get(i).y != block1.y)
-                                            && (task.requirements.get(i).x != block2.x || task.requirements.get(i).y != block2.y)
-                                            && task.requirements.get(i).x != 0 && task.requirements.get(i).y != 0
-                                            && existsCommonEdge(block2, new Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
-                                        result = new BooleanInfo(true, "");
-                                        foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);
-                                        block3 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
-                                        break;
-                                    }
+                                            + " runSupervisorDecisions - proofBlockStructureGt2 - infound ");
+                                    result = new BooleanInfo(true, "");
+                                    foundMeetings.put(AgentMeetings.getDistance(meeting), meeting);
+                                    // block3 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
+                                    break;
                                 }
-
-                                if (result.value()) break;
                             }
                         }
 
+
                         if (!result.value()) {
                             for (BdiAgentV2 help : StepUtilities.allAgents) {
-                                if (!help.getName().equals(agent.getName()) 
-                                        && !help.getName().equals(this.coop.helper().getName()) 
-                                        && !AgentCooperations.exists(help)
+                                AgentLogger.info(Thread.currentThread().getName()
+                                        + " runSupervisorDecisions - proofBlockStructureGt2 - allA: " + help.getName()
+                                        + " , helper: " + this.coop.helper().getName());
+                                if (!help.getName().equals(agent.getName())
+                                        && (!help.getName().equals(this.coop.helper().getName())
+                                                && !AgentCooperations.exists(help)
+                                                || help.getName().equals(this.coop.helper().getName())
+                                                        && this.coop.statusHelper().equals(Status.Detached))
                                         && !help.getAttachedThings().isEmpty()) {
+                                    AgentLogger.info(Thread.currentThread().getName()
+                                            + " runSupervisorDecisions - proofBlockStructureGt2 - in1 ");
                                     for (Thing attachedThing2 : help.getAttachedThings()) {
                                         // anderer Agent hat den Block der mir noch fehlt
-                                        for (int i = 0; i < task.requirements.size(); i++) {
-                                            if (task.requirements.get(i).type.equals(attachedThing2.details)
-                                                    && (task.requirements.get(i).x != block1.x || task.requirements.get(i).y != block1.y)
-                                                    && (task.requirements.get(i).x != block2.x || task.requirements.get(i).y != block2.y)
-                                                    && task.requirements.get(i).x != 0 && task.requirements.get(i).y != 0
-                                                    && existsCommonEdge(block2, new Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
-                                                result = new BooleanInfo(true, "");
-                                                foundMeetings.put(
-                                                        Point.distance(Point.castToPoint(agent.belief.getPosition()),
-                                                                Point.castToPoint(help.belief.getPosition())),
-                                                        new Meeting(agent, null, null, null, help, null, null, null));
-                                                block3 = new Point(task.requirements.get(i).x, task.requirements.get(i).y);
-                                                break;
-                                            }
+                                        AgentLogger.info(Thread.currentThread().getName()
+                                                + " runSupervisorDecisions - proofBlockStructureGt2 - in2 ");
+                                        if (block3Thing.type.equals(attachedThing2.details)) {
+                                            /*
+                                             * for (int i = 0; i < task.requirements.size(); i++) { if
+                                             * (task.requirements.get(i).type.equals(attachedThing2.details) &&
+                                             * (task.requirements.get(i).x != block1.x || task.requirements.get(i).y !=
+                                             * block1.y) && (task.requirements.get(i).x != block2.x ||
+                                             * task.requirements.get(i).y != block2.y) && task.requirements.get(i).x !=
+                                             * 0 && task.requirements.get(i).y != 0 && existsCommonEdge(block2, new
+                                             * Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
+                                             */
+                                            AgentLogger.info(Thread.currentThread().getName()
+                                                    + " runSupervisorDecisions - proofBlockStructureGt2 - infound ");
+                                            result = new BooleanInfo(true, "");
+                                            foundMeetings.put(
+                                                    Point.distance(Point.castToPoint(agent.belief.getPosition()),
+                                                            Point.castToPoint(help.belief.getPosition())),
+                                                    new Meeting(agent, null, null, null, help, null, null, null));
+                                            // block3 = new Point(task.requirements.get(i).x,
+                                            // task.requirements.get(i).y);
+                                            break;
                                         }
                                     }
                                 }

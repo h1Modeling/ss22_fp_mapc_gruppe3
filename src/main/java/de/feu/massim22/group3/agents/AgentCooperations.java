@@ -58,8 +58,8 @@ public class AgentCooperations {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (sel == 1 && cooperations.get(i).master.getName().equals(agent.getName())
-                    || sel == 2 && cooperations.get(i).helper.getName().equals(agent.getName())
-                    || sel == 3 && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
+                    || sel == 2 && cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
+                    || sel == 3 && cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
                 result = true;
                 break;
             } 
@@ -74,7 +74,7 @@ public class AgentCooperations {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (cooperations.get(i).master.getName().equals(agent.getName())
-                    || cooperations.get(i).helper.getName().equals(agent.getName())
+                    || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
                     ||  (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName())))) {
                 result = true;
                 break;
@@ -89,7 +89,7 @@ public class AgentCooperations {
         
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).master.getName().equals(agent.getName()) 
-                || cooperations.get(i).helper.getName().equals(agent.getName())
+                || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
                 ||  (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
                 result = true;
                 break;
@@ -128,7 +128,7 @@ public class AgentCooperations {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(cooperation.task.name) 
                     && cooperations.get(i).master.getName().equals(cooperation.master.getName()) 
-                    && cooperations.get(i).helper.getName().equals(cooperation.helper.getName())
+                    && cooperations.get(i).helper.getName().equals(cooperation.helper.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
                     && (cooperations.get(i).helper2 == null || cooperations.get(i).helper2.getName().equals(cooperation.helper2.getName()))) {
                 result = true;
                 break;
@@ -142,8 +142,8 @@ public class AgentCooperations {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (sel == 1 && cooperations.get(i).master.getName().equals(agent.getName())
-                    || sel == 2 && cooperations.get(i).helper.getName().equals(agent.getName())
-                    || sel == 3 && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
+                    || sel == 2 && cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
+                    || sel == 3 && cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
                 return cooperations.get(i);
             } 
         }
@@ -155,7 +155,7 @@ public class AgentCooperations {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (cooperations.get(i).master.getName().equals(agent.getName())
-                    || cooperations.get(i).helper.getName().equals(agent.getName())
+                    || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
                     || (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName())))) {
                 return cooperations.get(i);
             } 
@@ -167,7 +167,7 @@ public class AgentCooperations {
     public static Cooperation get(BdiAgentV2 agent) {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).master.getName().equals(agent.getName()) 
-                    || cooperations.get(i).helper.getName().equals(agent.getName())
+                    || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
                     || (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
                 return cooperations.get(i);
             } 

@@ -212,7 +212,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             if (belief.getLastAction().equals(Actions.ATTACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = true;
-                Thing t = belief.getBlockAt(DirectionUtil.getCellInDirection(belief.getLastActionParams().get(0)));
+                //Thing t = belief.getBlockAt(DirectionUtil.getCellInDirection(belief.getLastActionParams().get(0)));
+                Thing t = belief.getThingWithTypeAt(belief.getLastActionParams().get(0), Thing.TYPE_BLOCK);
                 attachedThings.add(t);
                 attachedPoints.add(new Point(t.x, t.y));
                 StepUtilities.attachedBlock[index] = t.details;

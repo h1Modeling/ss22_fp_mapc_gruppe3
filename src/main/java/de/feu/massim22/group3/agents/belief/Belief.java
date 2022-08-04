@@ -1175,14 +1175,11 @@ public class Belief {
      * 
      * @return a block ( thing) at a certain point
      */
-    public Thing getBlockAt(Point p) {
-        for (Thing t : things) {
-            if (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) {
-                return t;
-            }
-        }
-        return null;
-    }
+    /*
+     * public Thing getBlockAt(Point p) { for (Thing t : things) { if
+     * (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) { return t; } }
+     * return null; }
+     */
 
     // Melinda end
 }

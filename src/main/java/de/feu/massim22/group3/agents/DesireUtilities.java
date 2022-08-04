@@ -32,6 +32,7 @@ public class DesireUtilities {
     private int moveIteration = 0;
     private boolean inDirection = true;
     private int maxTypes = 2;
+    private int maxMaster = 1;
  
     public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
@@ -303,7 +304,7 @@ public class DesireUtilities {
     
     public boolean isPossibleMaster() {
         // Variante 2: nur 3 Agenten dürfen gleichzeitigMaster sein
-        if (StepUtilities.countMaster < 3)     
+        if (StepUtilities.countMaster < maxMaster)     
             return true;
         
         return false;
@@ -388,7 +389,7 @@ public class DesireUtilities {
             else
                 result = 600;
             break;
-        case "HelpMultiBlocksDesire2":
+        case "Help2MultiBlocksDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
@@ -728,7 +729,7 @@ public class DesireUtilities {
         Thing result = inBlock;
         AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type));  
         
-        if (StepUtilities.getNumberAttachedBlocks(inBlock.type) > 2) {
+        if (StepUtilities.getNumberAttachedBlocks(inBlock.type) >= maxTypes) {
             if (inBlock.equals(inReqs.get(0))) {
                 result = proofBlockType(inReqs.get(1), inReqs);
             } else if (inBlock.equals(inReqs.get(1))) {
@@ -895,16 +896,27 @@ public class DesireUtilities {
             String dir2 = inDirection ? getCCRotatedDirection(dir) : getCRotatedDirection(dir);
             Thing tDir1 = agent.belief.getThingAt(dir1);
             Thing tDir2 = agent.belief.getThingAt(dir2);
+            Thing tDir1next = agent.belief.getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), dir1));
+            Thing tDir2next = agent.belief.getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), dir2));
             
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove: " + dir1 + " , " + dir2 + " , " + tDir1 + " , " + tDir2);
 
-            if (isFree(tDir1) || isClearable(tDir1)) {
+            if ((isFree(tDir1) || isSaveClearable(tDir1)) && (isFree(tDir1next) || isSaveClearable(tDir1next))) {
                 return getIteratedActionForMove(agent, dir1, desire);
             }
 
-            if (isFree(tDir2) || isClearable(tDir2)) {
+            if ((isFree(tDir2) || isSaveClearable(tDir2)) && (isFree(tDir2next) || isSaveClearable(tDir2next))) {
                 return getIteratedActionForMove(agent, dir2, desire);
             }
+            
+            if (isFree(tDir1) || isSaveClearable(tDir1)) {
+                return getIteratedActionForMove(agent, dir1, desire);
+            }
+
+            if (isFree(tDir2) || isSaveClearable(tDir2)) {
+                return getIteratedActionForMove(agent, dir2, desire);
+            }
+            
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if5");
             return getIteratedActionForMove(agent, getCRotatedDirection(dir), desire);
             //return ActionInfo.SKIP("Agent is stuck");
@@ -922,6 +934,10 @@ public class DesireUtilities {
 
     protected boolean isClearable(Thing t) {
         return t != null && (t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_OBSTACLE));
+    }
+    
+    protected boolean isSaveClearable(Thing t) {
+        return t != null && (t.type.equals(Thing.TYPE_OBSTACLE));
     }
 
     protected Point getCRotatedPoint(Point p) {
