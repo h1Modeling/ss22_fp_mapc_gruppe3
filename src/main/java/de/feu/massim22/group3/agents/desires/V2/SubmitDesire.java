@@ -11,11 +11,24 @@ import massim.protocol.messages.scenario.Actions;
 
 import java.awt.Point;
 
+/**
+ * The class <code>SubmitDesire</code> models the desire to submit a task ( block structure).
+ * 
+ * @author Melinda Betz
+ */
 public class SubmitDesire extends BeliefDesire {
 
     private TaskInfo info;
     private BdiAgentV2 agent;
     
+    /**
+     * Instantiates a new SubmitDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the task the agent is currently working on ( wants to submit)
+     * @param agent the agent who wants to submit
+     * 
+     */
     public SubmitDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
@@ -23,6 +36,11 @@ public class SubmitDesire extends BeliefDesire {
         this.agent = agent;
     }
   
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
 	@Override
     public BooleanInfo isExecutable() {
         boolean result = false;
@@ -65,11 +83,21 @@ public class SubmitDesire extends BeliefDesire {
         return new BooleanInfo(result, info);
     }
  
+	 /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         return ActionInfo.SUBMIT(info.name, getName());
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
@@ -79,6 +107,11 @@ public class SubmitDesire extends BeliefDesire {
         return info;
     }
 
+    /**
+     * Checks if the desire is unfulfillable.
+     * 
+     * @return if it is unfulfillable or not
+     */
     @Override
     public BooleanInfo isUnfulfillable() {
         if (belief.getStep() > info.deadline) {

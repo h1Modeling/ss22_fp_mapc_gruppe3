@@ -13,6 +13,11 @@ import java.util.*;
 
 //import java.awt.Point;
 
+/**
+ * The class <code>GoGoalZoneDesire</code> models the desire to go to (into) a goal zone.
+ * 
+ * @author Melinda Betz
+ */
 public class GoGoalZoneDesire extends BeliefDesire {
     BdiAgentV2 agent;
     
@@ -26,12 +31,24 @@ public class GoGoalZoneDesire extends BeliefDesire {
     Point posDefaultGoalZone1 = new Point(18, 14);
     Point posDefaultGoalZone2 = new Point(18, 14);
 
+    /**
+     * Instantiates a new GoGoalZoneDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param agent the agent who wants to go to a goal zone
+     * 
+     */
     public GoGoalZoneDesire(Belief belief, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoGoalZoneDesire, Step: " + belief.getStep());
         this.agent = agent;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
@@ -40,6 +57,11 @@ public class GoGoalZoneDesire extends BeliefDesire {
         return new BooleanInfo(result, info);
     }
     
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(Thread.currentThread().getName()
@@ -88,6 +110,11 @@ public class GoGoalZoneDesire extends BeliefDesire {
         return resultBack;
     }
     
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         if (goalZoneAgent == null && !defaultGoalZone) {
