@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.Desires;
+package de.feu.massim22.group3.agents.desires;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,9 +9,6 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import de.feu.massim22.group3.agents.belief.Belief;
-import de.feu.massim22.group3.agents.desires.ActionInfo;
-import de.feu.massim22.group3.agents.desires.BeliefDesire;
-import de.feu.massim22.group3.agents.desires.BooleanInfo;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -30,15 +27,15 @@ import java.awt.Point;
  * 
  * @author Heinz Stadler
  */
-public class BeliefDesireTest {
+class BeliefDesireTest {
     
     /**
-     * Test for needed Rotation with attached block.
-     * Konfiguration: A○■
+     * Test for needed Rotation with attached block. <BR>
+     * Konfiguration: A○■ <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove1() {
+    void testGetActionForMove1() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -61,12 +58,12 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed vertical move when blocked by block.
-     * Konfiguration: A●
+     * Test for needed vertical move when blocked by block. <BR>
+     * Konfiguration: A● <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove2() {
+    void testGetActionForMove2() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -86,13 +83,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Rotation with attached block.
-     * Konfiguration: ○■
-     *                A
+     * Test for needed Rotation with attached block. <BR>
+     * Konfiguration: ○■ <BR>
+     *                A <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove3() {
+    void testGetActionForMove3() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -115,13 +112,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Rotation with attached block.
-     * Konfiguration: ○■
-     *                A■
+     * Test for needed Rotation with attached block. <BR>
+     * Konfiguration: ○■ <BR>
+     *                A■ <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove4() {
+    void testGetActionForMove4() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -147,13 +144,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Clear with attached block.
-     * Konfiguration:  ■
-     *               ○A■
+     * Test for needed Clear with attached block. <BR>
+     * Konfiguration:  ■ <BR>
+     *               ○A■ <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove5() {
+    void testGetActionForMove5() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -180,13 +177,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Move with attached block - Agent should not clear blocks if not needed.
-     * Konfiguration:  ■
-     *               ○A●
+     * Test for needed Move with attached block - Agent should not clear blocks if not needed. <BR>
+     * Konfiguration:  ■ <BR>
+     *               ○A● <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove6() {
+    void testGetActionForMove6() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -212,14 +209,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Clear with attached block - Agent should not clear blocks if not needed.
-     * Konfiguration:  ■
-     *               ○A●
-     *                ■
+     * Test for needed Clear with attached block - Agent should not clear blocks if not needed. <BR>
+     * Konfiguration:  ■ <BR>
+     *               ○A● <BR>
+     *                ■ <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove7() {
+    void testGetActionForMove7() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -248,14 +245,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Clear with enemies and blocks around - Agent should not clear blocks if not needed.
-     * Konfiguration: ■
-     *               EA●
-     *                E
+     * Test for needed Clear with enemies and blocks around - Agent should not clear blocks if not needed. <BR>
+     * Konfiguration: ■ <BR>
+     *               EA● <BR>
+     *                E <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove8() {
+    void testGetActionForMove8() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -282,14 +279,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Rotation with attached block.
-     * Konfiguration: ○■
-     *                ○
-     *                A
+     * Test for needed Rotation with attached block. <BR>
+     * Konfiguration: ○■ <BR>
+     *                ○ <BR>
+     *                A <BR>
      * Move Direction: ->
      */
     @Test
-    public void testGetActionForMove9() {
+    void testGetActionForMove9() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -316,14 +313,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Move with attached block.
-     * Konfiguration: ■
-     *                ○
-     *                A
+     * Test for needed Move with attached block. <BR>
+     * Konfiguration: ■ <BR>
+     *                ○ <BR>
+     *                A <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove10() {
+    void testGetActionForMove10() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -347,13 +344,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed horizontal move when blocked by block.
-     * Konfiguration: ●
-     *                A
+     * Test for needed horizontal move when blocked by block. <BR>
+     * Konfiguration: ● <BR>
+     *                A <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove11() {
+    void testGetActionForMove11() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -373,13 +370,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Rotation with attached block.
-     * Konfiguration:  ■
-     *                A○
+     * Test for needed Rotation with attached block. <BR>
+     * Konfiguration:  ■ <BR>
+     *                A○ <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove12() {
+    void testGetActionForMove12() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -402,13 +399,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Rotation with attached block.
-     * Konfiguration: ■■
-     *                A○
-     * Move Direction: ↑
+     * Test for needed Rotation with attached block. <BR>
+     * Konfiguration: ■■ <BR>
+     *                A○ <BR>
+     * Move Direction: ↑ 
      */
     @Test
-    public void testGetActionForMove13() {
+    void testGetActionForMove13() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -434,14 +431,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Clear with attached block.
-     * Konfiguration:  ■■
-     *                 A
-     *                 ○
+     * Test for needed Clear with attached block. <BR>
+     * Konfiguration:  ■■ <BR>
+     *                 A <BR>
+     *                 ○ <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove14() {
+    void testGetActionForMove14() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -468,14 +465,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Move with attached block - Agent should not clear blocks if not needed.
-     * Konfiguration: ●■
-     *                A
-     *                ○
+     * Test for needed Move with attached block - Agent should not clear blocks if not needed. <BR>
+     * Konfiguration: ●■ <BR>
+     *                A <BR>
+     *                ○ <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove15() {
+    void testGetActionForMove15() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -501,14 +498,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Move with attached block - Agent should not clear blocks if not needed.
-     * Konfiguration: ●■
-     *               ■A
-     *                ○
+     * Test for needed Move with attached block - Agent should not clear blocks if not needed. <BR>
+     * Konfiguration: ●■ <BR>
+     *               ■A <BR>
+     *                ○ <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove16() {
+    void testGetActionForMove16() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -536,14 +533,14 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Clear with enemies and blocks around - Agent should not clear blocks if not needed.
-     * Konfiguration: ●
-     *               EA■
-     *                E
+     * Test for needed Clear with enemies and blocks around - Agent should not clear blocks if not needed. <BR>
+     * Konfiguration: ● <BR>
+     *               EA■ <BR>
+     *                E <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove17() {
+    void testGetActionForMove17() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -570,13 +567,13 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for needed Rotation with attached block.
-     * Konfiguration: ■
-     *                ○○A
+     * Test for needed Rotation with attached block. <BR>
+     * Konfiguration: ■ <BR>
+     *                ○○A <BR>
      * Move Direction: ↑
      */
     @Test
-    public void testGetActionForMove18() {
+    void testGetActionForMove18() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
@@ -603,15 +600,15 @@ public class BeliefDesireTest {
     }
 
     /**
-     * Test for move.
-     * Konfiguration: E 
-     *                ●
-     * 
-     *                 A○
+     * Test for move. <BR>
+     * Konfiguration: E  <BR>
+     *                ● <BR>
+     *                  <BR>
+     *                 A○ <BR>
      * Move Direction: ^
      */
     @Test
-    public void testGetActionForMove19() {
+    void testGetActionForMove19() {
         // Create Belief
         Belief b = new Belief("Agent");
         var percept = new ArrayList<Percept>();
