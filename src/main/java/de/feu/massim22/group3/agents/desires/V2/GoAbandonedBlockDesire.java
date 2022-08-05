@@ -12,18 +12,34 @@ import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
 
+/**
+ * The class <code>GoAbandonedBlockDesire</code> models the desire to pick up abandoned blocks.
+ * 
+ * @author Melinda Betz
+ */
 public class GoAbandonedBlockDesire extends BeliefDesire {
 
     private BdiAgentV2 agent;
     private String block;
     private Thing nearest;
 
+    /**
+     * Instantiates a new GoAbandonedBlockDesire.
+     * 
+     * @param agent the agent who wants to go to a abandoned block
+     * @param block the abandoned block to pick up
+     */
     public GoAbandonedBlockDesire(BdiAgentV2 agent, String block) {
         super(agent.belief);
         this.block = block;
         this.agent = agent;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         for (Thing t : agent.getAttachedThings()) {
@@ -38,6 +54,11 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
         return new BooleanInfo(false, "No block " + block + " attached");
     }
 
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         nearest = null;
@@ -87,6 +108,11 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
         return new BooleanInfo(false, "No abandoned block in vision");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
 

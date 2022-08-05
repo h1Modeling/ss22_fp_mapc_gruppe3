@@ -17,7 +17,7 @@ import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
 /**
- * The class <code>BdiAgentV2</code> models the desire to arrange a block.
+ * The class <code>ArrangeBlocksDesire</code> models the desire to arrange a block.
  * 
  * @author Melinda Betz
  */
@@ -31,7 +31,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
      * 
      * @param belief the belief of the agent
      * @param info the info of the task
-     * @param agent the agent himself
+     * @param agent the agent who wants to arrange a block
      */
     public ArrangeBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
@@ -41,7 +41,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
     }
 
     /**
-     * Proves if the desire is executable .
+     * Checks if the desire is executable .
      * 
      * @return if it is executable or not
      */
@@ -59,7 +59,7 @@ public class ArrangeBlocksDesire extends BeliefDesire {
 	}
 
 	 /**
-     * Proves if the desire is fulfilled .
+     * Checks if the desire is fulfilled.
      * 
      * @return if it is fulfilled or not
      */

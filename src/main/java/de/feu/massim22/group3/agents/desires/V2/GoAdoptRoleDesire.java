@@ -13,6 +13,11 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 //import java.awt.Point;
 
+/**
+ * The class <code>GoAdoptRoleDesire</code> models the desire to adopt a role.
+ * 
+ * @author Melinda Betz
+ */
 public class GoAdoptRoleDesire extends BeliefDesire {
     BdiAgentV2 agent;
     String role;
@@ -24,6 +29,13 @@ public class GoAdoptRoleDesire extends BeliefDesire {
     Point realtiveRoleZoneAgentOld;
     Point nearestRoleZone;
 
+    /**
+     * Instantiates a new GoAdoptRoleDesire.
+     * 
+     * @param agent the agent who wants to adopt a role
+     * @param role the role which the agent wants to adopt
+     * 
+     */
     public GoAdoptRoleDesire(Belief belief, BdiAgentV2 agent, String role) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " manageAgentRoles - Start GoAdoptRoleDesire, Step: " + belief.getStep());
@@ -31,6 +43,11 @@ public class GoAdoptRoleDesire extends BeliefDesire {
         this.role = role;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " manageAgentRoles - GoAdoptRoleDesire.isFulfilled, Step: " + belief. getStep());
@@ -39,12 +56,22 @@ public class GoAdoptRoleDesire extends BeliefDesire {
         return new BooleanInfo(result, info);
     }
     
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(Thread.currentThread().getName() + " manageAgentRoles - GoAdoptRoleDesire.isExecutable, Step: " + belief.getStep());
         return new BooleanInfo(true, "");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName()

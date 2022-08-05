@@ -18,6 +18,11 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
+/**
+ * The class <code>GoDispenserDesire</code> models the desire to go to a dispenser.
+ * 
+ * @author Melinda Betz
+ */
 public class GoDispenserDesire extends BeliefDesire {
     private List<ReachableDispenser> typeDispensers = new ArrayList<ReachableDispenser>();
     private BdiAgentV2 agent;
@@ -28,6 +33,15 @@ public class GoDispenserDesire extends BeliefDesire {
     private boolean strangeAgent = false;
     //private StepUtilities stepUtilities;
 
+    /**
+     * Instantiates a new GoDispenserDesire.
+     * 
+     * @param belief 
+     * @param block 
+     * @param supervisor 
+     * @param agent the agent who wants to adopt a role
+     * 
+     */
     public GoDispenserDesire(Belief belief, String block, String supervisor, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoDispenserDesire, Step: " + belief.getStep());
@@ -38,6 +52,11 @@ public class GoDispenserDesire extends BeliefDesire {
         //this.stepUtilities = stepUtilities;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + ".isFulfilled() attached agent: " + agent.getAttachedThings());
@@ -50,6 +69,11 @@ public class GoDispenserDesire extends BeliefDesire {
         return new BooleanInfo(false, "No block " + block + " attached");
     }
 
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.isExecutable() Start - Agent: "
@@ -106,6 +130,11 @@ public class GoDispenserDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName() + "GoDispenserDesire.getNextAction() Start");
