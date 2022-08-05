@@ -36,10 +36,10 @@ public class GoDispenserDesire extends BeliefDesire {
     /**
      * Instantiates a new GoDispenserDesire.
      * 
-     * @param belief 
-     * @param block 
-     * @param supervisor 
-     * @param agent the agent who wants to adopt a role
+     * @param belief the belief of the agent
+     * @param block the block the agent wants to attach
+     * @param supervisor the supervisor of the group
+     * @param agent the agent who wants to go to a dispenser
      * 
      */
     public GoDispenserDesire(Belief belief, String block, String supervisor, BdiAgentV2 agent) {
@@ -81,7 +81,7 @@ public class GoDispenserDesire extends BeliefDesire {
         if (agent.belief.getRole().actions().contains(Actions.REQUEST)
                 && agent.belief.getRole().actions().contains(Actions.ATTACH)) {
             if (belief.getReachableDispensersX().size() > 0) {
-                // es existiert ein Dispenser ( den der Agent erreichen kann)
+                // there is a dispenser that can be reached by the agent
                 List<ReachableDispenser> reachableDispensers = belief.getReachableDispensersX();
 
                 AgentLogger.info(Thread.currentThread().getName() + ".isExecutable() Type gesucht: " + block);
@@ -89,7 +89,7 @@ public class GoDispenserDesire extends BeliefDesire {
                 // Dispenser: " + reachableDispensers);
 
                 for (ReachableDispenser reachableDispenser : reachableDispensers) {
-                    // alle Dispenser vom gesuchten Typ
+                    // all dispensers from the sought-after type
                     String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
 
                     if (typeDispenser.equals(block)) {
@@ -99,7 +99,7 @@ public class GoDispenserDesire extends BeliefDesire {
                 AgentLogger
                         .info(Thread.currentThread().getName() + ".isExecutable() Type Dispenser: " + typeDispensers);
                 if (typeDispensers.size() > 0) {
-                    // es wurde ein Dispenser vom gesuchten Typ gefunden
+                    // a dispenser from the sought-after type has been found
                     return new BooleanInfo(true, "");
                 } else {
                     if (agent.absolutePositions) {
@@ -108,7 +108,7 @@ public class GoDispenserDesire extends BeliefDesire {
                                 reachableDispensers = a.getParent().belief.getReachableDispensersX();
 
                                 for (ReachableDispenser reachableDispenser : reachableDispensers) {
-                                    // alle Dispenser vom gesuchten Typ
+                                    // all dispensers from the sought-after type
                                     String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
 
                                     if (typeDispenser.equals(block)) {
@@ -117,7 +117,7 @@ public class GoDispenserDesire extends BeliefDesire {
                                 }
 
                                 if (typeDispensers.size() > 0) {
-                                    // es wurde ein Dispenser vom gesuchten Typ gefunden
+                                    // a dispenser from the sought-after type has been found
                                     strangeAgent = true;
                                     return new BooleanInfo(true, "");
                                 }
@@ -144,7 +144,7 @@ public class GoDispenserDesire extends BeliefDesire {
         ReachableDispenser nearestDispenser = null;
         distance = 1000;
         
-        // Dispenser mit der kürzesten Entfernung zum Agenten
+        // dispenser which has the smallest distance to the agent
         AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,1");
         Point visionDispenser = Point.castToPoint(belief.getNearestRelativeManhattenDispenser(block));
         AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 0,2");
@@ -162,7 +162,7 @@ public class GoDispenserDesire extends BeliefDesire {
         }
         
         if (distance == 1) {
-            // steht neben einem Dispenser
+            //agent is next to a dispenser
             AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 6");           
             for (Thing thing : agent.belief.getThings()) {
                 if (thing.type.equals(Thing.TYPE_BLOCK) && thing.x == visionDispenser.x
@@ -254,7 +254,7 @@ public class GoDispenserDesire extends BeliefDesire {
             }
          
         } else {
-             // steht noch nicht neben einem Dispenser
+             // agent is not yet next to a dispenser
             String direction = "";
             AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 10"); 
             
@@ -273,15 +273,30 @@ public class GoDispenserDesire extends BeliefDesire {
         }
     }
     
+    /**
+     * Gets the priority .
+     * 
+     * @return priority
+     */
     @Override
     public int getPriority() {
         return distance - 1;
     }
     
+    /**
+     * Gets a block .
+     * 
+     * @return block as String
+     */
     public String getBlock() {
         return block;
     }
 
+    /**
+     * Updates supervisor .
+     * 
+     * @param supervisor the new supervisor
+     */
     @Override
     public void update(String supervisor) {
         this.supervisor = supervisor;
