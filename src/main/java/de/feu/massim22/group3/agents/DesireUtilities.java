@@ -20,6 +20,11 @@ import massim.protocol.data.Role;
 import massim.protocol.messages.scenario.Actions;
 import massim.protocol.messages.scenario.ActionResults;
 
+/**
+ * The class <code>DesireUtilities</code> contains all the methods that are necessary for the correct sequence of the desires .
+ * 
+ * @author Melinda Betz
+ */
 public class DesireUtilities {
     public StepUtilities stepUtilities;
     public TaskInfo task;
@@ -52,9 +57,9 @@ public class DesireUtilities {
     /**
      * The method runs the different agent decisions.
      *
-     * @param agent - the agent who wants to make the decisions
+     * @param agent the agent who wants to make the decisions
      * 
-     * @return boolean - the agent decisions are done
+     * @return the agent decisions are done
      */
     public synchronized boolean runAgentDecisions(int step, BdiAgentV2 agent) {
         boolean result = false;
@@ -112,6 +117,15 @@ public class DesireUtilities {
         return result;
     }
  
+
+    /**
+     * Proves if a decision (desire) can actually be done.
+     *
+     * @param agent the agent himself
+     * @param inDesire the desire that is being proved
+     * 
+     * @return if the decision can be done or not
+     */
     boolean doDecision(BdiAgentV2 agent, IDesire inDesire) {
         boolean result = false;
       
@@ -130,9 +144,9 @@ public class DesireUtilities {
     /**
      * The method runs the different supervisor decisions.
      *
-     * @param supervisor - the supervisor who wants to make the decisions
+     * @param supevisor the supervisor who wants to make the decisions
      * 
-     * @return boolean - the supervisor decisions are done
+     * @return the supervisor decisions are done
      */
     public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor, StepUtilities stepUtilities) {
         this.stepUtilities = stepUtilities;
@@ -148,9 +162,9 @@ public class DesireUtilities {
         List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
         List<String> busyGroupAgents = new ArrayList<>();
 
-        // Schleife über alle Tasks
+        // loop over all tasks
         for (TaskInfo loopTask : supervisorAgent.belief.getTaskInfo()) {
-            //Task Deadline erreicht
+            //the task has reached its deadline
             if(taskReachedDeadline ( supervisorAgent, loopTask)) {
                  continue;
             }
@@ -162,7 +176,7 @@ public class DesireUtilities {
                continue;
            }
            
-            // über alle Agenten einer Gruppe
+            // all agents from one group
             for (String agentStr : allGroupAgents) {
                 BdiAgentV2 agent = StepUtilities.getAgent(agentStr); 
                 
@@ -294,17 +308,30 @@ public class DesireUtilities {
         return result;
     }
     
+
+    /**
+     * Proves if a agent is a possible master.
+     *
+     * @param inAgent the agent to prove
+     * 
+     * @return if the agent is a possible master or not
+     */
     public boolean isPossibleMaster(BdiAgentV2 inAgent) {
-        // Variante 1: nur gerade Agenten dürfen Master sein
+        // variant 1: only agents with even numbers are allowed to be master
         if (inAgent.index % 2 == 0)     
             return true;
         
         return false;
     }
     
+    /**
+     * Proves if a agent is a possible master.
+     * 
+     * @return if the agent is a possible master or not
+     */
     public boolean isPossibleMaster() {
-        // Variante 2: nur 3 Agenten dürfen gleichzeitigMaster sein
-        if (StepUtilities.countMaster < maxMaster)     
+        // variant 2: only three agnets at a time are allowed to be master
+        if (StepUtilities.countMaster < maxMaster)  
             return true;
         
         return false;
@@ -313,11 +340,10 @@ public class DesireUtilities {
     /**
      * The method has a certain priority for every desire.
      *
-     * @param desire - the desire that needs a priority
+     * @param desire the desire that needs a priority
      * 
-     * @return int - the priority
+     * @return the priority
      */
-    // TODO sinnvolle Prioritäten vergeben
     public int getPriority(IDesire desire, BdiAgentV2 agent) {
         int result = 0;
 
@@ -429,9 +455,9 @@ public class DesireUtilities {
     /**
      * The method determines the Intention for a certain agent .
      *
-     * @param agent - the agent that needs a intention
+     * @param agent the agent that needs a intention
      * 
-     * @return Desire - the intention
+     * @return the intention
      */
     public synchronized IDesire determineIntention(BdiAgentV2 agent) {
         IDesire result = null;
@@ -451,6 +477,13 @@ public class DesireUtilities {
         return result;
     }
 
+    /**
+     * Gets the nearest goal zone from the list of reachableGoalZones.
+     *
+     * @param inZoneList a list of all goal zones in reach
+     * 
+     * @return the nearest goal zone
+     */
     public ReachableGoalZone getNearestGoalZone(List<ReachableGoalZone> inZoneList) {
         int distance = 1000;
         ReachableGoalZone result = null;
@@ -464,6 +497,13 @@ public class DesireUtilities {
         return result;
     }
     
+    /**
+     * Gets the nearest role zone from the list of reachableRoleZones.
+     *
+     * @param inZoneList a list of all role zones in reach
+     * 
+     * @return the nearest role zone
+     */
     public ReachableRoleZone getNearestRoleZone(List<ReachableRoleZone> inZoneList) {
         int distance = 1000;
         ReachableRoleZone result = null;
@@ -477,6 +517,13 @@ public class DesireUtilities {
         return result;
     }
 
+    /**
+     * Gets the nearest dispenser from the list of reachableDispensers.
+     *
+     * @param inZoneList a list of all dispensers in reach
+     * 
+     * @return the nearest dispenser
+     */
     public ReachableDispenser getNearestDispenser(List<ReachableDispenser> inZoneList) {
         int distance = 1000;
         ReachableDispenser result = null;
@@ -490,6 +537,14 @@ public class DesireUtilities {
         return result;
     }
     
+    /**
+     * Determines the direction in which the agent should walk circles while exploring.
+     *
+     * @param agent the agent that wants to walk the circles
+     * @param stepWidth how big every step of the agent is
+     * 
+     * @return the direction for the next circle
+     */
     public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
         String startDirection = DirectionUtil.intToString(agent.exploreDirection);
         /*float random = new Random().nextFloat();
@@ -545,14 +600,36 @@ public class DesireUtilities {
         return resultDirection;
     }
     
+    /**
+     *Converts a block ( that has been converted into a thing) into a task requirement.
+     *
+     *@param toThingBlock block that is being converted
+     * 
+     * @return the converted block
+     */
     public Thing toTaskBlock(Thing toThingBlock) {           
         return new Thing(toThingBlock.x, toThingBlock.y, toThingBlock.details, "");
     }
     
+    /**
+     *Converts a block into a thing.
+     *
+     *@param toTaskBlock block that is being converted
+     * 
+     * @return the converted block
+     */
     public Thing toThingBlock(Thing toTaskBlock) {           
         return new Thing(toTaskBlock.x, toTaskBlock.y, Thing.TYPE_BLOCK, toTaskBlock.type);
     }
     
+    /**
+     *Checks if a block is part of a task.
+     *
+     *@param inTaskReq the requirement of the task
+     *@param inBlock the block that is being checked
+     * 
+     * @return it is part of the task or not
+     */
     public boolean blockInTask(List<Thing> inTaskReqs, Thing inBlock) { 
         for (Thing req : inTaskReqs) {
             if (req.x == inBlock.x && req.y == inBlock.y && req.type.equals(inBlock.details)) {              
@@ -563,6 +640,14 @@ public class DesireUtilities {
         return false;
     }
     
+    /**
+     *Checks if a task requirement is already in the list.
+     *
+     *@param inList all task requirements active at the moment
+     * @param inTaskReq the requirement that is being checked
+     * 
+     * @return it is in the list or not
+     */
     public boolean taskReqInList(List<Thing> inList, Thing inTaskReq) {     
         for (Thing block : inList) {
             if (block.x == inTaskReq.x && block.y == inTaskReq.y && block.details.equals(inTaskReq.type)) {
@@ -573,6 +658,14 @@ public class DesireUtilities {
         return false;
     }
     
+    /**
+     * Counts all the blocks from one block type over all the used blocks.
+     *
+     *@param inList all block types being used at the moment
+     * @param inType the type to be counted
+     * 
+     * @return the number of blocks from that one block type
+     */
     public int countBlockType(List<Thing> inList, String inType) {  
         int count = 0;
         
@@ -585,28 +678,53 @@ public class DesireUtilities {
         return count;
     }
     
+    /**
+     * Gets the content in a certain direction ( obstacle or not or what is there).
+     *
+     *@param agent the current agent
+     * @param direction where should be examined?
+     * 
+     * @return the content in that direction
+     */
     public Thing getContentInDirection(BdiAgentV2 agent, String direction) {
         Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(direction));
 
         return getContent(agent, cell);
     }
     
+    /**
+     * Gets the content in a certain direction from a certain point on ( obstacle or not or what is there).
+     *
+     *@param agent the current agent
+     * @param from where the agent is right now
+     * @param direction where should be examined?
+     * 
+     * @return the content in that direction
+     */
     public Thing getContentInDirection(BdiAgentV2 agent, Point from, String direction) {
         Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(from, direction));
 
         return getContent(agent, cell);
     }
     
+    /**
+     * Gets the content in a certain cell ( obstacle or not or what is there).
+     *
+     *@param agent the current agent
+     * @param cell the cell which is being examined
+     * 
+     * @return the content which is in the cell
+     */
     public Thing getContent(BdiAgentV2 agent, Point cell) {      
         //AgentLogger.info(Thread.currentThread().getName() + " getContent() - Position: " + cell);
         
         for (Thing thing : agent.belief.getThings()) {           
             if (thing.type.equals(Thing.TYPE_OBSTACLE) || thing.type.equals(Thing.TYPE_ENTITY) || thing.type.equals(Thing.TYPE_BLOCK)) {
-                // an diesem Punkt ist ein Hindernis
+                // at this point there is a obstacle
                 
                 if (cell.equals(new Point(thing.x, thing.y))) {
                     //AgentLogger.info(Thread.currentThread().getName() + " getContentInDirection() - Vision: " + thing);
-                    // Agent steht vor Hinderniss in Richtung direction
+                    // agent is standing in front of a obstacle in the direction direction
                     return thing;
                 } 
             }
@@ -614,16 +732,31 @@ public class DesireUtilities {
 
         return null;
     }
-          
+    /**
+     * Has the task reached its deadline?
+     *
+     *@param agent the agent that wants to do the task
+     * @param task the task that is being examined
+     * 
+     * @return it has expired or not
+     */   
     public boolean taskReachedDeadline (BdiAgentV2 agent,TaskInfo task) {
         boolean result = false;
         if (agent.belief.getStep() > task.deadline) {
-            //Task ist abgelaufen 
+            //task has expired
             result = true;
         }
         return result;
     }
        
+    /**
+     * Gets the first block for a certain task.
+     *
+     *@param agent the agent that wants to get the block
+     * @param task the task that is being done
+     * 
+     * @return the required block
+     */
     public Thing getTaskBlockA(BdiAgentV2 agent, TaskInfo task) {
         Thing result = task.requirements.get(0);
         // ein Block Task
@@ -644,6 +777,14 @@ public class DesireUtilities {
         return result;
     }
     
+    /**
+     * Gets the second block for a certain task.
+     *
+     *@param agent the agent that wants to get the block
+     * @param task the task that is being done
+     * 
+     * @return the required block
+     */
     public Thing getTaskBlockB(BdiAgentV2 agent, TaskInfo task) {
         Thing result = task.requirements.get(0);
         Thing block1 = result;
@@ -661,15 +802,15 @@ public class DesireUtilities {
                 block3 = task.requirements.get(i);
         }
         
-        // ein Block Task
+        // Single Block Task
         if (task.requirements.size() == 1) {
             result = block1;
         } else {       
-            // Mehr Block Task
+            // Multi Blocks Task
             for (Meeting meeting : AgentMeetings.find(agent)) {
                 if (!meeting.agent2().getAttachedThings().isEmpty()) {
                     for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
-                        // Kenn ich einen Agenten mit block1?
+                        //  Do I know a agent with block type block1?
                         if (attachedThing.details.equals(block1.type)) {
                             result = block2;
                             break;
@@ -685,16 +826,24 @@ public class DesireUtilities {
         return result;
     }
     
+    /**
+     * Gets the third block for a certain task.
+     *
+     *@param agent the agent that wants to get the block
+     * @param task the task that is being done
+     * 
+     * @return the required block
+     */
     public Thing getTaskBlockC(BdiAgentV2 agent, TaskInfo task) {
         Thing result = task.requirements.get(0);
         List<Thing> reqs = getTaskReqsOrdered(task);
 
-        // ein Block Task
+        // Single Block Tasks
         if (task.requirements.size() == 1) {
             AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out0");
             result = reqs.get(0);
         } else {
-            // Mehr Block Task
+            // Multi Block Tasks
             for (Meeting meeting : AgentMeetings.find(agent)) {
                 AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out0.1");
                 
@@ -703,7 +852,7 @@ public class DesireUtilities {
                     
                     for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
                         AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out0.3");
-                        // Kenn ich einen Agenten mit block1?
+                        // Do I know a agent with block type block1?
                         if (attachedThing.details.equals(reqs.get(0).type)) {
                                 AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out1");
                                 result = reqs.get(1);                                
@@ -725,7 +874,7 @@ public class DesireUtilities {
         return result;
     }
     
-    Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
+ Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
         Thing result = inBlock;
         AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type));  
         
@@ -742,6 +891,13 @@ public class DesireUtilities {
         return result;
     }
     
+    /**
+     * Gets task requirements and orders them.
+     *
+     * @param task the requirements of the task that are to be ordered
+     * 
+     * @return the ordered requirements
+     */
     public List<Thing> getTaskReqsOrdered(TaskInfo task) {
         List<Thing> result = new ArrayList<Thing>();
         Thing block1 = null;
@@ -777,6 +933,16 @@ public class DesireUtilities {
         return ActionInfo.SKIP("Agent is Stuck in iterated");
     }
     
+    /**
+     * Determines what a agent should do if it has the action move and it has got a alternate direction.
+     *
+     * @param agent the agent that wants to do a move
+     * @param dir the direction in which the agent wants to move first
+     * @param dirAlt the alternate direction 
+     * @param desire the desire which the agent wants to do
+     * 
+     * @return the action to do
+     */
     public ActionInfo getActionForMoveWithAlternate(BdiAgentV2 agent, String dir, String dirAlt, String desire) {
         ActionInfo firstTry = getActionForMove(agent, dir, desire);
         String lastRotation = agent.belief.getLastActionParams().size() > 0 ? agent.belief.getLastActionParams().get(0) : "";
@@ -796,6 +962,16 @@ public class DesireUtilities {
         return firstTry;
     }
 
+    /**
+     * Determines what a agent should do if it has the action move and wants to move two steps.
+     *
+     * @param agent the agent that wants to do a move
+     * @param dir the direction in which the agent wants to move first
+     * @param dir2 the direction in which the agent wants to move second
+     * @param desire the desire which the agent wants to do
+     * 
+     * @return the action to do
+     */
     public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String dir2, String desire) {
         this.dir2 = dir2;
         dir2Used = true;
@@ -804,12 +980,21 @@ public class DesireUtilities {
         return out;
     }
     
+    /**
+     * Determines what a agent should do if it has the action move.
+     *
+     * @param agent the agent that wants to do a move
+     * @param dir the direction in which the agent wants to move
+     * @param desire the desire which the agent wants to do
+     * 
+     * @return the action to do
+     */
     public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String desire) {
         Point dirPoint = Point.castToPoint(DirectionUtil.getCellInDirection(dir));
-        //Melinda 
+        //Melinda start
         List<Point> attached = agent.getAttachedPoints();       
         //List<Point> attached = belief.getAttachedPoints();
-        //Melinda Ende
+        //Melinda end
         // Rotate attached
         if (agent.blockAttached) {
             for (Point p : attached) {
@@ -978,6 +1163,13 @@ public class DesireUtilities {
         }
     }
 
+    /**
+     * Rotates a certain point counter clockwise.
+     *
+     * @param p the point that is going to be rotated
+     * 
+     * @return the rotated point
+     */
     public Point getCCRotatedPoint(Point p) {
         return new Point(p.y, -p.x);
     }
@@ -993,6 +1185,6 @@ public class DesireUtilities {
 
         return false;
     }
-    
+  //record for pathfinding result with distance and direction
     public record DispenserFlag(Point position, Boolean attachMade) {}
 }
