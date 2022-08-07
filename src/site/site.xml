@@ -1,0 +1,26 @@
+<project name="Fachpraktikum KI: Multiagentenprogrammierung - Gruppe 3 - SS 22 FernUniversität Hagen">
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.11.1</version>
+  </skin>
+  <custom>
+    <fluidoSkin>
+      <gitHub>
+        <projectId>h1Modeling/ss22_fp_mapc_gruppe3</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>gray</ribbonColor>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
+  <bannerLeft>
+    <name>Icon</name>
+    <src>/images/banner.png</src>
+    <href>/index.html</href>
+    <width>210</width>
+  </bannerLeft>
+  <body>
+    <menu ref="reports" />
+    <menu ref="modules"/>
+  </body>
+</project>
