@@ -30,10 +30,8 @@ public class StepUtilities {
     private static int countAgent2 = 0;
     private static int activeStep = 0;
     public static boolean DecisionsDone;
-    //public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
     boolean mergeGroups = true;
     boolean alwaysAgentMeetings = true;
-    public static int countMaster = 0;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;

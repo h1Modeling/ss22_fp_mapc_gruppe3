@@ -34,10 +34,12 @@ public class DesireUtilities {
     public int circleSize = 40;
     private String dir2;
     private boolean dir2Used = false;
-    private int moveIteration = 0;
+    public int moveIteration = 0;
     private boolean inDirection = true;
-    private int maxTypes = 2;
-    private int maxMaster = 1;
+    private int maxTypes = 3;
+    private int count = 0;
+    private String lastWish = null;
+    public boolean tryLastWanted = true;
  
     public List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Thing> goodBlocks = new ArrayList<Thing>();
@@ -316,22 +318,9 @@ public class DesireUtilities {
      * 
      * @return if the agent is a possible master or not
      */
-    public boolean isPossibleMaster(BdiAgentV2 inAgent) {
+    public boolean anotherMasterIsPossible(BdiAgentV2 inAgent) {
         // variant 1: only agents with even numbers are allowed to be master
         if (inAgent.index % 2 == 0)     
-            return true;
-        
-        return false;
-    }
-    
-    /**
-     * Proves if a agent is a possible master.
-     * 
-     * @return if the agent is a possible master or not
-     */
-    public boolean isPossibleMaster() {
-        // variant 2: only three agnets at a time are allowed to be master
-        if (StepUtilities.countMaster < maxMaster)  
             return true;
         
         return false;
@@ -430,8 +419,6 @@ public class DesireUtilities {
                 result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.DETACH))
                 result = 550;
-            else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
-                result = 1000;
             else
                 result = 600;
             break;
@@ -446,6 +433,9 @@ public class DesireUtilities {
             break;
         case "LooseWeightDesire":
             result = 1400;
+            break;
+        case "DisconnectMultiBlocksDesire":
+            result = 2500;
             break;
         }
 
@@ -869,23 +859,32 @@ public class DesireUtilities {
         result = proofBlockType(result, reqs);
                 
         AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - agent: " + agent.getName() + " , task: " + task.name 
-                + " , block1: " + reqs.get(0).toString() + " , block2: " + reqs.get(1).toString() + " , block3: " + reqs.get(2).toString() + " , result: " + result.toString());        
+                + " , block1: " + reqs.get(0).toString() + " , block2: " + (task.requirements.size() >= 2 ? reqs.get(1).toString() : "") 
+                + " , block3: " + (task.requirements.size() >= 3 ? reqs.get(2).toString() : "") + " , result: " + result.toString());        
 
         return result;
     }
     
  Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
         Thing result = inBlock;
-        AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type));  
+        AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type 
+                + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type)); 
         
-        if (StepUtilities.getNumberAttachedBlocks(inBlock.type) >= maxTypes) {
-            if (inBlock.equals(inReqs.get(0))) {
-                result = proofBlockType(inReqs.get(1), inReqs);
-            } else if (inBlock.equals(inReqs.get(1))) {
-                result = proofBlockType(inReqs.get(2), inReqs);
-            } else if (inBlock.equals(inReqs.get(2))) {
-                result = proofBlockType(inReqs.get(0), inReqs);
+        count++;
+        
+        if (count <= 3) {
+            // soll verhindern, dass es bei 3-Block-Tasks mit 3 gleichen Blöcken und niedrigem maxTypes hängen bleibt
+            if (StepUtilities.getNumberAttachedBlocks(inBlock.type) >= maxTypes) {
+                if (inBlock.equals(inReqs.get(0))) {
+                    result = proofBlockType(inReqs.get(1), inReqs);
+                } else if (inBlock.equals(inReqs.get(1))) {
+                    result = proofBlockType(inReqs.get(2), inReqs);
+                } else if (inBlock.equals(inReqs.get(2))) {
+                    result = proofBlockType(inReqs.get(0), inReqs);
+                }
             }
+        } else {
+            count = 0;
         }
 
         return result;
@@ -924,8 +923,10 @@ public class DesireUtilities {
     }
     
     private ActionInfo getIteratedActionForMove(BdiAgentV2 agent, String dir, String desire) {
+        tryLastWanted = false;
         moveIteration++;
-        if (moveIteration < 100) {
+        
+        if (moveIteration < 4) {
             return getActionForMove(agent, dir, desire);
         }
         AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - getIteratedActionForMove - stuck");
@@ -1057,24 +1058,43 @@ public class DesireUtilities {
         
         // Test Agent
         Thing t = agent.belief.getThingAt(dirPoint);
-        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t);
+        String lastDir = "";
+        String lastWantedDir = "";
+        //boolean tryLastWanted = this.tryLastWanted;
+        //this.tryLastWanted = true;
+              
+        if (agent.belief.getLastAction() != null && agent.belief.getLastAction().equals(Actions.MOVE) 
+                && !agent.belief.getLastActionResult().equals(ActionResults.FAILED)) {
+            lastDir = agent.belief.getLastActionParams().get(0);
+            lastWantedDir = lastWish;
+            lastWish = dir;
+        }
+        
+        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t + " , " + dir + " , "
+        + lastDir + " , " + lastWantedDir + " , " + DirectionUtil.oppositeDirection(lastDir));
         
         if (t != null && (t.type.equals(Thing.TYPE_OBSTACLE) /*|| (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint))*/)) {
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if2");
             return ActionInfo.CLEAR(dirPoint, desire);
             
-        } else if (isFree(t) || attached.contains(dirPoint)) {
+        } else if ((isFree(t) || attached.contains(dirPoint)) 
+                && (lastDir.equals(lastWantedDir) || !(dir.equals(DirectionUtil.oppositeDirection(lastDir))))) {
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
 
             if (dir2Used)
                 return ActionInfo.MOVE(dir, dir2, desire);
-            else
+            else                 
                 return ActionInfo.MOVE(dir, desire);
+
+        } else if (tryLastWanted && lastWantedDir != null && !lastDir.equals(lastWantedDir) && dir.equals(DirectionUtil.oppositeDirection(lastDir))) {
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3.5");
+            
+            return getIteratedActionForMove(agent, lastWantedDir, desire);
             
         } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)                
                 || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
-
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if4");
+            
             // Try to move around agent
             inDirection = inDirection ? false : true;
             String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);
@@ -1084,21 +1104,23 @@ public class DesireUtilities {
             Thing tDir1next = agent.belief.getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), dir1));
             Thing tDir2next = agent.belief.getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), dir2));
             
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove: " + dir1 + " , " + dir2 + " , " + tDir1 + " , " + tDir2);
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove: " + dir1 + " , " + dir2 + " , " + tDir1 + " , " + tDir2 + " , " + tDir1next + " , " + tDir2next);
 
-            if ((isFree(tDir1) || isSaveClearable(tDir1)) && (isFree(tDir1next) || isSaveClearable(tDir1next))) {
+            if ((isFree(tDir1) || attached.contains(new Point(tDir1.x, tDir1.y)) || isSaveClearable(tDir1)) 
+                    && (isFree(tDir1next) || isSaveClearable(tDir1next))) {
                 return getIteratedActionForMove(agent, dir1, desire);
             }
 
-            if ((isFree(tDir2) || isSaveClearable(tDir2)) && (isFree(tDir2next) || isSaveClearable(tDir2next))) {
+            if ((isFree(tDir2) || attached.contains(new Point(tDir2.x, tDir2.y)) || isSaveClearable(tDir2)) 
+                    && (isFree(tDir2next) || isSaveClearable(tDir2next))) {
                 return getIteratedActionForMove(agent, dir2, desire);
             }
             
-            if (isFree(tDir1) || isSaveClearable(tDir1)) {
+            if (isFree(tDir1) || attached.contains(new Point(tDir1.x, tDir1.y)) || isSaveClearable(tDir1)) {
                 return getIteratedActionForMove(agent, dir1, desire);
             }
 
-            if (isFree(tDir2) || isSaveClearable(tDir2)) {
+            if (isFree(tDir2) || attached.contains(new Point(tDir2.x, tDir2.y)) || isSaveClearable(tDir2)) {
                 return getIteratedActionForMove(agent, dir2, desire);
             }
             

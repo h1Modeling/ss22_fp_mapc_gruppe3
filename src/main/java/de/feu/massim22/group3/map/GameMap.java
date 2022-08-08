@@ -19,7 +19,6 @@ public class GameMap {
     
     private Point initialSize;
     //private Point size = new Point(64, 92); // null;
-    //private Point size = new Point(92, 64); // null;
     private Point size = new Point(32, 32); // null;
     // First dimension are rows, second dimension are columns
     private MapCell[][] cells;

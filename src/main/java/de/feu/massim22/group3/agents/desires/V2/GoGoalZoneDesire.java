@@ -22,14 +22,10 @@ public class GoGoalZoneDesire extends BeliefDesire {
     BdiAgentV2 agent;
     
     BdiAgentV2 goalZoneAgent = null;
-    /*Point posAgentOld;
-    Point nearestGoalZoneGoalZoneAgentNew;    
-    Point posGoalZoneAgentOld;
-    Point realtiveGoalZoneAgentOld;*/
     Point nearestGoalZone;
     boolean defaultGoalZone = false;
-    Point posDefaultGoalZone1 = new Point(18, 14);
-    Point posDefaultGoalZone2 = new Point(18, 14);
+    Point posDefaultGoalZone1 = new Point(28, 54);
+    Point posDefaultGoalZone2 = new Point(9, 1);
 
     /**
      * Instantiates a new GoGoalZoneDesire.

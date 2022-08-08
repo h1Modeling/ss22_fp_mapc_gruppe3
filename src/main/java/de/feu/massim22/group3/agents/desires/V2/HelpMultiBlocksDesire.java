@@ -19,17 +19,13 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
     private TaskInfo info;    
     private BdiAgentV2 agent;
     private Cooperation coop;
-    private int distanceMaster;
     
-    private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>(); 
     private int distanceAgent;
     private Meeting nearestMeeting;
     private boolean onTarget;
     private int distanceNearestTarget;
-    private int nearestTarget;
     private Point target;
     private Point myBlock;
-    private Point block1;
     private Point block2;
     private String dirBlock2;
     private List<Point> targets = new ArrayList<Point>();
@@ -63,8 +59,6 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 // Die Blöcke für die Task sind vorhanden
                 if (proofBlockStructure(info)) {                    
                     distanceNearestTarget = 1000;
-                    nearestTarget = 0; 
-                    //TODO agents kennen sich nur indirekt
                     nearestMeeting = AgentMeetings.get(agent, coop.master());
                     
                     if (nearestMeeting != null) {
@@ -114,7 +108,6 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                                     
                                     if (distanceTarget < distanceNearestTarget) {
                                         distanceNearestTarget = distanceTarget;
-                                        nearestTarget = i;
                                     }
                                 }
                             }
@@ -135,6 +128,7 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo");
+        agent.desireProcessing.tryLastWanted = true;
     
         if (onTarget) {     //Agent2 steht auf einer der Target-Positionen für den Connect
             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelpMultiBlocksDesire.getNextActionInfo - AA: " 
@@ -203,19 +197,6 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
                 AgentLogger.info(Thread.currentThread().getName() + "HelpMultiBlocksDesire - nextActionDirectionManhatten: "
                         + direction + " , altdir: " + dirAlt);
                 return agent.desireProcessing.getActionForMove(agent, direction, getName());
-
-                /*for (int i = 1; i < targets.size(); i++) {
-                    dirAlt = getDirectionToRelativePoint(targets.get(i));
-
-                    if (!dirAlt.equals(direction)) {
-                        break;
-                    }
-                } 
-                
-                if (dirAlt.equals(""))
-                    return agent.desireProcessing.getActionForMove(agent, direction, getName());
-                else
-                    return agent.desireProcessing.getActionForMoveWithAlternate(agent, direction, "s", getName());*/
                 
             } else {
              //gehe Richtung Agent 
@@ -233,7 +214,6 @@ public class HelpMultiBlocksDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure");
         boolean result = false;
         boolean found = false;
-        int indexFound = 0;
         
         if (agent.isBusy && AgentCooperations.exists(task, agent, 2)) {
             // Agent ist als helper in einer cooperation

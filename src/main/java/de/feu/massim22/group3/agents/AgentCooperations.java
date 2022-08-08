@@ -10,6 +10,9 @@ import massim.protocol.data.TaskInfo;
 
 public class AgentCooperations {
     public static List<Cooperation> cooperations = new ArrayList<Cooperation>();
+    private static int maxMaster = 4;
+    private static int max2BMaster = 2;
+    private static int max3BMaster = 2;
     
     public static synchronized void setCooperation(Cooperation cooperation) {
         remove(cooperation);
@@ -50,6 +53,42 @@ public class AgentCooperations {
                 break;
             } 
         }
+    }
+    
+    public static int getCountMaster(int taskSize) {
+        int result = 0;
+        
+        for (Cooperation coop : cooperations) {
+            if (taskSize == 0 || coop.task().requirements.size() == taskSize)
+                result++;
+        }
+        
+        return result;
+    }
+    
+    public static int getMaxMaster(int taskSize) {
+        int result = 0;
+        
+        if (taskSize == 0)
+            result = maxMaster;
+        else if  (taskSize == 2)
+            result = max2BMaster;
+        else if  (taskSize == 3)
+            result = max3BMaster;
+       
+        return result;
+    }
+    
+    /**
+     * Proves if a agent is a possible master.
+     * 
+     * @return if the agent is a possible master or not
+     */
+    public static boolean anotherMasterIsPossible() {
+        if (cooperations.size() < maxMaster)  
+            return true;
+        
+        return false;
     }
     
     public static boolean exists(TaskInfo task, BdiAgentV2 agent, int sel) {

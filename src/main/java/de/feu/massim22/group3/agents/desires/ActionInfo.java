@@ -70,7 +70,12 @@ public record ActionInfo(Action value, String info) {
         return new ActionInfo(a, info);
     }
     
-    //Melinda Anfang   
+    //Melinda Anfang
+    public static ActionInfo DISCONNECT(Point p1, Point p2, String info) {
+        Action a = new Action(Actions.DISCONNECT, new Numeral(p1.x), new Numeral(p1.y), new Numeral(p2.x), new Numeral(p2.y));
+        return new ActionInfo(a, info);
+    }
+    
     public static ActionInfo MOVE(String dir1, String dir2, String info) {
         Action a = new Action(Actions.MOVE, new Identifier(dir1), new Identifier(dir2));
         return new ActionInfo(a, info);

@@ -4,14 +4,10 @@ import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import eis.iilang.Action;
-import eis.iilang.Identifier;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
@@ -20,9 +16,7 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
     private BdiAgentV2 agent;
-    private BdiAgentV2 possibleHelper;
     private Cooperation coop;
-    private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>();
     
     public ConnectMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
@@ -73,7 +67,8 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
                 if ((coop.statusMaster().equals(Status.ReadyToConnect) 
                         || coop.statusMaster().equals(Status.Connected))
                         && (coop.statusHelper().equals(Status.ReadyToConnect)
-                                || coop.statusHelper2().equals(Status.ReadyToConnect))) {
+                                || (coop.statusHelper().equals(Status.Detached)
+                                       && coop.statusHelper2().equals(Status.ReadyToConnect)))) {
                     return new BooleanInfo(true, "");
                 }
             }
@@ -87,7 +82,7 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
         AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - ConnectMultiBlocksDesire.getNextActionInfo");
 
-        Point agentBlock = agent.getAttachedPoints().get(0);
+        Point helperBlock = agent.getAttachedPoints().get(0);
         List<Thing> list = agent.desireProcessing.getTaskReqsOrdered(info);
         Point block1 = new Point(list.get(0).x, list.get(0).y);
         Point block2 = new Point(list.get(1).x, list.get(1).y);
@@ -97,20 +92,20 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
                 + agent.getAttachedThings() + " , taskBlocks: " + info.requirements);
 
         if (agent.getName().equals(coop.master().getName())) {
-            if ( coop.statusHelper2().equals(Status.ReadyToConnect)) {
-                for (int i = 0; i < agent.getAttachedPoints().size(); i++) {
-                    if (!DirectionUtil.getCellsIn4Directions().contains(agent.getAttachedPoints().get(i))) {
-                        agentBlock = agent.getAttachedPoints().get(i);
-                        break;
-                    }
-                }
-                
-                return ActionInfo.CONNECT(coop.helper2().belief.getAgentFullName(), new java.awt.Point(block2.x, block2.y), getName());               
+            // Connect of master
+            if (coop.statusHelper().equals(Status.ReadyToConnect)) {
+                // Connect with helper
+                return ActionInfo.CONNECT(coop.helper().belief.getAgentFullName(),
+                        new java.awt.Point(block1.x, block1.y), getName());
             } else {
-                return ActionInfo.CONNECT(coop.helper().belief.getAgentFullName(), new java.awt.Point(block1.x, block1.y), getName());              
+                // Connect with helper2
+                return ActionInfo.CONNECT(coop.helper2().belief.getAgentFullName(),
+                        new java.awt.Point(block2.x, block2.y), getName());
             }
         } else {
-            return ActionInfo.CONNECT(coop.master().belief.getAgentFullName(), new java.awt.Point(agentBlock.x, agentBlock.y), getName());
+            // Connect of helpers
+            return ActionInfo.CONNECT(coop.master().belief.getAgentFullName(),
+                    new java.awt.Point(helperBlock.x, helperBlock.y), getName());
         }
     }
 }

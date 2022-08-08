@@ -4,6 +4,7 @@ import eis.iilang.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.IDesire;
+import de.feu.massim22.group3.agents.desires.V2.DisconnectMultiBlocksDesire;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.communication.MailService;
@@ -15,11 +16,8 @@ import massim.protocol.messages.scenario.Actions;
 import java.util.List;
 import java.util.ArrayList;
 
-import de.feu.massim22.group3.*;
-import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;
-import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
@@ -96,6 +94,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         supervisor.setDecisionsDone(false);
         decisionsDone = false; // Agent
         beliefsDone = false; // Agent
+        desireProcessing.moveIteration = 0;
 
         AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
         // map update with updateAgent (without startCalculating?)
@@ -135,6 +134,34 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     e.printStackTrace();
                 }
             } else {
+                // tasks expired?
+                if (AgentCooperations.exists(this)) {
+                    Cooperation coop = AgentCooperations.get(this);
+
+                    if (coop.master().equals(this)) {
+                        AgentLogger.info(Thread.currentThread().getName() + " step() coop: " + coop.toString());
+
+                        if (desireProcessing.taskReachedDeadline(this, coop.task())) {
+                            AgentLogger.info(Thread.currentThread().getName() + " step() task reached deadline ");
+
+                            if (coop.statusMaster().equals(Status.Connected) 
+                                    && desireProcessing.doDecision(this, new DisconnectMultiBlocksDesire(this.belief, coop.task(), this))) {
+                                AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: "
+                                        + this.getName() + " , DisconnectMultiBlocksDesire , Action: "
+                                        + this.desires.get(this.desires.size() - 1).getOutputAction().getName()
+                                        + " , Parameter: "
+                                        + this.desires.get(this.desires.size() - 1).getOutputAction().getParameters()
+                                        + " , Task: " + coop.task().name + " , Prio: " + desireProcessing
+                                                .getPriority(this.desires.get(this.desires.size() - 1), this));
+                            } else
+                                AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: "
+                                        + this.getName() + " , DisconnectMultiBlocksDesire");
+                            
+                            AgentCooperations.remove(coop);
+                        }
+                    }
+                }
+                
                 // Delete expired Desires
                 desires.removeIf(d -> d.isUnfulfillable().value());
                 // Sort Desires
@@ -142,19 +169,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 // Intention ermitteln (Desire mit höchster Priorität)
                 intention = desireProcessing.determineIntention(this);
                 break;
-            }
-        }
-        
-        // cooperations expired?
-        if (this.getName().equals("31")) {
-             List<Cooperation> cooperations = new ArrayList<Cooperation>(AgentCooperations.cooperations);
-            
-            for (Cooperation coop : cooperations) {
-                AgentLogger.info(Thread.currentThread().getName() + " step() coop: " + coop.toString());
-                
-                if(desireProcessing.taskReachedDeadline(this, coop.task())) {
-                    AgentCooperations.remove(coop);
-                }
             }
         }
         
@@ -169,7 +183,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
         belief.updatePositionFromExternal();
-        //refreshAttached();
         
         if (belief.getStep() == 0) {
             if (absolutePositions) {
@@ -202,7 +215,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                         p = this.desireProcessing.getCCRotatedPoint(attachedPoints.get(0));                       
                     }  
                     
-                    refreshAttached();
+                    clearAttached();
                     Thing t = belief.getThingAt(p);
                     attachedThings.add(t);
                     attachedPoints.add(p);
@@ -222,7 +235,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             if (belief.getLastAction().equals(Actions.DETACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
-                refreshAttached();
+                clearAttached();
                 StepUtilities.attachedBlock[index] = "";
                 
                 if (AgentCooperations.exists(this)) {
@@ -245,7 +258,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
             if (belief.getLastAction().equals(Actions.SUBMIT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
-                refreshAttached();
+                clearAttached();
                 StepUtilities.attachedBlock[index] = "";
 
                 if (AgentCooperations.exists(this)) {
@@ -353,27 +366,9 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
      * Refreshes all attached things and points.
      * 
      */
-    public void refreshAttached() {
+    public void clearAttached() {
         attachedPoints = new ArrayList<Point>();
         attachedThings = new ArrayList<Thing>();
-        
-        /*for (java.awt.Point p : belief.getAttachedPoints()) {
-            Point attachedPoint = Point.castToPoint(p);
-            
-            if ((attachedPoint.x == 0 || attachedPoint.y == 0)
-                && Math.abs(attachedPoint.x) <= 1
-                && Math.abs(attachedPoint.y) <= 1) {
-               
-                for (Thing t : belief.getThings()) {
-                    if (t.type.equals(Thing.TYPE_BLOCK) 
-                            && t.x == attachedPoint.x 
-                            && t.y == attachedPoint.y) {
-                        attachedPoints.add(attachedPoint);
-                        attachedThings.add(t); 
-                    }                   
-                }
-            }
-        }*/
     }
 
     /**
