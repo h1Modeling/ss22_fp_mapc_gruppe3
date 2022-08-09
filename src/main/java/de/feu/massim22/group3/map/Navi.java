@@ -194,9 +194,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
      * {@inheritDoc}
      */
     @Override
-    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType) {
+    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess,
+        String lastActionIntention, String groupDesireType, String groupDesirePartner, String groupDesireBlock, String attachedThings) {
         if (debug) {
-            AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention, groupDesireType);
+            AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention,
+                groupDesireType, groupDesirePartner, groupDesireBlock, attachedThings);
             debugger.setAgentData(data);
         }
     }

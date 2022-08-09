@@ -83,7 +83,8 @@ public class Belief {
     private List<ForbiddenThing> forbiddenThings = new ArrayList<>();
     private String groupDesireType = GroupDesireTypes.NONE;
     private List<ConnectionReport> connectionReports = new ArrayList<>();
-    private String groupTaskBlockDetail = "";
+    private String groupDesireBlockDetail = "";
+    private String groupDesirePartner = "";
     private boolean isWaiting = false;
 
     /**
@@ -487,21 +488,47 @@ public class Belief {
     }
 
     /**
+     * Gets the name of the team mate which performs a group task with the agent.
+     * 
+     * @return the name of the team mate or an empty string if not team mate performs a group task with the agent
+     */
+    public String getGroupDesirePartner() {
+        return groupDesirePartner;
+    }
+
+    public String getAttachedThingsDebugString() {
+        String result = "";
+        for (Thing t : attachedThings) {
+            result += t.details + " ";
+        }
+        return result;
+    }
+
+    /**
+     * Saves the name of the team mate which performs a group task with the agent.
+     * 
+     * @param groupDesirePartner the name of the team mate
+     */
+    public void setGroupDesirePartner(String groupDesirePartner) {
+        this.groupDesirePartner = groupDesirePartner;
+    }
+
+    /**
      * Gets the block type of the current group task.
      * 
      * @return the block type
      */
-    public String getGroupTaskBlockDetail() {
-        return groupTaskBlockDetail;
+    public String getGroupDesireBlockDetail() {
+        return groupDesireBlockDetail;
     }
 
     /**
      * Sets the block type of the current group task.
      * 
-     * @param groupTaskBlockDetail the block type
+     * @param groupDesireBlockDetail the block type
      */
-    public void setGroupTaskBlockDetail(String groupTaskBlockDetail) {
-        this.groupTaskBlockDetail = groupTaskBlockDetail;
+    public void setGroupDesireBlockDetail(String groupDesireBlockDetail) {
+        this.groupDesireBlockDetail = groupDesireBlockDetail;
     }
 
     /**
@@ -1176,7 +1203,7 @@ public class Belief {
             }
         }
         return new AgentReport(attachedThings, energy, deactivated, availableActions,
-            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName, nearestGoalZone);
+            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName, nearestGoalZone, groupDesireBlockDetail);
     }
 
     /**

@@ -57,6 +57,8 @@ public class DeliverAndConnectBlockDesire extends BeliefDesire {
                 return d.isFulfilled();
             }
         }
+        belief.setGroupDesireBlockDetail("");
+        belief.setGroupDesirePartner("");
         return new BooleanInfo(true, getName());
     }
 
@@ -66,6 +68,8 @@ public class DeliverAndConnectBlockDesire extends BeliefDesire {
     @Override
     public BooleanInfo isUnfulfillable() {
         if (belief.getStep() > task.deadline) {
+            belief.setGroupDesireBlockDetail("");
+            belief.setGroupDesirePartner("");
             return new BooleanInfo(true, "deadline has passed");
         }
         return new BooleanInfo(false, getName());

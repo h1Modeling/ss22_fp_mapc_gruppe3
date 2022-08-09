@@ -2,6 +2,8 @@ package de.feu.massim22.group3.utils.debugger;
 
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.awt.GridBagConstraints;
 
@@ -22,9 +24,11 @@ import javax.swing.plaf.InsetsUIResource;
 class Header extends JPanel {
     private JButton next;
     private JComboBox<String> groupSelection;
+    private JComboBox<String> agentSelection;
     private JLabel stepLabel;
     private JLabel pointLabel;
     private JCheckBox delay;
+    private Map<String, Boolean> addedAgents = new HashMap<>();
 
     /**
      * Instantiates a new Header.
@@ -50,20 +54,41 @@ class Header extends JPanel {
         c.gridx = 1;
         add(pointLabel, c);
 
-        // Group
-        groupSelection = new JComboBox<>();
+        // Agent
+        JPanel agentPanel = new JPanel();
         c.gridx = 2;
         c.weightx = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
+        add(agentPanel, c);
+
+        JLabel agentLabel = new JLabel("Agent:");
+        agentPanel.add(agentLabel);
+
+        agentSelection = new JComboBox<String>();
+        agentSelection.addActionListener(l -> {
+            String selection = (String)agentSelection.getSelectedItem();
+            debugger.selectAgent(selection);
+        });
+        agentPanel.add(agentSelection, c);
+
+        // Group
+        JPanel groupPanel = new JPanel();
+        c.gridx = 3;
+        c.weightx = 1;
+        add(groupPanel, c);
+
+        JLabel groupLabel = new JLabel("Gruppe:");
+        groupPanel.add(groupLabel);
+
+        groupSelection = new JComboBox<>();
         groupSelection.addActionListener(l -> {
             String selection = (String)groupSelection.getSelectedItem();
             debugger.setSelectedGroup(selection);
         });
-        add(groupSelection, c);
+        groupPanel.add(groupSelection, c);
 
         // Button
         next = new JButton("sende Aktion");
-        c.gridx = 3;
+        c.gridx = 4;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.EAST;
         c.weightx = 1;
@@ -75,7 +100,7 @@ class Header extends JPanel {
 
         // Checkbox
         delay = new JCheckBox("Verzögern");
-        c.gridx = 4;
+        c.gridx = 5;
         c.fill = GridBagConstraints.HORIZONTAL;
         delay.addItemListener(l -> {
             debugger.setDelay(l.getStateChange() == ItemEvent.SELECTED);
@@ -113,5 +138,17 @@ class Header extends JPanel {
      */
     void showStepButton() {
         next.setVisible(true);
+    }
+
+    /**
+     * Adds an agent to the agent ComboBox if the agent isn't added yet.
+     * 
+     * @param agent the name of the agent
+     */
+    void addAgent(String agent) {
+        if (!addedAgents.containsKey(agent)) {
+            agentSelection.addItem(agent);
+            addedAgents.put(agent, true);
+        }
     }
 }

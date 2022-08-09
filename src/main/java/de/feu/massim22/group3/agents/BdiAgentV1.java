@@ -21,7 +21,7 @@ import de.feu.massim22.group3.agents.desires.LooseWeightDesire;
 import de.feu.massim22.group3.agents.desires.ProcessEasyTaskDesire;
 import de.feu.massim22.group3.agents.desires.ReceiveAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.desires.ReceiveBlockDesire;
-import de.feu.massim22.group3.agents.desires.WaitAtGoalZoneDesire;
+import de.feu.massim22.group3.agents.desires.WaitNearGoalZoneDesire;
 import de.feu.massim22.group3.agents.desires.WalkByGetRoleDesire;
 import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.agents.supervisor.AgentReport;
@@ -175,8 +175,10 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             AgentReport report = belief.getAgentReport();
             supervisor.reportAgentData(getName(), report);
             supervisor.reportTasks(belief.getTaskInfo());
+
             Navi.<INaviAgentV1>get().updateAgentDebugData(getName(), supervisor.getName(), belief.getRoleName(), belief.getEnergy(),
-                    belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention(), belief.getGroupDesireType());
+                    belief.getLastActionDebugString(), belief.getLastActionResult(), belief.getLastActionIntention(), belief.getGroupDesireType(),
+                    belief.getGroupDesirePartner(), belief.getGroupDesireBlockDetail(), belief.getAttachedThingsDebugString());
             break;
         case TO_SUPERVISOR:
             this.supervisor.handleMessage(event, sender);
@@ -190,7 +192,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             break;
         }
         case MERGE_SUGGESTION: {
-            
             List<Parameter> parameters = event.getParameters();
             String key = ((Identifier)parameters.get(2)).getValue();
             // Allow only on merge per step
@@ -226,16 +227,22 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             String agent = PerceptUtil.toStr(parameters, 1);
             TaskInfo taskInfo = belief.getTask(task);
             Thing block = taskInfo.requirements.get(0);
+            belief.setGroupDesirePartner(agent);
+            belief.setGroupDesireBlockDetail(block.type);
             desires.add(new DeliverBlockDesire(belief, block, supervisor.getName(), agent, this));
             break;
         }
         case SUPERVISOR_PERCEPT_DELIVER_BLOCK_DONE: {
             // Remove group desire if teammate has finished or canceled their group desire
             String desireName = ReceiveBlockDesire.class.getSimpleName();
+            belief.setGroupDesireBlockDetail("");
+            belief.setGroupDesirePartner("");
             desires.removeIf(d -> d.getName().equals(desireName));
             break;
         }
         case SUPERVISOR_PERCEPT_DONE_OR_CANCELED: {
+            belief.setGroupDesireBlockDetail("");
+            belief.setGroupDesirePartner("");
             desires.removeIf(d -> d.isGroupDesire());
             break;
         }
@@ -245,6 +252,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             String task = PerceptUtil.toStr(parameters, 0);
             String agent = PerceptUtil.toStr(parameters, 1);
             TaskInfo taskInfo = belief.getTask(task);
+            belief.setGroupDesirePartner(agent);
             desires.add(new ReceiveBlockDesire(belief, taskInfo, agent, supervisor.getName()));
             break;
         }
@@ -255,17 +263,19 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             String agentFullName = PerceptUtil.toStr(parameters, 2);
             TaskInfo taskInfo = belief.getTask(task);
             Thing block = null;
-            for (Thing t : taskInfo.requirements) {
-                if (Math.abs(t.x) + Math.abs(t.y) > 1) {
-                    block = t;
-                    break;
+            if (taskInfo != null) {
+                for (Thing t : taskInfo.requirements) {
+                    if (Math.abs(t.x) + Math.abs(t.y) > 1) {
+                        block = t;
+                        break;
+                    }
                 }
-            }
-            if (block != null) {
-                System.out.println(getName() + " Deliver Block ADDED " + agent);
-                belief.setGroupDesireType(GroupDesireTypes.DELIVER_ATTACH);
-                belief.setGroupTaskBlockDetail(block.type);
-                desires.add(new DeliverAndConnectBlockDesire(belief, taskInfo, agent, agentFullName, supervisor.getName(), block, this));
+                if (block != null) {
+                    belief.setGroupDesireType(GroupDesireTypes.DELIVER_ATTACH);
+                    belief.setGroupDesirePartner(agent);
+                    belief.setGroupDesireBlockDetail(block.type);
+                    desires.add(new DeliverAndConnectBlockDesire(belief, taskInfo, agent, agentFullName, supervisor.getName(), block, this));
+                }
             }
             break;
         }
@@ -285,7 +295,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             if (block != null) {
                 System.out.println(getName() + " Receive Block added " + agent);
                 belief.setGroupDesireType(GroupDesireTypes.RECEIVE_ATTACH);
-                belief.setGroupTaskBlockDetail(block.type);
+                belief.setGroupDesirePartner(agent);
+                belief.setGroupDesireBlockDetail(block.type);
                 desires.add(new ReceiveAndConnectBlockDesire(belief, taskInfo, agent, agentFullName, supervisor.getName(), block, this));
             }
             break;
@@ -294,8 +305,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             List<Parameter> parameters = event.getParameters();
             String block = PerceptUtil.toStr(parameters, 0);
             belief.setGroupDesireType(GroupDesireTypes.GET_BLOCK);
-            belief.setGroupTaskBlockDetail(block);
-            System.out.println(getName() + " should get " + block);
+            belief.setGroupDesireBlockDetail(block);
             desires.add(new GetBlockDesire(belief, block, supervisor.getName()));
             break;         
         }
@@ -324,7 +334,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         desires.add(new ExploreDesire(belief, supervisor.getName(), getName()));
         desires.add(new LooseWeightDesire(belief));
         desires.add(new DigFreeDesire(belief));
-        desires.add(new WaitAtGoalZoneDesire(belief));
+        desires.add(new WaitNearGoalZoneDesire(belief));
         desires.add(new FreedomDesire(belief));
         // TODO remove / modify if sim roles change
         String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
@@ -360,7 +370,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
 
         // Set group Desire flag
         if (!hasGroupDesire()) {
-            belief.setGroupTaskBlockDetail("");
+            belief.setGroupDesireBlockDetail("");
             belief.setGroupDesireType(GroupDesireTypes.NONE);
         }
     }
@@ -379,11 +389,11 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         for (int i = desires.size() - 1; i >= 0; i--) {
             IDesire d = desires.get(i);
             d.update(this.supervisor.getName());
-            BooleanInfo isFullfilled = d.isFulfilled();
+            BooleanInfo isFulfilled = d.isFulfilled();
             BooleanInfo isExecutable = d.isExecutable();
             DesireDebugData data = new DesireDebugData(d.getName(), isExecutable);
             debugData.add(data);
-            if (!isFullfilled.value() && isExecutable.value()) {
+            if (!isFulfilled.value() && isExecutable.value()) {
                 AgentLogger.info("Intention for agent " + getName() + " is " + d.getName());
                 setIntention(d);
                 break;

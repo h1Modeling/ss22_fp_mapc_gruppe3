@@ -219,6 +219,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         if (data.name().equals(selectedAgent)) {
             selectAgent(data.name());
         }
+        header.addAgent(data.name());
     }
 
     /**
