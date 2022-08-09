@@ -220,11 +220,23 @@ public class Supervisor implements ISupervisor {
         List<Entry<String, AgentReport>> agentsCarryingBlock3 = new ArrayList<>();
         List<Entry<String, AgentReport>> agentsCarryingBlock4 = new ArrayList<>();
 
+        // Flags if agents are tasked to get a block with type according to the array index.
+        boolean[] gettingBlock = {false, false, false, false, false};
+
         int maxDistance = 30;
         int maxDistanceGoalZone = 50;
-        // put Repots in Lists
+        // put Reports in Lists
         for (Entry<String, AgentReport> entry : reports.entrySet()) {
             AgentReport r = entry.getValue();
+
+            // Testing get Block group desire
+            if (r.groupDesireType().equals(GroupDesireTypes.GET_BLOCK)) {
+                for (int i = 0; i < gettingBlock.length; i++) {
+                    if (r.groupDesireBlock().equals("b" + i)) {
+                        gettingBlock[i] = true;
+                    }
+                }
+            }
 
             if (r.groupDesireType().equals(GroupDesireTypes.NONE) && !r.deactivated()) {
                 if (r.distanceGoalZone() < maxDistanceGoalZone) {
@@ -346,19 +358,19 @@ public class Supervisor implements ISupervisor {
                 } else {
                     // Collect Blocks from Dispenser
                     if ((!sameBlock && agentsBlock1.size() == 0) || agentsBlock1.size() < 2) {
-                        if (block1.equals("b0")) sendGetBlockTask(agentsNearDispenser0, "b0");
-                        if (block1.equals("b1")) sendGetBlockTask(agentsNearDispenser1, "b1");
-                        if (block1.equals("b2")) sendGetBlockTask(agentsNearDispenser2, "b2");
-                        if (block1.equals("b3")) sendGetBlockTask(agentsNearDispenser3, "b3");
-                        if (block1.equals("b4")) sendGetBlockTask(agentsNearDispenser4, "b4");
+                        if (block1.equals("b0") && (!gettingBlock[0] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser0, "b0");
+                        if (block1.equals("b1") && (!gettingBlock[1] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser1, "b1");
+                        if (block1.equals("b2") && (!gettingBlock[2] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser2, "b2");
+                        if (block1.equals("b3") && (!gettingBlock[3] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser3, "b3");
+                        if (block1.equals("b4") && (!gettingBlock[4] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser4, "b4");
                     }
                     // Collect Blocks from Dispenser
                     if (!sameBlock && agentsBlock2.size() == 0) {
-                        if (block2.equals("b0")) sendGetBlockTask(agentsNearDispenser0, "b0");
-                        if (block2.equals("b1")) sendGetBlockTask(agentsNearDispenser1, "b1");
-                        if (block2.equals("b2")) sendGetBlockTask(agentsNearDispenser2, "b2");
-                        if (block2.equals("b3")) sendGetBlockTask(agentsNearDispenser3, "b3");
-                        if (block2.equals("b4")) sendGetBlockTask(agentsNearDispenser4, "b4");
+                        if (block2.equals("b0") && (!gettingBlock[0] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser0, "b0");
+                        if (block2.equals("b1") && (!gettingBlock[1] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser1, "b1");
+                        if (block2.equals("b2") && (!gettingBlock[2] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser2, "b2");
+                        if (block2.equals("b3") && (!gettingBlock[3] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser3, "b3");
+                        if (block2.equals("b4") && (!gettingBlock[4] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser4, "b4");
                     }
                 }
             }
@@ -369,8 +381,9 @@ public class Supervisor implements ISupervisor {
         // only first agent which is free will get the task
         for (var entry : agents) {
             String agent = entry.getKey();
+            AgentReport r = entry.getValue();
             // Has no task yet
-            if (agentsWithTask.get(agent) == null) {
+            if (agentsWithTask.get(agent) == null && r.attachedThings().size() == 0) {
                 Parameter blockPara = new Identifier(block);
                 Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GET_BLOCK.name(), blockPara);
                 parent.forwardMessage(message, agent, name);
@@ -389,13 +402,12 @@ public class Supervisor implements ISupervisor {
                 var report1 = agent1.getValue();
                 var report2 = agent2.getValue();
                 var waitingTime = Math.abs(report1.distanceGoalZone() - report2.distanceGoalZone());
-                var distanceBetweenGoalZones = Math.abs(report1.nearestGoalZone().x - report2.nearestGoalZone().y) + Math.abs(report1.nearestGoalZone().y - report2.nearestGoalZone().y);
+                var distanceBetweenGoalZones = Math.abs(report1.nearestGoalZone().x - report2.nearestGoalZone().x) + Math.abs(report1.nearestGoalZone().y - report2.nearestGoalZone().y);
                 if (waitingTime < maxWaitingTime && distanceBetweenGoalZones < 25) {
                     String[] data1 = {agent1.getKey(), report1.agentActionName()};
                     taskAgents.add(data1);
                     String[] data2 = {agent2.getKey(), report2.agentActionName()};
                     taskAgents.add(data2);
-                    return taskAgents;
                 }
             }
         }
@@ -403,9 +415,10 @@ public class Supervisor implements ISupervisor {
     }
 
     private void doTwoBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, TaskInfo info, boolean identicalBlocks, boolean singleBlockTaskExists) {
-        
+
         int maxWaitingTime = singleBlockTaskExists ? 10 : 30;
         List<String[]> taskAgents = getAgentsFor2BlockTask(maxWaitingTime, agents1, agents2);
+
         if (taskAgents.size() > 1) {
            String[] agent1 = taskAgents.get(0);
            String[] agent2 = taskAgents.get(1);
@@ -419,10 +432,18 @@ public class Supervisor implements ISupervisor {
             Parameter agent1FullPara = new Identifier(agent1[1]);
             Parameter agent2FullPara = new Identifier(agent2[1]);
 
-            Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_TWO_BLOCK.name(), taskPara, agent2Para, agent2FullPara);
-            Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_TWO_BLOCK.name(), taskPara, agent1Para, agent1FullPara);
-            parent.forwardMessage(message1, agent1[0], name);
-            parent.forwardMessage(message2, agent2[0], name);
+            Thing req0 = info.requirements.get(0);
+            if (Math.abs(req0.x) + Math.abs(req0.y) == 1) {
+                Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_TWO_BLOCK.name(), taskPara, agent2Para, agent2FullPara);
+                Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_TWO_BLOCK.name(), taskPara, agent1Para, agent1FullPara);
+                parent.forwardMessage(message1, agent1[0], name);
+                parent.forwardMessage(message2, agent2[0], name);
+            } else {
+                Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_TWO_BLOCK.name(), taskPara, agent1Para, agent1FullPara);
+                Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_TWO_BLOCK.name(), taskPara, agent2Para, agent2FullPara);
+                parent.forwardMessage(message2, agent1[0], name);
+                parent.forwardMessage(message1, agent2[0], name);
+            }
         }
     }
 

@@ -41,6 +41,7 @@ public class GetBlockDesire extends BeliefDesire {
     public BooleanInfo isFulfilled() {
         for (Thing t : belief.getAttachedThings()) {
             if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block) && belief.getGoalZones().contains(new Point(0, 0))) {
+                belief.setGroupDesireBlockDetail("");
                 return new BooleanInfo(true, getName());
             } 
         }

@@ -23,7 +23,7 @@ import org.lwjgl.BufferUtils;
 public class GameMap {
     
     private Point initialSize;
-    private Point size = new Point(300, 20); // null;
+    private Point size = new Point(64, 92); // null;
     // First dimension are rows, second dimension are columns
     private MapCell[][] cells;
     private Point topLeft; // top left indices can be negative
@@ -39,7 +39,7 @@ public class GameMap {
     private String team;
     
     /**
-     * Instantiates a new GameMap
+     * Instantiates a new GameMap.
      * 
      * @param x the initial size of the map in horizontal direction
      * @param y the initial size of the map in vertical direction

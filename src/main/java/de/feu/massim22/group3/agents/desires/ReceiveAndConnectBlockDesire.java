@@ -200,6 +200,8 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         }
         BooleanInfo value = super.isUnfulfillable();
         if (value.value()) {
+            belief.setGroupDesireBlockDetail("");
+            belief.setGroupDesirePartner("");
             Parameter agentPara =  new Identifier(belief.getAgentShortName());
             Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DONE_OR_CANCELED.name(), agentPara);
             communicator.forwardMessage(message, agent, belief.getAgentShortName());
@@ -245,6 +247,8 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
             Parameter agentPara =  new Identifier(belief.getAgentShortName());
             Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DONE_OR_CANCELED.name(), agentPara);
             communicator.forwardMessage(message, agent, belief.getAgentShortName());
+            belief.setGroupDesireBlockDetail("");
+            belief.setGroupDesirePartner("");
             return new BooleanInfo(true, getName());
         }
         return new BooleanInfo(false, "not submitted yet");
@@ -258,7 +262,9 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
             for (int x = -1; x <= 1; x++) {
                 Point testPoint = new Point(p.x + x, p.y + y);
                 Thing t = belief.getThingAt(testPoint);
-                if (t != null && t.type.equals(Thing.TYPE_OBSTACLE)) {
+                boolean isUnconnectedBlock = t != null && t.type.equals(Thing.TYPE_BLOCK) && !belief.getAttachedPoints().contains(new Point(t.x, t.y));
+                boolean isObstacle = t != null && t.type.equals(Thing.TYPE_OBSTACLE);
+                if (isUnconnectedBlock || isObstacle) {
                     result += 1;
                 }
                 // Increase Size for Dispenser because it's not allowed to submit ontop of a dispenser

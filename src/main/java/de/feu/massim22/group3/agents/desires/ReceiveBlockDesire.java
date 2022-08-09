@@ -42,7 +42,12 @@ public class ReceiveBlockDesire extends BeliefDesire {
     @Override
     public BooleanInfo isFulfilled() {
         boolean lastActionSuccess = belief.getLastActionResult().equals(ActionResults.SUCCESS);
-        return new BooleanInfo(submitted && lastActionSuccess, getName());
+        boolean value = submitted && lastActionSuccess;
+        if (value) {
+            belief.setGroupDesireBlockDetail("");
+            belief.setGroupDesirePartner("");
+        }
+        return new BooleanInfo(value, getName());
     }
 
     /**
@@ -64,6 +69,8 @@ public class ReceiveBlockDesire extends BeliefDesire {
     @Override
     public BooleanInfo isUnfulfillable() {
         if (belief.getStep() > info.deadline) {
+            belief.setGroupDesireBlockDetail("");
+            belief.setGroupDesirePartner("");
             return new BooleanInfo(true, "Deadline has passed");
         }
         return isFulfilled();

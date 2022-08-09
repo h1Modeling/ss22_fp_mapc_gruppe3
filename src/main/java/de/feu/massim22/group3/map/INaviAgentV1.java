@@ -54,9 +54,12 @@ public interface INaviAgentV1 extends INavi {
      * @param lastActionSuccess an indicator if the last action was successful
      * @param lastActionIntention the name of the intention the last action came from
      * @param groupDesireType the name of the group desire the agent has in its desires
+     * @param groupDesirePartner the name of the team mate which performs a group desire with the agent
+     * @param groupDesireBlock the block on which the group desire is based on
+     * @param attachedThingsDebugString a String containing information about the attached things of the agent
      * @see GraphicalDebugger
      */
-    void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType);
+    void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType, String groupDesirePartner, String groupDesireBlock, String attachedThingsDebugString);
     
     /**
      * Sends information about the agents desires to the <code>GraphicalDebugger</code>.

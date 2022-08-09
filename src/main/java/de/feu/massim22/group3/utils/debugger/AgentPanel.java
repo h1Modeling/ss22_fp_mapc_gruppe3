@@ -27,6 +27,10 @@ class AgentPanel extends JPanel {
     private JLabel lastAction;
     private JLabel lastActionSuccess;
     private JLabel lastActionIntention;
+    private JLabel attachedThings;
+    private JLabel groupDesireType;
+    private JLabel groupDesirePartner;
+    private JLabel groupDesireBlock;
     private List<JLabel> desires = new ArrayList<>();
     private List<JLabel> desireLabels = new ArrayList<>();
     private int maxDesireCount = 10;
@@ -81,6 +85,35 @@ class AgentPanel extends JPanel {
         lastActionIntention = new JLabel();
         add(lastActionIntention, "wrap");
 
+        JLabel attachedThingsLabel = new JLabel("Attached Things:");
+        add(attachedThingsLabel);
+
+        attachedThings = new JLabel();
+        add(attachedThings, "wrap");
+
+        // Group Desire Data
+        JLabel groupDesireDataLabel = new HeaderLabel("Group Desire:");
+        add(groupDesireDataLabel, "span 2, grow, wrap, gapTop 10");
+
+        JLabel groupDesireLabel = new JLabel("Typ:");
+        add(groupDesireLabel);
+
+        groupDesireType = new JLabel();
+        add(groupDesireType, "wrap");
+
+        JLabel groupDesirePartnerLabel = new JLabel("Partner:");
+        add(groupDesirePartnerLabel);
+
+        groupDesirePartner = new JLabel();
+        add(groupDesirePartner, "wrap");
+
+        JLabel groupDesireBlockLabel = new JLabel("Block:");
+        add(groupDesireBlockLabel);
+
+        groupDesireBlock = new JLabel();
+        add(groupDesireBlock, "wrap");
+
+        // Desires
         JLabel desireDataLabel = new HeaderLabel("Desires:");
         add(desireDataLabel, "span 2, grow, wrap, gapTop 10");
 
@@ -106,6 +139,10 @@ class AgentPanel extends JPanel {
             lastAction.setText(data.lastAction());
             lastActionSuccess.setText(data.lastActionSuccess());
             lastActionIntention.setText(data.lastActionDesire());
+            attachedThings.setText(data.attachedThings());
+            groupDesireType.setText(data.groupDesireType());
+            groupDesirePartner.setText(data.groupDesirePartner());
+            groupDesireBlock.setText(data.groupDesireBlock());
             revalidate();
         } else {
             clear();
