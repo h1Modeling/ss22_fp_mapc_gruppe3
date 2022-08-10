@@ -29,6 +29,9 @@ public class Supervisor implements ISupervisor {
     private String name;
     private Supervisable parent;
     private List<String> agents = new ArrayList<>();
+    // List that is updated later to see in supervisor if and which agents are new
+    // This is needed for GuardGoalZoneDesire assignment
+    private List<String> oldAgents = new ArrayList<>();
     private List<ConfirmationData> confirmationData = new ArrayList<>();
     private Set<TaskInfo> tasks = new HashSet<>();
     private Map<String, AgentReport> reports = new HashMap<>();
@@ -337,11 +340,11 @@ public class Supervisor implements ISupervisor {
 //            }
 //        }
 
-        // Only do tasks if GoalZone is discovered
-        if (agentsNearGoalZone.size() == 0) return;
-
-        // To test GuardGoalZoneDesire
-        sendGuardGoalZoneTask(agentsNearGoalZone);
+        // Only assign GuardGoalZone Tasks if more than certain amount of agents are in one group
+        // and if GoalZone is discovered
+        if (agents.size() > 4 && agentsNearGoalZone.size() != 0) {
+            sendGuardGoalZoneTask();
+        }
 
         // Test if single Block tasks exists
         boolean singleBlockTaskExists = false;
@@ -419,20 +422,53 @@ public class Supervisor implements ISupervisor {
         }
     }
 
-    private void sendGuardGoalZoneTask(List<Entry<String, AgentReport>> agents) {
-        // Only first agent which is free will get the task
-        for (var entry : agents) {
-            String agent = entry.getKey();
-            // Has no task yet
-            if (agentsWithTask.get(agent) == null) {
-                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE.name());
-                parent.forwardMessage(message, agent, name);
-                agentsWithTask.put(agent, true);
-                break;
+    private List<String> getAgentsWithGuardGoalZoneDesire(List<String> agents) {
+        List<String> agentsWithGuardGoalZoneDesire = new ArrayList<>();
+        for (String agent : agents) {
+            AgentReport agentReport = reports.get(agent);
+            if (agentReport.groupDesireType() == "guard_goal_zone") {
+                agentsWithGuardGoalZoneDesire.add(agent);
             }
         }
+        return agentsWithGuardGoalZoneDesire;
     }
 
+    private void sendGuardGoalZoneTask() {
+        // GGZD...GuardGoalZoneDesire
+        int numAgentsGGZD = 1;
+        String[] directionArr = {"n", "s"};
+
+        List<String> newGroupAgents = new ArrayList<>(agents);
+        newGroupAgents.removeAll(oldAgents);
+
+        List<String> newAgentsWithGGZD = getAgentsWithGuardGoalZoneDesire(newGroupAgents);
+        List<String> oldAgentsWithGGZD = getAgentsWithGuardGoalZoneDesire(oldAgents);
+
+        // Delete Group Desire from agents of group that was merged to this supervisor
+        if (newAgentsWithGGZD.size() > 0) {
+            for (String agent : newAgentsWithGGZD) {
+                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DELETE_GROUP_DESIRES.name());
+                parent.forwardMessage(message, agent, name);
+                agentsWithTask.remove(agent);
+            }
+        }
+
+        // Only first agents which are free will get the task and only if the GGZD
+        // was not assigned to the max. number of agents (numAgentsGGZD) already
+        for (int i = oldAgentsWithGGZD.size(); i < numAgentsGGZD; i++) {
+            for (String agent : agents) {
+                // Has no task yet
+                if (agentsWithTask.get(agent) == null) {
+                    Parameter dir = new Identifier(directionArr[i % 2]);
+                    Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE.name(), dir);
+                    parent.forwardMessage(message, agent, name);
+                    agentsWithTask.put(agent, true);
+                    break;
+                }
+            }
+        }
+        oldAgents = agents;
+    }
     private void sendGuardDispenserTask(List<Entry<String, AgentReport>> agents, String block) {
         // Only first agent which is free will get the task
         for (var entry : agents) {

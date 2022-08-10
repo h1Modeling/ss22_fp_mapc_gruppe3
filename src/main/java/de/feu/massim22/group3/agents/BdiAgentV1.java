@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -279,7 +280,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
             belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
             List<Parameter> parameters = event.getParameters();
-            desires.add(new GuardGoalZoneDesire(belief, supervisor.getName()));
+            String dir = PerceptUtil.toStr(parameters, 0);
+            desires.add(new GuardGoalZoneDesire(belief, dir, supervisor.getName()));
             break;
         }
         case SUPERVISOR_PERCEPT_GUARD_DISPENSER: {
@@ -287,6 +289,14 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             List<Parameter> parameters = event.getParameters();
             String block = PerceptUtil.toStr(parameters, 0);
             desires.add(new GuardDispenserDesire(belief, block, supervisor.getName()));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_DELETE_GROUP_DESIRES:{
+            for (Iterator<IDesire> iterator = desires.iterator(); iterator.hasNext();) {
+                if (iterator.next().isGroupDesire()) {
+                    iterator.remove();
+                }
+            }
             break;
         }
         default:
