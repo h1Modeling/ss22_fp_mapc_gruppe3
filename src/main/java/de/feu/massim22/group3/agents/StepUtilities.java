@@ -1,22 +1,26 @@
 package de.feu.massim22.group3.agents;
 
+//import java.awt.Point;
 import java.util.*;
-import java.util.List;
 
+import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.Point;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.*;
 import massim.protocol.data.*;
 
-import java.awt.*;
+//import java.awt.*;
 import java.nio.FloatBuffer;
 
 public class StepUtilities {
     DesireUtilities desireProcessing;
     INaviAgentV2 navi;
     public static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
-    public static Set<Supervisor> allSupervisors = new HashSet<Supervisor>();
+    public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
     private static int countAgent = 0;
+    public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
+    boolean mergeGroups = false;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
@@ -63,6 +67,14 @@ public class StepUtilities {
         Set<Thing> things = new HashSet<>();
         ArrayList<String> allSupervisorNames = new ArrayList<String>();
         
+        Collections.sort(allAgents, new Comparator<BdiAgentV2>() {
+            @Override
+            public int compare(BdiAgentV2 a, BdiAgentV2 b)
+            {
+                return  a.getName().compareTo(b.getName());
+            }
+        });
+        
         for (Supervisor s : allSupervisors) {
             allSupervisorNames.add(s.getName());
         }
@@ -72,7 +84,7 @@ public class StepUtilities {
             // Noch gibt es mehr als einen Supervisor
             for (BdiAgentV2 agent : allAgents) {
                 AgentLogger.info(
-                        Thread.currentThread().getName() + " doGroupProcessing() Start - Agent: " + agent.getName());
+                        Thread.currentThread().getName() + " doGroupProcessing() Start - Agent: " + agent.getName() + " , Position: " + agent.belief.getPosition());
                 things = agent.belief.getThings();
                 
                 for (Thing thing : things) {
@@ -84,7 +96,7 @@ public class StepUtilities {
                             if (thing.x != 0 && thing.y != 0) {
                                 AgentLogger
                                         .info(Thread.currentThread().getName() + " doGroupProcessing() Found - Agent: "
-                                                + agent.getName() + " , Position: " + new Point(thing.x, thing.y));
+                                                + agent.getName() + " , FoundPos: " + new Point(thing.x, thing.y));
                                 // also ein Kandidat zum mergen
                                 foundAgent.add(new AgentMeeting(agent, new Point(thing.x, thing.y)));
                             }
@@ -97,48 +109,81 @@ public class StepUtilities {
             for (int j = 0; j < foundAgent.size(); j++) {
                 for (int k = j + 1; k < foundAgent.size(); k++) {
                     // bei einem Treffen müssen sich beide gesehen haben und die relativen
-                    // Koordinaten
-                    // dürfen sich nur im Vorzeichen unterscheiden
+                    // Koordinaten dürfen sich nur im Vorzeichen unterscheiden
                     if ((foundAgent.get(k).position.x == -foundAgent.get(j).position.x)
                             && (foundAgent.get(k).position.y == -foundAgent.get(j).position.y)) {
                         agent1 = foundAgent.get(j).agent;
                         agent2 = foundAgent.get(k).agent;
-                        
+
                         AgentLogger.info(
                                 Thread.currentThread().getName() + " doGroupProcessing() meeting in vision - Agent1: "
                                         + agent1.getName() + " , Agent2: " + agent2.getName());
-                        // Agents sind aus unterschiedlichen Gruppen ?
-                        if (!(agent1.supervisor == agent2.supervisor)) {
-                            // dann die kleinere in die größere Gruppe mergen
-                            if (agent1.supervisor.getAgents().size() >= agent2.supervisor.getAgents()
-                                    .size()) {
+
+                        // Agents sind eindeutig zu identifizieren ?
+                        if (countMeetings(foundAgent, foundAgent.get(j).position) == 1) {
+                            recordAgentMeeting( agent1, agent2, foundAgent.get(j).position);
+                            recordAgentMeeting( agent2, agent1, foundAgent.get(k).position);
+                        //}
+                            // Agents sind aus unterschiedlichen Gruppen ?
+                            if (mergeGroups && !(agent1.supervisor == agent2.supervisor)) {
+                                // dann die kleinere in die größere Gruppe mergen
+                                if (agent1.supervisor.getAgents().size() >= agent2.supervisor.getAgents().size()) {
+                                    AgentLogger.info(Thread.currentThread().getName()
+                                            + " doGroupProcessing() merge 2 in 1 - Supervisor1: "
+                                            + agent1.supervisor.getName() + " , Supervisor2: "
+                                            + agent2.supervisor.getName());
+                                    // Gruppe von agent2 in Gruppe von agent1 mergen
+                                    exSupervisors.add(agent2.supervisor);
+                                    Point posOld = Point.castToPoint(agent2.belief.getPosition());
+                                    mergeGroups(agent1.supervisor, agent2.supervisor, agent1, agent2, foundAgent.get(j).position);
+                                    AgentLogger.info(Thread.currentThread().getName()
+                                            + " doGroupProcessing() Agent2: "
+                                            + agent2.getName() + " , PositionOld: "
+                                            + posOld  + " , PositionNew: "
+                                            + agent2.belief.getPosition());
+                                } else {
+                                    AgentLogger.info(Thread.currentThread().getName()
+                                            + " doGroupProcessing() merge 1 in 2 - Supervisor1: "
+                                            + agent1.supervisor.getName() + " , Supervisor2: "
+                                            + agent2.supervisor.getName());
+                                    // Gruppe von agent1 in Gruppe von agent2 mergen
+                                    exSupervisors.add(agent1.supervisor);
+                                    Point posOld = Point.castToPoint(agent1.belief.getPosition());
+                                    mergeGroups(agent2.supervisor, agent1.supervisor, agent2, agent1, foundAgent.get(k).position);
+                                    AgentLogger.info(Thread.currentThread().getName()
+                                            + " doGroupProcessing() Agent1: "
+                                            + agent1.getName() + " , PositionOld: "
+                                            + posOld  + " , PositionNew: "
+                                            + agent1.belief.getPosition());
+                                }
+                            } else
                                 AgentLogger.info(Thread.currentThread().getName()
-                                        + " doGroupProcessing() merge 2 in 1 - Supervisor1: "
+                                        + " doGroupProcessing() no merge, already in same group - Supervisor1: "
                                         + agent1.supervisor.getName() + " , Supervisor2: "
                                         + agent2.supervisor.getName());
-                                // Gruppe von agent2 in Gruppe von agent1 mergen
-                                exSupervisors.add(agent2.supervisor);
-                                mergeGroups(agent1.supervisor, agent2.supervisor, foundAgent.get(j).position);
-                            } else {
-                                AgentLogger.info(Thread.currentThread().getName()
-                                        + " doGroupProcessing() merge 1 in 2 - Supervisor1: "
-                                        + agent1.supervisor.getName() + " , Supervisor2: "
-                                        + agent2.supervisor.getName());
-                                // Gruppe von agent1 in Gruppe von agent2 mergen
-                                exSupervisors.add(agent1.supervisor);
-                                mergeGroups(agent2.supervisor, agent1.supervisor, foundAgent.get(k).position);
-                            }
                         } else
                             AgentLogger.info(Thread.currentThread().getName()
-                                    + " doGroupProcessing() no merge, already in same group - Supervisor1: "
-                                    + agent1.supervisor.getName() + " , Supervisor2: "
-                                    + agent2.supervisor.getName());
+                                    + " doGroupProcessing() no merge, more than one possibility - Supervisor1: "
+                                    + agent1.supervisor.getName() + " , Supervisor2: " + agent2.supervisor.getName());
                     }
                 }
             }
 
-            allSupervisors.removeAll(exSupervisors);
+            if (mergeGroups) allSupervisors.removeAll(exSupervisors);
+            Collections.sort(allSupervisors, new Comparator<Supervisor>() {
+                @Override
+                public int compare(Supervisor a, Supervisor b)
+                {
+                    return  a.getName().compareTo(b.getName());
+                }
+            });
         }
+        
+        /*
+         * loop for all agents about roles to adopt
+         */
+        //desireProcessing.manageAgentRoles();
+        
         /*
          * loop for all groups (after merge) with map update and group gecisions
          */
@@ -152,14 +197,15 @@ public class StepUtilities {
 
                 for (CalcResult agentCalcResult : agentCalcResults) {                   
                     BdiAgentV2 agent = getAgent(agentCalcResult.agent());
-                    List<Parameter> parameters = agentCalcResult.percepts().getParameters();                   
+                    List<Parameter> parameters = agentCalcResult.percepts().getParameters(); 
+                    AgentLogger.info(Thread.currentThread().getName() + " vor updateFromPathFinding: " + agent.getName());
                     agent.belief.updateFromPathFinding(parameters);
                     agent.beliefsDone = true;
-                    
+                    AgentLogger.info(Thread.currentThread().getName() + " nach updateFromPathFinding: " + agent.getName());
                     //AgentLogger.info(Thread.currentThread().getName() + agent.belief.reachablesToString());
                 }
                 
-                desireProcessing.runSupervisorDecisions(step, supervisor);
+                desireProcessing.runSupervisorDecisions(step, supervisor, this);
             };
             
             Thread t3 = new Thread(runnable);
@@ -167,6 +213,28 @@ public class StepUtilities {
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Step: " + step);
+    }
+    
+    private void recordAgentMeeting( BdiAgentV2 agent1, BdiAgentV2 agent2, Point realtivePositionAgent2) {
+        AgentMeetings.add(new AgentMeetings.Meeting(agent1, Point.zero(), Point.castToPoint(agent1.belief.getPosition()), agent2, realtivePositionAgent2,  Point.castToPoint(agent2.belief.getPosition())));
+    }
+    
+    private int countMeetings(ArrayList<AgentMeeting> foundAgent, Point reverseFound) {
+        int counter = 0;
+        
+        /*AgentLogger.info(
+                Thread.currentThread().getName() + " countMeetings() - Position: " + reverseFound);*/
+
+        for (int x = 0; x < foundAgent.size(); x++) {
+            if (foundAgent.get(x).position.equals(reverseFound)) {
+                /*AgentLogger.info(
+                        Thread.currentThread().getName() + " countMeetings() - Agent: "
+                                + foundAgent.get(x).agent.getName() + " , Position: " + foundAgent.get(x).position);*/
+                counter++;
+            }
+        }
+
+        return counter;
     }
 
     /**
@@ -192,30 +260,36 @@ public class StepUtilities {
      *                          merged into the other group
      * 
      */
-    public void mergeGroups(Supervisor supervisorGroup, Supervisor supervisorToMerge, Point relativOldSupervisor) {
+    public void mergeGroups(Supervisor supervisorGroup, Supervisor supervisorToMerge, BdiAgentV2 baseAgent, BdiAgentV2 agentFound, Point foundPosition) {
         AgentLogger.info(
                 Thread.currentThread().getName() + " mergeGroups() Start - Supervisor: " + supervisorGroup.getName()
-                        + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + relativOldSupervisor);
+                        + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + foundPosition);
  
         List<String> agentsSupervisorGroup = supervisorGroup.getAgents();        
         List<String> agentsSupervisorToMerge = supervisorToMerge.getAgents();
         
         // Agents von agentsSupervisorToMerge in die Liste der Agents von
         // agentsSupervisorGroup
-        agentsSupervisorGroup.addAll(agentsSupervisorToMerge);
-       
-        supervisorGroup.setAgents(agentsSupervisorGroup);        
-        Point posNewSupervisor = navi.getPosition(supervisorGroup.getName(),
-                supervisorGroup.getName());
+        agentsSupervisorGroup.addAll(agentsSupervisorToMerge);      
+        supervisorGroup.setAgents(agentsSupervisorGroup); 
+
+        Point newPosAgentFound = new Point(baseAgent.belief.getPosition().x + foundPosition.x,
+                baseAgent.belief.getPosition().y + foundPosition.y);     
+        Point newPosAgent = null;
 
         // neuer Supervisor für agents der agentsSupervisorToMerge Liste
         for (BdiAgentV2 agent : allAgents) {
             if (agentsSupervisorToMerge.contains(agent.getName())) {
                 agent.supervisor = supervisorGroup;
                 navi.registerSupervisor(agent.getName(), supervisorGroup.getName());
-                Point oldPosAgent = agent.belief.getPosition();
-                Point newPosAgent = new Point(oldPosAgent.x + relativOldSupervisor.x,
-                        oldPosAgent.y + relativOldSupervisor.y);
+                
+                if (agent.getName().equals(agentFound.getName())) {
+                    newPosAgent = newPosAgentFound;
+                } else {
+                    newPosAgent = new Point(newPosAgentFound.x + (agent.belief.getPosition().x - agentFound.belief.getPosition().x),
+                            newPosAgentFound.y + (agent.belief.getPosition().y - agentFound.belief.getPosition().y));
+                }
+                
                 agent.belief.setPosition(newPosAgent);
                 updateMap(agent);
             }
@@ -241,13 +315,13 @@ public class StepUtilities {
 
         if (interestingPoints.size() > 0) {
             PathFindingResult[] agentResultData = new PathFindingResult[interestingPoints.size()];
-            Point mapTopLeft = navi.getTopLeft(supervisor.getName());
+           Point mapTopLeft = Point.castToPoint(navi.getTopLeft(supervisor.getName()));
 
             for (int i = 0; i < agents.size(); i++) {
-                Point agentPos = navi.getInternalAgentPosition(supervisor.getName(), agents.get(i));
+                Point agentPos = Point.castToPoint(navi.getInternalAgentPosition(supervisor.getName(), agents.get(i)));
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
-                    Point targetPos = interestingPoints.get(j).point();
+                    Point targetPos = Point.castToPoint(interestingPoints.get(j).point());
                     int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
@@ -263,7 +337,7 @@ public class StepUtilities {
     }
 
     private Percept pathFindingResultToPercept(String agent, PathFindingResult[] agentResultData,
-            List<InterestingPoint> interestingPoints, Point mapTopLeft) {
+            List<InterestingPoint> interestingPoints,  Point mapTopLeft) {
         List<Parameter> data = new ArrayList<>();
 
         // Generate Percept
@@ -310,6 +384,8 @@ public class StepUtilities {
 
         return result;
     }
+    
+    public record DispenserFlag(Point position, Boolean attachMade) {}
 }
 
 class AgentMeeting {

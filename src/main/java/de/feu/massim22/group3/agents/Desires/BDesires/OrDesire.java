@@ -1,5 +1,7 @@
 package de.feu.massim22.group3.agents.Desires.BDesires;
 
+import eis.iilang.Action;
+
 public class OrDesire implements IDesire {
 
     private IDesire d1;
@@ -84,11 +86,9 @@ public class OrDesire implements IDesire {
     }
     
     //Melinda   
-    /*@Override
-    public void setPriority(int priority) {}
     @Override
     public void setOutputAction(Action action) {}
     @Override
-    public Action getOutputAction() {return null;}*/
+    public Action getOutputAction() {return null;}
     //Melinda Ende
 }
