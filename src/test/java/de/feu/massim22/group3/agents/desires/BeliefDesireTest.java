@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.utils.PerceptUtil;
@@ -600,11 +600,11 @@ class BeliefDesireTest {
     }
 
     /**
-     * Test for move. <BR>
-     * Konfiguration: E  <BR>
-     *                ● <BR>
-     *                  <BR>
-     *                 A○ <BR>
+     * Test for move.
+     * Konfiguration: E
+     *                ● 
+     *                  
+     *                 A○
      * Move Direction: ^
      */
     @Test
@@ -626,6 +626,47 @@ class BeliefDesireTest {
             public BooleanInfo isFulfilled() {
                 ActionInfo test = this.getActionForMove("n", "");
                 assertEquals(test.value().getName(), "move");
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for needed Rotation with attached block.
+     * Konfiguration:  ■ ■
+     *               ■ A ■
+     *                 ○
+     *                  ■
+     * Move Direction: ↑
+     */
+    @Test
+    public void testGetActionForMove20() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept t2 = PerceptUtil.fromThing(new Thing(1, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept t3 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_OBSTACLE, ""));
+        Percept t4 = PerceptUtil.fromThing(new Thing(1, 1, Thing.TYPE_OBSTACLE, ""));
+        Percept t5 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_BLOCK, "b1"));
+        Percept t6 = PerceptUtil.fromThing(new Thing(-1, 0, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(0, 1));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(t4);
+        percept.add(t5);
+        percept.add(t6);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForMove("e", "");
+                assertEquals("clear", test.value().getName());
+                assertEquals(-1, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
+                assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
                 return null;
             }
         };
