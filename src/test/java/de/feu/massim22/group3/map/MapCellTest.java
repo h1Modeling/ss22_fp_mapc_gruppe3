@@ -5,15 +5,27 @@ import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * The Class <code>MapCellTest</code> provides methods for testing the class <code>MapCell</code>.
+ * 
+ * @see MapCell
+ * @author Heinz Stadler
+ */
 class MapCellTest {
     
     private MapCell cell;
     
+    /**
+     * Instantiates a new MapCell for further use.
+     */
     @BeforeEach
     void init() {
         cell = new MapCell();
     }
 
+    /**
+     * Tests if an agent report can successfully be removed from the map.
+     */
     @Test
     void testRemoveAgentReport() {
         cell.addReport(new MapCellReport(CellType.OBSTACLE, ZoneType.NONE, 0, 0));
@@ -22,6 +34,10 @@ class MapCellTest {
         assertEquals(CellType.OBSTACLE, cell.getCellType());
     }
 
+    /**
+     * Tests if two cells can be successfully merged without loosing information.
+     * @throws InterruptedException
+     */
     @Test
     void testMergeIntoCell() throws InterruptedException {
         cell.addReport(new MapCellReport(CellType.OBSTACLE, ZoneType.NONE, 0, 0));

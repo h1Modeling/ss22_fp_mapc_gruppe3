@@ -10,11 +10,27 @@ import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.ParameterList;
+import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 import massim.protocol.data.Thing;
+import java.awt.Point;
 
+/**
+ * The Class <code>PerceptUtil</code> contains static methods to serialize and deserialize <code>Percepts</code>.
+ *
+ * @author Heinz Stadler
+ */
 public class PerceptUtil {
 
+    /**
+     * Gets a numeric value from a list of percept parameters.
+     * 
+     * @param <T> the type of the numeric value
+     * @param parameters the percept parameters
+     * @param index the index of the parameter in the parameter list
+     * @param type the class of the type of the numeric value
+     * @return the numeric value
+     */
     public static <T extends Number> T toNumber(List<Parameter> parameters, int index, Class<T> type) {
         Parameter p = parameters.get(index);
         if (!(p instanceof Numeral))
@@ -22,6 +38,13 @@ public class PerceptUtil {
         return type.cast(((Numeral) p).getValue());
     }
 
+    /**
+     * Gets a string value form a list of percept parameters.
+     * 
+     * @param parameters the percept parameters
+     * @param index the index of the parameter in the parameter list
+     * @return the string value
+     */
     public static String toStr(List<Parameter> parameters, int index) {
         Parameter p = parameters.get(index);
         if (!(p instanceof Identifier))
@@ -29,6 +52,13 @@ public class PerceptUtil {
         return (String) ((Identifier) p).getValue();
     }
 
+    /**
+     * Gets a boolean value from a list of percept parameters.
+     * 
+     * @param parameters the percept parameters
+     * @param index the index of the parameter in the parameter list
+     * @return the boolean value
+     */
     public static boolean toBool(List<Parameter> parameters, int index) {
         Parameter p = parameters.get(index);
         if (!(p instanceof TruthValue))
@@ -36,6 +66,13 @@ public class PerceptUtil {
         return ((TruthValue) p).getValue() == "true";
     }
 
+    /**
+     * Gets a list of strings from a list of percept parameters.
+     * 
+     * @param parameters the percept parameters
+     * @param index the index of the parameter in the parameter list
+     * @return the list of strings
+     */
     public static List<String> toStrList(List<Parameter> parameters, int index) {
         Parameter p = parameters.get(index);
         if (!(p instanceof ParameterList))
@@ -50,6 +87,13 @@ public class PerceptUtil {
         return result;
     }
 
+    /**
+     * Gets a list of integers from a list of percept parameters.
+     * 
+     * @param parameters the percept parameters
+     * @param index the index of the parameter in the parameter list
+     * @return the list of integers
+     */
     public static List<Integer> toIntList(List<Parameter> parameters, int index) {
         Parameter p = parameters.get(index);
         if (!(p instanceof ParameterList))
@@ -64,6 +108,13 @@ public class PerceptUtil {
         return result;
     }
 
+    /**
+     * Gets a Set of Things from a list of percept parameters.
+     * 
+     * @param parameters the percept parameters
+     * @param index the index of the parameter in the parameter list
+     * @return the Set of Things
+     */
     public static Set<Thing> toThingSet(List<Parameter> parameters, int index) {
         Parameter p = parameters.get(index);
         if (!(p instanceof ParameterList))
@@ -80,5 +131,23 @@ public class PerceptUtil {
             result.add(new Thing(x, y, type, detail));
         }
         return result;
+    }
+
+    /**
+     * Creates a Percept from a Thing
+     * @param t the Thing
+     * @return the Percept
+     */
+    public static Percept fromThing(Thing t) {
+        return new Percept("thing", new Numeral(t.x), new Numeral(t.y), new Identifier(t.type), new Identifier(t.details));
+    }
+
+    /**
+     * Creates a Percept from a Point
+     * @param p the Point
+     * @return the Percept
+     */
+    public static Percept fromAttachedPoint(Point p) {
+        return new Percept("attached", new Numeral(p.x), new Numeral(p.y));
     }
 }

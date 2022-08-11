@@ -11,16 +11,16 @@ import javax.swing.SwingUtilities;
 
 import org.lwjgl.BufferUtils;
 
-import de.feu.massim22.group3.EventName;
-import de.feu.massim22.group3.MailService;
-import de.feu.massim22.group3.agents.DirectionUtil;
+import de.feu.massim22.group3.agents.events.EventName;
+import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.utils.Convert;
+import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.debugger.DebugStepListener;
 import de.feu.massim22.group3.utils.debugger.GraphicalDebugger;
 import de.feu.massim22.group3.utils.debugger.IGraphicalDebugger;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.GroupDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.AgentDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.GroupDebugData;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
@@ -36,6 +36,13 @@ import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
+/**
+ * The Singleton Class <code>Navi</code> acts as an entry point for getting information from
+ * the game map. Furthermore it manages the path finding process and the merge of different agent groups.
+ *
+ * @author Heinz Stadler
+ * @author Melinda Betz (contributor)
+ */
 public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private static Navi instance;
     private String name = "Navi";
@@ -59,13 +66,18 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         //AgentLogger.info(Thread.currentThread().getName() + " Navi() Constructor ");
         // Open Debugger
         if (debug) {
-            debugger = new GraphicalDebugger();
+            debugger = new GraphicalDebugger(this);
             SwingUtilities.invokeLater((Runnable)debugger);
         }
-
-        // TODO At end of application PathFinder must be closed to free resources
     }
 
+    /**
+     * Gets the instance of the singleton class.
+     * 
+     * @param <T> sets the interface of the class. The type needs to extend <code>INavi</code>.
+     *  
+     * @return the instance of the singleton class
+     */
     @SuppressWarnings("unchecked")
     public static synchronized <T extends INavi> T get() {
         if (Navi.instance == null) {
@@ -74,9 +86,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         return (T) (Navi.instance);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void resetAgent(String name) {
-        maps.put(name, new GameMap(defaultMapSize, defaultMapSize));
+    public void resetAgent(String name, String team) {
+        maps.put(name, new GameMap(defaultMapSize, defaultMapSize, team));
         agentSupervisor.put(name, name);
         agentStep.put(name, -1);
         supervisorGreetData.remove(name);
@@ -84,26 +99,41 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         busy = false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isWaitingOrBusy() {
         return mergeKeys.size() > 0 || busy;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setDebugStepListener(DebugStepListener listener, boolean manualMode) {
         if (debug) {
             debugger.setDebugStepListener(listener, manualMode);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setMailService(MailService mailService) {
         this.mailService = mailService;
     }
 
-    public void registerAgent(String name) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void registerAgent(String name, String team) {
         if (maps.containsKey(name)) {
             throw new IllegalArgumentException("Agent is already registered");
         }
-        maps.put(name, new GameMap(defaultMapSize, defaultMapSize));
+        maps.put(name, new GameMap(defaultMapSize, defaultMapSize, team));
         agentSupervisor.put(name, name);
         agentStep.put(name, -1);
         long context = PathFinder.createOpenGlContext();
@@ -111,46 +141,71 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         pathFinder.put(name, new PathFinder(context));
     }
     
-    // Melinda
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void registerSupervisor(String name, String supervisor) {
         agentSupervisor.put(name, supervisor);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Point getPosition(String name, String supervisor) {
         return maps.get(supervisor).getAgentPosition(name);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
 	public List<InterestingPoint> getInterestingPoints(String supervisor, int maxNumberGoals) {
 		GameMap map = maps.get(supervisor);
 		return map.getInterestingPoints(maxNumberGoals, false);
 	}
 	
+    /**
+     * {@inheritDoc}
+     */
     @Override
 	public Point getTopLeft(String supervisor) {
 		return maps.get(supervisor).getTopLeft();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Point getInternalAgentPosition(String supervisor, String agent) {
     	return maps.get(supervisor).getInternalAgentPosition(agent);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public FloatBuffer getMapBuffer(String supervisor) {
     	return maps.get(supervisor).getMapBuffer();    
     }
-    //Melinda Ende
-
-    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType) {
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess,
+        String lastActionIntention, String groupDesireType, String groupDesirePartner, String groupDesireBlock, String attachedThings) {
         if (debug) {
-            AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention, groupDesireType);
+            AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention,
+                groupDesireType, groupDesirePartner, groupDesireBlock, attachedThings);
             debugger.setAgentData(data);
         }
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized PathFindingResult[][] updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
             Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps,
@@ -187,6 +242,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void updateMap(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score, Set<NormInfo> normsInfo, 
             Set<TaskInfo> taskInfo, List<Point> attachedThings) {
@@ -319,12 +377,18 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         supervisorGreetData.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void rejectMerge(String mergeKey, String name) {
         AgentLogger.info(name + " rejected merge with key " + mergeKey);
         mergeKeys.remove(mergeKey);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void acceptMerge(String mergeKey, String name) {
         Map<String, MergeReply> map = mergeKeys.get(mergeKey);
@@ -448,7 +512,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }
     }
 
-    // Creates array with CellType.FREE in vision and CellType.UNKNOWN outside of vision
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CellType[][] getBlankCellArray(int vision) {
         int size = 2 * vision + 1;
@@ -662,6 +728,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CalcResult> updateSupervisor(String supervisor) {
     	calcResults = new ArrayList<>();
@@ -669,23 +738,36 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         return calcResults;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent) {
         GameMap map = maps.get(supervisor);
         return map.getDirectionToNearestUndiscoveredPoint(agent);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void dispose() {
         for (long handler: openGlHandler.values()) {
             PathFinder.close(handler);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         instance = null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateDesireDebugData(List<DesireDebugData> data, String agent) {
         if (debug) {
@@ -693,23 +775,35 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getAgentIdAtPoint(String supervisor, Point p) {
         GameMap map = maps.get(supervisor);
         return map.getAgentIdAtPoint(p);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isBlockAttached(String supervisor, Point p) {
         GameMap map = maps.get(supervisor);
         return map.isBlockAttached(p);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDebug(boolean debug) {
         Navi.debug = debug;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Point> getMeetingPoints(String supervisor) {
         GameMap map = maps.get(supervisor);

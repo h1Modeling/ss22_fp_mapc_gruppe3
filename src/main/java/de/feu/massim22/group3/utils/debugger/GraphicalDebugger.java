@@ -13,18 +13,24 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.*;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
-import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
-import de.feu.massim22.group3.map.CellType;
-import de.feu.massim22.group3.map.InterestingPoint;
-import de.feu.massim22.group3.map.PathFindingResult;
+import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
+import de.feu.massim22.group3.map.Disposable;
+import de.feu.massim22.group3.utils.debugger.debugData.AgentDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.GroupDebugData;
 import eis.iilang.Action;
 import massim.protocol.data.NormInfo;
 import massim.protocol.data.TaskInfo;
 
+/** 
+ * The Class <code>GraphicalDebugger</code> defines a Frame to view debug information of the current simulation
+ * and especially of Agents, their path finding and decision making. 
+ *
+ * @author Heinz Stadler
+ */
 public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDebugger {
 
     private Header header;
@@ -38,11 +44,25 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
     private String selectedGroup = "";
     private String selectedAgent = "";
     private DebugStepListener listener;
-    private boolean initialised = false;
+    private boolean initialized = false;
 
-    public GraphicalDebugger() {
+    /**
+     * Instantiates a new GraphicalDebugger, sets the look and feel and adds window listener.
+     * 
+     * @param mapDisposer an object that holds data which needs to be disposed at program end 
+     */
+    public GraphicalDebugger(Disposable mapDisposer) {
         setTitle("Debugger - Massim 22 - Gruppe 3");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Free Resources after Close
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mapDisposer.dispose();
+                e.getWindow().dispose();
+            }
+        });
 
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -54,6 +74,10 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         } catch (Exception e) {}
     }
 
+    /**
+     * {@inheritDoc}
+     * Instantiates the different parts of the debugger and shows the panel.
+     */
     @Override
     public void run() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -75,11 +99,13 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         
         setResizable(true);
         pack();
-        //setLocationRelativeTo(null);
         setVisible(true);
         toFront();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void selectAgent(String agent) {
         AgentDebugData data = agentData.get(agent);
@@ -87,39 +113,21 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         agentPanel.setAgentData(data);
     }
 
-    public static record GroupDebugData(String supervisor, CellType[][] map, Point mapTopLeft, 
-        List<InterestingPoint> interestingPoints, PathFindingResult[][] pathFindingResult,
-        Map<Point, String> agentPosition, List<Point> roleZones, List<Point> goalzones,
-        List<String> agents) { }
-
-    public static record AgentDebugData(
-        String name,
-        String supervisor,
-        String role,
-        int energy,
-        String lastAction,
-        String lastActionSuccess,
-        String lastActionDesire,
-        String groupDesireType
-    ) {}
-
-    public static record DesireDebugData(
-        String name,
-        BooleanInfo isExecutable
-    ) {}
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void setGroupData(GroupDebugData data) {
-        groupData.put(data.supervisor, data);
+        groupData.put(data.supervisor(), data);
 
         // Sets first data as current group
         if (selectedGroup == "") {
-            selectedGroup = data.supervisor;
+            selectedGroup = data.supervisor();
         }
 
         // Update Groups
-        if (!groups.contains(data.supervisor)) {
-            groups.add(data.supervisor);
+        if (!groups.contains(data.supervisor())) {
+            groups.add(data.supervisor());
             header.setGroups(groups, selectedGroup);
         }
 
@@ -129,27 +137,39 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         }
 
         // Select Agent at Start
-        if (!initialised) {
-            initialised = true;
-            selectAgent(data.supervisor);
+        if (!initialized) {
+            initialized = true;
+            selectAgent(data.supervisor());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSimInfo(int currentStep, int maxSteps, int points) {
         header.setData(currentStep, maxSteps, points);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNorms(Set<NormInfo> norms, int step) {
         simulationPanel.setNorms(norms, step);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setTasks(Set<TaskInfo> tasks, int step) {
         simulationPanel.setTasks(tasks, step);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void removeSupervisor(String name, String newGroup) {
         groups.remove(name);
@@ -159,6 +179,9 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         header.setGroups(groups, selectedGroup);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSelectedGroup(String name) {
         GroupDebugData data = groupData.get(name);
@@ -168,11 +191,17 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void makeStep() {
         listener.debugStep();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDebugStepListener(DebugStepListener listener, boolean manualMode) {
         this.listener = listener;
@@ -181,14 +210,21 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void setAgentData(AgentDebugData data) {
-        agentData.put(data.name, data);
-        if (data.name.equals(selectedAgent)) {
-            selectAgent(data.name);
+        agentData.put(data.name(), data);
+        if (data.name().equals(selectedAgent)) {
+            selectAgent(data.name());
         }
+        header.addAgent(data.name());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAgentDesire(List<DesireDebugData> data, String agent) {
         if (agent.equals(selectedAgent)) {
@@ -196,15 +232,21 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getAgentGroupDesireType(String agent) {
         AgentDebugData data = agentData.get(agent);
         if (data != null) {
-            return data.groupDesireType;
+            return data.groupDesireType();
         }
         return GroupDesireTypes.NONE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDelay(boolean value) {
         if (this.listener != null) {
@@ -212,6 +254,9 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setActionForAgent(String agent, Action action) {
         if (listener != null) {

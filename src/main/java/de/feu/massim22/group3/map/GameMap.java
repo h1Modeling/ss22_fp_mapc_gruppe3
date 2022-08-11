@@ -12,7 +12,14 @@ import java.util.Map.Entry;
 
 import org.lwjgl.BufferUtils;
 
-
+/**
+ * The Class <code>GameMap</code> stores a two dimensional array of <code>MapCells</code> which map the state
+ * of the discovered game map to an internal data structure which is the base for path finding.
+ *
+ * @see GameMap
+ * @author Heinz Stadler
+ * @author Melinda Betz (minor contribution)
+ */
 public class GameMap {
     
     private Point initialSize;
@@ -24,16 +31,25 @@ public class GameMap {
     private Map<String, Point> agentPosition = new HashMap<>(); 
     private Map<String, Integer> agentAttached = new HashMap<>();
     private Map<String, Integer> agentAttachedDistance = new HashMap<>(); 
-    // These hold information relative to the internal array - only use for pathfinding
+    // These hold information relative to the internal array - only use for path finding
     private List<Point> goalCache = new ArrayList<>();
     private List<Point> roleCache = new ArrayList<>();
     private List<InterestingPoint> dispenserCache = new ArrayList<>();
     private List<Point> meetingPoints = null;
+    private String team;
     
-    public GameMap(int x, int y) {
+    /**
+     * Instantiates a new GameMap.
+     * 
+     * @param x the initial size of the map in horizontal direction
+     * @param y the initial size of the map in vertical direction
+     * @param team the name of the team the agent is part of
+     */
+    public GameMap(int x, int y, String team) {
         initialSize = size == null ? new Point(x, y) : size;
         topLeft = new Point((int)(-initialSize.x / 2), (int)(-initialSize.y / 2));
         cells = new MapCell[initialSize.y][initialSize.x];
+        this.team = team;
         
         // Initialize with empty cells
         for (int i = 0; i < initialSize.y; i++) {
@@ -43,39 +59,81 @@ public class GameMap {
         }
     }
 
+    /**
+     * Gets the currently discovered goal points.
+     * The points are measured in the internal coordinate system of the <code>GameMap</code>.
+     * 
+     * @return a <code>List</code> of type <code>Point</code> of the internal goal points
+     */
     List<Point> getGoalCache() {
         return goalCache;
     }
 
+    /**
+     * Gets the currently discovered role points.
+     * The points are measured in the internal coordinate system of the <code>GameMap</code>.
+     * 
+     * @return a <code>List</code> of type <code>Point</code> of the internal role points
+     */
     List<Point> getRoleCache() {
         return roleCache;
     }
 
+    /**
+     * Returns if the map size is discovered yet.
+     * 
+     * @return true if the map size is discovered
+     */
     public boolean mapDiscovered() {
         return size != null;
     }
     
-    //Melinda
+    /**
+     * Gets the position of the agent with the provided name.
+     * The position is measured in the coordinate system of the agent.
+     * 
+     * @param name the name of the agent
+     * @return the position of the agent in the coordinate system of the agent
+     */
     public Point getAgentPosition(String name) {
         return agentPosition.get(name);
     }
 
-    public Point getInternalAgentPosition(String agent) {
+    /**
+     * Gets the position of the agent with the provided name.
+     * The position is measured in the internal coordinate system of the <code>GameMap</code> with 0/0
+     * at the top left of the map.
+     * 
+     * @param name the name of the agent
+     * @return the position of the agent in the coordinate system of the agent
+     */  
+    Point getInternalAgentPosition(String agent) {
         Point agentPos = agentPosition.get(agent);
         return agentPos == null ? new Point(0, 0) : getInternalCellIndex(agentPos.x, agentPos.y);
     }
 
+    /**
+     * Gets the index of the agent at a certain point.
+     * 
+     * @param p the position of the agent in the coordinate system of the agent.
+     * @return the index of the agent if there is an agent at the provided position or 0
+     */
     public int getAgentIdAtPoint(Point p) {
         for (Entry<String, Point> e : agentPosition.entrySet()) {
             if (e.getValue().equals(p)) {
                 String agent = e.getKey();
-                // TODO change substring to teamname length
-                return Integer.parseInt(agent.substring(1));
+                return Integer.parseInt(agent.substring(team.length()));
             }
         }
         return 0;
     }
 
+    /**
+     * Calculates if a block at the provided position is attached to a known agent of the map.
+     * 
+     * @param p the position of the block in the coordinate system of the agent
+     * @return true if there is a block at the provided position which is attached to a known agent
+     */
     public boolean isBlockAttached(Point p) {
         for (Entry<String, Point> entry : agentPosition.entrySet()) {
             Point n = new Point(p.x, p.y - 1);
@@ -112,16 +170,38 @@ public class GameMap {
         return false;
     }
 
+    /**
+     * Calculates if the relative Position to an agent is contained in the attached code.
+     * The attached code encodes connected Points in a single integer.
+     * 
+     * @param p the position relative to an agent
+     * @param value the attached code of the agent
+     * @return true if the agent with tha attached code has an attachment at the provided relative position 
+     */
     boolean attachedAtRelativePoint(Point p, int value) {
         return ((value >> ((p.y + 2) * 5 + p.x + 2)) & 0x1) == 0x1;
     }
 
+    /**
+     * Translates a Point in the coordinate system of the agent into the internal coordinate system of the map.
+     * 
+     * @param x the horizontal value of the Point
+     * @param y the vertical value of the Point
+     * @return a <code>Point</code> in the internal coordinate system of the map which reflects the provided coordinates
+     * in the coordinate system of the agent
+     */
     public Point getInternalCellIndex(int x, int y) {
         int cellX = getCellX(x);
         int cellY = getCellY(y);
         return new Point(cellX, cellY);
     }
 
+    /**
+     * Creates a copy of the internal Array of CellTypes for the <code>GraphicalDebugger</code>
+     * 
+     * @see GraphicalDebugger
+     * @return a two-dimensional Array of type CellType
+     */
     CellType[][] getDebugCells() {
         int ySize = cells.length;
         int xSize = cells[0].length;
@@ -134,6 +214,16 @@ public class GameMap {
         return types;
     }
     
+    /**
+     * Adds information of the current vision of an agent to the map.
+     * 
+     * @param x the horizontal value of the Point in the vision of the agent (in the coordinate system of the agent)
+     * @param y the vertical value of the Point in the vision of the agent (in the coordinate system of the agent)
+     * @param cellType the type of the element which is discovered
+     * @param zoneType the type of the zone which is discovered
+     * @param agentId the index of the agent which sends the report
+     * @param step the step in which the agent sends the report
+     */
     public void addReport(int x, int y, CellType cellType, ZoneType zoneType, int agentId, int step) {		
         // Check if Array is big enough
         checkBounds(x, y);
@@ -149,10 +239,22 @@ public class GameMap {
         }
     }
 
+    /**
+     * Stores the position of an agent in a internal map.
+     * 
+     * @param name the name of the agent
+     * @param position the position of the agent in the coordinate system of the agent
+     */
     public void setAgentPosition(String name, Point position) {
         agentPosition.put(name, position);
     }
 
+    /**
+     * Gets a <code>List</code> of Points in goal zones which have enough free
+     * space around to comfortably assemble blocks. 
+     * 
+     * @return the <code>List</code> of Points
+     */
     public List<Point> getMeetingPoints() {
         if (meetingPoints == null) {
             calcMeetingPoints();
@@ -160,7 +262,7 @@ public class GameMap {
         return meetingPoints;
     }
 
-    public void calcMeetingPoints() {
+    private void calcMeetingPoints() {
         meetingPoints = new ArrayList<>();
         for (int y = 2; y < cells.length - 2; y++) {
             for (int x = 2; x < cells[0].length - 2; x++) {
@@ -186,6 +288,13 @@ public class GameMap {
         }
     }
 
+    /**
+     * Encodes a <code>List</code> of attached Points of an agent into an Integer and stores the value in
+     * an internal map.
+     * 
+     * @param name the name of the agent
+     * @param attachedThings the attached things of the agent
+     */
     public void setAgentAttached(String name, List<Point> attachedThings) {
         int result = 0; //4096; // Agent Pos
         int dist = 0;
@@ -228,20 +337,44 @@ public class GameMap {
         agentAttachedDistance.put(name, dist);
     }
 
+    /**
+     * Gets the information of attached points of an agent encoded in an Integer.
+     * 
+     * @param agent the name of the agent
+     * @return the information of attached points of the agent encoded in an Integer
+     */
     public int getAgentAttached(String agent) {
         Integer result = agentAttached.get(agent);
         return result == null ? 0 : result;
     }
 
+    /**
+     * Gets the maximum distance of all attached things of an agent.
+     * 
+     * @param agent the name of the agent
+     * @return the maximum distance of all attached things
+     */
     public int getAgentAttachedDistance(String agent) {
         Integer result = agentAttachedDistance.get(agent);
         return result == null ? 0 : result;
     }
     
+    /**
+     * Gets the position in the coordinate system of the agents which reflects the position 0/0
+     * in the internal coordinate system of the map.
+     * 
+     * @return the position at the top left of the map in the coordinate system of the agent
+     */
     public Point getTopLeft() {
         return topLeft;
     }
 
+    /**
+     * Gets a <code>Map<Point, String></code> with all agent positions relative to the internal coordinate system of the map.
+     * The key of the map is the agent name, the value is the agent position.
+     * 
+     * @return the <code>Map<Point, String></code> with all agent positions relative to the internal coordinate system of the map
+     */
     Map<Point, String> getDebugAgentPosition() {
         Map<Point, String> result = new HashMap<>();
         for (Entry<String, Point> e : agentPosition.entrySet()) {
@@ -252,16 +385,24 @@ public class GameMap {
         return result;
     }
     
+    /**
+     * Gets the position in the coordinate system of the agents which reflects the bottom right point
+     * in the internal coordinate system of the map.
+     * 
+     * @return the position at the bottom right of the map in the coordinate system of the agent
+     */
     public Point getBottomRight() {
         Point p = getTopLeft();
         Point s = size == null ? initialSize : size;
         return new Point(p.x + s.x, p.y + s.y);
     }
     
-    public Point getOrigin() {
-        return new Point(-topLeft.x, -topLeft.y);
-    }
-    
+    /**
+     * Sets the size of the <code>GameMap</code> after the size is discovered by the agents.
+     * 
+     * @param x the horizontal size of the map
+     * @param y the vertical size of the map
+     */
     public void setFinalSize(int x, int y) {
         size = new Point(x, y);
         updateMapToFinalSize();
@@ -286,6 +427,16 @@ public class GameMap {
     }
     
     // Points are relative to the origin of their map
+    /**
+     * Merges a <code>GameMap</code> into this <code>GameMap</code>.
+     * The information of the foreign map will be integrated into this map.
+     * The provided points must reflect the same point in the real map.
+     * 
+     * @param foreignMap the map which should be merged
+     * @param foreignPoint a point in the foreign map which acts as a reference point
+     * @param thisPoint a point in this map which acts as a reference point
+     * @return the offset the foreign map to this map
+     */
     public Point mergeIntoMap(GameMap foreignMap, Point foreignPoint, Point thisPoint) {
         int offsetX = thisPoint.x - foreignPoint.x;
         int offsetY = thisPoint.y - foreignPoint.y;
@@ -354,11 +505,24 @@ public class GameMap {
         return new Point(offsetX, offsetY);
     }
     
-    public CellType getCellType(int x, int y) {
+    /**
+     * Gets the <code>CellType</code> of a cell int the <code>GameMap</code> in the coordinate system of the agents.
+     * 
+     * @param x the horizontal position of the cell
+     * @param y the vertical position of the cell
+     * @return the <code>CellType</code> of the cell
+     */
+    CellType getCellType(int x, int y) {
         MapCell cell = getCell(x, y);
         return cell.getCellType();
     }
     
+    /**
+     * Gets a <code>FloatBuffer</code> which encodes the Cells of the <code>GameMap</code>.
+     * Obstacles or undiscovered cells are encoded as 1f, other types are encoded as 0f.
+     *   
+     * @return the <code>FloatBuffer</code> which encodes the Cells of the <code>GameMap</code>
+     */
     public FloatBuffer getMapBuffer() {
         Point curSize = getMapSize();
         FloatBuffer data = BufferUtils.createFloatBuffer(curSize.x * curSize.y * 2);
@@ -418,11 +582,15 @@ public class GameMap {
                 }
             }
         }
-
         data.flip();
         return data;
     }
 
+    /**
+     * Gets the direction to the nearest undiscovered Point relative to an agent in this map.
+     * @param agent the agent from which to calculate
+     * @return the direction ("n", "e", "s", "w") to the nearest undiscovered Point
+     */
     String getDirectionToNearestUndiscoveredPoint(String agent) {
         Point agentPos = getInternalAgentPosition(agent);
         int step = 1;
@@ -439,26 +607,26 @@ public class GameMap {
                 break;
             }
 
-            if (cells[top][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y > 5) {
+            if (cells[top][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y > 6) {
                 possibleDirs.add("n");
                 if (cells[agentPos.y - 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("n");
                 }
             }
-            if (cells[bottom][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y < cells.length - 6) {
+            if (cells[bottom][agentPos.x].getCellType() == CellType.UNKNOWN && agentPos.y < cells.length - 7) {
                 possibleDirs.add("s");
                 if (cells[agentPos.y + 1][agentPos.x].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("s");
                 }
             }
-            if (cells[agentPos.y][left].getCellType() == CellType.UNKNOWN && agentPos.x > 5) {
+            if (cells[agentPos.y][left].getCellType() == CellType.UNKNOWN && agentPos.x > 6) {
                 possibleDirs.add("w");
                 if (cells[agentPos.y][agentPos.x - 1].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("w");
                 }
             }
             
-            if (cells[agentPos.y][right].getCellType() == CellType.UNKNOWN && agentPos.x < cells[0].length - 6) {
+            if (cells[agentPos.y][right].getCellType() == CellType.UNKNOWN && agentPos.x < cells[0].length - 7) {
                 possibleDirs.add("e");
                 if (cells[agentPos.y][agentPos.x + 1].getCellType() != CellType.OBSTACLE) {
                     possibleDirsFree.add("e");
@@ -489,6 +657,13 @@ public class GameMap {
         }
     }
 
+    /**
+     * Gets a <code>List<InterestingPoint></code> which contains information about Dispensers, GoalZones and RoleZones.
+     * 
+     * @param maxCount the maximum number of InterestingPoints which should be returned 
+     * @param useRoleZones if true, RoleZones will be added to the list
+     * @return a <code>List<InterestingPoint></code> of this <code>GameMap</code>
+     */
     public List<InterestingPoint> getInterestingPoints(int maxCount, boolean useRoleZones) {
         List<InterestingPoint> result = new ArrayList<>();
         // Dispensers
@@ -502,18 +677,6 @@ public class GameMap {
             InterestingPoint ip = new InterestingPoint(internal, ZoneType.NONE, CellType.TEAMMATE, e.getKey());
             result.add(ip);
         }
-
-        // Meeting Points in goal Zone
-        /*
-        for (Point p : meetingPoints) {
-            if (countLeft == 0) {
-                break;
-            }
-            Point internal = new Point(p.x - topLeft.x, p.y - topLeft.y);
-            InterestingPoint ip = new InterestingPoint(internal, ZoneType.GOALZONE, CellType.UNKNOWN, "");
-            result.add(ip);
-            countLeft -= 1;
-        }*/
         
         // Goal and Role Zones 
         List<List<Point>> goalLists = filterZones(goalCache, 6);
@@ -597,10 +760,20 @@ public class GameMap {
         return result;
     }
 
+    /**
+     * Gets the current map size
+     * 
+     * @return the map size
+     */
     public Point getMapSize() {
         return size == null ? initialSize : size;
     }
 
+    /**
+     * Gets a with zeros initialized FloatBuffer.
+     * The size of the Buffer is according to the number of cells in the <code>GameMap</code>.
+     * @return a with zeros initialized FloatBuffer
+     */
     public FloatBuffer getEmptyBuffer() {
         Point curSize = size == null ? initialSize : size;
         FloatBuffer data = BufferUtils.createFloatBuffer(curSize.x * curSize.y * 2);
@@ -616,6 +789,12 @@ public class GameMap {
         return data;
     }
 
+    /**
+     * Tests if any known agent in the team is at a certain position.
+     * 
+     * @param p the position in the coordinate system of the agents
+     * @return true if there is a known agent at the provided position
+     */
     boolean isAgentInGroupAtPosition(Point p) {
         return agentPosition.containsValue(p);
     }

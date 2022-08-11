@@ -16,14 +16,32 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class NaviTest {
+/**
+ * The Class <code>NaviTest </code> provides methods for testing the class <code>Navi</code>. 
+ * Symbols:
+ * A: Agent
+ * G: Goal position
+ * ○: Attached Block
+ * ■: Obstacle
+ * -: Free cell
+ * 
+ * @see Navi
+ * @author Heinz Stadler
+ */
+class NaviTest {
 
+    /**
+     * Disables the graphical debugger and creates a new Instance of the class Navi.
+     */
     @BeforeEach
     void init() {
         Navi.<INaviTest>get().setDebug(false);
         Navi.<INaviTest>get().clear();
     }
 
+    /**
+     * Tests if the an empty two dimensional Cell array gets correctly generated from the agent vision size.
+     */
     @Test
 	void getBlankCellArrayTest() {
         CellType[][] cells = Navi.<INavi>get().getBlankCellArray(3);
@@ -41,15 +59,18 @@ public class NaviTest {
         assertArrayEquals(row0, cells[6]);
 	}
 
+    /**
+     * Path finding test:
+     * - - ■ - -
+     * - - ■ - -
+     * - A - - -   
+     * - - ■ G -
+     * - - ■ - -
+     */
     @Test
     void pathFindingTestSimple() {
-        /*  - - | - -
-            - - | - -
-            - A - - -   
-            - - | G -
-            - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("A1");
+        navi.registerAgent("A1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -70,15 +91,18 @@ public class NaviTest {
         assertEquals(3, result[0][1].distance());
     }
 
+    /*
+     * Path finding test:
+     * - - ■ - -
+     * - - ■ - -
+     * - A ■ - -   
+     * - - ■ G -
+     * - - ■ - -
+     */
     @Test
     void pathFindingTestSimpleWall() {
-        /*  - - | - -
-            - - | - -
-            - A | - -   
-            - - | G -
-            - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -100,15 +124,18 @@ public class NaviTest {
         assertEquals(6, result[0][1].distance());
     }
 
+    /**
+     * Path finding test:
+     * - - ■ - -
+     * - ○ - - -
+     * - A - - -
+     * - - ■ G -
+     * - - ■ - -
+     */
     @Test
     void pathFindingTestAttached() {
-        /*  - - | - -
-            - # - - -
-            - A - - -   
-            - - | G -
-            - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -131,15 +158,18 @@ public class NaviTest {
         assertEquals(3, result[0][1].distance());
     }
 
+    /**
+     * Path finding test:
+     * ■ G - ■ -
+     * ■ - - ■ -
+     * ■ ■   ■ ■
+     * - - - A -
+     * - - - ○ -
+     */
     @Test
     void pathFindingTestAttached2() {
-        /*  | G - | -
-            | - - | -
-            ---- ----   
-            - - - A -
-            - - - # -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();
@@ -167,15 +197,18 @@ public class NaviTest {
         assertEquals(5, result[0][1].distance());
     }
 
+    /**
+     * Path finding test:
+     * - - ■ - -
+     * - ○ ■ - -
+     * - A - - -
+     * - - ■ G -
+     * - - ■ - -
+     */
     @Test
     void pathFindingTestAttachedFail() {
-        /*  - - | - -
-            - # | - -
-            - A - - -   
-            - - | G -
-            - - | - -    */
         INaviAgentV1 navi = Navi.<INaviAgentV1>get();
-        navi.registerAgent("a1");
+        navi.registerAgent("a1", "A");
 
         Point position = new Point(0, 0);
         Set<Thing> things = new HashSet<>();

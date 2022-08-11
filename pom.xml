@@ -3,11 +3,31 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>de.feu.massim</groupId>
     <artifactId>group3</artifactId>
     <version>2022-1.0</version>
-
+    <name>Fachpraktikum KI: Multiagentenprogrammierung - Gruppe 3 - SS 22 FernUniversität Hagen</name>
+    <description>TEST TEST</description>
+    <url>https://github.com/h1Modeling/ss22_fp_mapc_gruppe3</url>
+    <inceptionYear>2022</inceptionYear>
+    <developers>
+        <developer>
+            <name>Heinz Stadler</name>
+        </developer>
+        <developer>
+            <name>Melinda Betz</name>
+        </developer>
+        <developer>
+            <name>Phil Heger</name>
+        </developer>
+        <developer>
+            <name>Björn Wladasch</name>
+        </developer>
+    </developers>
+    <organization>
+        <name>FernUniversität in Hagen</name>
+        <url>https://www.fernuni-hagen.de</url>
+    </organization>
     <profiles>
         <profile>
             <id>lwjgl-natives-linux</id>
@@ -60,9 +80,53 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <show>package</show>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                  <execution>
+                    <id>copy-resources</id>
+                    <!-- here the phase you need -->
+                    <phase>validate</phase>
+                    <goals>
+                      <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                      <outputDirectory>${basedir}/target/site/images</outputDirectory>
+                      <resources>          
+                        <resource>
+                          <directory>src/site/images</directory>
+                          <filtering>true</filtering>
+                        </resource>
+                      </resources>              
+                    </configuration>            
+                  </execution>
+                </executions>
+              </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <show>package</show>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -72,6 +136,16 @@
                     <target>17</target>
 
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>4.0.0-M3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.4.0</version>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -96,16 +170,12 @@
             </plugin>
         </plugins>
     </build>
-    
-
     <dependencies>
-
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout</artifactId>
             <version>3.7.4</version>
         </dependency>
-
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
@@ -160,25 +230,20 @@
             <artifactId>lwjgl-stb</artifactId>
             <classifier>${lwjgl.natives}</classifier>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.8.2</version>
         </dependency>
-
         <dependency>
             <groupId>massim</groupId>
             <artifactId>eismassim</artifactId>
             <version>4.4</version>
         </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>4.6.1</version>
         </dependency>
-
     </dependencies>
-
 </project>

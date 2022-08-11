@@ -4,16 +4,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.BooleanInfo;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.AgentDebugData;
-import de.feu.massim22.group3.utils.debugger.GraphicalDebugger.DesireDebugData;
+import de.feu.massim22.group3.agents.desires.BooleanInfo;
+import de.feu.massim22.group3.utils.debugger.debugData.AgentDebugData;
+import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * The Class <code>AgentPanel</code> defines a Panel to view debug information of an agent
+ * including its desires.
+ *
+ * @author Heinz Stadler
+ */
 class AgentPanel extends JPanel {
 
     private JLabel role;
@@ -22,10 +27,17 @@ class AgentPanel extends JPanel {
     private JLabel lastAction;
     private JLabel lastActionSuccess;
     private JLabel lastActionIntention;
+    private JLabel attachedThings;
+    private JLabel groupDesireType;
+    private JLabel groupDesirePartner;
+    private JLabel groupDesireBlock;
     private List<JLabel> desires = new ArrayList<>();
     private List<JLabel> desireLabels = new ArrayList<>();
     private int maxDesireCount = 10;
     
+    /**
+     * Instantiates a new AgentPanel.
+     */
     AgentPanel() {
 
         MigLayout layout = new MigLayout("insets 10", "[left] [left]");
@@ -73,6 +85,35 @@ class AgentPanel extends JPanel {
         lastActionIntention = new JLabel();
         add(lastActionIntention, "wrap");
 
+        JLabel attachedThingsLabel = new JLabel("Attached Things:");
+        add(attachedThingsLabel);
+
+        attachedThings = new JLabel();
+        add(attachedThings, "wrap");
+
+        // Group Desire Data
+        JLabel groupDesireDataLabel = new HeaderLabel("Group Desire:");
+        add(groupDesireDataLabel, "span 2, grow, wrap, gapTop 10");
+
+        JLabel groupDesireLabel = new JLabel("Typ:");
+        add(groupDesireLabel);
+
+        groupDesireType = new JLabel();
+        add(groupDesireType, "wrap");
+
+        JLabel groupDesirePartnerLabel = new JLabel("Partner:");
+        add(groupDesirePartnerLabel);
+
+        groupDesirePartner = new JLabel();
+        add(groupDesirePartner, "wrap");
+
+        JLabel groupDesireBlockLabel = new JLabel("Block:");
+        add(groupDesireBlockLabel);
+
+        groupDesireBlock = new JLabel();
+        add(groupDesireBlock, "wrap");
+
+        // Desires
         JLabel desireDataLabel = new HeaderLabel("Desires:");
         add(desireDataLabel, "span 2, grow, wrap, gapTop 10");
 
@@ -98,12 +139,21 @@ class AgentPanel extends JPanel {
             lastAction.setText(data.lastAction());
             lastActionSuccess.setText(data.lastActionSuccess());
             lastActionIntention.setText(data.lastActionDesire());
+            attachedThings.setText(data.attachedThings());
+            groupDesireType.setText(data.groupDesireType());
+            groupDesirePartner.setText(data.groupDesirePartner());
+            groupDesireBlock.setText(data.groupDesireBlock());
             revalidate();
         } else {
             clear();
         }
     }
 
+    /**
+     * Sets the current information of an agents desires.
+     * @param list a List of <code>DesireDebugData</code> containing information about the 
+     * agent decision process.
+     */
     void setDesireData(List<DesireDebugData> list) {
         int easyTaskIndex = 0;
         for (DesireDebugData data : list) {
@@ -129,6 +179,9 @@ class AgentPanel extends JPanel {
         revalidate();
     }
 
+    /**
+     * Clears the content of the AgentPanel.
+     */
     void clear() {
         name.setText("");
         role.setText("");
@@ -137,6 +190,11 @@ class AgentPanel extends JPanel {
         lastActionSuccess.setText(""); 
     }
 
+    /**
+    * The inner Class <code>HeaderLabel</code> defines a header text for labeling different sections of a panel
+    *
+    * @author Heinz Stadler
+    */
     static class HeaderLabel extends JLabel {
         HeaderLabel(String title) {
             super(title);

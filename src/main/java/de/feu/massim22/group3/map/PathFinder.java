@@ -29,15 +29,30 @@ import java.awt.image.WritableRaster;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL43.*;
 
+/**
+ * The Class <code>PathFinder</code> handles the communication with the OpenGL library GLFW to create and
+ * manage OpenGL Contexts. The Contexts are used to perform calculations by a compute shader to receive 
+ * path finding information. 
+ *
+ * @author Heinz Stadler
+ */
 class PathFinder {
     private int gComputeProgram = -1;
     private long windowHandler;
     private static String shader;
     
+    /**
+     * Instantiates a new PathFinder
+     * @param windowHandler the handler to the openGl context
+     */
     PathFinder(long windowHandler) {
         this.windowHandler = windowHandler;
     }
 
+    /**
+     * Instantiates the GLFW library and loads the compute shader.
+     * This method must be called from the main thread.
+     */
     static void init() {
         // Init GLFW Context - this must be done from the main thread and is therefore in the constructor
         if (!glfwInit()) {
@@ -51,6 +66,11 @@ class PathFinder {
         }
     }
 
+    /**
+     * Frees the resources used by the OpenGL context.
+     *  
+     * @param context the handler to the OpenGL context
+     */
     static void close(long context) {
         // Free Resources
         glfwMakeContextCurrent(context);
@@ -58,6 +78,10 @@ class PathFinder {
         glfwMakeContextCurrent(0);
     }
 
+    /**
+     * Creates a new OpenGL context.
+     * @return the handler to the OpenGL context
+     */
     static long createOpenGlContext() {
         // Create Hidden Window to get OpenGL Context
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -202,59 +226,80 @@ class PathFinder {
         }
     }
 
+    /**
+     * Starts the path finding.
+     * 
+     * @param mapBuffer the buffer in which obstacles are stored as 1.0f and free cells are stored as 0.0f
+     * @param dataBuffer the buffer with information about agent position and attached blocks to the agent
+     * @param goalPoints a List of Points for which path finding should be started
+     * @param mapSize the size of the map input texture
+     * @param dataSize the size of the data input texture
+     * @param agentCount the number of agents 
+     * @param goalCount the number of goals
+     * @param mapDiscovered indicates if the map size is already discovered or not 
+     * @param supervisor the supervisor of the group for which the path finding should be started
+     * @param step the current step of the simulation
+     * @return a two dimensional Array of path finding results containing the distance and direction of every goal point from every agent
+     */
     public PathFindingResult[][] start(FloatBuffer mapBuffer, FloatBuffer dataBuffer, List<InterestingPoint> goalPoints, Point mapSize, Point dataSize, int agentCount, int goalCount, boolean mapDiscovered, String supervisor, int step) {
 
-        // Set Timer
-        long start = System.currentTimeMillis();
-        
-        // Create the compute program the compute shader is assigned to
-        glfwMakeContextCurrent(this.windowHandler);
-        GL.createCapabilities();
-        if (gComputeProgram == -1) {
-            gComputeProgram = glCreateProgram();
+        try {
+            // Set Timer
+            long start = System.currentTimeMillis();
+            
+            // Create the compute program the compute shader is assigned to
+            glfwMakeContextCurrent(this.windowHandler);
+            GL.createCapabilities();
+            if (gComputeProgram == -1) {
+                gComputeProgram = glCreateProgram();
 
-            try {
-                initShader(goalCount, mapSize, mapDiscovered);
-            } catch(IOException e) {
-                AgentLogger.severe(e.getLocalizedMessage());
+                try {
+                    initShader(goalCount, mapSize, mapDiscovered);
+                } catch(IOException e) {
+                    AgentLogger.severe(e.getLocalizedMessage());
+                }
             }
+
+            // Map and Output Texture
+            create3dTexture(mapBuffer, 2, 0, mapSize.x, mapSize.y, agentCount + 1, false);
+
+            // Data Input Texture
+            create2dTexture(dataBuffer, 2, 1, dataSize.x, dataSize.y, true);
+            
+            glDispatchCompute(agentCount, goalCount, 1);
+            //glDispatchCompute(1, 1, 1);
+            
+            // Wait until calculation ends
+            glMemoryBarrier(GL_PIXEL_BUFFER_BARRIER_BIT);
+            //glMemoryBarrier( GL_ALL_BARRIER_BITS );
+            
+            testForErrors();
+            
+            // Get Result
+            float[] result = new float[mapSize.y * mapSize.x * (agentCount + 1) * 2];
+            glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, result);
+                    
+            // Log Time spent
+            long end = System.currentTimeMillis();
+            long diff = end - start;
+            AgentLogger.info("Path Finding Duration: " + diff);
+
+            // Image logging
+            // TODO add logging parameter
+            if (true) {
+                logMap(mapSize, result, supervisor, step);
+            }
+            
+            // Remove Context from thread
+            glfwMakeContextCurrent(0);
+
+            // Calculate Result
+            return decodeResult(result, goalPoints, mapSize, agentCount);
+        } catch (IllegalStateException e) {
+            // If the program gets terminated during calculation the context will be gone and this exception will be fired
+            float[] result = new float[mapSize.y * mapSize.x * (agentCount + 1) * 2];
+            return decodeResult(result, goalPoints, mapSize, agentCount);
         }
-
-        // Map and Output Texture
-        create3dTexture(mapBuffer, 2, 0, mapSize.x, mapSize.y, agentCount + 1, false);
-
-        // Data Input Texture
-        create2dTexture(dataBuffer, 2, 1, dataSize.x, dataSize.y, true);
-        
-        glDispatchCompute(agentCount, goalCount, 1);
-        //glDispatchCompute(1, 1, 1);
-        
-        // Wait until calculation ends
-        glMemoryBarrier(GL_PIXEL_BUFFER_BARRIER_BIT);
-        //glMemoryBarrier( GL_ALL_BARRIER_BITS );
-        
-        testForErrors();
-        
-        // Get Result
-        float[] result = new float[mapSize.y * mapSize.x * (agentCount + 1) * 2];
-        glGetTexImage(GL_TEXTURE_3D, 0, GL_RG, GL_FLOAT, result);
-                
-        // Log Time spent
-        long end = System.currentTimeMillis();
-        long diff = end - start;
-        AgentLogger.info("Path Finding Duration: " + diff);
-
-        // Image logging
-        // TODO add logging parameter
-        if (true) {
-            logMap(mapSize, result, supervisor, step);
-        }
-        
-        // Remove Context from thread
-        glfwMakeContextCurrent(0);
-
-        // Calculate Result
-        return decodeResult(result, goalPoints, mapSize, agentCount);
     }
 
     private PathFindingResult[][] decodeResult(float[] map, List<InterestingPoint> goalPoints, Point mapSize, int agentCount) {

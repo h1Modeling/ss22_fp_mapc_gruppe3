@@ -3,7 +3,6 @@ package de.feu.massim22.group3.utils.debugger;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import de.feu.massim22.group3.agents.Desires.BDesires.GroupDesireTypes;
 import de.feu.massim22.group3.map.CellType;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
@@ -13,8 +12,17 @@ import java.awt.*;
 import java.util.List;
 import java.awt.geom.Rectangle2D;
 
+/** The Class <code>TaskPanel</code> defines a Panel which displays information about the current tasks of the simulation.
+ * 
+ * @author Heinz Stadler
+ */
 class TaskPanel extends JPanel {
 
+    /**
+     * Instantiates a new TaskPanel.
+     * 
+     * @param task the current tasks of the simulation
+     */
     TaskPanel(TaskInfo task) {
         MigLayout layout = new MigLayout("insets 10", "[left] [right] [right]");
         setLayout(layout);

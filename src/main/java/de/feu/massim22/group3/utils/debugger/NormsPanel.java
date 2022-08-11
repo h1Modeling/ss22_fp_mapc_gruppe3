@@ -9,8 +9,17 @@ import net.miginfocom.swing.MigLayout;
 
 import java.awt.*;
 
+/** The Class <code>NormsPanel</code> defines a Panel which displays the current norms of the simulation. 
+ *
+ * @author Heinz Stadler
+ */
 public class NormsPanel extends JPanel {
 
+    /**
+     * Instantiates a new NormsPanel.
+     * 
+     * @param norm the information about the current norm
+     */
     NormsPanel(NormInfo norm) {
         MigLayout layout = new MigLayout("insets 10", "[left] [right]");
         setLayout(layout);

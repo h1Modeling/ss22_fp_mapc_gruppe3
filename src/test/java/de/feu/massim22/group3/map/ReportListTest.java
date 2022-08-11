@@ -5,15 +5,27 @@ import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * The Class <code>ReportListTest</code> provides methods for testing the class <code>ReportList</code>.
+ * 
+ * @see ReportList
+ * @author Heinz Stadler
+ */
 class ReportListTest {
     
     private ReportList list;
     
+    /**
+     * Instantiates a new ReportList with size 5.
+     */
     @BeforeEach
     void init() {
         list = new ReportList(5);
     }
 
+    /**
+     * Tests if a report of an agent overwrites the old reports of the agent.
+     */
     @Test
     void testAddSameAgent() {
         list.add(new MapCellReport(CellType.FREE, ZoneType.NONE, 0, 0));
@@ -21,6 +33,9 @@ class ReportListTest {
         assertEquals(1, list.getSize());
     }
     
+    /**
+     * Tests if the list can handle report overflows correctly.
+     */
     @Test
     void testAddOverflow() {
         list.add(new MapCellReport(CellType.FREE, ZoneType.NONE, 0, 0));
@@ -33,6 +48,9 @@ class ReportListTest {
         assertEquals(CellType.ENEMY, list.getRecent().getCellType());
     }
 
+    /**
+     * Tests if a report can be successfully removed from the list.
+     */
     @Test
     void testRemove() {
         list.add(new MapCellReport(CellType.FREE, ZoneType.NONE, 0, 1));
@@ -45,6 +63,9 @@ class ReportListTest {
         assertEquals(CellType.OBSTACLE, list.getRecent().getCellType());
     }
 
+    /**
+     * Tests if the most recent report gets correctly read.
+     */
     @Test
     void testGetRecent() {
         list.add(new MapCellReport(CellType.FREE, ZoneType.NONE, 0, 0));
@@ -52,6 +73,10 @@ class ReportListTest {
         assertEquals(CellType.OBSTACLE, list.getRecent().getCellType());
     }
 
+    /**
+     * Tests if two lists get correctly merged with a combined list size that results in an overflow.
+     * @throws InterruptedException
+     */
     @Test
     void testMerge() throws InterruptedException {
         ReportList toMerge = new ReportList(5);
@@ -81,6 +106,10 @@ class ReportListTest {
         assertEquals(CellType.DISPENSER_3, list.get(0).getCellType());
     }
     
+    /**
+     * Tests if two lists get correctly merged with a combined list size smaller than the internal list size.
+     * @throws InterruptedException
+     */
     @Test
     void testMerge2() throws InterruptedException {
         list.add(new MapCellReport(CellType.OBSTACLE, ZoneType.NONE, 0, 0));
@@ -91,5 +120,4 @@ class ReportListTest {
         list.merge(toMerge);
         assertEquals(CellType.DISPENSER_0, list.getRecent().getCellType());
     }
-
 }
