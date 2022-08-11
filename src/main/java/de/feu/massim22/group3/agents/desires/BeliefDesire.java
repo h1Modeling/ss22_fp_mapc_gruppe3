@@ -289,6 +289,30 @@ public abstract class BeliefDesire implements IDesire {
         }
     }
 
+    /**
+     * Tests if the agent can move in the provided direction only with a single move action.
+     *  
+     * @param direction the direction which should be tested
+     * @return true if the agent can move in the provided direction
+     */
+    protected boolean straightMovePossible(String direction) {
+        String dir = direction.substring(0, 1);
+        Point dirPoint = DirectionUtil.getCellInDirection(dir);
+
+        List<Point> attached = belief.getOwnAttachedPoints();
+
+        for (Point p : attached) {
+            Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
+            Thing t = belief.getThingAt(testPoint);
+            if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
+                return false;
+            }
+        }
+        // Test Agent
+        Thing t = belief.getThingAt(dirPoint);
+        return t == null;
+    }
+
 /*     protected boolean getActionForMove2(String dir, String desire) {
         Point dirPoint = DirectionUtil.getCellInDirection(dir);
         List<Point> attached = belief.getAttachedPoints();

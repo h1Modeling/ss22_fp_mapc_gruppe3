@@ -222,6 +222,13 @@ public class Supervisor implements ISupervisor {
 
         // Flags if agents are tasked to get a block with type according to the array index.
         boolean[] gettingBlock = {false, false, false, false, false};
+        // Stores the nearest goal zone of the agents which get a certain block
+        List<List<Point>> gettingBlockNearestGoalZone = new ArrayList<List<Point>>();
+        for (int i = 0; i < 5; i++) {
+            gettingBlockNearestGoalZone.add(new ArrayList<Point>());
+        }
+
+        List<Point> goalZones = new ArrayList<>();
 
         int maxDistance = 30;
         int maxDistanceGoalZone = 50;
@@ -234,6 +241,7 @@ public class Supervisor implements ISupervisor {
                 for (int i = 0; i < gettingBlock.length; i++) {
                     if (r.groupDesireBlock().equals("b" + i)) {
                         gettingBlock[i] = true;
+                        gettingBlockNearestGoalZone.get(i).add(r.nearestGoalZone());
                     }
                 }
             }
@@ -281,6 +289,19 @@ public class Supervisor implements ISupervisor {
                     }
                 }
             }
+
+            // Save goal zone points
+            boolean newGoalZone = true;
+            Point reportZone = r.nearestGoalZone();
+            for (Point zone : goalZones) {
+                if ( Math.abs(zone.x - reportZone.x) + Math.abs(zone.y - reportZone.y) < 20) {
+                    newGoalZone = false;
+                    break;
+                }
+            }
+            if (newGoalZone) {
+                goalZones.add(reportZone);
+            }
         }
 
         // Sort
@@ -295,23 +316,28 @@ public class Supervisor implements ISupervisor {
         agentsCarryingBlock2.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock3.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock4.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
-        
-        //List<Point> meetingPoints = Navi.<INaviAgentV1>get().getMeetingPoints(name);
 
         // Only do tasks if GoalZone is discovered
         if (agentsNearGoalZone.size() == 0) return;
 
         // Test if single Block tasks exists
         boolean singleBlockTaskExists = false;
+        int twoBlockTasksCount = 0;
         for (TaskInfo info: tasks) {
             if (info.requirements.size() == 1) {
                 singleBlockTaskExists = true;
-                break;
+            }
+            if (info.requirements.size() == 2) {
+                twoBlockTasksCount += 1;
             }
         }
 
         // Test Tasks
         for (TaskInfo info : tasks) {
+            // Ignore Single agent groups
+            if (agents.size() < 2) {
+                break;
+            }
             // Deliver Single Block to Agent nearer to Goal zone
             if (info.requirements.size() == 1) {
                 String blockDetail = info.requirements.get(0).type;
@@ -356,21 +382,23 @@ public class Supervisor implements ISupervisor {
                 if ((sameBlock && agentsBlock1.size() > 1) || (!sameBlock && agentsBlock1.size() > 0 && agentsBlock2.size() > 0)) {
                     doTwoBlockTaskDecision(agentsBlock1, agentsBlock2, info, sameBlock, singleBlockTaskExists);
                 } else {
+                    // If less two block tasks are available more agents should collect the block of the task
+                    boolean forceGet = Math.random() < 0.4 - twoBlockTasksCount * 0.1;
                     // Collect Blocks from Dispenser
                     if ((!sameBlock && agentsBlock1.size() == 0) || agentsBlock1.size() < 2) {
-                        if (block1.equals("b0") && (!gettingBlock[0] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser0, "b0");
-                        if (block1.equals("b1") && (!gettingBlock[1] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser1, "b1");
-                        if (block1.equals("b2") && (!gettingBlock[2] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser2, "b2");
-                        if (block1.equals("b3") && (!gettingBlock[3] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser3, "b3");
-                        if (block1.equals("b4") && (!gettingBlock[4] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser4, "b4");
+                        if (block1.equals("b0") && ((!gettingBlock[0] && agentsCarryingBlock0.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser0, "b0");
+                        if (block1.equals("b1") && ((!gettingBlock[1] && agentsCarryingBlock1.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser1, "b1");
+                        if (block1.equals("b2") && ((!gettingBlock[2] && agentsCarryingBlock2.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser2, "b2");
+                        if (block1.equals("b3") && ((!gettingBlock[3] && agentsCarryingBlock3.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser3, "b3");
+                        if (block1.equals("b4") && ((!gettingBlock[4] && agentsCarryingBlock4.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser4, "b4");
                     }
                     // Collect Blocks from Dispenser
                     if (!sameBlock && agentsBlock2.size() == 0) {
-                        if (block2.equals("b0") && (!gettingBlock[0] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser0, "b0");
-                        if (block2.equals("b1") && (!gettingBlock[1] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser1, "b1");
-                        if (block2.equals("b2") && (!gettingBlock[2] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser2, "b2");
-                        if (block2.equals("b3") && (!gettingBlock[3] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser3, "b3");
-                        if (block2.equals("b4") && (!gettingBlock[4] || (!singleBlockTaskExists && Math.random() < 0.5))) sendGetBlockTask(agentsNearDispenser4, "b4");
+                        if (block2.equals("b0") && ((!gettingBlock[0] && agentsCarryingBlock0.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser0, "b0");
+                        if (block2.equals("b1") && ((!gettingBlock[1] && agentsCarryingBlock1.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser1, "b1");
+                        if (block2.equals("b2") && ((!gettingBlock[2] && agentsCarryingBlock2.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser2, "b2");
+                        if (block2.equals("b3") && ((!gettingBlock[3] && agentsCarryingBlock3.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser3, "b3");
+                        if (block2.equals("b4") && ((!gettingBlock[4] && agentsCarryingBlock4.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser4, "b4");
                     }
                 }
             }
