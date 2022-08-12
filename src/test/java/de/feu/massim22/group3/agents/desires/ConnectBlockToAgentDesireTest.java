@@ -9,6 +9,7 @@ import java.util.Set;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.feu.massim22.group3.agents.desires.ConnectBlockToAgentDesire;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.SupervisableAdapter;

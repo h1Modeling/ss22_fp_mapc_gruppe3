@@ -43,6 +43,8 @@ public class Supervisor implements ISupervisor {
     private Map<Point, Integer> attachedRequest = new HashMap<>(); 
     private int step;
     private int[] agentReportCount =  new int[1000];
+ /* was:  private */ Map<String, Boolean> agentsWithTask = new HashMap<>();
+    
     private Map<String, Boolean> agentsWithTask = new HashMap<>();
     private List<Point> assignedGoalZones = new ArrayList<>();
 
@@ -241,7 +243,57 @@ public class Supervisor implements ISupervisor {
         for (int i = 0; i < 5; i++) {
             gettingBlockNearestGoalZone.add(new ArrayList<Point>());
         }
+        List<Point> goalZones = new ArrayList<>();
+/* has to be revised */
+        List<Entry<String, AgentReport>> MeasurementList = new ArrayList<>();
 
+        // this wont probably happen, because how should be the groupdesire be set?
+        // but here are some group desires set.
+        //maybe we need to check wether we can do the measurement and start it here
+        // maybe we need later to check and add those to the agents with tasks lists ..
+
+        // vll muessen wir checken ob wir 4 haben, wenn ja muessen wir die ggf animieren sich zu bewegen,
+        // wenn nicht und wir haben noch 4 die nix tun, dann muessen wir die losschicken ..
+        // das koennte es seinw as wir hier tun muessen
+
+
+        for (Entry<String, AgentReport> entry : reports.entrySet()) {
+            AgentReport r = entry.getValue();
+//            if (r.groupDesireType().equals(GroupDesireTypes.MEASURE_MAP) && !r.deactivated())
+//            {
+                MeasurementList.add(entry);
+//            }
+//                sendMeasurementMoveTask(List<Entry<String, AgentReport>> agents){
+                // das waere a schon die richtige Stelle fuer uns ....
+                // wir muessen dann nur herausfinden,wie wir das groupdesire da reinbekommen
+                // ggf brauchen wir da gar nciht soviele infos wie wir denken!! ( für das Desire!! )
+                // und vermutlich brauchen wir das Measure Move desire auch nciht mehr, sondern nur die damit verbundene Logik
+                // das läuft doch jetzt fast zu gut ...
+        }
+/*
+        System.out.println("======================================================");
+        System.out.println("List of Agents in Supervisor:" + getName());
+        for(String e : getAgents()) {
+            System.out.println("Agent:" + e);
+        }
+*/
+
+												  
+
+
+//        if (MeasurementList.size() == 0) {
+/*
+        System.out.println("Size of MeasurementList:" + MeasurementList.size());
+        if (MeasurementList.size() > 3) {
+            System.out.println("SendMeasureMentMoveTask");
+            sendMeasurementMoveTask(MeasurementList);
+        }
+        System.out.println("======================================================");
+
+
+ */
+//        else { // not enough Agents with Task
+//        }
         int maxDistance = 30;
         int maxDistanceGoalZone = 50;
         boolean roleZoneVisible = false;
@@ -691,4 +743,77 @@ public class Supervisor implements ISupervisor {
             parent.forwardMessage(message, name, agent);
         }
     }
+    private  void sendMeasurementMoveTask(List<Entry<String, AgentReport>> agents){
+        List<Entry<String,AgentReport>> freeAgents = new ArrayList<Entry<String,AgentReport>>();
+        agents.toString();
+        for (var entry : agents) {
+            String agent = entry.getKey();
+            System.out.println("Handle Agent "+ agent);
+            // Has no task yet
+            if (agentsWithTask.get(agent) == null) {
+                System.out.println("Was free Agent "+ agent);
+                 freeAgents.add(entry);
+            }
+        }
+        System.out.println("freeAgents.size:" + freeAgents.size());
+        if (freeAgents.size()>3) {
+            Entry<String, AgentReport> northagent = freeAgents.get(0);
+            Entry<String, AgentReport> southagent = freeAgents.get(1);
+            Entry<String, AgentReport> westagent = freeAgents.get(2);
+            Entry<String, AgentReport> eastagent = freeAgents.get(3);
+
+            // erst nord /sued setzen, elemente aus der Freelsit streichen oder aehnliches
+            // dann das ganze fuer ost west amchen
+            for (var i = 1; i < freeAgents.size(); i++) {
+                Entry<String, AgentReport> actual = freeAgents.get(i);
+                if (northagent.getValue().position().y < actual.getValue().position().y) {
+                    northagent = actual;
+                } else if (southagent.getValue().position().y > actual.getValue().position().y) {
+                    southagent = actual;
+                }
+            }
+            // remove the agents from the list of available agents
+            freeAgents.remove(northagent);
+            freeAgents.remove(southagent);
+
+            // check whether some agants are identical and change them to not used ones
+            int nextindex = 0;
+            if (westagent == northagent || westagent == southagent) {
+                westagent = freeAgents.get(nextindex);
+                nextindex++;
+            }
+            if (eastagent == northagent || eastagent == southagent) {
+                eastagent = freeAgents.get(nextindex);
+                nextindex++;
+            }
+
+            for (var i = 1; i < freeAgents.size(); i++) {
+                Entry<String, AgentReport> actual = freeAgents.get(i);
+                if (westagent.getValue().position().x > actual.getValue().position().x) {
+                    westagent = actual;
+                } else if (eastagent.getValue().position().x < actual.getValue().position().x) {
+                    eastagent = actual;
+                }
+            }
+            System.out.println("North: "+northagent.getKey());
+            System.out.println("South: "+southagent.getKey());
+            System.out.println("East: "+eastagent.getKey());
+            System.out.println("West: "+westagent.getKey());
+            forwardMeasureMoveMessage(northagent.getKey(), "n");
+            forwardMeasureMoveMessage(southagent.getKey(), "s");
+            forwardMeasureMoveMessage(westagent.getKey(), "w");
+            forwardMeasureMoveMessage(eastagent.getKey(), "e");
+        }
+    }
+
+    private void forwardMeasureMoveMessage(String agent,String direction) {
+        Parameter blockPara = new Identifier(direction);
+        Percept message = new Percept(EventName.MEASURE_MOVE.name(), blockPara);
+        parent.forwardMessage(message, agent, name);
+        agentsWithTask.put(agent, true);
+    }
+    public void sendMessage (Percept message, String receiver, String sender) {
+        parent.forwardMessage(message,receiver,sender);
+    }
+	 
 }

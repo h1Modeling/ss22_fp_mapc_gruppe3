@@ -32,4 +32,6 @@ public abstract class GroupDesireTypes {
 
     /** The agent is tasked to guard a dispenser. */
     public static final String GUARD_DISPENSER = "guard_dispenser";
+    public static final String MEASURE_MAP = "measure_map";
+
 }

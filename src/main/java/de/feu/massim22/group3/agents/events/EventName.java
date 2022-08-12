@@ -41,6 +41,10 @@ public enum EventName {
     SUPERVISOR_PERCEPT_DONE_OR_CANCELED,
     /** The supervisor sent a reply to an attach request. */
     ATTACH_REPLY,
+    MEASURE_MOVE,
+
+    MEASURE_MEET,
+
     /** The supervisor instructs to guard a dispenser. */
     SUPERVISOR_PERCEPT_GUARD_DISPENSER,
     /** The supervisor instructs to guard a goal zone. */
