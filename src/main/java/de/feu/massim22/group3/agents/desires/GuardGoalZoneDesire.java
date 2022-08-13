@@ -38,7 +38,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
     boolean initialReachedGZ = false;
 
     // State of current explore goal zone (when no enemy with blocks is visible)
-    final String[] directionArray = {"n", "s", "e", "w"};
+    final String[] directionArray = {"n", "e", "s", "w"};
     String curDirection;
     int curExploreDirection = 0;
 
@@ -49,12 +49,17 @@ public class GuardGoalZoneDesire extends BeliefDesire {
     boolean lastActionWasClearOnEnemy = false;
     List<Point> blocksToClear = null;
 
+    // Information about last attacked enemy to avoid attacking again
+    Point lastClearedEnemyPosition = null;
+    int stepsSinceCompleteClear = 0;
+    final int noAttackTime = 10;
+
     // Positions of all enemies during the previous step
     List<Point> oldEnemyPositions = new ArrayList<Point>();
 
     // For path finding
     Point oldDestPoint = null;
-    Stack<String> dirStack = null;
+    Stack<String> dirStack = new Stack<String>();
 
     public GuardGoalZoneDesire(Belief belief, String dir, String supervisor) {
         super(belief);
@@ -63,6 +68,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                 " runSupervisorDecisions - Start GuardGoalZoneDesire with direction "
                 + curDirection);
         String[] neededActions = {"clear"};
+        precondition.add(new DisconnectAllDesire(belief));
         precondition.add(new ActionDesire(belief, neededActions));
     }
 
@@ -71,7 +77,8 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         if (a != null) {
             return a;
         }
-
+        AgentLogger.info(belief.getAgentShortName() + " GGZD", "");
+        AgentLogger.info(belief.getAgentShortName() + " GGZD",  "##### GGZD new step #####");
 
         // Count successfully cleared blocks
         if (lastActionWasClearOnBlock) {
@@ -88,11 +95,13 @@ public class GuardGoalZoneDesire extends BeliefDesire {
 
 
         // Keep track of energy level of targetEnemy
-        if (lastActionWasClearOnEnemy && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
+        //------------------------------------------
+        if (lastActionWasClearOnEnemy
+                && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
             AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-                    "Last clear was a success: " + targetEnemyEnergy);
+                    "Last clear was a success. Previous energy level: " + targetEnemyEnergy);
             if (lastDistToTargetEnemy <= clearDamage.length){
-                targetEnemyEnergy = targetEnemyEnergy - clearDamage[lastDistToTargetEnemy - 1] + stepRecharge;
+                targetEnemyEnergy = targetEnemyEnergy - clearDamage[lastDistToTargetEnemy] + stepRecharge;
                 AgentLogger.info(belief.getAgentShortName() + " GGZD",
                         "New presumed energy level of targetAgent: " + targetEnemyEnergy);
             }
@@ -101,7 +110,20 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                 AgentLogger.severe(belief.getAgentShortName() + " GGZD", "Distance during last clear too high.");
             }
         }
+        // In case of unsuccessful clear the enemy recovers
+        else if (lastActionWasClearOnEnemy
+                && !belief.getLastActionResult().equals(ActionResults.SUCCESS)){
+            targetEnemyEnergy += stepRecharge;
+                }
         lastActionWasClearOnEnemy = false;
+
+        // Keep track of last attacked enemy
+        stepsSinceCompleteClear = lastClearedEnemyPosition != null ? ++stepsSinceCompleteClear : 0;
+        if (lastClearedEnemyPosition != null) {
+            lastClearedEnemyPosition = correctPointByLastMovement(lastClearedEnemyPosition);
+            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                    "Enemy attacked and cleared before " + lastClearedEnemyPosition.toString());
+        }
 
 
         // Go to GZ
@@ -114,7 +136,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         // If not yet in GZ --> go to GZ
         if (!initialReachedGZ) {
             AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent was not yet in GZ");
-            Point destPoint = getCornerPoint(curDirection);
+            Point destPoint = getPatrolCornerPoint(curDirection, 2);
             
             // Move with vision when close enough
             if (destPoint != null && getDistance(destPoint) > 0) {
@@ -150,6 +172,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                     "Target enemy old position " + targetEnemyLastPosition.toString());
             targetEnemy = getNewPositionOfTargetEnemy(targetEnemyLastPosition);
             if (targetEnemy != null) {
+                targetEnemyLastPosition = new Point(targetEnemy);
                 AgentLogger.fine(belief.getAgentShortName() + " GGZD",
                     "Target enemy new position " + targetEnemy.toString());
             }
@@ -172,7 +195,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
             Thing closestEnemy = getClosestEnemyWithBlocks();
             if (closestEnemy != null) {
                 targetEnemy = new Point(closestEnemy.x, closestEnemy.y);
-                targetEnemyLastPosition = targetEnemy;
+                targetEnemyLastPosition = new Point(targetEnemy);
                 AgentLogger.fine(belief.getAgentShortName() + " GGZD",
                         "New target enemy at " + targetEnemy.x + " " + targetEnemy.y);
             }
@@ -188,7 +211,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         if (targetEnemy == null) {
             AgentLogger.fine(belief.getAgentShortName() + " GGZD",
                     "Explore GZ going " + directionArray[curExploreDirection]);
-            Point destPoint = getCornerPoint(directionArray[curExploreDirection]);
+            Point destPoint = getPatrolCornerPoint(directionArray[curExploreDirection], 2);
             // Change destination if one destination is reached
             if (destPoint != null && destPoint.equals(new Point(0, 0))) {
                 curExploreDirection = (curExploreDirection + 1) % directionArray.length;
@@ -202,7 +225,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                 curExploreDirection = (curExploreDirection + 1) % directionArray.length;
             }
             // Update destination point in case it was changed before
-            destPoint = getCornerPoint(directionArray[curExploreDirection]);
+            destPoint = getPatrolCornerPoint(directionArray[curExploreDirection], 2);
             return makeMove(destPoint);
         }
 
@@ -224,7 +247,6 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                 && targetEnemyEnergy > 0) {
             AgentLogger.fine(belief.getAgentShortName() + " GGZD",
                     "Clear on target enemy " + targetEnemy.toString());
-            targetEnemyLastPosition = new Point(targetEnemy.x, targetEnemy.y);
             lastActionWasClearOnEnemy = true;
             lastDistToTargetEnemy = getDistance(targetEnemy);
             return ActionInfo.CLEAR(new Point(targetEnemy.x, targetEnemy.y), "Clear on enemy");
@@ -243,12 +265,16 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                 blocksToClear = getAllAdjacentThings(targetEnemy).getBlocks();
             }
             if (blocksToClear.size() > 0) {
+                AgentLogger.info(belief.getAgentShortName() + " GGZD",
+                        "blocksToClear " + blocksToClear.toString());
                 Point clearBlock = blocksToClear.get(0);
                 AgentLogger.info(belief.getAgentShortName() + " GGZD",
                         "Clear on block " + clearBlock.x + " " + clearBlock.y);
                 blocksToClear.remove(clearBlock);
                 // Reset blocksToClear-List and 
                 if (blocksToClear.size() == 0) {
+                    lastClearedEnemyPosition = targetEnemy;
+                    stepsSinceCompleteClear = 0;
                     resetTargetEnemy();
                 }
                 lastActionWasClearOnBlock = true;
@@ -258,87 +284,126 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         return ActionInfo.SKIP("Agent is stuck in getNextActionInfo of GuardDispenserDesire or does not have enough Energy for clear.");
     }
 
-    // Very simple path finding algorithm for GGZD (because agent always gets stuck when
-    // a block is between itself and the enemy that it wants to go to and cases like rotations
-    // do not need to be regarded)
+    // Simple path finding algorithm for GGZD (because with method of BeliefDesre the
+    // agent always gets stuck when a block is between itself and the enemy that it wants
+    // to go to and cases like rotations and attached things do not need to be regarded)
     private ActionInfo makeMove(Point destPoint) {
         // For safety if agent runs away from goal zone because of interaction with other agent 
         if (destPoint == null) {
-            // go back to Goal Zone
+            // go back to goal zone
             initialReachedGZ = false;
             return ActionInfo.SKIP("Agent is stuck in makeMove of GuardDispenserDesire.");
         }
-
+        AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                "makeMove() with destPoint " + destPoint.toString());
         // Correct oldDestPoint for last movement of agent
         if (oldDestPoint != null) {
-            if (belief.getLastAction().equals("move")
-                    && belief.getLastActionResult().equals(ActionResults.SUCCESS)){
-                Point lastMove = getPointFromDirection(belief.getLastActionParams().get(0));
-                oldDestPoint = new Point(oldDestPoint.x + lastMove.x,
-                        oldDestPoint.y + lastMove.y);
-            }
+//            if (belief.getLastAction().equals("move")
+//                    && belief.getLastActionResult().equals(ActionResults.SUCCESS)){
+//                Point lastMove = getPointFromDirection(belief.getLastActionParams().get(0));
+//                oldDestPoint = new Point(oldDestPoint.x + lastMove.x,
+//                        oldDestPoint.y + lastMove.y);
+//            }
+            oldDestPoint = correctPointByLastMovement(oldDestPoint);
+            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                    "Corrected oldDestPoint " + oldDestPoint.toString());
         }
-        if (oldDestPoint == null
-//                || !oldDestPoint.equals(destPoint) // does not work because vision shifts so point is always different
-                || getDistance(oldDestPoint, destPoint) <= 2 // max shift because of shifting vision is 2
-                || dirStack.size() == 0) {
-            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-                    "Reinitializing Stack.");
-            if (oldDestPoint != null) {
-                AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-                        "oldDestPoint " + oldDestPoint.toString());
-            }
-            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-                    "destPoint " + destPoint.toString());
+
+        // Determine if the new destPoint equals the same target (either GZ-point when
+        // agent is patrolling or the same target enemy when agent is moving towards enemy
+        // agent to attack)
+        // !oldDestPoint.equals(destPoint) // does not work because vision shifts so perceived points of GZ can be different
+        // therefore a small tolerance of 2 fields is introduced
+        boolean sameTarget = oldDestPoint != null && getDistance(oldDestPoint, destPoint) <= 2;
+        if (oldDestPoint == null || !sameTarget) {
             dirStack = new Stack<String>();
-            oldDestPoint = destPoint;
-            Point nextPoint = null;
-            ActionInfo nextMove = null;
-            int signX = Integer.signum(destPoint.x);
-            int signY = Integer.signum(destPoint.y);
-            if (Math.abs(destPoint.x) <= Math.abs(destPoint.y)) {
-                nextPoint = new Point(0, signY);
-                nextMove = moveTo(nextPoint);
-                // If move is possible
-                if (nextMove != null) {
-                    return nextMove;
-                }
-                else {
-                    dirStack.push(getDirectionFromPoint(nextPoint));
-                }
-                if (destPoint.x != 0) {
-                    nextPoint = new Point(signX, 0);
-                    nextMove = moveTo(nextPoint);
-                    if (nextMove != null) {
-                        return nextMove;
-                    }
-                }
-            }
-            else if (Math.abs(destPoint.x) > Math.abs(destPoint.y)) {
-                nextPoint = new Point(signX, 0);
-                nextMove = moveTo(nextPoint);
-                // If move is possible
-                if (nextMove != null) {
-                    return nextMove;
-                }
-                else {
-                    dirStack.push(getDirectionFromPoint(nextPoint));
-                }
-                if (destPoint.x != 0) {
-                    nextPoint = new Point(0, signY);
-                    nextMove = moveTo(nextPoint);
-                    if (nextMove != null) {
-                        return nextMove;
-                    }
-                }
+        }
+        oldDestPoint = destPoint;
+
+        // First see if some "unclearable" stuff has to be circled around
+        if (dirStack.size() > 0) {
+            ActionInfo actInf = circleAround();
+            if (actInf != null) {
+                return actInf;
             }
         }
 
-        // Circle around clockwise
+        // Move in zick zack and not straight lines towards the destPoint if possible
+        Point nextPoint = null;
+        ActionInfo nextMove = null;
+        int signX = Integer.signum(destPoint.x);
+        int signY = Integer.signum(destPoint.y);
+        if (Math.abs(destPoint.x) <= Math.abs(destPoint.y)) {
+            nextPoint = new Point(0, signY);
+            nextMove = moveTo(nextPoint);
+            // If move is possible
+            if (nextMove != null) {
+                return nextMove;
+            }
+            String blockedDirForStack = getDirectionFromPoint(nextPoint);
+            // try other direction if first one is not possible 
+            // (deviate from zick zack course)
+            if (destPoint.x != 0) {
+                nextPoint = new Point(signX, 0);
+                nextMove = moveTo(nextPoint);
+                if (nextMove != null) {
+                    return nextMove;
+                }
+            }
+            dirStack.push(blockedDirForStack);
+        }
+        else if (Math.abs(destPoint.x) > Math.abs(destPoint.y)) {
+            nextPoint = new Point(signX, 0);
+            nextMove = moveTo(nextPoint);
+            // If move is possible
+            if (nextMove != null) {
+                return nextMove;
+            }
+            String blockedDirForStack = getDirectionFromPoint(nextPoint);
+            if (destPoint.y != 0) {
+                nextPoint = new Point(0, signY);
+                nextMove = moveTo(nextPoint);
+                if (nextMove != null) {
+                    return nextMove;
+                }
+            }
+            dirStack.push(blockedDirForStack);
+        }
+
+        // If direct motion is not possible then circle around
+        ActionInfo actInf = circleAround();
+        if (actInf != null) {
+            return actInf;
+        }
+
+        AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent is stuck in makeMove of GuardDispenserDesire.");
+        return ActionInfo.SKIP("Agent is stuck in makeMove of GuardDispenserDesire.");
+    }
+
+    // Helper-method for makeMove()
+    private ActionInfo moveTo(Point nextPoint) {
+        // Determine Action
+        if (nextPoint != null && isClearable(nextPoint)) {
+            return ActionInfo.CLEAR(new Point(nextPoint.x, nextPoint.y),
+                    "Clear on abandoned block");
+        }
+        else if (nextPoint != null && belief.getThingAt(nextPoint) == null) {
+            String dir = getDirectionToRelativePoint(nextPoint);
+            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                    "Moving to Point : " + nextPoint.toString() + " direction: " + dir);
+            return ActionInfo.MOVE(dir, "Moving");
+        }
+        return null;
+    }
+
+    // Circle around unclearable stuff
+    private ActionInfo circleAround() {
+        // Circle around clockwise something is in the direct way
         int maxStackSize = 5;
         while (dirStack.size() <= maxStackSize) {
             AgentLogger.fine(belief.getAgentShortName() + " GGZD",
                     "Stack: " + dirStack.toString());
+            // Check if movement to last direction on stack is possible
             String lastDir = dirStack.peek();
             ActionInfo nextMove = moveTo(getPointFromDirection(lastDir));
             if (nextMove != null) {
@@ -347,26 +412,12 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                         "Popping direction from Stack: " + lastDir);
                 return nextMove;
             }
+            // If direction is still blocked then try the next one in clockwise direction
             else {
                 AgentLogger.fine(belief.getAgentShortName() + " GGZD",
                         "Pushing direction to Stack: " + getCRotatedDirection(lastDir));
                 dirStack.push(getCRotatedDirection(lastDir));
             }
-        }
-
-        AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent is stuck in makeMove of GuardDispenserDesire.");
-        return ActionInfo.SKIP("Agent is stuck in makeMove of GuardDispenserDesire.");
-    }
-
-    // helper-method for makeMove()
-    private ActionInfo moveTo(Point nextPoint) {
-        // Determine Action
-        if (nextPoint != null && isClearable(nextPoint)) {
-            return ActionInfo.CLEAR(new Point(nextPoint.x, nextPoint.y),
-                    "Clear on abandoned block");
-        }
-        else if (nextPoint != null && belief.getThingAt(nextPoint) == null) {
-            return ActionInfo.MOVE(getDirectionToRelativePoint(nextPoint), "Moving");
         }
         return null;
     }
@@ -384,56 +435,12 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         return false;
     }
 
-//    // boolean firstCall is to avoid endless loop
-//    private ActionInfo patrolGZ(int startDirection, boolean firstCall) {
-//        // To avoid endless loop due to recursive method call when agent is surrounded by blocks
-//        // with friendly agents
-//        if (!firstCall && startDirection == curExploreDirection) {
-//            return ActionInfo.SKIP("Agent is stuck in parol goal zone of GuardGoalZoneDesire.");
-//        }
-//        
-//        AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-//                "Explore GZ going " + directionArray[curExploreDirection]);
-//        Point destPoint = getCornerPoint(directionArray[curExploreDirection]);
-//        // Change destination if one destination is reached
-//        if (destPoint != null && destPoint.equals(new Point(0, 0))) {
-//            curExploreDirection = (curExploreDirection + 1) % directionArray.length;
-//        }
-//        // Move to point
-//        if (destPoint != null && !destPoint.equals(new Point(0, 0))
-//                && getDistance(destPoint) > 0) {
-//            String dir = getDirectionToRelativePoint(destPoint);
-//
-//            // If abandoned block in front of agent --> clear on block (before it always
-//            // got stuck)
-//            Point destForMove = getPointFromDirection(dir);
-//            if (belief.getThingAt(destForMove) != null
-//                    && belief.getThingAt(destForMove).type.equals(Thing.TYPE_BLOCK)){
-//                int numOfAdjFriendlyAgents = getAllAdjacentThings(destForMove).numOfAdjFriendlyAgents();
-//                // If block is not close to friendly agent (and thus could be attached)
-//                if (numOfAdjFriendlyAgents == 0) {
-//                    return ActionInfo.CLEAR(new Point(destForMove.x, destForMove.y),
-//                            "AbandonedBlock");
-//                }
-//                // If there is a friendly agent close to the block then change explore direction
-//                else if (numOfAdjFriendlyAgents > 0) {
-//                    curExploreDirection = (curExploreDirection + 1) % 4;
-//                    return patrolGZ(startDirection, false);
-//                }
-//            }
-//            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-//                    "Patrolling goal zone " + destPoint.toString());
-//            return getActionForMove(dir, getName());
-//        }
-//        return ActionInfo.SKIP("Agent is stuck in parol goal zone of GuardGoalZoneDesire.");
-//    }
-
-
     private void resetTargetEnemy() {
         AgentLogger.fine(belief.getAgentShortName() + " GGZD", "ResetTargetEnemy()");
         targetEnemyLastPosition = null;
         targetEnemyEnergy = 100;
         lastDistToTargetEnemy = 100;
+        lastActionWasClearOnBlock = false;
         blocksToClear = null;
     }
 
@@ -446,9 +453,14 @@ public class GuardGoalZoneDesire extends BeliefDesire {
             if (t.type.equals("entity")
                     && isInGoalZone(new Point(t.x, t.y))
                     && !t.details.equals(belief.getTeam())
-                    && getDistance(t) < dist) {
+                    && getDistance(t) < dist
+                    && (lastClearedEnemyPosition == null
+                        || (lastClearedEnemyPosition != null
+                                && stepsSinceCompleteClear > noAttackTime)
+                        || (lastClearedEnemyPosition != null
+                                && !lastClearedEnemyPosition.equals(new Point(t.x, t.y))))) {
                 AdjacentThings adjThings = getAllAdjacentThings(new Point(t.x, t.y));
-                // conditions for selecting an enemy agent
+                // Conditions for selecting an enemy agent
                 if (adjThings.numOfAdjBlocks() >= 1
 //                        && adjThings.numOfAdjBlocks() >= adjThings.numOfAdjEnemyAgents()
 //                        && adjThings.numOfAdjFriendlyAgents() == 0
@@ -509,18 +521,17 @@ public class GuardGoalZoneDesire extends BeliefDesire {
      */
     Point getNewPositionOfTargetEnemy(Point oldEnemyPosition) {
         List<Point> currentEnemyPositions = getCurrentEnemyPositions();
+        AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                "CurrentEnemyPositions" + currentEnemyPositions.toString());
         List<Point> oldEnemyPositions = new ArrayList<Point>();
         oldEnemyPositions.addAll(this.oldEnemyPositions);
         // Correct for own movement (translate oldEnemyPositions by own movement)
-        if (belief.getLastAction().equals("move")
-                && belief.getLastActionResult().equals(ActionResults.SUCCESS)){
-            Point lastMove = getPointFromDirection(belief.getLastActionParams().get(0));
-            oldEnemyPosition = new Point(oldEnemyPosition.x - lastMove.x,
-                    oldEnemyPosition.y - lastMove.y);
-            for (int i = 0; i < oldEnemyPositions.size(); i++) {
-                Point pos = oldEnemyPositions.get(i);
-                oldEnemyPositions.set(i, new Point(pos.x - lastMove.x, pos.y - lastMove.y));
-            }
+        oldEnemyPosition = correctPointByLastMovement(oldEnemyPosition);
+        AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                "oldEnemyPosition corrected by own last move " + oldEnemyPosition.toString());
+        for (int i = 0; i < oldEnemyPositions.size(); i++) {
+            Point pos = oldEnemyPositions.get(i);
+            oldEnemyPositions.set(i, correctPointByLastMovement(pos));
         }
         
         // Outer map that holds a separate map for each old position point and for each of those old points an inner
@@ -542,13 +553,12 @@ public class GuardGoalZoneDesire extends BeliefDesire {
             distancesOldToNewMap.put(oldPosition, oldPointDistancesMap);
         }
 
-//        AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-//                "Trying to access " + oldEnemyPosition.toString() + " in Map " + distancesOldToNewMap.toString());
-
-        // Simple cases when there are no other enemy agents around the tracked enemy
+        // Something went wrong:
         if (!distancesOldToNewMap.containsKey(oldEnemyPosition)) {
-            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+            AgentLogger.severe(belief.getAgentShortName() + " GGZD",
                     "Key oldEnemyPosition not found in distancesOldToNewMap. Will return null.");
+            AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                    "distancesOldToNewMap: " + distancesOldToNewMap.toString());
             return null;
         }
 
@@ -564,34 +574,47 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         if (numOfDist0 == 0 && numOfDist1 == 1) {
             return distancesOldToNewMap.get(oldEnemyPosition).get(1).get(0);
         }
-//        if (numOfDist1 > 1) {
-//            
-//        }
+
         // For now return agent that is closest previous agent position
-        for (int d = 0; d == 10; d++) {
+        for (int d = 0; d < 10; d++) {
             if (distancesOldToNewMap.get(oldEnemyPosition).containsKey(d)) {
-                return distancesOldToNewMap.get(oldEnemyPosition).get(d).get(0);
+                Point closestToOldPos = distancesOldToNewMap.get(oldEnemyPosition).get(d).get(0);
+                AgentLogger.fine(belief.getAgentShortName() + " GGZD",
+                        "returning closestToOldPos: " + closestToOldPos.toString());
+                return closestToOldPos;
             }
         }
         return null;
     }
 
-    Point getCornerPoint(String direction) {
+    // Correct for own movement (translate oldEnemyPositions by own movement)
+    Point correctPointByLastMovement(Point p) {
+        if (belief.getLastAction().equals("move")
+                && belief.getLastActionResult().equals(ActionResults.SUCCESS)){
+            Point lastMove = getPointFromDirection(belief.getLastActionParams().get(0));
+            return new Point(p.x - lastMove.x, p.y - lastMove.y);
+        }
+        else {
+            return p;
+        }
+    }
+
+    Point getPatrolCornerPoint(String direction, int offset) {
         List<Point> gz = belief.getGoalZones();
         if (gz.size() > 0) {
             switch (direction){
             case "n":
                 gz.sort((a, b) -> a.y - b.y);
-                return gz.get(0);
+                return new Point(gz.get(0).x, gz.get(0).y + offset);
             case "s":
                 gz.sort((a, b) -> a.y - b.y);
-                return gz.get(gz.size() - 1);
+                return new Point(gz.get(gz.size() - 1).x, gz.get(gz.size() - 1).y - offset);
             case "w":
                 gz.sort((a, b) -> a.x - b.x);
-                return gz.get(0);
+                return new Point(gz.get(0).x + offset, gz.get(0).y);
             case "e":
                 gz.sort((a, b) -> a.x - b.x);
-                return gz.get(gz.size() - 1);
+                return new Point(gz.get(gz.size() - 1).x - offset, gz.get(gz.size() - 1).y);
             default:
                 return null;
             }
@@ -654,7 +677,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
 
     @Override
     public int getPriority() {
-        return 1100;
+        return 1500;
     }
     public void setGoalZoneDirection(String dir) {
         curDirection = dir;

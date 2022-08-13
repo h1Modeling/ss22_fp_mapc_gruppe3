@@ -355,7 +355,7 @@ public class Supervisor implements ISupervisor {
 
         // Only assign GuardGoalZone Tasks if more than certain amount of agents are in one group
         // and if GoalZone is discovered
-        if (agents.size() > 4 && agentsNearGoalZone.size() != 0) {
+        if (agents.size() > 7 && agentsNearGoalZone.size() != 0) {
             sendGuardGoalZoneTask();
         }
 

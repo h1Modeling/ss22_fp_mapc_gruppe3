@@ -48,10 +48,10 @@ public class GuardGoalZoneDesireTest {
         
         // Create and test Desire
         GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "w", "supervisor dummy");
-        assertEquals(new Point(-1, 0), d.getCornerPoint("w"));
-        assertEquals(new Point(1, 0), d.getCornerPoint("e"));
-        assertEquals(new Point(0, 1), d.getCornerPoint("s"));
-        assertEquals(new Point(0, -1), d.getCornerPoint("n"));
+        assertEquals(new Point(-1, 0), d.getPatrolCornerPoint("w", 0));
+        assertEquals(new Point(1, 0), d.getPatrolCornerPoint("e", 0));
+        assertEquals(new Point(0, 1), d.getPatrolCornerPoint("s", 0));
+        assertEquals(new Point(0, -1), d.getPatrolCornerPoint("n", 0));
     }
 
     /**
@@ -152,10 +152,12 @@ public class GuardGoalZoneDesireTest {
         assertTrue(adjThings.getBlocks().contains(new Point(2, -1)));
         assertTrue(adjThings.getBlocks().contains(new Point(2, 0)));
         assertTrue(adjThings.getBlocks().contains(new Point(3, -1)));
+        assertTrue(adjThings.getBlocks().contains(new Point(0, -1)));
         assertTrue(adjThings.getFriendlyAgents().contains(new Point(4, -1)));
     }
 
-    /**Own agent does not move but enemy moves 1 field
+    /**
+     * Own agent does not move but enemy moves 1 field
      * 
      * A E  ->  A  
      *            E
@@ -168,9 +170,9 @@ public class GuardGoalZoneDesireTest {
         curThingsList.add(new Thing(2, 1, "entity", "2"));
         when(b.getThings()).thenReturn(curThingsList);
         when(b.getTeam()).thenReturn("1");
-        when(b.getLastAction()).thenReturn("skip");
         when(b.getLastActionParams()).thenReturn(new ArrayList<String>());
         when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
+        when(b.getLastAction()).thenReturn("skip");
         
         // Create and test Desire
         GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
@@ -179,10 +181,11 @@ public class GuardGoalZoneDesireTest {
         assertEquals(new Point(2, 1), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
     }
 
-    /**Own agent moves 1 field and enemy moves 1 field
+    /**
+     * Own agent does not move but enemy moves 1 field
      * 
-     * A E  ->     
-     *          A E
+     * A E  ->      
+     *          A  E
      */
     @Test
     public void testGetNewPositionOfTargetEnemy2() {
@@ -204,24 +207,142 @@ public class GuardGoalZoneDesireTest {
         assertEquals(new Point(2, 0), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
     }
 
-    /**
-     * Enemy agent comes into sight --> was not in sight before and thus is not in the newPositions
-     * List
+    /** 2 enemy agents next to each other. One is moving one field away from the other.
+     * 
+     * A E  ->  A E
+     *   E         
+     *            E
      */
     @Test
     public void testGetNewPositionOfTargetEnemy3() {
         
         Belief b = mock(Belief.class);
-        Set <Thing> thingsList = new HashSet<Thing>();
-        thingsList.add(new Thing(3, 2, "entity", "2"));
-        when(b.getThings()).thenReturn(thingsList);
+        Set <Thing> curThingsList = new HashSet<Thing>();
+        curThingsList.add(new Thing(2, 0, "entity", "2"));
+        curThingsList.add(new Thing(2, 2, "entity", "2"));
+        when(b.getThings()).thenReturn(curThingsList);
         when(b.getTeam()).thenReturn("1");
+        when(b.getLastAction()).thenReturn("skip");
+        when(b.getLastActionParams()).thenReturn(new ArrayList<String>());
+        when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
         
         // Create and test Desire
         GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-        // oldEnemyPositons are empty
-//        d.oldEnemyPositions.add(new Point(2, 0));
+        d.oldEnemyPositions.add(new Point(2, 0));
+        d.oldEnemyPositions.add(new Point(2, 1));
         
-        assertEquals(new Point(2, 1), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
+        assertEquals(new Point(2, 0), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
+    }
+
+/** 3 enemy agents. One is moving one field away from the other.
+ * 
+ *  EAE  -> EAE
+ *    E        
+ *            E
+ */
+@Test
+public void testGetNewPositionOfTargetEnemy4() {
+    
+    Belief b = mock(Belief.class);
+    Set <Thing> curThingsList = new HashSet<Thing>();
+    curThingsList.add(new Thing(1, 0, "entity", "2"));
+    curThingsList.add(new Thing(-1, 0, "entity", "2"));
+    curThingsList.add(new Thing(1, 2, "entity", "2"));
+    when(b.getThings()).thenReturn(curThingsList);
+    when(b.getTeam()).thenReturn("1");
+    when(b.getLastAction()).thenReturn("skip");
+    when(b.getLastActionParams()).thenReturn(new ArrayList<String>());
+    when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
+    
+    // Create and test Desire
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
+    d.oldEnemyPositions.add(new Point(-1, 0));
+    d.oldEnemyPositions.add(new Point(1, 0));
+    d.oldEnemyPositions.add(new Point(1, 1));
+    
+    assertEquals(new Point(1, 0), d.getNewPositionOfTargetEnemy(new Point(1, 0)));
+    }
+
+/** 3 enemy agents. One is moving one field away from the other.
+ * 
+ *  EAE  -> EAE
+ *    E        
+ *            E
+ */
+@Test
+public void testGetNewPositionOfTargetEnemy5() {
+    
+    Belief b = mock(Belief.class);
+    Set <Thing> curThingsList = new HashSet<Thing>();
+    curThingsList.add(new Thing(1, 0, "entity", "2"));
+    curThingsList.add(new Thing(-1, 0, "entity", "2"));
+    curThingsList.add(new Thing(1, 2, "entity", "2"));
+    when(b.getThings()).thenReturn(curThingsList);
+    when(b.getTeam()).thenReturn("1");
+    when(b.getLastAction()).thenReturn("skip");
+    when(b.getLastActionParams()).thenReturn(new ArrayList<String>());
+    when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
+    
+    // Create and test Desire
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
+    d.oldEnemyPositions.add(new Point(-1, 0));
+    d.oldEnemyPositions.add(new Point(1, 0));
+    d.oldEnemyPositions.add(new Point(1, 1));
+    
+    assertEquals(new Point(1, 0), d.getNewPositionOfTargetEnemy(new Point(1, 0)));
+    }
+
+/** 3 enemy agents. One is moving one field away from the other.
+ * 
+ *  EAE  -> EAE
+ *            E
+ *    E        
+ */
+@Test
+public void testGetNewPositionOfTargetEnemy6() {
+    
+    Belief b = mock(Belief.class);
+    Set <Thing> curThingsList = new HashSet<Thing>();
+    curThingsList.add(new Thing(1, 0, "entity", "2"));
+    curThingsList.add(new Thing(-1, 0, "entity", "2"));
+    curThingsList.add(new Thing(1, 1, "entity", "2"));
+    when(b.getThings()).thenReturn(curThingsList);
+    when(b.getTeam()).thenReturn("1");
+    when(b.getLastAction()).thenReturn("skip");
+    when(b.getLastActionParams()).thenReturn(new ArrayList<String>());
+    when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
+    
+    // Create and test Desire
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
+    d.oldEnemyPositions.add(new Point(-1, 0));
+    d.oldEnemyPositions.add(new Point(1, 0));
+    d.oldEnemyPositions.add(new Point(1, 2));
+    
+    assertEquals(new Point(1, 0), d.getNewPositionOfTargetEnemy(new Point(1, 0)));
+    }
+
+/** 1 enemy agent moves 2 fields.
+ * 
+ *   AE  ->  A  E
+ *             
+ */
+@Test
+public void testGetNewPositionOfTargetEnemy7() {
+    
+    Belief b = mock(Belief.class);
+    Set <Thing> curThingsList = new HashSet<Thing>();
+    curThingsList.add(new Thing(0, 3, "entity", "2"));
+    when(b.getThings()).thenReturn(curThingsList);
+    when(b.getTeam()).thenReturn("1");
+    when(b.getLastAction()).thenReturn("skip");
+    when(b.getLastActionParams()).thenReturn(new ArrayList<String>());
+    when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
+    
+    // Create and test Desire
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
+    d.oldEnemyPositions.add(new Point(0, 1));
+
+    
+    assertEquals(new Point(0, 3), d.getNewPositionOfTargetEnemy(new Point(0, 1)));
     }
 }
