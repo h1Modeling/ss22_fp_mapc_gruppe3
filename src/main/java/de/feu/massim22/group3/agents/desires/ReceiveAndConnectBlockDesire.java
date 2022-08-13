@@ -7,6 +7,7 @@ import java.util.Set;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
+import de.feu.massim22.group3.map.Navi;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Parameter;
@@ -28,6 +29,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     private boolean submitted = false;
     private Thing block;
     private Supervisable communicator;
+    private String supervisor;
 
     /**
      * Instantiates a new ReceiveAndConnectBlockDesire.
@@ -166,25 +168,32 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
                     return getActionForMove("w", getName());
                 }
             }
-
-            /*
-            // Get teammate Position
-            Point posTeammate = Navi.get().getPosition(agent, supervisor);
-            Point pos = belief.getPosition();
-            int dist = getDistance(pos, posTeammate);
-            if (dist > belief.getVision()) {
-                // Dance around to avoid clearing
-                waiting += 1;
-                String dir = waiting % 2 == 0 ? "e" : "w";
-                Point p = getPointFromDirection(dir);
-                Thing t = belief.getThingAt(p);
-                return ActionInfo.SKIP(getName());
-                //return isFree(t) ? ActionInfo.MOVE(dir, getName()) : ActionInfo.SKIP(getName());
-            } else {
-                // Wait
-                return ActionInfo.SKIP(getName());
+            // Move away if second block position is blocked
+            for (Thing t : task.requirements) {
+                if (getDistance(t) > 1) {
+                    Point blockingPos = new Point(t.x, t.y);
+                    Thing blocking = belief.getThingAt(blockingPos);
+                    Point posTeammate = Navi.get().getPosition(agent, supervisor);
+                    Point pos = belief.getPosition();
+                    Point relPos = new Point(posTeammate.x - pos.x, posTeammate.y - pos.y);
+                    // Blocked by agent or block with different target detail
+                    if (blocking != null && ((blocking.type.equals(Thing.TYPE_ENTITY) && !relPos.equals(blockingPos)) || blocking.type.equals(Thing.TYPE_BLOCK) && !blocking.details.equals(t.details))) {
+                        if (straightMovePossible("n")) {
+                            return ActionInfo.MOVE("n", getName());
+                        }
+                        if (straightMovePossible("e")) {
+                            return ActionInfo.MOVE("e", getName());
+                        }
+                        if (straightMovePossible("s")) {
+                            return ActionInfo.MOVE("s", getName());
+                        }
+                        if (straightMovePossible("w")) {
+                            return ActionInfo.MOVE("w", getName());
+                        }
+                    }
+                    break;
+                }
             }
-            */
             return ActionInfo.SKIP(getName());
         }
         return a;
@@ -215,6 +224,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     @Override
     public void update(String supervisor) {
         super.update(supervisor);
+        this.supervisor = supervisor;
         TaskInfo t = belief.getTask(task.name);
         if (t == null) {
             task.deadline = -1;
