@@ -10,6 +10,8 @@ import java.util.Stack;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
@@ -31,6 +33,8 @@ public class GuardGoalZoneDesire extends BeliefDesire {
     int[] clearDamage = new int[] {32, 16, 8, 4, 2, 1};
     int clearEnergyCost = 2;
     int stepRecharge = 1;
+    Point gz_point;
+
     // Set max. Attack distance (distance at which agent will be attacking)
     final int maxAttackDistance = 1;
 
@@ -39,7 +43,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
 
     // State of current explore goal zone (when no enemy with blocks is visible)
     final String[] directionArray = {"n", "e", "s", "w"};
-    String curDirection;
+    String curDirection = directionArray[0];
     int curExploreDirection = 0;
 
     // Information about current targetEnemy
@@ -61,12 +65,9 @@ public class GuardGoalZoneDesire extends BeliefDesire {
     Point oldDestPoint = null;
     Stack<String> dirStack = new Stack<String>();
 
-    public GuardGoalZoneDesire(Belief belief, String dir, String supervisor) {
+    public GuardGoalZoneDesire(Belief belief, Point p, String supervisor) {
         super(belief);
-        curDirection = dir;
-        AgentLogger.info(Thread.currentThread().getName() +
-                " runSupervisorDecisions - Start GuardGoalZoneDesire with direction "
-                + curDirection);
+        gz_point = p;
         String[] neededActions = {"clear"};
         precondition.add(new DisconnectAllDesire(belief));
         precondition.add(new ActionDesire(belief, neededActions));
@@ -79,6 +80,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         }
         AgentLogger.info(belief.getAgentShortName() + " GGZD", "");
         AgentLogger.info(belief.getAgentShortName() + " GGZD",  "##### GGZD new step #####");
+
 
         // Count successfully cleared blocks
         if (lastActionWasClearOnBlock) {
@@ -126,39 +128,41 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         }
 
 
-        // Go to GZ
-        //---------
-        // Set flag when agent reaches GZ for the first time
-        if (!initialReachedGZ && isInGoalZone()) {
-            AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent reached GZ");
-            initialReachedGZ = true;
-        }
+        // Go to GZ (initially)
+        //---------------------
+//        // Set flag when agent reaches GZ for the first time
+//        if (!initialReachedGZ && isInGoalZone()) {
+//            AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent reached GZ");
+//            initialReachedGZ = true;
+//        }
         // If not yet in GZ --> go to GZ
         if (!initialReachedGZ) {
             AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent was not yet in GZ");
-            Point destPoint = getPatrolCornerPoint(curDirection, 2);
-            
-            // Move with vision when close enough
-            if (destPoint != null && getDistance(destPoint) > 0) {
-                AgentLogger.fine(belief.getAgentShortName() + " GGZD",
-                        "Destination point in GuardGoalZoneDesire " + destPoint.toString());
-//                String dir = getDirectionToRelativePoint(destPoint);
-//                return getActionForMove(dir, getName());
-                return makeMove(destPoint);
-            }
-            // Move with path finder if too far away and 
-            if (destPoint == null) {
-                // Move to goal zone with path finder
-                ReachableGoalZone rgz = belief.getNearestGoalZone();
-                if (rgz != null) {
-                    AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Moving with path finder.");
+            AgentLogger.info(belief.getAgentShortName() + " GGZD",
+                    " Assigned goal zone at " + gz_point.toString());
+            Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(belief.getAgentShortName());
+            // Choose correct ReachableGoalZone that was assigned to this agent
+            for (ReachableGoalZone rgz : belief.getReachableGoalZones()) {
+                Point rgz_p = DirectionUtil.normalizePointOntoMap(rgz.position(), gameMapSize);
+                // First condition to see if ReachableGoalZone was assigned to this agent
+                // Second condition for to see how far away the agent is from this point
+                if (getDistance(rgz_p, gz_point) < 15 && rgz.distance() > 4) {
                     String dir = DirectionUtil.intToString(rgz.direction());
                     if (dir.length() > 0) {
                         return getActionForMove(dir.substring(0, 1), getName());
                     }
                 }
+                // if agent is close enough the goal zone should be visible in his beliefs and
+                // he can start partolling.
+                else if (getDistance(rgz_p, gz_point) < 15 && rgz.distance() <= 4) {
+                    initialReachedGZ = true;
+                    AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent reached GZ");
+                    break;
+                }
+                else {
+                    AgentLogger.info(belief.getAgentShortName() + " GGZD", "no ReachableGoalZone with given coordinates found.");
+                }
             }
-        }
 
 
         // Find target Enemy

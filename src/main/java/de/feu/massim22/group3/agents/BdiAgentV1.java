@@ -328,13 +328,24 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             setIntention(null);
             break;
         }
+//        case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
+//            belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
+//            List<Parameter> parameters = event.getParameters();
+//            String dir = PerceptUtil.toStr(parameters, 0);
+//            desires.add(new GuardGoalZoneDesire(belief, dir, supervisor.getName()));
+//            break;
+//        }
+        
         case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
             belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
             List<Parameter> parameters = event.getParameters();
-            String dir = PerceptUtil.toStr(parameters, 0);
-            desires.add(new GuardGoalZoneDesire(belief, dir, supervisor.getName()));
+            int pointX_gz = PerceptUtil.toNumber(parameters, 0, Integer.class);
+            int pointY_gz = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            desires.add(new GuardGoalZoneDesire(belief, new Point(pointX_gz, pointY_gz),
+                    supervisor.getName()));
             break;
         }
+        
         case SUPERVISOR_PERCEPT_GUARD_DISPENSER: {
             belief.setGroupDesireType(GroupDesireTypes.GUARD_DISPENSER);
             List<Parameter> parameters = event.getParameters();

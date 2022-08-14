@@ -11,6 +11,7 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
  *
  * @author Melinda Betz
  * @author Heinz Stadler
+ * @author Phil Heger (minor contribution)
  */
 public class DirectionUtil {
 
@@ -284,5 +285,26 @@ public class DirectionUtil {
         }
         
         return outDirection;
+    }
+
+    /**
+     * Points can have negative values because the map edges can be traversed. This method
+     * provides the point with positive 
+     * 
+     * @param p point to be normalized
+     * @param mapSize x and y dimensions of the map
+     * @return normalized point p
+     */
+    public static Point normalizePointOntoMap(Point p, Point mapSize) {
+        int signP_x = Integer.signum(p.x);
+        int signP_y = Integer.signum(p.y);
+        int px = signP_x == -1 ? p.x + mapSize.x : p.x;
+        int py = signP_y == -1 ? p.y + mapSize.y : p.y;
+        if (px >= 0 && py >= 0) {
+            return new Point(px, py);
+        }
+        else {
+            return normalizePointOntoMap(new Point(px, py), new Point(px, py));
+        }
     }
 }
