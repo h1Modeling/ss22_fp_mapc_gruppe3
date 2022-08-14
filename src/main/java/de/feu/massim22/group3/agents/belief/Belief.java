@@ -77,8 +77,8 @@ public class Belief {
     private String groupDesireType = GroupDesireTypes.NONE;
     private List<ConnectionReport> connectionReports = new ArrayList<>();
     
-    //private Point mapSize = new Point(64, 92);
-    private Point mapSize = new Point(32, 32);
+    private Point mapSize = new Point(64, 92);
+    //private Point mapSize = new Point(32, 32);
 
     public Belief(String agentName) {
         this.agentShortName = agentName;
@@ -1108,7 +1108,8 @@ public class Belief {
      * 
      * @return list of all reachable dispensers
      */
-    public List<ReachableDispenser> getReachableDispensersX() {
+    public synchronized List<ReachableDispenser> getReachableDispensersX() {
+        List<ReachableDispenser> reachableDispensers = new ArrayList<>(this.reachableDispensers);
         List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
         
         for (ReachableDispenser rd : reachableDispensers) {
@@ -1132,19 +1133,20 @@ public class Belief {
      * @return list of all reachable goal zones
      */
     public List<ReachableGoalZone> getReachableGoalZonesX() {
-        List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
+        List<ReachableGoalZone> reachableGoalZones = new ArrayList<>(this.reachableGoalZones);
+        List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
         
-        for (ReachableGoalZone rd : this.reachableGoalZones) {
+        for (ReachableGoalZone rd : reachableGoalZones) {
             Point agentPos = getPosition();
             int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
             int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
             int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
             int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
             ReachableGoalZone rdnew = new ReachableGoalZone(new Point(posx, posy), distance, direction);
-            reachableGoalZones.add(rdnew);
+            reachableGoalZonesX.add(rdnew);
         }
         
-        return reachableGoalZones;
+        return reachableGoalZonesX;
     }
     
     /**
@@ -1153,33 +1155,20 @@ public class Belief {
      * @return list of all reachable role zones
      */
     public List<ReachableRoleZone> getReachableRoleZonesX() {
-        List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
+        List<ReachableRoleZone> reachableRoleZones = new ArrayList<>(this.reachableRoleZones);
+        List<ReachableRoleZone> reachableRoleZonesX = new ArrayList<>();
         
-        for (ReachableRoleZone rd : this.reachableRoleZones) {
+        for (ReachableRoleZone rd : reachableRoleZones) {
             Point agentPos = getPosition();
             int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
             int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
             int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
             int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
             ReachableRoleZone rdnew = new ReachableRoleZone(new Point(posx, posy), distance, direction);
-            reachableRoleZones.add(rdnew);
+            reachableRoleZonesX.add(rdnew);
         }
         
-        return reachableRoleZones;
+        return reachableRoleZonesX;
     }
-    
-    /**
-     * Gets a block at a certain point.
-     * 
-     * @param p the point where the block is at
-     * 
-     * @return a block ( thing) at a certain point
-     */
-    /*
-     * public Thing getBlockAt(Point p) { for (Thing t : things) { if
-     * (t.type.equals(Thing.TYPE_BLOCK) && t.x == p.x && t.y == p.y) { return t; } }
-     * return null; }
-     */
-
     // Melinda end
 }

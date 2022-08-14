@@ -7,6 +7,7 @@ import java.util.List;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
@@ -80,19 +81,24 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
 
                     if (existsTask(t)) {
                         boolean add = true;
-
-                        if (belief.getLastAction().equals(Actions.DETACH)
-                                && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
-                            if (AgentCooperations.exists(agent)) {
-                                Cooperation coop = AgentCooperations.get(agent);
+                        AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - task exists for : " + t);
+                        
+                        if ((belief.getLastAction().equals(Actions.DETACH)
+                                && belief.getLastActionResult().equals(ActionResults.SUCCESS))
+                                ||  agent.lastStepDetach > belief.getStep() - 10) {
+                            if (AgentCooperations.detachedExists(agent)) {
+                                Cooperation coop = AgentCooperations.getDetached(agent);
+                                AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - coop : " + coop.toString());
+                                
                                 if ((coop.helper().equals(agent) && coop.statusHelper().equals(Status.Detached))
                                         || (coop.helper2() != null && coop.helper2().equals(agent)
                                                 && coop.statusHelper2().equals(Status.Detached))) {
+                                    AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - noadd ");
                                     add = false;
                                 }
                             }
                         }
-
+                        AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - add ");
                         if (add) possibleThings.add(t);
                     }
                 }
@@ -148,7 +154,10 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
             if ((task.requirements.size() == 1 
                     && (block.details.equals(task.requirements.get(0).type)))
                     || (task.requirements.size() == 2 
-                    && (block.details.equals(task.requirements.get(0).type) || block.details.equals(task.requirements.get(1).type)))) {
+                    && (block.details.equals(task.requirements.get(0).type) || block.details.equals(task.requirements.get(1).type)))
+                || (task.requirements.size() == 3 
+                && (block.details.equals(task.requirements.get(0).type) || block.details.equals(task.requirements.get(1).type)
+                    || block.details.equals(task.requirements.get(2).type)))) {
                 return true;
             }
         }

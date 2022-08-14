@@ -358,8 +358,8 @@ public class StepUtilities {
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
                     
-                    if (interestingPoints.get(j).data().equals("x"))
-                        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoint: " + interestingPoints.get(j).point() + " , data: " + interestingPoints.get(j).data() + " , " + interestingPoints.get(j).cellType().name() + " , " + distance + " , " + direction);
+                    //if (interestingPoints.get(j).data().equals("x"))
+                       // AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoint: " + interestingPoints.get(j).point() + " , data: " + interestingPoints.get(j).data() + " , " + interestingPoints.get(j).cellType().name() + " , " + distance + " , " + direction);
                 }
 
                 percepts.add(pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft));
@@ -394,8 +394,8 @@ public class StepUtilities {
                 // Generate Data for Point
                 Parameter f = new Function("pointResult", detail, isZone, pointX, pointY, distance, direction, ipData);
                 data.add(f);
-                if (ipData.toString().equals("x"))
-                    AgentLogger.info(Thread.currentThread().getName() + " - " + agent + " , pathFindingResultToPercept: " + f);
+                //if (ipData.toString().equals("x"))
+                   // AgentLogger.info(Thread.currentThread().getName() + " - " + agent + " , pathFindingResultToPercept: " + f);
             }
         }
 

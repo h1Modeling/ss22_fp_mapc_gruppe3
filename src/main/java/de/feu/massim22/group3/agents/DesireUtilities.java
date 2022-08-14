@@ -26,17 +26,22 @@ import massim.protocol.messages.scenario.ActionResults;
  * @author Melinda Betz
  */
 public class DesireUtilities {
+    public Point posDefaultGoalZone1 = new Point(28, 54);
+    public Point posDefaultGoalZone2 = new Point(9, 1);
+    //public Point posDefaultGoalZone1 = new Point(18, 14);
+    //public Point posDefaultGoalZone2 = new Point(18, 14);
+    
     public StepUtilities stepUtilities;
     public TaskInfo task;
     public int maxTaskBlocks = 3;
+    private int maxTypes = 3;
     public String directionCircle = "cw";
     public int directionCounter = 0;
-    public int circleSize = 40;
+    public int circleSize = 30;
     private String dir2;
     private boolean dir2Used = false;
     public int moveIteration = 0;
     private boolean inDirection = true;
-    private int maxTypes = 3;
     private int count = 0;
     private String lastWish = null;
     public boolean tryLastWanted = true;
@@ -230,24 +235,24 @@ public class DesireUtilities {
                             + " , GoDispenserDesire");
                 
                 if (maxTaskBlocks > 1 && agent.blockAttached && task.requirements.size() > 1
-                        && doDecision(agent, new HelpMultiBlocksDesire(agent.belief, task, agent))) {
+                        && doDecision(agent, new HelperMultiBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , HelpMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , HelperMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                                + " , HelpMultiBlocksDesire");
+                                + " , HelperMultiBlocksDesire");
                 
                 if (maxTaskBlocks > 2 && agent.blockAttached && task.requirements.size() > 2
-                        && doDecision(agent, new Help2MultiBlocksDesire(agent.belief, task, agent))) {
+                        && doDecision(agent, new Helper2MultiBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , Help2MultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , Helper2MultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                        + " , Help2MultiBlocksDesire");
+                        + " , Helper2MultiBlocksDesire");
 
                 if (agent.blockAttached && !agent.belief.getGoalZones().contains(Point.zero()) 
                     && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
@@ -259,27 +264,27 @@ public class DesireUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoGoalZoneDesire");
 
-                if (agent.blockAttached && agent.belief.getGoalZones().contains(Point.zero())
-                    && doDecision(agent, new ArrangeBlocksDesire(agent.belief, task, agent))) {
+                if (agent.blockAttached && task.requirements.size() == 1 && agent.belief.getGoalZones().contains(Point.zero())
+                    && doDecision(agent, new ArrangeBlockDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , ArrangeBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , ArrangeBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , ArrangeBlocksDesire");
+                            + " , ArrangeBlockDesire");
                                 
-                if (maxTaskBlocks > 1 && agent.blockAttached && agent.belief.getGoalZones().contains(Point.zero())
-                        && doDecision(agent, new ArrangeMultiBlocksDesire(agent.belief, task, agent))) {
+                if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached && agent.belief.getGoalZones().contains(Point.zero())
+                        && doDecision(agent, new MasterMultiBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , ArrangeMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
+                    + " , MasterMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                                + " , ArrangeMultiBlocksDesire");
+                                + " , MasterMultiBlocksDesire");
                 
-                if (maxTaskBlocks > 1 && agent.blockAttached 
+                if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached 
                         && doDecision(agent, new ConnectMultiBlocksDesire(agent.belief, task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , ConnectMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
@@ -386,7 +391,7 @@ public class DesireUtilities {
             else
                 result = 400;        
             break;
-        case "ArrangeBlocksDesire":
+        case "ArrangeBlockDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 10;
             else if (desire.getOutputAction().getName().equals(Actions.DETACH))
@@ -394,7 +399,7 @@ public class DesireUtilities {
             else
                 result = 500;
             break;
-        case "HelpMultiBlocksDesire":
+        case "HelperMultiBlocksDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
@@ -404,7 +409,7 @@ public class DesireUtilities {
             else
                 result = 600;
             break;
-        case "Help2MultiBlocksDesire":
+        case "Helper2MultiBlocksDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.CONNECT))
@@ -414,13 +419,15 @@ public class DesireUtilities {
             else
                 result = 600;
             break;
-        case "ArrangeMultiBlocksDesire":
+        case "MasterMultiBlocksDesire":
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 1000;
             else if (desire.getOutputAction().getName().equals(Actions.DETACH))
                 result = 550;
-            else
+            else if (((MasterMultiBlocksDesire) desire).getTask().requirements.size() == 2)
                 result = 600;
+            else
+                result = 700;
             break;
         case "ConnectMultiBlocksDesire":
             result = 1050;
@@ -748,17 +755,19 @@ public class DesireUtilities {
      * @return the required block
      */
     public Thing getTaskBlockA(BdiAgentV2 agent, TaskInfo task) {
-        Thing result = task.requirements.get(0);
-        // ein Block Task
+        List<Thing> reqs = getTaskReqsOrdered(task);
+        // get block1 by default
+        Thing result = reqs.get(0);
+        
         if (task.requirements.size() > 1) {
-            // Mehr Block Task
+            // Multi Block Tasks
             for (Meeting meeting : AgentMeetings.find(agent)) {
                 if (!meeting.agent2().getAttachedThings().isEmpty()) {
                     for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
-                        // Kenn ich einen Agenten mit get(0)?
-                        if (attachedThing.details.equals(task.requirements.get(0).type)) {
-                            result = task.requirements.get(1);
-                            break;
+                        // Do I know a agent with block type of block1, get block2
+                        if (attachedThing.details.equals(reqs.get(0).type)) {
+                            result = reqs.get(1);                                
+                            break;  
                         }
                     }
                 }
@@ -768,56 +777,7 @@ public class DesireUtilities {
     }
     
     /**
-     * Gets the second block for a certain task.
-     *
-     *@param agent the agent that wants to get the block
-     * @param task the task that is being done
-     * 
-     * @return the required block
-     */
-    public Thing getTaskBlockB(BdiAgentV2 agent, TaskInfo task) {
-        Thing result = task.requirements.get(0);
-        Thing block1 = result;
-        Thing block2 = result;
-        Thing block3 = result;
-        
-        for (int i = 0; i < task.requirements.size(); i++) {
-            if (DirectionUtil.getCellsIn4Directions().contains(new java.awt.Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
-                block1 = task.requirements.get(i);
-            } else
-            if (!DirectionUtil.getCellsIn4Directions().contains(new java.awt.Point (task.requirements.get(i).x, task.requirements.get(i).y))
-                    && existsCommonEdge(new Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
-                block2 = task.requirements.get(i);
-            } else
-                block3 = task.requirements.get(i);
-        }
-        
-        // Single Block Task
-        if (task.requirements.size() == 1) {
-            result = block1;
-        } else {       
-            // Multi Blocks Task
-            for (Meeting meeting : AgentMeetings.find(agent)) {
-                if (!meeting.agent2().getAttachedThings().isEmpty()) {
-                    for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
-                        //  Do I know a agent with block type block1?
-                        if (attachedThing.details.equals(block1.type)) {
-                            result = block2;
-                            break;
-                        } else if (task.requirements.size() == 3 && attachedThing.details.equals(block2.type)) {
-                            result = block3;
-                        } else {
-                            result = block1;
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * Gets the third block for a certain task.
+     * Decides which block for a certain task should be fetched.
      *
      *@param agent the agent that wants to get the block
      * @param task the task that is being done
@@ -825,30 +785,21 @@ public class DesireUtilities {
      * @return the required block
      */
     public Thing getTaskBlockC(BdiAgentV2 agent, TaskInfo task) {
-        Thing result = task.requirements.get(0);
         List<Thing> reqs = getTaskReqsOrdered(task);
+        // get block1 by default
+        Thing result = reqs.get(0);
 
-        // Single Block Tasks
-        if (task.requirements.size() == 1) {
-            AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out0");
-            result = reqs.get(0);
-        } else {
+        if (task.requirements.size() > 1) {
             // Multi Block Tasks
-            for (Meeting meeting : AgentMeetings.find(agent)) {
-                AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out0.1");
-                
-                if (!meeting.agent2().getAttachedThings().isEmpty()) {
-                    AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out0.2");
-                    
+            for (Meeting meeting : AgentMeetings.find(agent)) {               
+                if (!meeting.agent2().getAttachedThings().isEmpty()) {                    
                     for (Thing attachedThing : meeting.agent2().getAttachedThings()) {
-                        AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out0.3");
-                        // Do I know a agent with block type block1?
+                        // Do I know a agent with block type of block1, get block2
                         if (attachedThing.details.equals(reqs.get(0).type)) {
-                                AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out1");
                                 result = reqs.get(1);                                
-                                break;                               
+                                break;   
+                                // Do I know a agent with block type of block2, get block3
                         } else if (task.requirements.size() == 3 && attachedThing.details.equals(reqs.get(1).type)) {
-                            AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - out3");
                             result = reqs.get(2);
                         } 
                     }
@@ -864,11 +815,20 @@ public class DesireUtilities {
 
         return result;
     }
-    
+  
+    /**
+     * Gets the third block for a certain task.
+     *
+     *@param agent the agent that wants to get the block
+     * @param task the task that is being done
+     * 
+     * @return the required block
+     */
  Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
         Thing result = inBlock;
         AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type 
-                + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type)); 
+                + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type) 
+                + " , reqs: " + inReqs); 
         
         count++;
         
@@ -876,9 +836,15 @@ public class DesireUtilities {
             // soll verhindern, dass es bei 3-Block-Tasks mit 3 gleichen Blöcken und niedrigem maxTypes hängen bleibt
             if (StepUtilities.getNumberAttachedBlocks(inBlock.type) >= maxTypes) {
                 if (inBlock.equals(inReqs.get(0))) {
-                    result = proofBlockType(inReqs.get(1), inReqs);
+                    if (inReqs.size() > 1)
+                        result = proofBlockType(inReqs.get(1), inReqs);
+                    else
+                        result = proofBlockType(inReqs.get(0), inReqs);
                 } else if (inBlock.equals(inReqs.get(1))) {
-                    result = proofBlockType(inReqs.get(2), inReqs);
+                    if (inReqs.size() > 2)
+                        result = proofBlockType(inReqs.get(2), inReqs);
+                    else
+                        result = proofBlockType(inReqs.get(0), inReqs);
                 } else if (inBlock.equals(inReqs.get(2))) {
                     result = proofBlockType(inReqs.get(0), inReqs);
                 }
@@ -907,7 +873,7 @@ public class DesireUtilities {
             if (DirectionUtil.getCellsIn4Directions()
                     .contains(new java.awt.Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
                 block1 = task.requirements.get(i);
-            } else if (!DirectionUtil.getCellsIn4Directions()
+            } else if (block2 == null && !DirectionUtil.getCellsIn4Directions()
                     .contains(new java.awt.Point(task.requirements.get(i).x, task.requirements.get(i).y))
                     && existsCommonEdge(new Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
                 block2 = task.requirements.get(i);
@@ -916,8 +882,12 @@ public class DesireUtilities {
         }
         
         result.add(block1);
-        result.add(block2);
-        result.add(block3);
+        
+        if (task.requirements.size() > 1) 
+            result.add(block2);
+        
+        if (task.requirements.size() > 2) 
+            result.add(block3);
         
         return result;
     }
@@ -1067,7 +1037,7 @@ public class DesireUtilities {
                 && !agent.belief.getLastActionResult().equals(ActionResults.FAILED)) {
             lastDir = agent.belief.getLastActionParams().get(0);
             lastWantedDir = lastWish;
-            lastWish = dir;
+            //lastWish = dir;
         }
         
         AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t + " , " + dir + " , "
@@ -1080,6 +1050,7 @@ public class DesireUtilities {
         } else if ((isFree(t) || attached.contains(dirPoint)) 
                 && (lastDir.equals(lastWantedDir) || !(dir.equals(DirectionUtil.oppositeDirection(lastDir))))) {
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
+            lastWish = dir;
 
             if (dir2Used)
                 return ActionInfo.MOVE(dir, dir2, desire);

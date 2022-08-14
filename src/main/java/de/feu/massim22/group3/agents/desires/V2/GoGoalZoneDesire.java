@@ -24,8 +24,6 @@ public class GoGoalZoneDesire extends BeliefDesire {
     BdiAgentV2 goalZoneAgent = null;
     Point nearestGoalZone;
     boolean defaultGoalZone = false;
-    Point posDefaultGoalZone1 = new Point(28, 54);
-    Point posDefaultGoalZone2 = new Point(9, 1);
 
     /**
      * Instantiates a new GoGoalZoneDesire.
@@ -89,14 +87,29 @@ public class GoGoalZoneDesire extends BeliefDesire {
                 }
             }
             
-            defaultGoalZone = true;
-            result = true;
-
-            if (Point.distance(Point.castToPoint(agent.belief.getPosition()), posDefaultGoalZone1) 
-                    < Point.distance(Point.castToPoint(agent.belief.getPosition()), posDefaultGoalZone2)) 
-                nearestGoalZone = posDefaultGoalZone1;
-            else
-                nearestGoalZone = posDefaultGoalZone2;               
+            if (!result) {
+                ReachableGoalZone ngz = belief.getNearestGoalZone();
+                
+                if (ngz != null) {
+                    nearestGoalZone = Point.castToPoint(ngz.position());
+                    result = true;
+                }
+            }
+ 
+            if (agent.absolutePositions) {
+                if (!result || result) {
+                    defaultGoalZone = true;
+                    result = true;
+                    
+                    if (Point.distance(Point.castToPoint(agent.belief.getPosition()),
+                            agent.desireProcessing.posDefaultGoalZone1) < Point.distance(
+                                    Point.castToPoint(agent.belief.getPosition()),
+                                    agent.desireProcessing.posDefaultGoalZone2))
+                        nearestGoalZone = agent.desireProcessing.posDefaultGoalZone1;
+                    else
+                        nearestGoalZone = agent.desireProcessing.posDefaultGoalZone2;
+                }
+            }
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 7");
@@ -130,9 +143,11 @@ public class GoGoalZoneDesire extends BeliefDesire {
                 // Manhatten
                 String direction = getDirectionToRelativePoint(p);
                 String dirAlt = "";
+                Point gz = null;
 
                 for (int i = 1; i < belief.getGoalZones().size(); i++) {
                     dirAlt = getDirectionToRelativePoint(belief.getGoalZones().get(i));
+                    gz = Point.castToPoint(belief.getGoalZones().get(i));
 
                     if (!dirAlt.equals(direction)) {
                         break;
@@ -140,7 +155,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
                 }
 
                 AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - nextActionDirectionManhatten: "
-                        + direction);
+                        + direction + " , " + gz);
                 direction = proofDirection(direction);
                 this.agent.desireProcessing.lastWishDirection = direction;
                 AgentLogger.info(
@@ -158,7 +173,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
 
             if (direction.length() > 0) {
                 AgentLogger.info(Thread.currentThread().getName()
-                        + "GoGoalZoneDesire - nextActionDirectionPathfinding: " + direction);
+                        + "GoGoalZoneDesire - nextActionDirectionPathfinding: " + direction + " , " + zone);
                 direction = proofDirection(direction);
                 this.agent.desireProcessing.lastWishDirection = direction;
                 AgentLogger.info(

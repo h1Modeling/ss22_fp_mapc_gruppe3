@@ -161,7 +161,7 @@ public class GoDispenserDesire extends BeliefDesire {
                     + Math.abs(dispenserItself.y - agent.belief.getPosition().y);            
         }
         
-        if (distance == 1) {
+        if (distance == 1 && visionDispenser != null) {
             //agent is next to a dispenser
             AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 6");           
             for (Thing thing : agent.belief.getThings()) {

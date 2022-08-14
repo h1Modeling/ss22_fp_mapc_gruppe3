@@ -11,8 +11,8 @@ import massim.protocol.data.TaskInfo;
 public class AgentCooperations {
     public static List<Cooperation> cooperations = new ArrayList<Cooperation>();
     private static int maxMaster = 4;
-    private static int max2BMaster = 2;
-    private static int max3BMaster = 2;
+    private static int max2BMaster = 3;
+    private static int max3BMaster = 1;
     
     public static synchronized void setCooperation(Cooperation cooperation) {
         remove(cooperation);
@@ -91,7 +91,7 @@ public class AgentCooperations {
         return false;
     }
     
-    public static boolean exists(TaskInfo task, BdiAgentV2 agent, int sel) {
+    public static synchronized boolean exists(TaskInfo task, BdiAgentV2 agent, int sel) {
         boolean result = false;
         
         for (int i = 0; i < cooperations.size(); i++) {
@@ -107,14 +107,14 @@ public class AgentCooperations {
         return result;
     }
     
-    public static boolean exists(TaskInfo task, BdiAgentV2 agent) {
+    public static synchronized boolean exists(TaskInfo task, BdiAgentV2 agent) {
         boolean result = false;
         
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (cooperations.get(i).master.getName().equals(agent.getName())
-                    || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
-                    ||  (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName())))) {
+                    || (cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached)))
+                    || (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName())))) {
                 result = true;
                 break;
             } 
@@ -123,12 +123,27 @@ public class AgentCooperations {
         return result;
     }
     
-    public static boolean exists(BdiAgentV2 agent) {
+    public static synchronized boolean exists(BdiAgentV2 agent) {
         boolean result = false;
         
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).master.getName().equals(agent.getName()) 
-                || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
+                || (cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached)))
+                || (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
+                result = true;
+                break;
+            } 
+        }
+        
+        return result;
+    }
+    
+    public static synchronized boolean detachedExists(BdiAgentV2 agent) {
+        boolean result = false;
+        
+        for (int i = 0; i < cooperations.size(); i++) {
+            if (cooperations.get(i).master.getName().equals(agent.getName()) 
+                || cooperations.get(i).helper.getName().equals(agent.getName()) && cooperations.get(i).statusHelper.equals(Status.Detached)
                 ||  (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
                 result = true;
                 break;
@@ -161,7 +176,7 @@ public class AgentCooperations {
         return result;
     }
     
-    public static boolean exists(Cooperation cooperation) {
+    public static synchronized boolean exists(Cooperation cooperation) {
         boolean result = false;
         
         for (int i = 0; i < cooperations.size(); i++) {
@@ -177,7 +192,7 @@ public class AgentCooperations {
         return result;
     }
     
-    public static Cooperation get(TaskInfo task, BdiAgentV2 agent, int sel) {
+    public static synchronized Cooperation get(TaskInfo task, BdiAgentV2 agent, int sel) {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (sel == 1 && cooperations.get(i).master.getName().equals(agent.getName())
@@ -190,11 +205,11 @@ public class AgentCooperations {
         return null;
     }
     
-    public static Cooperation get(TaskInfo task, BdiAgentV2 agent) {
+    public static synchronized Cooperation get(TaskInfo task, BdiAgentV2 agent) {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && (cooperations.get(i).master.getName().equals(agent.getName())
-                    || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
+                    || (cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached)))
                     || (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName())))) {
                 return cooperations.get(i);
             } 
@@ -203,10 +218,22 @@ public class AgentCooperations {
         return null;
     }
     
-    public static Cooperation get(BdiAgentV2 agent) {
+    public static synchronized Cooperation get(BdiAgentV2 agent) {
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).master.getName().equals(agent.getName()) 
-                    || cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached))
+                    || (cooperations.get(i).helper.getName().equals(agent.getName()) && !(cooperations.get(i).statusHelper.equals(Status.Detached)))
+                    || (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
+                return cooperations.get(i);
+            } 
+        }
+        
+        return null;
+    }
+    
+    public static synchronized Cooperation getDetached(BdiAgentV2 agent) {
+        for (int i = 0; i < cooperations.size(); i++) {
+            if (cooperations.get(i).master.getName().equals(agent.getName()) 
+                    || (cooperations.get(i).helper.getName().equals(agent.getName()) && cooperations.get(i).statusHelper.equals(Status.Detached))
                     || (cooperations.get(i).helper2 != null && cooperations.get(i).helper2.getName().equals(agent.getName()))) {
                 return cooperations.get(i);
             } 
@@ -227,7 +254,7 @@ public class AgentCooperations {
         }
     }
     
-    public static Status getStatusMaster(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {  
+    public static synchronized Status getStatusMaster(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {  
         AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
         for (int i = 0; i < cooperations.size(); i++) {
             AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster: " + cooperations.get(i).task.name + " , " + cooperations.get(i).master.getName() + " , " + cooperations.get(i).helper.getName());
@@ -243,7 +270,7 @@ public class AgentCooperations {
         return Status.New;
     }
     
-    public static Status getStatusHelper(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {    
+    public static synchronized Status getStatusHelper(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {    
         AgentLogger.info(Thread.currentThread().getName() + " getStatusHelper - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 

@@ -59,16 +59,36 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
         if (belief.getRole().actions().contains(Actions.DETACH) && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
 
-            if (AgentCooperations.exists(info, agent)) {
+            if (AgentCooperations.exists(info, agent, 1)) {
                 AgentLogger.info(Thread.currentThread().getName()
                         + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist master: " + coop.toString());
-                // Agent ist in einer cooperation
 
                 if ((coop.statusMaster().equals(Status.ReadyToConnect) 
                         || coop.statusMaster().equals(Status.Connected))
                         && (coop.statusHelper().equals(Status.ReadyToConnect)
                                 || (coop.statusHelper().equals(Status.Detached)
                                        && coop.statusHelper2().equals(Status.ReadyToConnect)))) {
+                    return new BooleanInfo(true, "");
+                }
+            }
+            
+            if (AgentCooperations.exists(info, agent, 2)) {
+                AgentLogger.info(Thread.currentThread().getName()
+                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist helper: " + coop.toString());
+
+                if ((coop.statusMaster().equals(Status.ReadyToConnect))
+                        && (coop.statusHelper().equals(Status.ReadyToConnect))) {
+                    return new BooleanInfo(true, "");
+                }
+            }
+            
+            if (AgentCooperations.exists(info, agent, 3)) {
+                AgentLogger.info(Thread.currentThread().getName()
+                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist helper2: " + coop.toString());
+
+                if ((coop.statusMaster().equals(Status.Connected))
+                        && (coop.statusHelper().equals(Status.Detached))
+                        && (coop.statusHelper2().equals(Status.ReadyToConnect))) {
                     return new BooleanInfo(true, "");
                 }
             }
@@ -84,8 +104,8 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
 
         Point helperBlock = agent.getAttachedPoints().get(0);
         List<Thing> list = agent.desireProcessing.getTaskReqsOrdered(info);
-        Point block1 = new Point(list.get(0).x, list.get(0).y);
-        Point block2 = new Point(list.get(1).x, list.get(1).y);
+        Point block1 = new Point(list.get(0).x, list.get(0).y);       
+        Point block2 = new Point(list.get(1).x, list.get(1).y);           
 
         AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - ConnectMultiBlocksDesire.getNextActionInfo agentBlocks: "
