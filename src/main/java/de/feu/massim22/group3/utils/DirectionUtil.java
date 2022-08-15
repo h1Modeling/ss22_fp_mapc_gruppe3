@@ -304,7 +304,7 @@ public class DirectionUtil {
             return new Point(px, py);
         }
         else {
-            return normalizePointOntoMap(new Point(px, py), new Point(px, py));
+            return normalizePointOntoMap(new Point(px, py), mapSize);
         }
     }
 }

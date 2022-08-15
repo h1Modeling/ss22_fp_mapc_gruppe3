@@ -338,6 +338,14 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         
         case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
             belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
+            // Delete WalkByGetRoleDesire so it does not get in conflict with getting
+            // the digger role
+            List<IDesire> desires_copy = new ArrayList<IDesire>(desires);
+            for (IDesire d : desires_copy) {
+                if (d.getName().equals(WalkByGetRoleDesire.class.getSimpleName())) {
+                    desires.remove(d);
+                }
+            }
             List<Parameter> parameters = event.getParameters();
             int pointX_gz = PerceptUtil.toNumber(parameters, 0, Integer.class);
             int pointY_gz = PerceptUtil.toNumber(parameters, 1, Integer.class);
@@ -375,8 +383,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         // TODO remove / modify if sim roles change
         // not usable for now because of need to adopt a clear role (like digger)--> conflict
         // with this line.
-//        String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
-//        desires.add(new WalkByGetRoleDesire(belief, actions));
+        String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
+        desires.add(new WalkByGetRoleDesire(belief, actions));
     }
 
     private void updateDesires() {

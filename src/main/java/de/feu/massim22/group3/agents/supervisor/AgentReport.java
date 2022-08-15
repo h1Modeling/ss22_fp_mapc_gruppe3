@@ -38,7 +38,8 @@ import massim.protocol.data.Thing;
  */
 public record AgentReport(List<Thing> attachedThings, int energy, boolean deactivated,
         Set<String> actions, Point position, int[] distanceDispenser, int distanceGoalZone,
-        String groupDesireType, int step, String agentActionName, Point nearestGoalZone, String groupDesireBlock) {
+        String groupDesireType, int step, String agentActionName, int numOfDistinctGoalZones,
+        Point nearestGoalZone, Point goalZone2, String groupDesireBlock) {
     
     /**
     * Creates a Percept Function from the data in the record.
@@ -76,13 +77,17 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         }
         Parameter distancePara = new ParameterList(distanceParas);
         Parameter stepPara = new Numeral(step);
+        Parameter numOfDistinctGZs = new Numeral(numOfDistinctGoalZones);
         Parameter pointXGoalZone = new Numeral(nearestGoalZone.x);
         Parameter pointYGoalZone = new Numeral(nearestGoalZone.y);
+        Parameter pointXGoalZone2 = new Numeral(goalZone2.x);
+        Parameter pointYGoalZone2 = new Numeral(goalZone2.y);
         Parameter groupDesireBlockPara = new Identifier(groupDesireBlock);
         
         return new Function(SupervisorEventName.REPORT.name(), attachedPara, energyPara, deactivatedPara,
             actionPara, posXPara, posYPara, distancePara, distanceGoalZonePara, groupDesirePara, stepPara,
-            agentActionNamePara, pointXGoalZone, pointYGoalZone, groupDesireBlockPara);
+            agentActionNamePara, numOfDistinctGZs, pointXGoalZone, pointXGoalZone2, pointYGoalZone,
+            pointYGoalZone2, groupDesireBlockPara);
     }
 
     /**
@@ -109,12 +114,17 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         }
         int step = PerceptUtil.toNumber(paras, 9, Integer.class);
         String agentActionName  = PerceptUtil.toStr(paras, 10);
-        int goalX = PerceptUtil.toNumber(paras, 11, Integer.class);
-        int goalY = PerceptUtil.toNumber(paras, 12, Integer.class);
+        int numOfDistinctGZs = PerceptUtil.toNumber(paras, 11, Integer.class);
+        int goalX = PerceptUtil.toNumber(paras, 12, Integer.class);
+        int goalY = PerceptUtil.toNumber(paras, 13, Integer.class);
+        int pointXGoalZone2 = PerceptUtil.toNumber(paras, 14, Integer.class);
+        int pointYGoalZone2 = PerceptUtil.toNumber(paras, 15, Integer.class);
         Point nearestGoalZone = new Point(goalX, goalY);
-        String groupDesireBlock = PerceptUtil.toStr(paras, 13);
+        Point pointGoalZone2 = new Point(pointXGoalZone2, pointYGoalZone2);
+        String groupDesireBlock = PerceptUtil.toStr(paras, 16);
         return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser,
-            distanceGoalZone, groupDesire, step, agentActionName, nearestGoalZone, groupDesireBlock);
+            distanceGoalZone, groupDesire, step, agentActionName, numOfDistinctGZs, nearestGoalZone,
+            pointGoalZone2, groupDesireBlock);
     }
 }
 

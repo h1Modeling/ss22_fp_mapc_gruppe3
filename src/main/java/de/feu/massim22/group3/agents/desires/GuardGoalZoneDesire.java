@@ -142,11 +142,13 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                     " Assigned goal zone at " + gz_point.toString());
             Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(belief.getAgentShortName());
             // Choose correct ReachableGoalZone that was assigned to this agent
+            AgentLogger.fine(belief.getAgentShortName() + " GGZD", "ReachableGoalZones " + belief.getReachableGoalZones().toString());
             for (ReachableGoalZone rgz : belief.getReachableGoalZones()) {
                 Point rgz_p = DirectionUtil.normalizePointOntoMap(rgz.position(), gameMapSize);
+                Point gz_point_n = DirectionUtil.normalizePointOntoMap(gz_point, gameMapSize);
                 // First condition to see if ReachableGoalZone was assigned to this agent
                 // Second condition for to see how far away the agent is from this point
-                if (getDistance(rgz_p, gz_point) < 15 && rgz.distance() > 4) {
+                if (getDistance(rgz_p, gz_point_n) < 15 && rgz.distance() > 4) {
                     String dir = DirectionUtil.intToString(rgz.direction());
                     if (dir.length() > 0) {
                         return getActionForMove(dir.substring(0, 1), getName());
@@ -154,7 +156,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                 }
                 // if agent is close enough the goal zone should be visible in his beliefs and
                 // he can start partolling.
-                else if (getDistance(rgz_p, gz_point) < 15 && rgz.distance() <= 4) {
+                else if (getDistance(rgz_p, gz_point_n) < 15 && rgz.distance() <= 4) {
                     initialReachedGZ = true;
                     AgentLogger.fine(belief.getAgentShortName() + " GGZD", "Agent reached GZ");
                     break;

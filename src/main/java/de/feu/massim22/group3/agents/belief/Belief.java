@@ -15,6 +15,8 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.supervisor.AgentReport;
 import de.feu.massim22.group3.map.CellType;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.DirectionUtil;
@@ -1211,14 +1213,39 @@ public class Belief {
         }
         int distGoalZone = 999;
         Point nearestGoalZone = new Point(0, 0);
+        List<Point> uniqueGoalZones = new ArrayList<Point>();
+        Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getAgentShortName());
         for (ReachableGoalZone goalZone : reachableGoalZones) {
             if (goalZone.distance() < distGoalZone) {
                 distGoalZone = goalZone.distance();
                 nearestGoalZone = goalZone.position();
             }
+            if (uniqueGoalZones.size() == 0) {
+                uniqueGoalZones.add(goalZone.position());
+            }
+            else {
+                for (Point uniqueGoalZone : uniqueGoalZones) {
+                    Point gz = DirectionUtil.normalizePointOntoMap(new Point(goalZone.position()), gameMapSize);
+                    Point unique_gz = DirectionUtil.normalizePointOntoMap(uniqueGoalZone, gameMapSize);
+                    if (Math.abs(gz.x - unique_gz.x) + Math.abs(gz.y - unique_gz.y) > 15) {
+                        uniqueGoalZones.add(goalZone.position());
+                        break;
+                    }
+                }
+            }
         }
+        Point goalZone2 = new Point(0, 0);
+        int numOfDistinctGoalZones = uniqueGoalZones.size();
+        for (Point uniqueGoalZone : uniqueGoalZones) {
+            if (!nearestGoalZone.equals(new Point(0, 0))
+                    && Math.abs(uniqueGoalZone.x - nearestGoalZone.x) + Math.abs(uniqueGoalZone.y - nearestGoalZone.y) > 15) {
+                goalZone2 = uniqueGoalZone;
+            }
+        }
+        
         return new AgentReport(attachedThings, energy, deactivated, availableActions,
-            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName, nearestGoalZone, groupDesireBlockDetail);
+            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName,
+            numOfDistinctGoalZones, nearestGoalZone, goalZone2, groupDesireBlockDetail);
     }
 
     /**
