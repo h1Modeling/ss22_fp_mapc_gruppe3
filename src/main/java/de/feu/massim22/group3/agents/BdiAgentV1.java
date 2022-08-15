@@ -182,6 +182,11 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     }
     
     private void performEvent(Percept event, String sender) {
+        if (isNull(intention)) {
+            say ("Intention is NUll");
+        } else {
+            say("My intention" + intention.getName() );
+        }
         String taskKey = event.getName();
         EventName taskName = EventName.valueOf(taskKey);
         switch (taskName) {
@@ -628,21 +633,23 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     }
 
     private void findIntention() {
-        List<DesireDebugData> debugData = new ArrayList<>();
-        for (int i = desires.size() - 1; i >= 0; i--) {
-            IDesire d = desires.get(i);
-            d.update(this.supervisor.getName());
-            BooleanInfo isFulfilled = d.isFulfilled();
-            BooleanInfo isExecutable = d.isExecutable();
-            DesireDebugData data = new DesireDebugData(d.getName(), isExecutable);
-            debugData.add(data);
-            if (!isFulfilled.value() && isExecutable.value()) {
-                AgentLogger.info("Intention for agent " + getName() + " is " + d.getName());
-                setIntention(d);
-                break;
+        if (!forcedIntention) {
+            List<DesireDebugData> debugData = new ArrayList<>();
+            for (int i = desires.size() - 1; i >= 0; i--) {
+                IDesire d = desires.get(i);
+                d.update(this.supervisor.getName());
+                BooleanInfo isFulfilled = d.isFulfilled();
+                BooleanInfo isExecutable = d.isExecutable();
+                DesireDebugData data = new DesireDebugData(d.getName(), isExecutable);
+                debugData.add(data);
+                if (!isFulfilled.value() && isExecutable.value()) {
+                    AgentLogger.info("Intention for agent " + getName() + " is " + d.getName());
+                    setIntention(d);
+                    break;
+                }
             }
+            Navi.<INaviAgentV1>get().updateDesireDebugData(debugData, getName());
         }
-        Navi.<INaviAgentV1>get().updateDesireDebugData(debugData, getName());
     }
     
     private void updatePercepts() {
