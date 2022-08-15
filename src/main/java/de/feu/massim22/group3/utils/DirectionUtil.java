@@ -7,6 +7,8 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 
 public class DirectionUtil {
+    public static Point mapSize = new Point(64, 92);
+    
 	public static String intToString(int direction) {
         String s = String.valueOf(direction).replaceAll("0", "w").replaceAll("1", "n").replaceAll("2", "e").replaceAll("3", "s")
                 .replaceAll("4", "w").replaceAll("5", "n");
@@ -130,6 +132,40 @@ public class DirectionUtil {
 
         return result;
     }
+	
+    /*public static String getDirection(Point from, Point to) {
+        String result = " ";
+        Point pointTarget = new Point(to.x - from.x, to.y - from.y);
+        Point pointTargetAround = new Point(mapSize.x - Math.abs(to.x - from.x), mapSize.y - Math.abs(to.y - from.y));
+
+        if (pointTarget.x == 0) {
+            if (pointTarget.y < 0 && pointTargetAround.y <= Math.abs(pointTarget.y))
+                result = "n";
+            else
+                result = "s";
+        }
+
+        if (pointTarget.y == 0) {
+            if (pointTarget.x < 0 && pointTargetAround.x <= Math.abs(pointTarget.x))
+                result = "w";
+            else
+                result = "e";
+        }
+
+        if (pointTarget.x != 0 && pointTarget.y != 0) {
+            if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
+                if (pointTarget.x < 0 && pointTargetAround.x <= Math.abs(pointTarget.x))
+                    result = "w";
+                else
+                    result = "e";
+            else if (pointTarget.y < 0 && pointTargetAround.y <= Math.abs(pointTarget.y))
+                result = "n";
+            else
+                result = "s";
+        }
+
+        return result;
+    }*/
 	
 	   public static String getDirection(Point from, Point to) {
 	        String result = " ";

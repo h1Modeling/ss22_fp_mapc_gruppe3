@@ -34,7 +34,7 @@ public class DesireUtilities {
     public StepUtilities stepUtilities;
     public TaskInfo task;
     public int maxTaskBlocks = 3;
-    private int maxTypes = 3;
+    private int maxTypes = 2;
     public String directionCircle = "cw";
     public int directionCounter = 0;
     public int circleSize = 30;

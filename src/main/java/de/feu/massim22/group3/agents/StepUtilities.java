@@ -354,7 +354,8 @@ public class StepUtilities {
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos = Point.castToPoint(interestingPoints.get(j).point());
-                    int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
+                    //int distance = Math.abs(targetPos.x - agentPos.x) + Math.abs(targetPos.y - agentPos.y);
+                    int distance = Point.distance(targetPos, agentPos);
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
                     

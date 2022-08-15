@@ -22,12 +22,11 @@ public class AgentMeetings {
      * @param meeting the meeting to add
      */
     public static synchronized void add(Meeting meeting) {
-        /*if (remove(meeting))
+        if (remove(meeting))
             evaluateMapSize(meeting);
         else
-            meeting.agent1.firstMeeting[meeting.agent2.index] = newMeeting(meeting);*/
-      
-        remove(meeting);
+            meeting.agent1.firstMeeting[meeting.agent2.index] = newMeeting(meeting);
+            
         meetings.add(meeting);
     }
     

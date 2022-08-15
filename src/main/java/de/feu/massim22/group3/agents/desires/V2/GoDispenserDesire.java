@@ -157,8 +157,7 @@ public class GoDispenserDesire extends BeliefDesire {
             AgentLogger.info(Thread.currentThread().getName() + "Test.getNextAction() 2");
             nearestDispenser = agent.desireProcessing.getNearestDispenser(typeDispensers);
             dispenserItself = Point.castToPoint(nearestDispenser.position());
-            distance = Math.abs(dispenserItself.x - agent.belief.getPosition().x)
-                    + Math.abs(dispenserItself.y - agent.belief.getPosition().y);            
+            distance = Point.distance(dispenserItself, Point.castToPoint(agent.belief.getPosition()));           
         }
         
         if (distance == 1 && visionDispenser != null) {

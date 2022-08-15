@@ -30,7 +30,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
-    public boolean absolutePositions = false;
+    public boolean absolutePositions = true;
     private Point[] startPositions = {Point.zero()
             , new Point(24, 35)
             , new Point(1, 78)
@@ -205,7 +205,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                         + startPosition);
             }
         }
-        //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
+        AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {
             if (belief.getLastAction().equals(Actions.ROTATE)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
@@ -227,7 +227,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     }
                 }
             }
-            //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() BB , Agent: " + this.getName());             
+            AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() BB , Agent: " + this.getName());             
             if (belief.getLastAction().equals(Actions.ATTACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 Thing t = belief.getThingWithTypeAt(belief.getLastActionParams().get(0), Thing.TYPE_BLOCK);
@@ -263,7 +263,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     }
                 }
             }
-            //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() CC , Agent: " + this.getName()); 
+            AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() CC , Agent: " + this.getName()); 
             if (belief.getLastAction().equals(Actions.SUBMIT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
@@ -282,8 +282,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 }
             }
 
-            //AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - belief.getLastAction(): " 
-            //+ belief.getLastAction() + " , " + belief.getLastActionResult() + " , Agent: " + this.getName());
+            AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - belief.getLastAction(): " 
+            + belief.getLastAction() + " , " + belief.getLastActionResult() + " , Agent: " + this.getName());
 
             if (belief.getLastAction().equals(Actions.CONNECT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
