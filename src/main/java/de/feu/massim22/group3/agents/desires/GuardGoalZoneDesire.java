@@ -163,6 +163,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
                     AgentLogger.info(belief.getAgentShortName() + " GGZD", "no ReachableGoalZone with given coordinates found.");
                 }
             }
+        }
 
 
         // Find target Enemy
