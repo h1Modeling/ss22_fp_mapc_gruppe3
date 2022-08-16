@@ -238,7 +238,7 @@
         <dependency>
             <groupId>massim</groupId>
             <artifactId>eismassim</artifactId>
-            <version>4.4</version>
+            <version>4.5</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

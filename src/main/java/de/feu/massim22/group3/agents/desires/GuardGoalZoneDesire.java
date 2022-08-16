@@ -28,42 +28,40 @@ import massim.protocol.messages.scenario.ActionResults;
 public class GuardGoalZoneDesire extends BeliefDesire {
 
 
-    boolean lastActionWasClearOnBlock = false;
-    int clearedBlocks = 0;
-    int[] clearDamage = new int[] {32, 16, 8, 4, 2, 1};
-    int clearEnergyCost = 2;
-    int stepRecharge = 1;
-    Point gz_point;
+    private boolean lastActionWasClearOnBlock = false;
+    private int clearedBlocks = 0;
+    private int[] clearDamage = new int[] {32, 16, 8, 4, 2, 1};
+    private int stepRecharge = 1;
+    private Point gz_point;
 
     // Set max. Attack distance (distance at which agent will be attacking)
-    final int maxAttackDistance = 1;
+    private final int maxAttackDistance = 1;
 
     // Flag to indicate if the target GZ was reached once (after that the agent can move more freely)
-    boolean initialReachedGZ = false;
+    private boolean initialReachedGZ = false;
 
     // State of current explore goal zone (when no enemy with blocks is visible)
-    final String[] directionArray = {"n", "e", "s", "w"};
-    String curDirection = directionArray[0];
-    int curExploreDirection = 0;
+    private final String[] directionArray = {"n", "e", "s", "w"};
+    private int curExploreDirection = 0;
 
     // Information about current targetEnemy
-    Point targetEnemyLastPosition = null;
-    int targetEnemyEnergy = 100;
-    int lastDistToTargetEnemy = 100;
-    boolean lastActionWasClearOnEnemy = false;
-    List<Point> blocksToClear = null;
+    private Point targetEnemyLastPosition = null;
+    private int targetEnemyEnergy = 100;
+    private int lastDistToTargetEnemy = 100;
+    private boolean lastActionWasClearOnEnemy = false;
+    private List<Point> blocksToClear = null;
 
     // Information about last attacked enemy to avoid attacking again
-    Point lastClearedEnemyPosition = null;
-    int stepsSinceCompleteClear = 0;
-    final int noAttackTime = 10;
+    private Point lastClearedEnemyPosition = null;
+    private int stepsSinceCompleteClear = 0;
+    private final int noAttackTime = 10;
 
     // Positions of all enemies during the previous step
-    List<Point> oldEnemyPositions = new ArrayList<Point>();
+    private List<Point> oldEnemyPositions = new ArrayList<Point>();
 
     // For path finding
-    Point oldDestPoint = null;
-    Stack<String> dirStack = new Stack<String>();
+    private Point oldDestPoint = null;
+    private Stack<String> dirStack = new Stack<String>();
 
     public GuardGoalZoneDesire(Belief belief, Point p, String supervisor) {
         super(belief);
@@ -667,6 +665,11 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         return adjThings;
     }
 
+
+    public void setOldEnemyPositions(List<Point> l) {
+        oldEnemyPositions = l; 
+    }
+
     @Override
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
@@ -685,9 +688,6 @@ public class GuardGoalZoneDesire extends BeliefDesire {
     @Override
     public int getPriority() {
         return 1500;
-    }
-    public void setGoalZoneDirection(String dir) {
-        curDirection = dir;
     }
 
     class AdjacentThings {

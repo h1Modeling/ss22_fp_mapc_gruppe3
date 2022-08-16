@@ -47,7 +47,7 @@ public class GuardGoalZoneDesireTest {
         when(b.getGoalZones()).thenReturn(pointList);
         
         // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "w", "supervisor dummy");
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         assertEquals(new Point(-1, 0), d.getPatrolCornerPoint("w", 0));
         assertEquals(new Point(1, 0), d.getPatrolCornerPoint("e", 0));
         assertEquals(new Point(0, 1), d.getPatrolCornerPoint("s", 0));
@@ -72,7 +72,7 @@ public class GuardGoalZoneDesireTest {
         when(b.getTeam()).thenReturn("1");
 
         // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
         System.out.println(adjThings);
         assertEquals(3, adjThings.numOfAdjBlocks());
@@ -106,7 +106,7 @@ public class GuardGoalZoneDesireTest {
         when(b.getTeam()).thenReturn("1");
 
         // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
         System.out.println(adjThings);
         assertEquals(3, adjThings.numOfAdjBlocks());
@@ -143,7 +143,7 @@ public class GuardGoalZoneDesireTest {
         when(b.getTeam()).thenReturn("1");
 
         // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
         System.out.println(adjThings);
         assertEquals(4, adjThings.numOfAdjBlocks());
@@ -175,9 +175,10 @@ public class GuardGoalZoneDesireTest {
         when(b.getLastAction()).thenReturn("skip");
         
         // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-        d.oldEnemyPositions.add(new Point(2, 0));
-        
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+        List<Point> oldEnemyPositions = new ArrayList<Point>();
+        oldEnemyPositions.add(new Point(2, 0));
+        d.setOldEnemyPositions(oldEnemyPositions);
         assertEquals(new Point(2, 1), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
     }
 
@@ -201,8 +202,10 @@ public class GuardGoalZoneDesireTest {
         when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
         
         // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-        d.oldEnemyPositions.add(new Point(2, 0));
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+        List<Point> oldEnemyPositions = new ArrayList<Point>();
+        oldEnemyPositions.add(new Point(2, 0));
+        
         
         assertEquals(new Point(2, 0), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
     }
@@ -227,9 +230,11 @@ public class GuardGoalZoneDesireTest {
         when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
         
         // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-        d.oldEnemyPositions.add(new Point(2, 0));
-        d.oldEnemyPositions.add(new Point(2, 1));
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+        List<Point> oldEnemyPositions = new ArrayList<Point>();
+        oldEnemyPositions.add(new Point(2, 0));
+        oldEnemyPositions.add(new Point(2, 1));
+        d.setOldEnemyPositions(oldEnemyPositions);
         
         assertEquals(new Point(2, 0), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
     }
@@ -255,10 +260,12 @@ public void testGetNewPositionOfTargetEnemy4() {
     when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
     
     // Create and test Desire
-    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-    d.oldEnemyPositions.add(new Point(-1, 0));
-    d.oldEnemyPositions.add(new Point(1, 0));
-    d.oldEnemyPositions.add(new Point(1, 1));
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+    List<Point> oldEnemyPositions = new ArrayList<Point>();
+    oldEnemyPositions.add(new Point(-1, 0));
+    oldEnemyPositions.add(new Point(1, 0));
+    oldEnemyPositions.add(new Point(1, 1));
+    d.setOldEnemyPositions(oldEnemyPositions);
     
     assertEquals(new Point(1, 0), d.getNewPositionOfTargetEnemy(new Point(1, 0)));
     }
@@ -284,10 +291,12 @@ public void testGetNewPositionOfTargetEnemy5() {
     when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
     
     // Create and test Desire
-    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-    d.oldEnemyPositions.add(new Point(-1, 0));
-    d.oldEnemyPositions.add(new Point(1, 0));
-    d.oldEnemyPositions.add(new Point(1, 1));
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+    List<Point> oldEnemyPositions = new ArrayList<Point>();
+    oldEnemyPositions.add(new Point(-1, 0));
+    oldEnemyPositions.add(new Point(1, 0));
+    oldEnemyPositions.add(new Point(1, 1));
+    d.setOldEnemyPositions(oldEnemyPositions);
     
     assertEquals(new Point(1, 0), d.getNewPositionOfTargetEnemy(new Point(1, 0)));
     }
@@ -313,10 +322,12 @@ public void testGetNewPositionOfTargetEnemy6() {
     when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
     
     // Create and test Desire
-    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-    d.oldEnemyPositions.add(new Point(-1, 0));
-    d.oldEnemyPositions.add(new Point(1, 0));
-    d.oldEnemyPositions.add(new Point(1, 2));
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+    List<Point> oldEnemyPositions = new ArrayList<Point>();
+    oldEnemyPositions.add(new Point(-1, 0));
+    oldEnemyPositions.add(new Point(1, 0));
+    oldEnemyPositions.add(new Point(1, 2));
+    d.setOldEnemyPositions(oldEnemyPositions);
     
     assertEquals(new Point(1, 0), d.getNewPositionOfTargetEnemy(new Point(1, 0)));
     }
@@ -339,9 +350,10 @@ public void testGetNewPositionOfTargetEnemy7() {
     when(b.getLastActionResult()).thenReturn(ActionResults.SUCCESS);
     
     // Create and test Desire
-    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, "n", "supervisor dummy");
-    d.oldEnemyPositions.add(new Point(0, 1));
-
+    GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+    List<Point> oldEnemyPositions = new ArrayList<Point>();
+    oldEnemyPositions.add(new Point(0, 1));
+    d.setOldEnemyPositions(oldEnemyPositions);
     
     assertEquals(new Point(0, 3), d.getNewPositionOfTargetEnemy(new Point(0, 1)));
     }

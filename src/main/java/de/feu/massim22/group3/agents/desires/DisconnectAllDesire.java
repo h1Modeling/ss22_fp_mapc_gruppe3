@@ -41,18 +41,7 @@ public class DisconnectAllDesire extends BeliefDesire {
      */
     public ActionInfo getNextActionInfo() {
         for (Point p: belief.getOwnAttachedPoints()) {
-            if (p.x == 0 &&  p.y == 1) {
-                return ActionInfo.DETACH("s", getName());
-            }
-            if (p.x == 0 &&  p.y == -1) {
-                return ActionInfo.DETACH("n", getName());
-            }
-            if (p.x == 1 &&  p.y == 0) {
-                return ActionInfo.DETACH("e", getName());
-            }
-            if (p.x == -1 &&  p.y == 0) {
-                return ActionInfo.DETACH("w", getName());
-            }
+            return ActionInfo.DETACH(getDirectionToRelativePoint(p), getName());
         }
         return null;
     }
