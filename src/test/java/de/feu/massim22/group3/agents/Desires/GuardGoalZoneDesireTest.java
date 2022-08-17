@@ -185,8 +185,8 @@ public class GuardGoalZoneDesireTest {
     /**
      * Own agent does not move but enemy moves 1 field
      * 
-     * A E  ->      
-     *          A  E
+     * A E  ->     
+     *          A E
      */
     @Test
     public void testGetNewPositionOfTargetEnemy2() {
@@ -205,8 +205,7 @@ public class GuardGoalZoneDesireTest {
         GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         List<Point> oldEnemyPositions = new ArrayList<Point>();
         oldEnemyPositions.add(new Point(2, 0));
-        
-        
+        d.setOldEnemyPositions(oldEnemyPositions);
         assertEquals(new Point(2, 0), d.getNewPositionOfTargetEnemy(new Point(2, 0)));
     }
 
