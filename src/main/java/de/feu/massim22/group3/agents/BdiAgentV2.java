@@ -30,7 +30,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
-    public boolean absolutePositions = true;
+    public boolean absolutePositions = false;
     private Point[] startPositions = {Point.zero()
             , new Point(24, 35)
             , new Point(1, 78)
@@ -179,10 +179,14 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     }
 
     private void updateBeliefs() {
-        AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() , Agent: " + this.getName());
         List<Percept> percepts = getPercepts();
         belief.update(percepts);
         belief.updatePositionFromExternal();
+        
+        AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() , Agent: " + this.getName()
+        + " , Position: " + belief.getPosition()
+        + " , absolute Position: " 
+        + ((Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : ""));
         
         if (belief.getStep() == 0) {
             if (absolutePositions) {
@@ -202,10 +206,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 }            
             } else {
                 AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - getAbsolutePosition() false - startPosition: " 
-                        + startPosition);
+                        + startPosition + " , absolute startPosition: " 
+                        + ((Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : ""));
             }
         }
-        AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
+        //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {
             if (belief.getLastAction().equals(Actions.ROTATE)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
@@ -227,7 +232,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     }
                 }
             }
-            AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() BB , Agent: " + this.getName());             
+            //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() BB , Agent: " + this.getName());             
             if (belief.getLastAction().equals(Actions.ATTACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 Thing t = belief.getThingWithTypeAt(belief.getLastActionParams().get(0), Thing.TYPE_BLOCK);
@@ -263,7 +268,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     }
                 }
             }
-            AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() CC , Agent: " + this.getName()); 
+            //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() CC , Agent: " + this.getName()); 
             if (belief.getLastAction().equals(Actions.SUBMIT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
@@ -279,6 +284,14 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                         alwaysToTarget = false;
                         isBusy = false;
                     }
+                }
+                
+                if (belief.getLastActionParams().size() == 2) {
+                    AgentCooperations.scores[Integer.parseInt(belief.getLastActionParams().get(1))]++;
+                    AgentLogger.info(Thread.currentThread().getName() + " Step: " + belief.getStep()
+                    + " , Scores: " + AgentCooperations.scores[1]
+                            + " , " + AgentCooperations.scores[2]
+                                    + " , " + AgentCooperations.scores[3]); 
                 }
             }
 

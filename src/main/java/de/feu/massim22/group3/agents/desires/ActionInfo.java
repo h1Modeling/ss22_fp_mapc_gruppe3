@@ -51,7 +51,7 @@ public record ActionInfo(Action value, String info) {
     }
 
     public static ActionInfo SUBMIT(String task, String info) {
-        Action a = new Action(Actions.SUBMIT, new Identifier(task));
+        Action a = new Action(Actions.SUBMIT, new Identifier(task), new Identifier(info));
         return new ActionInfo(a, info);
     }
 

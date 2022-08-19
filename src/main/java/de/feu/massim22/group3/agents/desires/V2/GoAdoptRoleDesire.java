@@ -122,7 +122,7 @@ public class GoAdoptRoleDesire extends BeliefDesire {
                 }
 
                 // Data from Pathfinding
-                ReachableRoleZone zone = belief.getNearestRoleZone();
+                ReachableRoleZone zone = belief.getReachableRoleZonesX().get(0);
                 String direction = DirectionUtil.intToString(zone.direction());
 
                 if (direction.length() > 0) {
@@ -186,8 +186,8 @@ private Point getNearestRoleZoneFromMeeting(BdiAgentV2 inAgent) {
         AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 4 - agent: " + rrz);
         
         if (!rrz.isEmpty()) {  
-            roleZone = Point.castToPoint(meeting.agent2().belief.getNearestRoleZone().position()).translate2To1(meeting);
-            AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 5: " + meeting.agent2().belief.getNearestRoleZone() + " , dist: " + Point.distance(Point.castToPoint(inAgent.belief.getPosition()), roleZone) + " , min: " + distance);
+            roleZone = Point.castToPoint(meeting.agent2().belief.getReachableRoleZonesX().get(0).position()).translate2To1(meeting);
+            AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 5: " + meeting.agent2().belief.getReachableRoleZonesX().get(0) + " , dist: " + Point.distance(Point.castToPoint(inAgent.belief.getPosition()), roleZone) + " , min: " + distance);
             
             if (Point.distance(Point.castToPoint(inAgent.belief.getPosition()), roleZone) < distance) {
                 AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 6");  

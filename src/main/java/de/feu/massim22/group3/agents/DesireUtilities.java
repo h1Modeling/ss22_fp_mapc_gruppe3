@@ -34,7 +34,7 @@ public class DesireUtilities {
     public StepUtilities stepUtilities;
     public TaskInfo task;
     public int maxTaskBlocks = 3;
-    private int maxTypes = 2;
+    private int maxTypes = AgentCooperations.getMaxTypes();
     public String directionCircle = "cw";
     public int directionCounter = 0;
     public int circleSize = 30;
@@ -187,10 +187,17 @@ public class DesireUtilities {
             for (String agentStr : allGroupAgents) {
                 BdiAgentV2 agent = StepUtilities.getAgent(agentStr); 
                 
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr + " , Pos: " + agent.belief.getPosition());
+                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr 
+                        + " , Pos: " + agent.belief.getPosition()+ " , abs: " 
+                                + ((Point.castToPoint(agent.belief.getAbsolutePosition()) != null) ? Point.castToPoint(agent.belief.getAbsolutePosition()) : "") + " , Step: " + agent.belief.getStep());
                 AgentLogger.info(
                         Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName()
                                 + " , lA: " + agent.belief.getLastAction() + " , lAR: " + agent.belief.getLastActionResult());
+                for (String para : agent.belief.getLastActionParams()) {
+                    AgentLogger.info(
+                            Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName()
+                                    + " , para: " + para);           
+                }
               
                 agent.desireProcessing.attachedThings = new ArrayList<Thing>();
                 agent.desireProcessing.task = task;

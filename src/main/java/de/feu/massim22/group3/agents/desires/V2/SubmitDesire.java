@@ -90,7 +90,7 @@ public class SubmitDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        return ActionInfo.SUBMIT(info.name, getName());
+        return ActionInfo.SUBMIT(info.name, String.valueOf(info.requirements.size()));
     }
 
     /**

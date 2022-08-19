@@ -1115,11 +1115,12 @@ public class Belief {
         for (ReachableDispenser rd : reachableDispensers) {
             if (rd.data().equals("x")) {
                 Point agentPos = getPosition();
-                int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
-                int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
-                int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
-                int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));             
-                ReachableDispenser rdnew = new ReachableDispenser(new Point(posx, posy), rd.type(),  distance,  direction, rd.data());
+                Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
+                        (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
+                int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                        + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);               
+                int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));             
+                ReachableDispenser rdnew = new ReachableDispenser(pos, rd.type(),  distance,  direction, rd.data());
                 reachableDispensersX.add(rdnew);
             }
         }
@@ -1138,14 +1139,16 @@ public class Belief {
         
         for (ReachableGoalZone rd : reachableGoalZones) {
             Point agentPos = getPosition();
-            int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
-            int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
-            int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
-            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
-            ReachableGoalZone rdnew = new ReachableGoalZone(new Point(posx, posy), distance, direction);
+            Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
+                    (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);     
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableGoalZone rdnew = new ReachableGoalZone(pos, distance, direction);
             reachableGoalZonesX.add(rdnew);
         }
-        
+ 
+        reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
         return reachableGoalZonesX;
     }
     
@@ -1160,11 +1163,12 @@ public class Belief {
         
         for (ReachableRoleZone rd : reachableRoleZones) {
             Point agentPos = getPosition();
-            int posx = (((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x);
-            int posy = (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y);
-            int distance = Math.abs(posx - agentPos.x) + Math.abs(posy - agentPos.y);
-            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, new Point(posx, posy)));
-            ReachableRoleZone rdnew = new ReachableRoleZone(new Point(posx, posy), distance, direction);
+            Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
+                    (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableRoleZone rdnew = new ReachableRoleZone(pos, distance, direction);
             reachableRoleZonesX.add(rdnew);
         }
         

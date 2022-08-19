@@ -152,8 +152,9 @@ public class Point extends java.awt.Point {
      * @return abs(a.x - b.x)+abs(a.y-b.y)
      */
     public int distance(Point b) {
-        return Math.abs(this.x - b.x) + Math.abs(this.y - b.y); // Manhattan
-        //return (Math.min(Math.abs(this.x - b.x),  mapSize.x - Math.abs(this.x - b.x))+ Math.min(Math.abs(this.y - b.y),  mapSize.y - Math.abs(this.y - b.y))); // Manhattan
+        //return Math.abs(this.x - b.x) + Math.abs(this.y - b.y); // Manhattan
+        return (Math.min(Math.abs(this.x - b.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(this.x - b.x)) % mapSize.x)
+                + Math.min(Math.abs(this.y - b.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(this.y - b.y)) % mapSize.y)); // Manhattan
     }
     
     /**
@@ -163,8 +164,9 @@ public class Point extends java.awt.Point {
      * @return abs(a.x - b.x)+abs(a.y-b.y)
      */
     public static int distance(Point a, Point b) {
-        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); // Manhattan
-        //return (Math.min(Math.abs(a.x - b.x),  mapSize.x - Math.abs(a.x - b.x))+ Math.min(Math.abs(a.y - b.y),  mapSize.y - Math.abs(a.y - b.y))); // Manhattan        
+        //return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); // Manhattan
+        return (Math.min(Math.abs(a.x - b.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(a.x - b.x)) % mapSize.x)
+                + Math.min(Math.abs(a.y - b.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(a.y - b.y)) % mapSize.y)); // Manhattan   
     }
 
     /**

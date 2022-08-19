@@ -87,6 +87,10 @@ public class ArrangeBlockDesire extends BeliefDesire {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.getNextActionInfo");
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
+        
+        if (agent.getAttachedPoints().size() == 0)
+            return ActionInfo.SKIP("0008 no block attached ???");
+        
         Point agentBlock = agent.getAttachedPoints().get(0);
         Thing agentThing = agent.getAttachedThings().get(0);
         
@@ -98,7 +102,7 @@ public class ArrangeBlockDesire extends BeliefDesire {
         }
         
         if (!agentThing.details.equals(info.requirements.get(0).type)) {
-            return ActionInfo.SKIP("0009 problem arranging blocks");
+            return ActionInfo.SKIP("0009 wrong block for task");
         }
 
         String clockDirection = DirectionUtil.getClockDirection(agentBlock, taskBlock);

@@ -10,9 +10,11 @@ import massim.protocol.data.TaskInfo;
 
 public class AgentCooperations {
     public static List<Cooperation> cooperations = new ArrayList<Cooperation>();
-    private static int maxMaster = 4;
-    private static int max2BMaster = 3;
+    private static int maxMaster = 2;
+    private static int max2BMaster = 1;
     private static int max3BMaster = 1;
+    private static int maxTypes = 2;
+    public static int[] scores = {0, 0, 0, 0};
     
     public static synchronized void setCooperation(Cooperation cooperation) {
         remove(cooperation);
@@ -77,6 +79,10 @@ public class AgentCooperations {
             result = max3BMaster;
        
         return result;
+    }
+    
+    public static int getMaxTypes() {      
+        return maxTypes;
     }
     
     /**
@@ -161,7 +167,7 @@ public class AgentCooperations {
                + cooperation.statusMaster + " , " 
                + cooperation.helper.getName() + " , " 
                + cooperation.statusHelper + " , "
-               + (!cooperation.statusHelper2.equals(Status.No2) ? cooperation.helper2.getName() : "") + " , " 
+               + (cooperation.helper2 != null ? cooperation.helper2.getName() : "") + " , " 
                + cooperation.statusHelper2;
         
         return result;
@@ -291,7 +297,7 @@ public class AgentCooperations {
             String result = "";
 
             result = task.name + " , " + master.getName() + " , " + statusMaster + " , " + helper.getName() + " , "
-                    + statusHelper + " , " +  (!statusHelper2.equals(Status.No2) ? helper2.getName() : "") + " , " + statusHelper2;
+                    + statusHelper + " , " +  (helper2 != null ? helper2.getName() : "") + " , " + statusHelper2;
 
             return result;
         }

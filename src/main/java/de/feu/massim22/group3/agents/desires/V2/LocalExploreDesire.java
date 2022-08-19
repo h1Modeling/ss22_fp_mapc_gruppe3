@@ -59,29 +59,20 @@ public class LocalExploreDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());
+        AgentLogger.info(
+                Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());
 
-        if (agent.getIntention() != null && agent.getIntention().getName().equals("LocalExploreDesire")) {
-            if (agent.exploreCount > 40) {
-                agent.exploreDirection = (agent.exploreDirection + 1) % 4;
-                agent.exploreDirection2 = (agent.exploreDirection2 + 1) % 4;
-                agent.exploreCount = 0;
-            } else
-                agent.exploreCount++;
-        } else {
-            agent.exploreCount = 0;
-   
-            if (!agent.belief.getRoleName().equals("default")) 
-            // go towards the direction of the empty goal zone to do multi block tasks
-                if (agent.belief.getPosition().y < 28)
-                    agent.exploreDirection = DirectionUtil.stringToInt(DirectionUtil.getDirection(agent.belief.getPosition(), new Point(9, 1)));
-                else
-                    agent.exploreDirection = DirectionUtil.stringToInt(DirectionUtil.getDirection(agent.belief.getPosition(), new Point(28, 54)));
+        /*if (agent.blockAttached && agent.belief.getGoalZones().contains(Point.zero())) {
+            return ActionInfo.SKIP("0001 with block in goalzone; where should I go?");
+        } else {*/
+            agent.exploreDirection = DirectionUtil
+                    .stringToInt(agent.desireProcessing.walkCircles(agent, 10).toString());
             agent.exploreDirection2 = (agent.exploreDirection2 + 5) % 4;
-        }
-         
-         return agent.desireProcessing.getActionForMove(agent, DirectionUtil.intToString(agent.exploreDirection), DirectionUtil.intToString(agent.exploreDirection2), getName());
-     }
+        //}
+
+        return agent.desireProcessing.getActionForMove(agent, DirectionUtil.intToString(agent.exploreDirection),
+                DirectionUtil.intToString(agent.exploreDirection2), getName());
+    }
 
     /**
      * Updates the supervisor .

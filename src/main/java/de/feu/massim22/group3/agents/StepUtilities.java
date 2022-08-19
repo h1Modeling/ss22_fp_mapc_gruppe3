@@ -293,17 +293,27 @@ public class StepUtilities {
         AgentLogger.info(
                 Thread.currentThread().getName() + " mergeGroups() Start - Supervisor: " + supervisorGroup.getName()
                         + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + foundPosition);
- 
+        
+        Point newPosAgentFound = new Point(baseAgent.belief.getPosition().x + foundPosition.x,
+                baseAgent.belief.getPosition().y + foundPosition.y);     
+        Point newPosAgent = null;
+        
+        GameMap newMap = navi.getMaps().get(supervisorGroup.getName());
+        GameMap oldMap = navi.getMaps().get(supervisorToMerge.getName());
+
+        Point refPoint = newPosAgentFound;
+        Point foreignRefPoint = Point.castToPoint(agentFound.belief.getPosition());
+        
+        // Merge Map
+        Point offset = Point.castToPoint(newMap.mergeIntoMap(oldMap, foreignRefPoint, refPoint));
+        navi.getMaps().put(supervisorGroup.getName(), newMap);
+         
         List<String> agentsSupervisorGroup = supervisorGroup.getAgents();        
         List<String> agentsSupervisorToMerge = supervisorToMerge.getAgents();
         
         // add agents from agentsSupervisorToMerge to the list of agents from agentsSupervisorGroup
         agentsSupervisorGroup.addAll(agentsSupervisorToMerge);      
         supervisorGroup.setAgents(agentsSupervisorGroup); 
-
-        Point newPosAgentFound = new Point(baseAgent.belief.getPosition().x + foundPosition.x,
-                baseAgent.belief.getPosition().y + foundPosition.y);     
-        Point newPosAgent = null;
 
         // new supervisor for the agents of the list agentsSupervisorToMerge 
         for (BdiAgentV2 agent : allAgents) {
@@ -317,7 +327,9 @@ public class StepUtilities {
                     newPosAgent = new Point(newPosAgentFound.x + (agent.belief.getPosition().x - agentFound.belief.getPosition().x),
                             newPosAgentFound.y + (agent.belief.getPosition().y - agentFound.belief.getPosition().y));
                 }
-                
+
+                newPosAgent.x = (((newPosAgent.x % Point.mapSize.x) + Point.mapSize.x) % Point.mapSize.x);
+                newPosAgent.y = (((newPosAgent.y % Point.mapSize.y) + Point.mapSize.y) % Point.mapSize.y);
                 agent.belief.setPosition(newPosAgent);
                 updateMap(agent);
             }
@@ -350,7 +362,11 @@ public class StepUtilities {
                 //Point agentPos = Point.castToPoint(navi.getInternalAgentPosition(supervisor.getName(), agents.get(i)));
                 //absolute position equals internal position
                 Point agentPos = Point.castToPoint(getAgent(agents.get(i)).belief.getPosition());
-                AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - agent: " + agents.get(i) + " , agentPos: " + agentPos);
+                AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - agent: " + agents.get(i) 
+                        + " , beliefPos: " + agentPos
+                        + " , internalPos: " + navi.getInternalAgentPosition(supervisor.getName(), agents.get(i))
+                        + " , mapPos: " + navi.getPosition(agents.get(i), supervisor.getName())
+                        + " , absPos: " + getAgent(agents.get(i)).belief.getAbsolutePosition());
 
                 for (int j = 0; j < interestingPoints.size(); j++) {
                     Point targetPos = Point.castToPoint(interestingPoints.get(j).point());
@@ -359,7 +375,7 @@ public class StepUtilities {
                     String direction = DirectionUtil.getDirection(agentPos, targetPos);
                     agentResultData[j] = new PathFindingResult(distance, direction);
                     
-                    //if (interestingPoints.get(j).data().equals("x"))
+                    //if (interestingPoints.get(j).zoneType().equals(ZoneType.GOALZONE))
                        // AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - interestingPoint: " + interestingPoints.get(j).point() + " , data: " + interestingPoints.get(j).data() + " , " + interestingPoints.get(j).cellType().name() + " , " + distance + " , " + direction);
                 }
 

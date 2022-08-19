@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 
 public class DirectionUtil {
@@ -133,20 +134,26 @@ public class DirectionUtil {
         return result;
     }
 	
-    /*public static String getDirection(Point from, Point to) {
+    public static String getDirection(Point from, Point to) {
         String result = " ";
         Point pointTarget = new Point(to.x - from.x, to.y - from.y);
-        Point pointTargetAround = new Point(mapSize.x - Math.abs(to.x - from.x), mapSize.y - Math.abs(to.y - from.y));
+        Point pointTargetAround = new Point(to.x - from.x - mapSize.x, to.y - from.y - mapSize.y);
+
+        /*AgentLogger.info(Thread.currentThread().getName() + " getDirection - from/to: " + from.toString() + " , "
+                + to.toString() + " , pointTarget/pointTargetAround: " + pointTarget.toString() + " , "
+                + pointTargetAround.toString());*/
 
         if (pointTarget.x == 0) {
-            if (pointTarget.y < 0 && pointTargetAround.y <= Math.abs(pointTarget.y))
+            if ((pointTarget.y < 0 && Math.abs(pointTargetAround.y) >= Math.abs(pointTarget.y))
+                    || (pointTargetAround.y < 0 && Math.abs(pointTargetAround.y) < Math.abs(pointTarget.y)))
                 result = "n";
             else
                 result = "s";
         }
 
         if (pointTarget.y == 0) {
-            if (pointTarget.x < 0 && pointTargetAround.x <= Math.abs(pointTarget.x))
+            if ((pointTarget.x < 0 && Math.abs(pointTargetAround.x) >= Math.abs(pointTarget.x))
+                    || (pointTargetAround.x < 0 && Math.abs(pointTargetAround.x) < Math.abs(pointTarget.x)))
                 result = "w";
             else
                 result = "e";
@@ -154,20 +161,22 @@ public class DirectionUtil {
 
         if (pointTarget.x != 0 && pointTarget.y != 0) {
             if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
-                if (pointTarget.x < 0 && pointTargetAround.x <= Math.abs(pointTarget.x))
+                if ((pointTarget.x < 0 && Math.abs(pointTargetAround.x) >= Math.abs(pointTarget.x))
+                        || (pointTargetAround.x < 0 && Math.abs(pointTargetAround.x) < Math.abs(pointTarget.x)))
                     result = "w";
                 else
                     result = "e";
-            else if (pointTarget.y < 0 && pointTargetAround.y <= Math.abs(pointTarget.y))
+            else if ((pointTarget.y < 0 && Math.abs(pointTargetAround.y) >= Math.abs(pointTarget.y))
+                    || (pointTargetAround.y < 0 && Math.abs(pointTargetAround.y) < Math.abs(pointTarget.y)))
                 result = "n";
             else
                 result = "s";
         }
 
         return result;
-    }*/
+    }
 	
-	   public static String getDirection(Point from, Point to) {
+	   /*public static String getDirection(Point from, Point to) {
 	        String result = " ";
 	        Point pointTarget = new Point(to.x - from.x, to.y - from.y);
 
@@ -198,7 +207,7 @@ public class DirectionUtil {
 	        }
 
 	        return result;
-	    }
+	    }*/
 	
 	// ist a soll b  cw clockwise  ccw counter clockwise
 	public static String getClockDirection(Point a, Point b) {

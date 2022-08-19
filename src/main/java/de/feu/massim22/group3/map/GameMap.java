@@ -340,9 +340,11 @@ public class GameMap {
             initialSize = new Point(sizeX, sizeY);
             topLeft = newTopLeft;
         }
-
         // Map size already discovered
         else {
+            AgentLogger.info(
+                    Thread.currentThread().getName() + " mergeIntoMap() Offset: " + new Point(offsetX, offsetY));
+
             int originOffsetX = foreignMap.getTopLeft().x - topLeft.x;
             int originOffsetY = foreignMap.getTopLeft().y - topLeft.y;
             for (int y = 0; y < size.y; y++) {
