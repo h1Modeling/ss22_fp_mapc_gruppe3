@@ -16,6 +16,11 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
+/**
+ * The class <code>MasterMultiBlocksDesire</code> models the desire for a agent to become a master.
+ * 
+ * @author Melinda Betz
+ */
 public class MasterMultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;
@@ -31,6 +36,13 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
     Thing block2Thing;
     Thing block3Thing;
 
+    /**
+     * Initializes a new MasterMultiBlocksDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the info of the task
+     * @param agent the agent who wants to become a master
+     */
     public MasterMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start MasterMultiBlocksDesire");
@@ -38,6 +50,11 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         this.agent = agent;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(
@@ -52,7 +69,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         if (AgentCooperations.exists(info, agent, 1)) {
             AgentLogger.info(
                     Thread.currentThread().getName() + " runSupervisorDecisions - findHelper - ist master");
-            // Agent ist als master in einer cooperation
+            // agent is master of a cooperation
             this.coop = AgentCooperations.get(info, agent, 1);
 
             if (info.requirements.size() == 2) {
@@ -74,13 +91,18 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(true, "");
     }
 
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - MasterMultiBlocksDesire.isExecutable");
         if (belief.getRole().actions().contains(Actions.DETACH) && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
-            // mehr Block Tasks
+            // multi-blocks-task
             if (info.requirements.size() >= 2) {
                 BooleanInfo ret = findHelper(info);
                 
@@ -94,6 +116,11 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName()
@@ -197,6 +224,13 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         }
     }
 
+    /**
+     * Searches for a first helper for a certain task .
+     * 
+     * @param task the task for which the helper is needed
+     * 
+     * @return if a helper could be found or not
+     */
     public BooleanInfo findHelper(TaskInfo task) {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - findHelper");
         BooleanInfo result = new BooleanInfo(false, "");
@@ -224,16 +258,16 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         if (AgentCooperations.exists(task, agent, 1)) {
             AgentLogger.info(
                     Thread.currentThread().getName() + " runSupervisorDecisions - findHelper - ist master");
-            // Agent ist als master in einer cooperation dieser task
+            // agent is master in a cooperation of this task 
             this.coop = AgentCooperations.get(task, agent, 1);
             result = new BooleanInfo(true, "");
 
         } else {
             if (AgentCooperations.anotherMasterIsPossible() && !AgentCooperations.exists(agent) 
                     && AgentCooperations.getCountMaster(task.requirements.size()) < AgentCooperations.getMaxMaster(task.requirements.size())) { 
-                // Es gibt noch keine maxMaster master und Agent ist weder als master noch als helper in einer cooperation
+                // there is no maxMaster yet and the agent is neither as a master or  as a helper part of a existing cooperation 
                 for (Thing attachedThing : agent.getAttachedThings()) {
-                    // Agent hat einen passenden Block
+                    // agent has a matching block
                     for (int i = 0; i < task.requirements.size(); i++) {
                         if (task.requirements.get(i).type.equals(attachedThing.details)
                                 && ((task.requirements.get(i).x == 0 || task.requirements.get(i).y == 0)
@@ -251,7 +285,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                         if (!AgentCooperations.exists(meeting.agent2())
                                 && !meeting.agent2().getAttachedThings().isEmpty()) {
                             for (Thing attachedThing2 : meeting.agent2().getAttachedThings()) {
-                                // anderer Agent hat den Block der mir noch fehlt
+                                // other agent has the block which I still need
                                 for (int i = 0; i < task.requirements.size(); i++) {
                                     AgentLogger.info(Thread.currentThread().getName()
                                             + " runSupervisorDecisions - findHelper - attached: "
@@ -277,7 +311,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                                 if (!help.getName().equals(agent.getName()) && !AgentCooperations.exists(help)
                                         && !help.getAttachedThings().isEmpty()) {
                                     for (Thing attachedThing2 : help.getAttachedThings()) {
-                                        // anderer Agent hat den Block der mir noch fehlt
+                                        // other agent has the block which I still need
                                         for (int i = 0; i < task.requirements.size(); i++) {
                                             if ((task.requirements.get(i).x != block1.x
                                                     || task.requirements.get(i).y != block1.y)
@@ -319,6 +353,13 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         return result;
     }
 
+    /**
+     * Searches for a second helper for a certain task .
+     * 
+     * @param task the task for which the helper is needed
+     * 
+     * @return if a helper could be found or not
+     */
     public BooleanInfo findHelper2(TaskInfo task) {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - findHelper2");
         BooleanInfo result = new BooleanInfo(false, "");
@@ -331,17 +372,17 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                 + AgentCooperations.toString(AgentCooperations.cooperations));
         
         if (task.requirements.size() > 2) {
-            //es handelt sich um eine 3-Block-Task
+            //the task is a 3-blocks-task
             if (AgentCooperations.exists(task, agent, 1) 
                     && !AgentCooperations.get(task, agent, 1).statusHelper2().equals(Status.No2)) {
-                // Agent ist als master in einer cooperation dieser task und die task hat schon einen helper2
+                // agent is a master in a cooperation form this task, which already has a second helper (helper2)
                 AgentLogger.info(Thread.currentThread().getName()
                         + " runSupervisorDecisions - findHelper2 - ist master");
                 result = new BooleanInfo(true, "");
 
             } else {
                 if (AgentCooperations.exists(task, agent, 1) || !AgentCooperations.exists(agent)) {
-                    // Agent ist entweder master ohne helper2 oder gar nicht in cooperation
+                    // agent is either master without a second helper (helper2) or he is not in a cooperation 
                     for (Meeting meeting : AgentMeetings.find(agent)) {
                         AgentLogger.info(Thread.currentThread().getName()
                                 + " runSupervisorDecisions - findHelper2 - met: "
@@ -357,7 +398,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                                         + " runSupervisorDecisions - findHelper2 - in1 ");
 
                                 if (block3Thing.type.equals(attachedThing2.details)) {
-                                    // anderer Agent hat den Block der mir noch fehlt
+                                    // other agent has the block which I still need
                                     AgentLogger.info(Thread.currentThread().getName()
                                             + " runSupervisorDecisions - findHelper2 - infound ");
                                     result = new BooleanInfo(true, "");
@@ -383,7 +424,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                                         AgentLogger.info(Thread.currentThread().getName()
                                                 + " runSupervisorDecisions - findHelper2 - in1 ");
                                         for (Thing attachedThing2 : help.getAttachedThings()) {
-                                            // anderer Agent hat den Block der mir noch fehlt
+                                            // aother agent has the block which I still need
                                             AgentLogger.info(Thread.currentThread().getName()
                                                     + " runSupervisorDecisions - findHelper2 - in2 ");
                                             if (block3Thing.type.equals(attachedThing2.details)) {
@@ -413,7 +454,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                 }
             }
         } else {
-            //keine 3-Block-Task, also immer Ok
+            //no 3-blocks.task always true
             result = new BooleanInfo(true, "");
         }
 
@@ -437,7 +478,13 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         return false;
     }
     
-    
+    /**
+     * Gets the information (requirements, deadline, name etc) of a task .
+     * 
+     * @param task the task of which the information is needed
+     * 
+     * @return the information
+     */
     public TaskInfo getTask() {
         return info;
     }

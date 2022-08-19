@@ -10,11 +10,23 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 
+/**
+ * The class <code>DisconnectMultiBlocksDesire</code> models the desire to disconnect blocks form a agent after a successfully submitted multi-block-task.
+ * 
+ * @author Melinda Betz
+ */
 public class DisconnectMultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
     private BdiAgentV2 agent;
     
+    /**
+     * Initializes a new DisconnectMultiBlocksDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the info of the task
+     * @param agent the agent who has submitted the task
+     */
     public DisconnectMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger
@@ -23,16 +35,31 @@ public class DisconnectMultiBlocksDesire extends BeliefDesire {
         this.agent = agent;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         return new BooleanInfo(true, "");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName()

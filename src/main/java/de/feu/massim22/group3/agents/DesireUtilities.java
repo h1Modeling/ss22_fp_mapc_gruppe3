@@ -1185,6 +1185,12 @@ public class DesireUtilities {
 
         return false;
     }
-  //record for pathfinding result with distance and direction
+ 
+    /**
+     * Record for the dispenser flag .
+     * 
+     * @param position where the dispenser is
+     * @param attachMade if a block has been attached from a certain dispenser
+     */
     public record DispenserFlag(Point position, Boolean attachMade) {}
 }

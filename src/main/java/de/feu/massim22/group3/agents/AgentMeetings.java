@@ -31,7 +31,7 @@ public class AgentMeetings {
     }
     
     /**
-     * Proves if a meeting already exists.
+     * Checks if a meeting already exists.
      * 
      * @param meeting the meeting to be proved
      * 

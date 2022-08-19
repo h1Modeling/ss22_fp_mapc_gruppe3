@@ -14,6 +14,11 @@ import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
+/**
+ * The class <code>Helper2MultiBlocksDesire</code> models the desire of a agent who is the second helper ( has the third block) of a multi-block-task.
+ * 
+ * @author Melinda Betz
+ */
 public class Helper2MultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
@@ -31,6 +36,13 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
     private Thing block3Thing;
     private String dirblock3;
     
+    /**
+     * Initializes a new Helper2MultiBlocksDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the info of the task
+     * @param agent the agent who is the second helper
+     */
     public Helper2MultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start Helper2MultiBlocksDesire");
@@ -38,6 +50,11 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
         this.agent = agent;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Helper2MultiBlocksDesire.isFulfilled");
@@ -45,6 +62,11 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(
@@ -54,10 +76,10 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
         if (belief.getRole().actions().contains(Actions.DETACH) 
                 && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
-            // 3 Block Task
+            // 3 block task
             if (info.requirements.size() == 3) {
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Helper2MultiBlocksDesire.isExecutable - 3-Block-Task: " + info.name);
-                // Die Blöcke für die Task sind vorhanden
+                // all blocks for the task are available
                 if (proofBlockStructure(info)) {                    
                     distanceNearestTarget = 1000;
                     nearestMeeting = AgentMeetings.get(agent, coop.master());
@@ -73,7 +95,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                     + distanceAgent + " , " + nearestMeeting.toString());
 
                     if (distanceAgent <= 4 || agent.alwaysToTarget) {
-                        // Agent1 hat Agent2 in connect-Entfernung
+                        // agent1 and agent2 have a distance to one another that allows them to connect
                         ArrayList<java.awt.Point> dirs = DirectionUtil.getCellsIn4Directions();
 
                         for (int i = 0; i < dirs.size(); i++) {
@@ -113,7 +135,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                     
                     return new BooleanInfo(true, "");
                 } else
-                    // Die Blöcke für die Task sind nicht vorhanden
+                    // blocks for the task are not available
                     return new BooleanInfo(false, "");
             }
         }
@@ -121,18 +143,23 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(
                 Thread.currentThread().getName() + " runSupervisorDecisions - Helper2MultiBlocksDesire.getNextActionInfo");
         agent.desireProcessing.tryLastWanted = true;
     
-        if (onTarget) {     //Agent2 steht auf einer der Target-Positionen für den Connect
+        if (onTarget) {     //agent2 is on a target position to do a  connect
             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Helper2MultiBlocksDesire.getNextActionInfo - AA: " 
         + DirectionUtil.getDirectionForCell(myBlock) + " , " + dirblock3);
             
             if (DirectionUtil.intToString(DirectionUtil.getDirectionForCell(myBlock)).equals(dirblock3)) {
-                //Block ist bereits an der richtigen Position
+                //block is in the right position
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Helper2MultiBlocksDesire.getNextActionInfo - BB");
                 
                 if (coop.statusHelper2().equals(Status.Connected) || coop.statusHelper2().equals(Status.ReadyToDetach)) {                   
@@ -144,7 +171,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                     return ActionInfo.SKIP("1000 waiting for master to be ready to connect");
                 }
             } else {
-                //Block muss noch gedreht werden
+                //block has to be rotated
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Helper2MultiBlocksDesire.getNextActionInfo - CC");
                 Point taskBlock = Point.castToPoint(DirectionUtil.getCellInDirection(dirblock3));
                 Point agentBlock = myBlock;
@@ -186,7 +213,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                     + nearestMeeting.toString());
 
             if (distanceNearestTarget <= 3 || agent.alwaysToTarget) {
-                // gehe zur Target-Position für den Connect
+                // go to target position for connect
                 AgentLogger.info(Thread.currentThread().getName()
                         + " runSupervisorDecisions - Helper2MultiBlocksDesire.getNextActionInfo - DD");
                 String direction = DirectionUtil.getDirection(agent.belief.getPosition(), nearestTarget);
@@ -198,13 +225,13 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                 if (distanceAgent <= 6 && (coop.statusHelper().equals(Status.New) 
                         || coop.statusHelper().equals(Status.GoMaster) 
                         || coop.statusHelper().equals(Status.GoTarget))) {
-                    // warte auf den helper, damit der zuerst seine Position besetzen kann
+                    // wait for helper, so he can move to the needed position first
                     AgentLogger.info(Thread.currentThread().getName()
                             + " runSupervisorDecisions - Helper2MultiBlocksDesire.getNextActionInfo - EE");
                     AgentCooperations.setStatusHelper2(info, nearestMeeting.agent1(), Status.GoMaster);
                     return ActionInfo.SKIP("1000 waiting for helper to be on target");
                 } else {
-                    // gehe Richtung Agent
+                    // go in direction of agent
                     AgentLogger.info(Thread.currentThread().getName()
                             + " runSupervisorDecisions - Helper2MultiBlocksDesire.getNextActionInfo - FF");
                     Point posAgent2 = AgentMeetings.getPositionAgent2(nearestMeeting);
@@ -217,6 +244,13 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
        //return ActionInfo.SKIP(getName());  
     }
     
+    /**
+     * Checks if the blocks for a certain task are in the right order.
+     * 
+     * @param task the task which blocks are being checked
+     * 
+     * @return if the blocks are in the right order or not
+     */
     public boolean proofBlockStructure(TaskInfo task) {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - proofBlockStructure");
         boolean result = false;
@@ -229,7 +263,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
         }
         
         if (AgentCooperations.exists(task, agent, 3)) {
-            // Agent ist als helper2 in einer cooperation
+            // agent is a helper2 in a existing agents cooperation
             this.coop = AgentCooperations.get(task, agent, 3);
             result = true;
             AgentLogger.info(Thread.currentThread().getName()
@@ -245,7 +279,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
             }
             
             if (!found) {
-                // trotz Cooperation kein passender 3.Block (sollte nicht passieren, kommt aber leider vor)
+                // despite cooperation there is no (matching) third block ( should not happen, but sadly it does)
                 result = false;
                 AgentCooperations.remove(coop);
             }
