@@ -1,6 +1,6 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.V2utils;
 
-import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 
 /**
  * The class <code>BdiAgentV2</code> contains all the important methods for point processing in BdiAgentV2.

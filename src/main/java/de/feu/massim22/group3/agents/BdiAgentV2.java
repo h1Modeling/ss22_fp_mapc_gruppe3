@@ -1,10 +1,11 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
-import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.V2utils.*;
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.IDesire;
-import de.feu.massim22.group3.agents.desires.V2.DisconnectMultiBlocksDesire;
+import de.feu.massim22.group3.agents.desires.V2desires.DisconnectMultiBlocksDesire;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.communication.MailService;
@@ -136,11 +137,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                                     && desireProcessing.doDecision(this, new DisconnectMultiBlocksDesire(this.belief, coop.task(), this))) {
                                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: "
                                         + this.getName() + " , DisconnectMultiBlocksDesire , Action: "
-                                        + this.desires.get(this.desires.size() - 1).getOutputAction().getName()
+                                        + this.getDesires().get(this.getDesires().size() - 1).getOutputAction().getName()
                                         + " , Parameter: "
-                                        + this.desires.get(this.desires.size() - 1).getOutputAction().getParameters()
+                                        + this.getDesires().get(this.getDesires().size() - 1).getOutputAction().getParameters()
                                         + " , Task: " + coop.task().name + " , Prio: " + desireProcessing
-                                                .getPriority(this.desires.get(this.desires.size() - 1), this));
+                                                .getPriority(this.getDesires().get(this.getDesires().size() - 1), this));
                             } else
                                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: "
                                         + this.getName() + " , DisconnectMultiBlocksDesire");

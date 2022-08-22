@@ -39,6 +39,15 @@ public abstract class BdiAgent<T> extends Agent {
         return belief;
     }
     
+    /**
+     * Gets the desires of the agent.
+     * 
+     * @return the desires of the agent
+     */
+    public List<T> getDesires() {
+        return desires;
+    }
+    
     public IIntention getIntention() {
        return this.intention;
     }

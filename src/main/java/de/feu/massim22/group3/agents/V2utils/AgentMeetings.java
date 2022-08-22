@@ -1,7 +1,7 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.V2utils;
 
-import de.feu.massim22.group3.agents.Point;
-import de.feu.massim22.group3.agents.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import java.util.List;
 import java.util.ArrayList;

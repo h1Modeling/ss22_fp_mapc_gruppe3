@@ -1,14 +1,16 @@
-package de.feu.massim22.group3.agents.desires.V2;
+package de.feu.massim22.group3.agents.desires.V2desires;
 
 //import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.DesireUtilities.DispenserFlag;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.V2utils.AgentMeetings;
+import de.feu.massim22.group3.agents.V2utils.Point;
+import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.V2utils.DesireUtilities.DispenserFlag;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.map.CellType;

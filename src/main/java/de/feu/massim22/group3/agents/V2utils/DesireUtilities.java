@@ -1,28 +1,19 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.V2utils;
 
 //import java.awt.Point;
 import java.util.*;
 
-import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.desires.ActionInfo;
-import de.feu.massim22.group3.agents.desires.V2.ArrangeBlockDesire;
-import de.feu.massim22.group3.agents.desires.V2.MasterMultiBlocksDesire;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
-import de.feu.massim22.group3.agents.desires.V2.GoAbandonedBlockDesire;
-import de.feu.massim22.group3.agents.desires.V2.GoAdoptRoleDesire;
-import de.feu.massim22.group3.agents.desires.V2.GoDispenserDesire;
-import de.feu.massim22.group3.agents.desires.V2.GoGoalZoneDesire;
-import de.feu.massim22.group3.agents.desires.V2.HelperMultiBlocksDesire;
-import de.feu.massim22.group3.agents.desires.V2.Helper2MultiBlocksDesire;
-import de.feu.massim22.group3.agents.desires.V2.ConnectMultiBlocksDesire;
 import de.feu.massim22.group3.agents.desires.IDesire;
-import de.feu.massim22.group3.agents.desires.V2.LocalExploreDesire;
 import de.feu.massim22.group3.agents.desires.LooseWeightDesire;
-import de.feu.massim22.group3.agents.desires.V2.SubmitDesire;
+import de.feu.massim22.group3.agents.desires.V2desires.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -85,49 +76,49 @@ public class DesireUtilities {
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
                 + " , Agent: " + agent.getName());
 
-        if (doDecision(agent, new DigFreeDesire(agent.belief))) {
+        if (doDecision(agent, new DigFreeDesire(agent.getBelief()))) {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-            + " , DigFreeDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-            + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+            + " , DigFreeDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+            + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+            + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , DigFreeDesire");
         
-        if (doDecision(agent, new FreedomDesire(agent.belief))) {
+        if (doDecision(agent, new FreedomDesire(agent.getBelief()))) {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-            + " , FreedomDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-            + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+            + " , FreedomDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+            + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+            + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , FreedomDesire");
         
-        if (doDecision(agent, new LocalExploreDesire(agent.belief, agent.supervisor.getName(), agent))) {
+        if (doDecision(agent, new LocalExploreDesire(agent.getBelief(), agent.supervisor.getName(), agent))) {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-            + " , LocalExploreDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-            + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-            + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+            + " , LocalExploreDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+            + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+            + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
         } else
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , LocalExploreDesire");
         
         if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > maxTaskBlocks 
-                && doDecision(agent, new LooseWeightDesire(agent.belief))) {
+                && doDecision(agent, new LooseWeightDesire(agent.getBelief()))) {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                + " , LooseWeightDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters() 
-                + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                + " , LooseWeightDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters() 
+                + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
             } else
                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , LooseWeightDesire");
         
         if (agent.getBelief().getRole().name().equals("default") 
-                && doDecision(agent, new GoAdoptRoleDesire(agent.belief, agent, "worker"))) {
+                && doDecision(agent, new GoAdoptRoleDesire(agent.getBelief(), agent, "worker"))) {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                + " , GoAdoptRoleDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                + " , GoAdoptRoleDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
             } else 
                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , GoAdoptRoleDesire - worker");
@@ -145,14 +136,14 @@ public class DesireUtilities {
      * 
      * @return if the decision can be done or not
      */
-    boolean doDecision(BdiAgentV2 agent, IDesire inDesire) {
+    public boolean doDecision(BdiAgentV2 agent, IDesire inDesire) {
         boolean result = false;
       
         if (!inDesire.isFulfilled().value() 
                 && !inDesire.isUnfulfillable().value() 
                 && inDesire.isExecutable().value()) { // desire ist möglich , hinzufügen
             inDesire.setOutputAction(inDesire.getNextActionInfo().value());
-            agent.desires.add(inDesire);
+            agent.getDesires().add(inDesire);
             result = true;
         }
         
@@ -234,9 +225,9 @@ public class DesireUtilities {
                 if (!agent.blockAttached
                 && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlockA(agent, task).type))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , GoAbandonedBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , GoAbandonedBlockDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoAbandonedBlockDesire");
@@ -244,81 +235,81 @@ public class DesireUtilities {
                 //String bType = (StepUtilities.getNumberAttachedBlocks(getTaskBlock(agent, task).type) < 4 ? getTaskBlock(agent, task).type : "b2");
                 
                 if (!agent.blockAttached 
-                    && doDecision(agent, new GoDispenserDesire(agent.belief, getTaskBlockC(agent, task).type, supervisor.getName(), agent))) {
+                    && doDecision(agent, new GoDispenserDesire(agent.getBelief(), getTaskBlockC(agent, task).type, supervisor.getName(), agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , GoDispenserDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , GoDispenserDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                 } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoDispenserDesire");
                 
                 if (maxTaskBlocks > 1 && agent.blockAttached && task.requirements.size() > 1
-                        && doDecision(agent, new HelperMultiBlocksDesire(agent.belief, task, agent))) {
+                        && doDecision(agent, new HelperMultiBlocksDesire(agent.getBelief(), task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , HelperMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , HelperMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , HelperMultiBlocksDesire");
                 
                 if (maxTaskBlocks > 2 && agent.blockAttached && task.requirements.size() > 2
-                        && doDecision(agent, new Helper2MultiBlocksDesire(agent.belief, task, agent))) {
+                        && doDecision(agent, new Helper2MultiBlocksDesire(agent.getBelief(), task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , Helper2MultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , Helper2MultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , Helper2MultiBlocksDesire");
 
                 if (agent.blockAttached && !agent.getBelief().getGoalZones().contains(Point.zero()) 
-                    && doDecision(agent, new GoGoalZoneDesire(agent.belief, agent))) {
+                    && doDecision(agent, new GoGoalZoneDesire(agent.getBelief(), agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , GoGoalZoneDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , GoGoalZoneDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , GoGoalZoneDesire");
 
                 if (agent.blockAttached && task.requirements.size() == 1 && agent.getBelief().getGoalZones().contains(Point.zero())
-                    && doDecision(agent, new ArrangeBlockDesire(agent.belief, task, agent))) {
+                    && doDecision(agent, new ArrangeBlockDesire(agent.getBelief(), task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , ArrangeBlockDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , ArrangeBlockDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                     } else
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , ArrangeBlockDesire");
                                 
                 if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())
-                        && doDecision(agent, new MasterMultiBlocksDesire(agent.belief, task, agent))) {
+                        && doDecision(agent, new MasterMultiBlocksDesire(agent.getBelief(), task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , MasterMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , MasterMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , MasterMultiBlocksDesire");
                 
                 if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached 
-                        && doDecision(agent, new ConnectMultiBlocksDesire(agent.belief, task, agent))) {
+                        && doDecision(agent, new ConnectMultiBlocksDesire(agent.getBelief(), task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , ConnectMultiBlocksDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , ConnectMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                         } else
                         AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                                 + " , ConnectMultiBlocksDesire");
 
                 if (agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())
-                    && doDecision(agent, new SubmitDesire(agent.belief, task, agent))) {
+                    && doDecision(agent, new SubmitDesire(agent.getBelief(), task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                    + " , SubmitDesire , Action: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getName() 
-                    + " , Parameter: " + agent.desires.get(agent.desires.size() - 1).getOutputAction().getParameters()
-                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.desires.get(agent.desires.size() - 1), agent));
+                    + " , SubmitDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
+                    + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                    + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                     } else {}
                     AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                             + " , SubmitDesire");
@@ -479,7 +470,7 @@ public class DesireUtilities {
         IDesire result = null;
         int priority = 0;
         
-        for (IDesire desire : agent.desires) {
+        for (IDesire desire : agent.getDesires()) {
             /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
                     + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + getPriority(desire));*/
             if (getPriority(desire, agent) > priority) {
@@ -1138,7 +1129,14 @@ public class DesireUtilities {
         return t != null && (t.type.equals(Thing.TYPE_OBSTACLE));
     }
 
-    protected Point getCRotatedPoint(Point p) {
+    /**
+     * Rotates a certain point clockwise.
+     *
+     * @param p the point that is going to be rotated
+     * 
+     * @return the rotated point
+     */
+    public Point getCRotatedPoint(Point p) {
         return new Point(-p.y, p.x);
     }
 

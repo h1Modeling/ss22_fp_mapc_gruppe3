@@ -174,10 +174,17 @@ public record ActionInfo(Action value, String info) {
         return new ActionInfo(a, info);
     }
    
-    //Melinda Anfang
+    /**
+     * Creates an ActionInfo instance for the massim Action disconnect.
+     * 
+     * @param agent the name of the agent to which a block should be connected
+     * @param p1 the position relative to the agent on which a block should be disconnected
+     * @param p2 the position relative to the agent on which a second block should be disconnected
+     * @param info additional information about the reasoning which provided the action
+     * @return the disconnect ActionInfo
+     */
     public static ActionInfo DISCONNECT(Point p1, Point p2, String info) {
         Action a = new Action(Actions.DISCONNECT, new Numeral(p1.x), new Numeral(p1.y), new Numeral(p2.x), new Numeral(p2.y));
         return new ActionInfo(a, info);
     }
-    //Melinda Ende
 }

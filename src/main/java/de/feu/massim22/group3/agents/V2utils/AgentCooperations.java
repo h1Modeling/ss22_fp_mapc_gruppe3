@@ -1,6 +1,6 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.V2utils;
 
-import de.feu.massim22.group3.agents.Point;
+import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.util.List;

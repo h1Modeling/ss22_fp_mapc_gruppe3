@@ -1,12 +1,11 @@
-package de.feu.massim22.group3.agents;
+package de.feu.massim22.group3.agents.V2utils;
 
 //import java.awt.Point;
 import java.util.*;
 
-
-import de.feu.massim22.group3.agents.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
-import de.feu.massim22.group3.agents.Point;
+import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -28,7 +27,6 @@ public class StepUtilities {
     public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
     private static int countAgent = 0;
     private static int countAgent2 = 0;
-    private static int activeStep = 0;
     public static boolean DecisionsDone;
     boolean mergeGroups = true;
     boolean alwaysAgentMeetings = true;
