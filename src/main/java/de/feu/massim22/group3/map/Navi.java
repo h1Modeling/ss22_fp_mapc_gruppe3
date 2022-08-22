@@ -47,7 +47,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
-    private Map<String, GameMap> maps = new HashMap<>();
+    public Map<String, GameMap> maps = new HashMap<>();
     private Map<String, String> agentSupervisor = new HashMap<>(); // Agent Key, Supervisor Value
     private Map<String, Integer> agentStep = new HashMap<>();
     private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
@@ -189,6 +189,14 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     public FloatBuffer getMapBuffer(String supervisor) {
     	return maps.get(supervisor).getMapBuffer();    
     }
+  
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, GameMap> getMaps() {
+        return maps;    
+    }
     
     /**
      * {@inheritDoc}
@@ -196,6 +204,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     @Override
     public void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess,
         String lastActionIntention, String groupDesireType, String groupDesirePartner, String groupDesireBlock, String attachedThings) {
+
         if (debug) {
             AgentDebugData data = new AgentDebugData(agent, supervisor, role, energy, lastAction, lastActionSuccess, lastActionIntention,
                 groupDesireType, groupDesirePartner, groupDesireBlock, attachedThings);
@@ -260,7 +269,8 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
         // Set agent Position
         map.setAgentPosition(agent, position);
-
+        AgentLogger.info(Thread.currentThread().getName() + " updateMap Position: " + position);
+        
         // Set attached Points
         map.setAgentAttached(agent, attachedThings);
 
@@ -310,6 +320,8 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 CellType cellType = thingVision[y][x];
                 ZoneType zoneType = zoneVision[y][x];
                 if (cellType != CellType.UNKNOWN) {
+                    //AgentLogger.info(Thread.currentThread().getName() + " updateMap: " + (x + position.x - vision) + " , " + (y + position.y - vision) + " , " + cellType + " , " + zoneType + " , " + agentIndex + " , " + step);
+                    
                     map.addReport(x + position.x - vision, y + position.y - vision, cellType, zoneType, agentIndex, step);
                 }
             }

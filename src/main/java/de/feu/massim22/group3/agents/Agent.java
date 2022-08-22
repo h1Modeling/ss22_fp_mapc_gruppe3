@@ -2,9 +2,11 @@ package de.feu.massim22.group3.agents;
 
 import eis.iilang.Percept;
 
-import java.util.*;
+import java.util.HashMap;
 
 import de.feu.massim22.group3.communication.MailService;
+
+import java.util.*;
 
 /**
  * An abstract Java agent.

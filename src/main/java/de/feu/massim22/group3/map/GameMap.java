@@ -487,7 +487,6 @@ public class GameMap {
             initialSize = new Point(sizeX, sizeY);
             topLeft = newTopLeft;
         }
-
         // Map size already discovered
         else {
             int originOffsetX = foreignMap.getTopLeft().x - topLeft.x;
@@ -553,6 +552,8 @@ public class GameMap {
                     }
                 }
                 if (c.getCellType().name().contains("DISPENSER")) {
+                   // AgentLogger.info(Thread.currentThread().getName() + " getMapBuffer: " + x + " , " + y + " , " + c.getCellType().name() + " , ");
+
                     Point size = getMapSize();
                     // Get neighbour cells
                     // North
@@ -578,7 +579,10 @@ public class GameMap {
                     if (west.x >= 0 && cells[west.y][west.x].getCellType() == CellType.FREE) {
                         InterestingPoint ip = new InterestingPoint(west, ZoneType.NONE, c.getCellType(), "w");
                         dispenserCache.add(ip);
-                    }
+                    }                   
+                    // Dispenser
+                    InterestingPoint ip = new InterestingPoint(p, ZoneType.NONE, c.getCellType(), "x");
+                    dispenserCache.add(ip);
                 }
             }
         }

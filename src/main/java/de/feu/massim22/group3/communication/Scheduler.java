@@ -203,14 +203,15 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 				Percept message = new Percept(EventName.UPDATE.name());
 				agent.handleMessage(message, sender);
 			}
-			// get actions if agent is not runnable
+
+			//Melinda
 			else {
 				Runnable runnable = () -> {
 				    eis.iilang.Action action = null;
 				    try {
 				        action = agent.step();
 				    } catch (Exception e) {
-				        AgentLogger.warning(" Step failed for: " + agent + " , " + e);
+				        AgentLogger.warning(" Step failed for: " + agent.getName() + " , " + e);
 				        e.printStackTrace(System.out);
                     }
 					
@@ -226,6 +227,7 @@ public class Scheduler implements AgentListener, EnvironmentListener, EisSender,
 				Thread t1 = new Thread(runnable);
 				t1.start();
 			}
+			//Melinda Ende
 		});
 		
         if(newPerceptAgents.size() == 0) try {

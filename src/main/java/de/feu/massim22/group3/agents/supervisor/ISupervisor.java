@@ -1,7 +1,6 @@
 package de.feu.massim22.group3.agents.supervisor;
 
 import java.util.Set;
-
 import eis.iilang.Percept;
 import massim.protocol.data.TaskInfo;
 import java.awt.Point;

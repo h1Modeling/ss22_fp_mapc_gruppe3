@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import de.feu.massim22.group3.agents.BdiAgent;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.agents.events.SupervisorEventName;
@@ -527,5 +528,9 @@ public class Supervisor implements ISupervisor {
             Percept message = packMessage(f);
             parent.forwardMessage(message, name, agent);
         }
+    }
+   
+    public BdiAgent getParent( ) {
+        return (BdiAgent) parent;
     }
 }

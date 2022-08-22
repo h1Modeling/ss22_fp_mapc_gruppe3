@@ -3,7 +3,6 @@ package de.feu.massim22.group3.agents.belief.reachable;
 import java.awt.Point;
 
 import de.feu.massim22.group3.utils.DirectionUtil;
-
 /**
  * The Record <code>ReachableRoleZone</code> stores path finding information from an agent to a cell in a role zone.
  *

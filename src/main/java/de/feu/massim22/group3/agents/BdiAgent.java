@@ -13,7 +13,6 @@ import de.feu.massim22.group3.communication.MailService;
  * @param <T> defines the type of the desires the agent handles.
  * @author Heinz Stadler
  */
-
 public abstract class BdiAgent<T> extends Agent {
     
     protected Belief belief;
@@ -38,6 +37,10 @@ public abstract class BdiAgent<T> extends Agent {
      */
     public Belief getBelief() {
         return belief;
+    }
+    
+    public IIntention getIntention() {
+       return this.intention;
     }
 
     /**
