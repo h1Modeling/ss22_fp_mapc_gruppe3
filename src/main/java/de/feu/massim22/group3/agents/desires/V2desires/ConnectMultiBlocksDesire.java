@@ -4,22 +4,34 @@ import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.belief.Belief;
+import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
 import de.feu.massim22.group3.agents.V2utils.Status;
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.agents.belief.Belief;
-import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
 
+/**
+ * The class <code>ConnectMultiBlocksDesire</code> models the desire to connect blocks for a multi-block-task.
+ * 
+ * @author Melinda Betz
+ */
 public class ConnectMultiBlocksDesire extends BeliefDesire {
 
     private TaskInfo info;    
     private BdiAgentV2 agent;
     private Cooperation coop;
     
+    /**
+     * Initializes a new ConnectMultiBlocksDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param info the info of the task
+     * @param agent the agent who wants to connect the blocks
+     */
     public ConnectMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ConnectMultiBlocksDesire");
@@ -27,6 +39,11 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
         this.agent = agent;
     }
 
+    /**
+     * Checks if the desire is fulfilled.
+     * 
+     * @return if it is fulfilled or not
+     */
     @Override
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ConnectMultiBlocksDesire.isFulfilled");
@@ -54,6 +71,11 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * Checks if the desire is executable .
+     * 
+     * @return if it is executable or not
+     */
     @Override
     public BooleanInfo isExecutable() {
         AgentLogger.info(
@@ -99,6 +121,11 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * Gets the next action that has to be done .
+     * 
+     * @return the next action
+     */
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(Thread.currentThread().getName()
