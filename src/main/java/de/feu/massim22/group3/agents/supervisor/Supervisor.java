@@ -46,10 +46,13 @@ public class Supervisor implements ISupervisor {
     private int[] agentReportCount =  new int[1000];
     private Map<String, Boolean> agentsWithTask = new HashMap<>();
     private List<Point> assignedGoalZones = new ArrayList<>();
+
     // Agents with GuardGoalZoneDesire already assigned
-    List<String> agentsGGZD = new ArrayList<>();
+    private List<String> agentsGGZD = new ArrayList<>();
     // Agents for GuardGoalZoneDesire
-    private String[] agentsForGGZD = new String[] {"31", "32"};
+    private String agentGroupForGGZD = "31";
+    // Number of designated GuardGoalZone agents (only 0, 1 or 2 implemented)
+    private int numOfGgzdAgents = 2;
 
     /**
      * Instantiates a new Supervisor.
@@ -298,27 +301,6 @@ public class Supervisor implements ISupervisor {
                     }
                 }
             }
-
-//            // Find distinct goal zones
-//            // Get GameMap size:
-//            Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(name);
-//            AgentLogger.fine(getName() + " Supervisor", "goalZones: " + goalZones.toString());
-//            // Save goal zone points
-//            Point reportZone = r.nearestGoalZone();
-//            // Normalize point onto positive coordinates because game map is traversable at the edges
-//            Point rz_n = DirectionUtil.normalizePointOntoMap(reportZone, gameMapSize);
-//            boolean newGoalZone = true;
-//            for (Point gz : goalZones) {
-//                Point gz_n = DirectionUtil.normalizePointOntoMap(gz, gameMapSize);
-//                // Check "over the map edges" too
-//                if (!rz_n.equals(new Point(0, 0)) && Math.abs(gz_n.x - rz_n.x) + Math.abs(gz_n.y - rz_n.y) < 15) {
-//                    newGoalZone = false;
-//                    break;
-//                }
-//            }
-//            if (newGoalZone && !rz_n.equals(new Point(0, 0))) {
-//                goalZones.add(rz_n);
-//            }
         }
 
         // Sort
@@ -334,43 +316,56 @@ public class Supervisor implements ISupervisor {
         agentsCarryingBlock3.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock4.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
 
-        List<Point> goalZones = new ArrayList<Point>();
-        // Get report of Agent 1
-        AgentReport r = null;
-        if(reports.containsKey(getName())) {
-            r = reports.get(getName());
-            if (r.numOfDistinctGoalZones() > 0) {
-                goalZones.add(r.nearestGoalZone());
-            }
-            if (r.numOfDistinctGoalZones() > 1) {
-                goalZones.add(r.goalZone2());
-            }
-        }
-        AgentLogger.fine(getName() + " Supervisor",
-                "goalZones: " + goalZones.toString());
-        AgentLogger.fine(getName() + " Supervisor",
-                "assignedGoalZones: " + assignedGoalZones.toString());
-        Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getName());
-        List <Point> assignedGoalZones_copy = new ArrayList<Point>(assignedGoalZones);
-        if (getName().equals(agentsForGGZD[0])) {
-            for (int i = 0; i < goalZones.size() && i < agentsForGGZD.length; i++) {
-                // Assign GuardGoalZone Desire only if it was not assigned before to this agent
-                if (agents.contains(agentsForGGZD[i]) && !agentsGGZD.contains(agentsForGGZD[i])) {
-                    if (assignedGoalZones_copy.size() == 0) {
-                        sendGuardGoalZoneTask(agentsForGGZD[i], goalZones.get(i));
-                    }
-                    else if (assignedGoalZones_copy.size() > 0 && r != null && r.numOfDistinctGoalZones() > 1) {
-                        for (Point gz : goalZones) {
-                            Point gz_n = DirectionUtil.normalizePointOntoMap(gz, gameMapSize);
-                            for(Point a_gz : assignedGoalZones_copy) {
-                                Point a_gz_n = DirectionUtil.normalizePointOntoMap(a_gz, gameMapSize);
-                                if (Math.abs(gz_n.x - a_gz_n.x) + Math.abs(gz_n.y - a_gz_n.y) > 15)
-                                    sendGuardGoalZoneTask(agentsForGGZD[i], gz);
-                            }
-                        }
-                    }
-                    
+        // GuardGoalZoneDesire (GGZD) is only assigned in one supervisor-group to avoid
+        // that it is assigned to too many agents at the same time
+        if (numOfGgzdAgents >= 1 && getName().equals(agentGroupForGGZD)) {
+            // Get map size
+            Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getName());
+            // Extract goal zones from AgentReport
+            List<Point> goalZones = new ArrayList<Point>();
+            // Get report of Agent 1
+            AgentReport r = null;
+            if(reports.containsKey(getName())) {
+                r = reports.get(getName());
+                if (r.numOfDistinctGoalZones() > 0) {
+                    goalZones.add(r.nearestGoalZone());
                 }
+                if (r.numOfDistinctGoalZones() > 1) {
+                    goalZones.add(r.goalZone2());
+                }
+            }
+            AgentLogger.fine(getName() + " Supervisor",
+                    "goalZones: " + goalZones.toString());
+            AgentLogger.fine(getName() + " Supervisor",
+                    "assignedGoalZones: " + assignedGoalZones.toString());
+            // If GGZD not already assigned
+            if (!agentsGGZD.contains(agentGroupForGGZD)
+                    && goalZones.size() > 0
+                    && assignedGoalZones.size() == 0) {
+                sendGuardGoalZoneTask(agentGroupForGGZD, goalZones.get(0));
+            }
+            else if (numOfGgzdAgents >= 2
+                    && agents.size() > 1
+                    && goalZones.size() > 1
+                    && assignedGoalZones.size() == 1) {
+                // Find new goal zone
+                Point target_gz = null;
+                for (Point gz : goalZones) {
+                    if (!DirectionUtil.pointsWithinDistance(
+                            gz, assignedGoalZones.get(0), gameMapSize, 15)) {
+                        target_gz = gz;
+                        break;
+                    }
+                }
+                // Find agent to assign GGZD
+                String agentForGGZD = null;
+                for (String agent : agents) {
+                    if(!agentsGGZD.contains(agent)) {
+                        agentForGGZD = agent;
+                        break;
+                    }
+                }
+                sendGuardGoalZoneTask(agentForGGZD, target_gz);
             }
         }
 

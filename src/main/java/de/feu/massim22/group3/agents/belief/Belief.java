@@ -39,6 +39,7 @@ import massim.protocol.data.Subject.Type;
  *
  * @author Heinz Stadler
  * @author Melinda Betz (minor contribution)
+ * @author Phil Heger (minor contribution)
  */
 public class Belief {
 
@@ -1225,24 +1226,31 @@ public class Belief {
             }
             else {
                 for (Point uniqueGoalZone : uniqueGoalZones) {
-                    Point gz = DirectionUtil.normalizePointOntoMap(new Point(goalZone.position()), gameMapSize);
-                    Point unique_gz = DirectionUtil.normalizePointOntoMap(uniqueGoalZone, gameMapSize);
-                    if (Math.abs(gz.x - unique_gz.x) + Math.abs(gz.y - unique_gz.y) > 15) {
+                    // Goal zone already in uniqueGoalZones then check next reachable goal zone
+                    if (!DirectionUtil.pointsWithinDistance(uniqueGoalZone, goalZone.position(), gameMapSize, 15)) {
                         uniqueGoalZones.add(goalZone.position());
                         break;
                     }
                 }
             }
         }
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "uniqueGoalZones: " + uniqueGoalZones.toString());
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "nearestGoalZone: " + nearestGoalZone.toString());
         Point goalZone2 = new Point(0, 0);
         int numOfDistinctGoalZones = uniqueGoalZones.size();
+        // Select a different goal zone (not the nearest goal zone)
         for (Point uniqueGoalZone : uniqueGoalZones) {
             if (!nearestGoalZone.equals(new Point(0, 0))
-                    && Math.abs(uniqueGoalZone.x - nearestGoalZone.x) + Math.abs(uniqueGoalZone.y - nearestGoalZone.y) > 15) {
+                    && !DirectionUtil.pointsWithinDistance(uniqueGoalZone, nearestGoalZone, gameMapSize, 15)) {
                 goalZone2 = uniqueGoalZone;
+                break;
             }
         }
-        
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "goalZone2: " + goalZone2.toString());
+
         return new AgentReport(attachedThings, energy, deactivated, availableActions,
             position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName,
             numOfDistinctGoalZones, nearestGoalZone, goalZone2, groupDesireBlockDetail);
