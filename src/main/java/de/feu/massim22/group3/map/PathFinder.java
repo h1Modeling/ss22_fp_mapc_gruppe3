@@ -86,7 +86,7 @@ class PathFinder {
         // Create Hidden Window to get OpenGL Context
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         ByteBuffer buf = BufferUtils.createByteBuffer(200);
-        long win = glfwCreateWindow(200, 200, buf, 0, 0);
+        long win = glfwCreateWindow(20, 20, buf, 0, 0);
         glfwMakeContextCurrent(win);
         GL.createCapabilities();
 

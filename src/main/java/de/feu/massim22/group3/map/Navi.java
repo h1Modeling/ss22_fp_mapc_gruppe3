@@ -465,6 +465,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 mailService.sendMessage(supervisorMessage, newSupervisor, name);
             }
         }
+
+        // Free OpenGl Resources
+        pathFinder.remove(oldSupervisor);
+        long context = openGlHandler.get(oldSupervisor);
+        openGlHandler.remove(oldSupervisor);
+        PathFinder.close(context);
         
         // Update Debugger
         if (debug) {
