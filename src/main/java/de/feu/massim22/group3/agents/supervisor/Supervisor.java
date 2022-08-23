@@ -93,6 +93,8 @@ public class Supervisor implements ISupervisor {
                 askForAttachPermission(agent, new Point(x, y), direction);
                 break;
             }
+            case MEASURE_DONE: {
+            }
             default:
                 throw new IllegalArgumentException("Supervisor can't handle Message " + taskName);
             }

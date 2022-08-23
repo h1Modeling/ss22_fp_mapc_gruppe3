@@ -18,10 +18,12 @@ public class MeasureMoveDesire extends BeliefDesire {
     private String agentFullName;
     private String direction;
 
+    private Boolean fullfilled = false;
+
     private int InitialDistance = 0;
 
     private int basePos = 0;
-    public MeasureMoveDesire(Belief belief, /*TaskInfo task,*/ String agent, String agentFullName, String supervisor, String direction , int InitialDistance, int BasePos) {
+    public MeasureMoveDesire(Belief belief, String agent, String agentFullName, String supervisor, String direction , int InitialDistance, int BasePos) {
         super(belief);
         this.agent = agent;
         this.agentFullName = agentFullName;
@@ -42,17 +44,18 @@ public class MeasureMoveDesire extends BeliefDesire {
     }
 
     public ActionInfo getNextActionInfo() {
-
         // check the map into in directionwether empty or not ( move or dig/clear)
 
         // maybe we need to chekc wether the last action was successfull?
         // just to count our movememnts ..
         Point mypos = this.belief.getPosition();
-
+        System.out.println(this.agent+ " Mypos:" + mypos.toString());
         for ( Point gap :belief.getAttachedPoints()) {
-
-            String d = DirectionUtil.getDirection(mypos,gap);
-            return ActionInfo.DETACH(d, getName());
+            System.out.print(this.agent + " GAP" + gap.toString());
+            if ((Math.abs(gap.x) == 1 && gap.y == 0) || (Math.abs(gap.y) == 1 && gap.x == 0)) {
+                String d = DirectionUtil.getDirection(new Point(0,9),gap);
+                return ActionInfo.DETACH(d, getName());
+            }
         }
 
         Set<Thing> things = this.belief.getThings();
@@ -72,10 +75,27 @@ public class MeasureMoveDesire extends BeliefDesire {
         if (nextThing == null) {
             int eps = 2;
             String nextDirection = direction; // default to measurement direction
+            String lap = "";
+            String las = "";
+
+            String la = belief.getLastAction();
+            if (la.equals("move")) {
+                lap = belief.getLastActionParams().get(0);
+                las = belief.getLastActionResult();
+            }
 
             if (direction.equals("n") || direction.equals("s")) {
-
-
+                if (mypos.x < (basePos - eps) ) { nextDirection = "e";}
+                if (mypos.x > (basePos + eps) ) { nextDirection = "w";}
+            }
+            else { // west or east
+                if (mypos.y < (basePos - eps)) {
+                    nextDirection = "s";
+                }
+                if (mypos.y > (basePos + eps)) {
+                    nextDirection = "n";
+                }
+            }
                 // wir brauchen hier die baseline information um yu prüfen ob die abweichung zu hoch ist
                 // ubnd wir ggf korrekturmassnahmen einleiten müssen
                 // dazu muessen wir wohl die Baseline auch noch an das Desire übergeben
@@ -88,13 +108,88 @@ public class MeasureMoveDesire extends BeliefDesire {
                 // dann bekommen wir nicht soviele informationen angezeigt.
                 // ggf auch noch mal die Says ausmisten und guckenw as uns hilft und was an informationen aktuell eher
                 // stört
-                if (mypos.x < (basePos - eps) ) { nextDirection = "e";}
-                if (mypos.x > (basePos + eps) ) { nextDirection = "w";}
+
+                // letzte Action checken auf success & direction
+                // war die letzte action schon in die gewählte richtung und erfolglos, mache erstmal einens chritt in die Sollrichtung
+
+/*
+  // the following does not work too
+                {
+                    if (mypos.x < (basePos - eps)) {
+                        if (las.equals("success")) {
+                            nextDirection = "e";
+                        }
+                        if (!las.equals("success")) {
+                            if (lap.equals("e")) {
+                                nextDirection = "w";
+                            }
+                            if (lap.equals("w")) {
+                                nextDirection = "s";
+                            }
+                            if (lap.equals("w")) {
+                                nextDirection = "n";
+                            }
+                        }
+                    }
+
+                    if (mypos.x > (basePos - eps)) {
+                        if (las.equals("success")) {
+                            nextDirection = "w";
+                        }
+                        if (!las.equals("success")) {
+                            if (lap.equals("w")) {
+                                nextDirection = "e";
+                            }
+                            if (lap.equals("e")) {
+                                nextDirection = "n";
+                            }
+                            if (lap.equals("n")) {
+                                nextDirection = "s";
+                            }
+                        }
+                    }
+                }
             }
             else { // west or east
-                if (mypos.y < (basePos - eps) ) { nextDirection = "s";}
-                if (mypos.y > (basePos + eps) ) { nextDirection = "n";}
+                if (mypos.y < (basePos - eps)) {
+                    if (las.equals("success")) {
+                        nextDirection = "s";
+                    }
+                    if (!las.equals("success")) {
+                        if (lap.equals("s")) {
+                            nextDirection = "n";
+                        }
+                        if (lap.equals("n")) {
+                            nextDirection = "w";
+                        }
+                        if (lap.equals("w")) {
+                            nextDirection = "e";
+                        }
+                    }
+                }
+
+                if (mypos.y > (basePos - eps)) {
+                    if (las.equals("success")) {
+                        nextDirection = "n";
+                    }
+                    if (!las.equals("success")) {
+                        if (lap.equals("n")) {
+                            nextDirection = "s";
+                        }
+                        if (lap.equals("s")) {
+                            nextDirection = "e";
+                        }
+                        if (lap.equals("e")) {
+                            nextDirection = "w";
+                        }
+                    }
+                }
             }
+ */
+
+//                if (mypos.y < (basePos - eps) && !lap.equals("s") && las.equals("success")) { nextDirection = "s";}
+//                if (mypos.y > (basePos + eps) && !lap.equals("n") && las.equals("success")) { nextDirection = "n";}
+//            }
             return ActionInfo.MOVE(nextDirection, getName());
         }
         else {
@@ -155,9 +250,7 @@ public class MeasureMoveDesire extends BeliefDesire {
 
           */
 
-
-
-        return new BooleanInfo((false ), getName()); // fuer den Anfang, wir muessen obiges noch implementieren...
+        return new BooleanInfo((fullfilled ), getName());
     }
 
     @Override
@@ -181,5 +274,7 @@ public class MeasureMoveDesire extends BeliefDesire {
     }
 
     public int GetInitialDistance() { return InitialDistance;}
+
+    public void setFulfilled(Boolean value) { fullfilled = value;}
 
 }

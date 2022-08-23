@@ -11,4 +11,5 @@ public enum SupervisorEventName {
     REPORT,
     /** An agent sent an attach request. */
     ATTACH_REQUEST,
+    MEASURE_DONE,
 }

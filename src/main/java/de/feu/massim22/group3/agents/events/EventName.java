@@ -55,4 +55,7 @@ public enum EventName {
     SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE,
     /** The map size is discovered and sent to all agents */
     MAP_SIZE_DISCOVERED,
+    MEASURE_DONE,
+
+    SIZE_SEND,
 }
