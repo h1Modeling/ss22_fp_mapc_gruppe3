@@ -25,4 +25,10 @@ public abstract class GroupDesireTypes {
 
     /** The agent is tasked to receive and attach a block from a team mate. */
     public static final String RECEIVE_ATTACH = "receive_attach";
+
+    /** The agent is tasked to guard a goal zone. */
+    public static final String GUARD_GOAL_ZONE = "guard_goal_zone";
+
+    /** The agent is tasked to guard a dispenser. */
+    public static final String GUARD_DISPENSER = "guard_dispenser";
 }

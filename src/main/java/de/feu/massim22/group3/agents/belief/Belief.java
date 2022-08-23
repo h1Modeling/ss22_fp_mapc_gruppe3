@@ -15,6 +15,8 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.supervisor.AgentReport;
 import de.feu.massim22.group3.map.CellType;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.DirectionUtil;
@@ -37,6 +39,7 @@ import massim.protocol.data.Subject.Type;
  *
  * @author Heinz Stadler
  * @author Melinda Betz (minor contribution)
+ * @author Phil Heger (minor contribution)
  */
 public class Belief {
 
@@ -796,6 +799,21 @@ public class Belief {
      * @return the role
      */
     public Role getRoleByActions(String[] actions) {
+        // determine Role with best values for clear
+        if (actions.length == 1 && actions[0].equals("clear")) {
+            double maxFactor = 0;
+            Role bestClearRole = null;
+            for (Role r : roles.values()) {
+                double curFactor = r.clearChance() * r.clearMaxDistance();
+                if (curFactor > maxFactor) {
+                    maxFactor = curFactor;
+                    bestClearRole = r;
+                }
+            }
+            AgentLogger.info("bestClearRole is " + bestClearRole.name());
+            return bestClearRole;
+        }
+
         List<Role> possibleRoles = new ArrayList<>();
         for (Role r : roles.values()) {
             boolean allFound = true;
@@ -1196,14 +1214,46 @@ public class Belief {
         }
         int distGoalZone = 999;
         Point nearestGoalZone = new Point(0, 0);
+        List<Point> uniqueGoalZones = new ArrayList<Point>();
+        Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getAgentShortName());
         for (ReachableGoalZone goalZone : reachableGoalZones) {
             if (goalZone.distance() < distGoalZone) {
                 distGoalZone = goalZone.distance();
                 nearestGoalZone = goalZone.position();
             }
+            if (uniqueGoalZones.size() == 0) {
+                uniqueGoalZones.add(goalZone.position());
+            }
+            else {
+                for (Point uniqueGoalZone : uniqueGoalZones) {
+                    // Goal zone already in uniqueGoalZones then check next reachable goal zone
+                    if (!DirectionUtil.pointsWithinDistance(uniqueGoalZone, goalZone.position(), gameMapSize, 15)) {
+                        uniqueGoalZones.add(goalZone.position());
+                        break;
+                    }
+                }
+            }
         }
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "uniqueGoalZones: " + uniqueGoalZones.toString());
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "nearestGoalZone: " + nearestGoalZone.toString());
+        Point goalZone2 = new Point(0, 0);
+        int numOfDistinctGoalZones = uniqueGoalZones.size();
+        // Select a different goal zone (not the nearest goal zone)
+        for (Point uniqueGoalZone : uniqueGoalZones) {
+            if (!nearestGoalZone.equals(new Point(0, 0))
+                    && !DirectionUtil.pointsWithinDistance(uniqueGoalZone, nearestGoalZone, gameMapSize, 15)) {
+                goalZone2 = uniqueGoalZone;
+                break;
+            }
+        }
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "goalZone2: " + goalZone2.toString());
+
         return new AgentReport(attachedThings, energy, deactivated, availableActions,
-            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName, nearestGoalZone, groupDesireBlockDetail);
+            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName,
+            numOfDistinctGoalZones, nearestGoalZone, goalZone2, groupDesireBlockDetail);
     }
 
     /**

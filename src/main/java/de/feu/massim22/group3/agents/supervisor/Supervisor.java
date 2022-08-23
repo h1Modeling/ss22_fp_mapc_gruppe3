@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents.supervisor;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +13,11 @@ import java.util.Map.Entry;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.agents.events.SupervisorEventName;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.PerceptUtil;
+import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -27,6 +32,7 @@ import massim.protocol.data.Thing;
  *
  * @author Heinz Stadler
  * @author Melinda Betz (minor contribution)
+ * @author Phil Heger (minor contribution)
  */
 public class Supervisor implements ISupervisor {
     
@@ -39,7 +45,15 @@ public class Supervisor implements ISupervisor {
     private int step;
     private int[] agentReportCount =  new int[1000];
     private Map<String, Boolean> agentsWithTask = new HashMap<>();
-    
+    private List<Point> assignedGoalZones = new ArrayList<>();
+
+    // Agents with GuardGoalZoneDesire already assigned
+    private List<String> agentsGGZD = new ArrayList<>();
+    // Agents for GuardGoalZoneDesire
+    private String agentGroupForGGZD = "31";
+    // Number of designated GuardGoalZone agents (only 0, 1 or 2 implemented)
+    private int numOfGgzdAgents = 2;
+
     /**
      * Instantiates a new Supervisor.
      * 
@@ -228,8 +242,6 @@ public class Supervisor implements ISupervisor {
             gettingBlockNearestGoalZone.add(new ArrayList<Point>());
         }
 
-        List<Point> goalZones = new ArrayList<>();
-
         int maxDistance = 30;
         int maxDistanceGoalZone = 50;
         // put Reports in Lists
@@ -289,19 +301,6 @@ public class Supervisor implements ISupervisor {
                     }
                 }
             }
-
-            // Save goal zone points
-            boolean newGoalZone = true;
-            Point reportZone = r.nearestGoalZone();
-            for (Point zone : goalZones) {
-                if ( Math.abs(zone.x - reportZone.x) + Math.abs(zone.y - reportZone.y) < 20) {
-                    newGoalZone = false;
-                    break;
-                }
-            }
-            if (newGoalZone) {
-                goalZones.add(reportZone);
-            }
         }
 
         // Sort
@@ -317,8 +316,60 @@ public class Supervisor implements ISupervisor {
         agentsCarryingBlock3.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock4.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
 
-        // Only do tasks if GoalZone is discovered
-        if (agentsNearGoalZone.size() == 0) return;
+        // GuardGoalZoneDesire (GGZD) is only assigned in one supervisor-group to avoid
+        // that it is assigned to too many agents at the same time
+        if (numOfGgzdAgents >= 1 && getName().equals(agentGroupForGGZD)) {
+            // Get map size
+            Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getName());
+            // Extract goal zones from AgentReport
+            List<Point> goalZones = new ArrayList<Point>();
+            // Get report of Agent 1
+            AgentReport r = null;
+            if(reports.containsKey(getName())) {
+                r = reports.get(getName());
+                if (r.numOfDistinctGoalZones() > 0) {
+                    goalZones.add(r.nearestGoalZone());
+                }
+                if (r.numOfDistinctGoalZones() > 1) {
+                    goalZones.add(r.goalZone2());
+                }
+            }
+            AgentLogger.fine(getName() + " Supervisor",
+                    "goalZones: " + goalZones.toString());
+            AgentLogger.fine(getName() + " Supervisor",
+                    "assignedGoalZones: " + assignedGoalZones.toString());
+            // If GGZD not already assigned
+            if (!agentsGGZD.contains(agentGroupForGGZD)
+                    && goalZones.size() > 0
+                    && assignedGoalZones.size() == 0) {
+                sendGuardGoalZoneTask(agentGroupForGGZD, goalZones.get(0));
+            }
+            else if (numOfGgzdAgents >= 2
+                    && agents.size() > 1
+                    && goalZones.size() > 1
+                    && assignedGoalZones.size() == 1) {
+                // Find new goal zone
+                Point target_gz = null;
+                for (Point gz : goalZones) {
+                    if (!DirectionUtil.pointsWithinDistance(
+                            gz, assignedGoalZones.get(0), gameMapSize, 15)) {
+                        target_gz = gz;
+                        break;
+                    }
+                }
+                // Find agent to assign GGZD
+                String agentForGGZD = null;
+                for (String agent : agents) {
+                    if(!agentsGGZD.contains(agent)) {
+                        agentForGGZD = agent;
+                        break;
+                    }
+                }
+                if (target_gz != null) {
+                    sendGuardGoalZoneTask(agentForGGZD, target_gz);
+                }
+            }
+        }
 
         // Test if single Block tasks exists
         boolean singleBlockTaskExists = false;
@@ -401,6 +452,35 @@ public class Supervisor implements ISupervisor {
                         if (block2.equals("b4") && ((!gettingBlock[4] && agentsCarryingBlock4.size() < 3) || (!singleBlockTaskExists && Math.random() < 0.3) || forceGet)) sendGetBlockTask(agentsNearDispenser4, "b4");
                     }
                 }
+            }
+        }
+    }
+
+    private void sendGuardGoalZoneTask(String agent, Point gz) {
+        // GGZD...GuardGoalZoneDesire
+        assignedGoalZones.add(gz);
+        agentsGGZD.add(agent);
+        AgentLogger.fine(getName() + " Supervisor",
+                "sendGuardGoalZoneTask(): " + agent + "  " + gz.toString());
+        Parameter pointX_gz = new Numeral(gz.x);
+        Parameter pointY_gz = new Numeral(gz.y);
+        Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE.name(),
+                pointX_gz, pointY_gz);
+        parent.forwardMessage(message, agent, name);
+        agentsWithTask.put(agent, true);
+    }
+
+    private void sendGuardDispenserTask(List<Entry<String, AgentReport>> agents, String block) {
+        // Only first agent which is free will get the task
+        for (var entry : agents) {
+            String agent = entry.getKey();
+            // Has no task yet
+            if (agentsWithTask.get(agent) == null) {
+                Parameter blockPara = new Identifier(block);
+                Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_GUARD_DISPENSER.name(), blockPara);
+                parent.forwardMessage(message, agent, name);
+                agentsWithTask.put(agent, true);
+                break;
             }
         }
     }

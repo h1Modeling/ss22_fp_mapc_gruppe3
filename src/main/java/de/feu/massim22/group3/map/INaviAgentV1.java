@@ -118,4 +118,11 @@ public interface INaviAgentV1 extends INavi {
      * @return the <code>List</code> of Points
      */
     List<Point> getMeetingPoints(String supervisor);
+
+    /**
+     * Get the size of the game map of the specified supervisor
+     * @param supervisor name
+     * @return x and y dimension of the game map
+     */
+    Point getGameMapSize(String supervisor);
 }

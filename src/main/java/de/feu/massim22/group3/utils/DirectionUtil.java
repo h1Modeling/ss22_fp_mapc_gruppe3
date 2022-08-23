@@ -11,6 +11,11 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
  *
  * @author Melinda Betz
  * @author Heinz Stadler
+ * @author Phil Heger (minor contribution)
+ */
+/**
+ * @author philh
+ *
  */
 public class DirectionUtil {
 
@@ -284,5 +289,55 @@ public class DirectionUtil {
         }
         
         return outDirection;
+    }
+
+    /**
+     * Points can have negative values because the map edges can be traversed. This method
+     * provides the point with positive coordinates
+     * 
+     * @param p point to be normalized
+     * @param mapSize x and y dimensions of the map
+     * @return normalized point p with only positive coordinates
+     */
+    public static Point normalizePointOntoMap(Point p, Point mapSize) {
+        // Correct negative values
+        int signP_x = Integer.signum(p.x);
+        int signP_y = Integer.signum(p.y);
+        int px = signP_x == -1 ? p.x + mapSize.x : p.x;
+        int py = signP_y == -1 ? p.y + mapSize.y : p.y;
+        // Correct points larger than mapSize
+        px = p.x >= mapSize.x ? px - mapSize.x : px;
+        py = p.y >= mapSize.y ? py - mapSize.y : py;
+        // if one correction is not enough
+        if (px >= 0 && py >= 0 && px < mapSize.x && py < mapSize.y) {
+            return new Point(px, py);
+        }
+        else {
+            return normalizePointOntoMap(new Point(px, py), mapSize);
+        }
+    }
+
+    /**
+     * Check if two points are within the given distance. The vicinity is also checked over the map
+     * edges because the map edges can be traversed.
+     * @param p1 point 1
+     * @param p2 point 2
+     * @param mapSize size of the game map
+     * @param distance Manhatten distance for the vicinity check
+     * @return true if distance is smaller or equal to the given distance value
+     */
+    public static boolean pointsWithinDistance(Point p1, Point p2, Point mapSize, int distance) {
+            Point p1_n = normalizePointOntoMap(p1, mapSize);
+            Point p2_n = normalizePointOntoMap(p2, mapSize);
+            if (       Math.abs(p1_n.x - p2_n.x            ) + Math.abs(p1_n.y - p2_n.y)             <= distance
+                    || Math.abs(p1_n.x - p2_n.x + mapSize.x) + Math.abs(p1_n.y - p2_n.y)             <= distance
+                    || Math.abs(p1_n.x - p2_n.x - mapSize.x) + Math.abs(p1_n.y - p2_n.y)             <= distance
+                    || Math.abs(p1_n.x - p2_n.x            ) + Math.abs(p1_n.y - p2_n.y + mapSize.y) <= distance
+                    || Math.abs(p1_n.x - p2_n.x            ) + Math.abs(p1_n.y - p2_n.y - mapSize.y) <= distance
+                    || Math.abs(p1_n.x - p2_n.x + mapSize.x) + Math.abs(p1_n.y - p2_n.y + mapSize.y) <= distance
+                    || Math.abs(p1_n.x - p2_n.x - mapSize.x) + Math.abs(p1_n.y - p2_n.y - mapSize.y) <= distance) {
+                return true;
+            }
+            return false;
     }
 }
