@@ -7,9 +7,7 @@ import de.feu.massim22.group3.communication.Scheduler;
 
 import java.io.File;
 import java.util.Scanner;
-import java.util.logging.FileHandler;
 
-import de.feu.massim22.group3.communication.Scheduler;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.io.*;

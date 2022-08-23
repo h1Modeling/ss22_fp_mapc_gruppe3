@@ -28,11 +28,6 @@ import de.feu.massim22.group3.agents.supervisor.AgentReport;
 import de.feu.massim22.group3.agents.supervisor.ISupervisor;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
-
-import de.feu.massim22.group3.agents.desires.*;
-import de.feu.massim22.group3.agents.events.EventName;
-import de.feu.massim22.group3.agents.supervisor.*;
-
 import de.feu.massim22.group3.communication.EisSender;
 import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.map.INaviAgentV1;

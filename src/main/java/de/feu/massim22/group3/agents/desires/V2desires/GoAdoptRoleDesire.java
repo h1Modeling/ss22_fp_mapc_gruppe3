@@ -7,7 +7,6 @@ import de.feu.massim22.group3.agents.V2utils.AgentMeetings;
 import de.feu.massim22.group3.agents.V2utils.Point;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.Belief;
-import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;

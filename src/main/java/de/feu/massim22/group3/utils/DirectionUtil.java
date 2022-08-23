@@ -5,7 +5,6 @@ import java.util.*;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
  * The Class <code>DirectionUtil</code> contains static methods to convert Between string directions, int code directions and Point directions.

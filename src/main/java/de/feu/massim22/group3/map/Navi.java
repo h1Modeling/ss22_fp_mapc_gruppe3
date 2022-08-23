@@ -47,7 +47,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
-    public Map<String, GameMap> maps = new HashMap<>();
+    private Map<String, GameMap> maps = new HashMap<>();
     private Map<String, String> agentSupervisor = new HashMap<>(); // Agent Key, Supervisor Value
     private Map<String, Integer> agentStep = new HashMap<>();
     private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
