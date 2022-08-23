@@ -18,6 +18,7 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
  *
  */
 public class DirectionUtil {
+    public static Point mapSize = new Point(64, 92);
 
     /**
      * Translates a direction code from pathfinding into a string containing the direction chars.
@@ -159,36 +160,46 @@ public class DirectionUtil {
      * @param to the point the direction is calculated to
      * @return the direction
      */
-	public static String getDirection(Point from, Point to) {
+    public static String getDirection(Point from, Point to) {
+        String result = " ";
         Point pointTarget = new Point(to.x - from.x, to.y - from.y);
+        Point pointTargetAround = new Point(to.x - from.x - mapSize.x, to.y - from.y - mapSize.y);
+
+        /*AgentLogger.info(Thread.currentThread().getName() + " getDirection - from/to: " + from.toString() + " , "
+                + to.toString() + " , pointTarget/pointTargetAround: " + pointTarget.toString() + " , "
+                + pointTargetAround.toString());*/
 
         if (pointTarget.x == 0) {
-            if (pointTarget.y < 0)
-                return "n";
+            if ((pointTarget.y < 0 && Math.abs(pointTargetAround.y) >= Math.abs(pointTarget.y))
+                    || (pointTargetAround.y < 0 && Math.abs(pointTargetAround.y) < Math.abs(pointTarget.y)))
+                result = "n";
             else
-                return "s";
+                result = "s";
         }
 
         if (pointTarget.y == 0) {
-            if (pointTarget.x < 0)
-                return "w";
+            if ((pointTarget.x < 0 && Math.abs(pointTargetAround.x) >= Math.abs(pointTarget.x))
+                    || (pointTargetAround.x < 0 && Math.abs(pointTargetAround.x) < Math.abs(pointTarget.x)))
+                result = "w";
             else
-                return "e";
+                result = "e";
         }
 
         if (pointTarget.x != 0 && pointTarget.y != 0) {
             if (java.lang.Math.abs(pointTarget.x) > Math.abs(pointTarget.y))
-                if (pointTarget.x < 0)
-                    return "w";
+                if ((pointTarget.x < 0 && Math.abs(pointTargetAround.x) >= Math.abs(pointTarget.x))
+                        || (pointTargetAround.x < 0 && Math.abs(pointTargetAround.x) < Math.abs(pointTarget.x)))
+                    result = "w";
                 else
-                    return "e";
-            else if (pointTarget.y < 0)
-                return "n";
+                    result = "e";
+            else if ((pointTarget.y < 0 && Math.abs(pointTargetAround.y) >= Math.abs(pointTarget.y))
+                    || (pointTargetAround.y < 0 && Math.abs(pointTargetAround.y) < Math.abs(pointTarget.y)))
+                result = "n";
             else
-                return "s";
+                result = "s";
         }
 
-        return " ";
+        return result;
     }
 	
     /**

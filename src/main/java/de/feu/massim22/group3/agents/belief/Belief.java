@@ -89,6 +89,9 @@ public class Belief {
     private String groupDesireBlockDetail = "";
     private String groupDesirePartner = "";
     private boolean isWaiting = false;
+    
+    private Point mapSize;
+    private Point absolutePosition;
 
     /**
      * Instantiates a new Belief.
@@ -243,6 +246,11 @@ public class Belief {
                     break;
                 case "simEnd":
                     simEnd = true;
+                    break;
+                case "position":
+                    int posX = toNumber(p, 0, Integer.class);
+                    int posY = toNumber(p, 1, Integer.class);
+                    absolutePosition = new Point(posX, posY);
                     break;
                 default:
                     AgentLogger.warning("Percept not transferred to Belief: " + percept.getName());
@@ -1476,25 +1484,146 @@ public class Belief {
     private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
 
+     // Melinda start
     /**
-     * Updates the position of the agent based on the last action.
+     * Gets the absolute position from a agent.
+     * 
+     * @return the absolute position
+     */
+    public Point getAbsolutePosition() {
+        return absolutePosition;
+    }
+    
+    /**
+     * Updates the position of a agent (used from the outside).
+     * 
      */
     public void updatePositionFromExternal() {
         String dir = null;
-
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
+                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Success: " +  lastActionParams);
+                
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
                     move(dir);
+                    moveNonModuloPosition(dir);
                 }
             }
 
-            // Partial Success (Only really OK for max speed two ?!? Maybe compare changed vision for better results ?)
+            // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
+                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Partial: " +  lastActionParams);
                 move(lastActionParams.get(0));
+                moveNonModuloPosition(lastActionParams.get(0));
             }
         }
+        
+        position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
+        position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
+        
+    private Point nonModuloPosition = new Point(0, 0);
+    
+    /**
+     * Gets the non modulo position of an agent as point.
+     * 
+     * @return the non modulo position of an agent as point
+     */
+    public Point getNonModuloPosition() {
+        return nonModuloPosition;
+    }
+    
+    private void moveNonModuloPosition(String dir) {
+        switch (dir) {
+            case "n":
+                nonModuloPosition.y -= 1;
+                break;
+            case "e":
+                nonModuloPosition.x += 1;
+                break;
+            case "s":
+                nonModuloPosition.y += 1;
+                break;
+            case "w":
+                nonModuloPosition.x -= 1;
+                break;
+        }
+    }
+    
+    /**
+     * Gets a list of all reachable dispensers.
+     * 
+     * @return list of all reachable dispensers
+     */
+    public synchronized List<ReachableDispenser> getReachableDispensersX() {
+        List<ReachableDispenser> reachableDispensers = new ArrayList<>(this.reachableDispensers);
+        List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
+        
+        for (ReachableDispenser rd : reachableDispensers) {
+            if (rd.data().equals("x")) {
+                Point agentPos = getPosition();
+                Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
+                        (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
+                int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                        + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);               
+                int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));             
+                ReachableDispenser rdnew = new ReachableDispenser(pos, rd.type(),  distance,  direction, rd.data());
+                reachableDispensersX.add(rdnew);
+            }
+        }
+        
+        return reachableDispensersX;
+    }
+    
+    /**
+     * Gets a list of all reachable goal zones.
+     * 
+     * @return list of all reachable goal zones
+     */
+    public List<ReachableGoalZone> getReachableGoalZonesX() {
+        List<ReachableGoalZone> reachableGoalZones = new ArrayList<>(this.reachableGoalZones);
+        List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
+        
+        for (ReachableGoalZone rd : reachableGoalZones) {
+            Point agentPos = getPosition();
+            Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
+                    (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);     
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableGoalZone rdnew = new ReachableGoalZone(pos, distance, direction);
+            reachableGoalZonesX.add(rdnew);
+        }
+ 
+        reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
+        return reachableGoalZonesX;
+    }
+    
+    /**
+     * Gets a list of all reachable role zones.
+     * 
+     * @return list of all reachable role zones
+     */
+    public List<ReachableRoleZone> getReachableRoleZonesX() {
+        List<ReachableRoleZone> reachableRoleZones = new ArrayList<>(this.reachableRoleZones);
+        List<ReachableRoleZone> reachableRoleZonesX = new ArrayList<>();
+        
+        for (ReachableRoleZone rd : reachableRoleZones) {
+            Point agentPos = getPosition();
+            Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
+                    (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableRoleZone rdnew = new ReachableRoleZone(pos, distance, direction);
+            reachableRoleZonesX.add(rdnew);
+        }
+        
+        return reachableRoleZonesX;
+    }
+    // Melinda end
 }

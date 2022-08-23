@@ -3,7 +3,6 @@ package de.feu.massim22.group3.agents.desires;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.utils.DirectionUtil;
-
 import java.awt.Point;
 /**
  * The Class <code>GoToGoalZoneDesire</code> models the desire to be positioned inside of a goal zone.

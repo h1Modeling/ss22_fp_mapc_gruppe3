@@ -1,4 +1,5 @@
 package de.feu.massim22.group3.agents.desires;
+
 /**
  * The Class <code>GroupDesireTypes</code> provides constants which define group desire types.
  * 

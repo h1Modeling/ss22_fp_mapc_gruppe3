@@ -3,12 +3,14 @@ package de.feu.massim22.group3;
 import eis.exceptions.ManagementException;
 import eis.iilang.EnvironmentState;
 import massim.eismassim.EnvironmentInterface;
+import de.feu.massim22.group3.communication.Scheduler;
 
 import java.io.File;
 import java.util.Scanner;
 
-import de.feu.massim22.group3.communication.Scheduler;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+
+import java.io.*;
 
 /**
  * Starts a new scheduler.
@@ -18,6 +20,15 @@ public class Main {
     public static void main( String[] args ) {
 
         String configDir = "";
+        
+        String file = "./errors.log";
+        try {
+            PrintStream ps = 
+                    new PrintStream(new BufferedOutputStream(new FileOutputStream(file)), true);
+            System.setErr(ps); 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         AgentLogger.info("PHASE 1: INSTANTIATING SCHEDULER");
         if (args.length != 0) configDir = args[0];

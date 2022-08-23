@@ -2,8 +2,8 @@ package de.feu.massim22.group3.map;
 
 import java.awt.Point;
 import java.nio.FloatBuffer;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import massim.protocol.data.*;
 
 /**
@@ -88,4 +88,7 @@ public interface INaviAgentV2 extends INavi {
      * @return the <code>FloatBuffer</code> which encodes the Cells of the <code>GameMap</code>
      */
     FloatBuffer getMapBuffer(String supervisor);
+
+    Point getPosition(String agent, String supervisor);  
+    Map<String, GameMap> getMaps();
 }
