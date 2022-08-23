@@ -6,6 +6,7 @@ import java.util.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -28,6 +29,12 @@ public class StepUtilities {
     private static int countAgent = 0;
     private static int countAgent2 = 0;
     public static boolean DecisionsDone;
+    
+    public static boolean exploreHorizontalMapSizeStarted = false;
+    public static boolean exploreVerticalMapSizeStarted = false;
+    public TaskInfo exploreHorizontalMapSize = new TaskInfo("exploreHorizontalMapSize", 0, 0, new HashSet<Thing>());
+    public TaskInfo exploreVerticalMapSize = new TaskInfo("exploreVerticalMapSize", 0, 0, new HashSet<Thing>());
+    
     boolean mergeGroups = true;
     boolean alwaysAgentMeetings = true;
     
@@ -148,7 +155,26 @@ public class StepUtilities {
                         if (countMeetings(foundAgent, foundAgent.get(j).position) == 1) {
                             recordAgentMeeting( agent1, agent2, foundAgent.get(j).position);
                             recordAgentMeeting( agent2, agent1, foundAgent.get(k).position);
-                        //}
+
+                            // starting explore map size
+                        /*    if (!agent1.isBusy && !agent2.isBusy && !agent1.blockAttached && !agent2.blockAttached) {
+                                if (!exploreHorizontalMapSizeStarted) {
+                                    AgentCooperations
+                                            .setCooperation(new AgentCooperations.Cooperation(exploreHorizontalMapSize,
+                                                    agent1, Status.Explore, agent2, Status.Wait, null, Status.No2));
+                                    exploreHorizontalMapSizeStarted = true;
+                                    agent1.isBusy = true;
+                                    agent2.isBusy = true;
+                                } else if (!exploreVerticalMapSizeStarted) {
+                                    AgentCooperations
+                                            .setCooperation(new AgentCooperations.Cooperation(exploreVerticalMapSize,
+                                                    agent1, Status.Explore, agent2, Status.Wait, null, Status.No2));
+                                    exploreVerticalMapSizeStarted = true;
+                                    agent1.isBusy = true;
+                                    agent2.isBusy = true;
+                                }
+                            }*/
+                            
                             // Are the agents both from different groups ?
                             if (mergeGroups && !(agent1.supervisor == agent2.supervisor)) {
                                 // if true then, merge the smaller group into the bigger group

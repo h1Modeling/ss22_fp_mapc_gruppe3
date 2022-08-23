@@ -87,7 +87,7 @@ public class Belief {
     private String groupDesirePartner = "";
     private boolean isWaiting = false;
     
-    private Point mapSize;
+    private Point mapSize = new Point(200, 200);
     private Point absolutePosition;
 
     /**
@@ -1442,6 +1442,15 @@ public class Belief {
      */
     public Point getAbsolutePosition() {
         return absolutePosition;
+    }
+    
+    /**
+     * Sets the map size if known.
+     * 
+     * @param Point mapSize
+     */
+    public void setMapSize(Point mapSize) {
+        this.mapSize = mapSize;
     }
     
     /**

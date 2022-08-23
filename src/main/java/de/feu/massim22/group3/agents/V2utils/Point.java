@@ -9,7 +9,7 @@ import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
  */
 public class Point extends java.awt.Point {
     
-    public static Point mapSize = new Point(64, 92);
+    public static Point mapSize = new Point(200, 200);
 
 	 /**
      * Initializes a new Instance of Point with two integers.

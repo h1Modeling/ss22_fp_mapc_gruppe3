@@ -4,6 +4,7 @@ import eis.iilang.*;
 import de.feu.massim22.group3.agents.V2utils.*;
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.IDesire;
 import de.feu.massim22.group3.agents.desires.V2desires.DisconnectMultiBlocksDesire;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
@@ -186,6 +187,23 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                             ? Point.castToPoint(belief.getAbsolutePosition())
                             : ""));
         }
+   
+        
+     /*   if (AgentCooperations.exists(desireProcessing.stepUtilities.exploreHorizontalMapSize, this)
+                || AgentCooperations.exists(desireProcessing.stepUtilities.exploreVerticalMapSize, this)) {
+            Cooperation coop = AgentCooperations.get(desireProcessing.stepUtilities.exploreHorizontalMapSize, this);
+
+            if (coop == null) {
+                coop = AgentCooperations.get(desireProcessing.stepUtilities.exploreVerticalMapSize, this);
+            }
+
+            if ((coop.master().equals(this) || coop.helper().equals(this))
+                    && coop.statusMaster().equals(Status.Finished)) {
+                AgentCooperations.remove(coop);
+                isBusy = false;
+            }
+        }
+        */
         //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {
             if (belief.getLastAction().equals(Actions.ROTATE)
