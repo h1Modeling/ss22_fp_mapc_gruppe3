@@ -228,6 +228,34 @@ public class StepUtilities {
                     agent.beliefsDone = true;
                     AgentLogger.info(Thread.currentThread().getName() + " nach updateFromPathFinding: " + agent.getName());
                     //AgentLogger.info(Thread.currentThread().getName() + agent.getBelief().reachablesToString());
+                    
+                    // update goalzones for supervisor
+                    Point nearestGoalZone = null;
+                    Point nearestGoalZoneRelativ = Point.castToPoint(agent.getBelief().getNearestRelativeManhattanGoalZone());
+                    
+                    if (nearestGoalZoneRelativ != null) {
+                        nearestGoalZone = Point.castToPoint(agent.getBelief().getPosition()).add(nearestGoalZoneRelativ);
+                        
+                        if (desireProcessing.posDefaultGoalZone1 == null) {
+                            desireProcessing.posDefaultGoalZone1 = new Point(nearestGoalZone);
+                        } else {
+                            if (Point.distance(desireProcessing.posDefaultGoalZone1, nearestGoalZone) > 10) {
+                                desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
+                            }
+                        }
+                        
+                        if (desireProcessing.posDefaultGoalZone2 == null) {
+                            desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
+                        }
+                    } else {
+                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), desireProcessing.posDefaultGoalZone1) <= 5) {
+                            desireProcessing.posDefaultGoalZone1 = null;
+                        }
+                        
+                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), desireProcessing.posDefaultGoalZone2) <= 5) {
+                            desireProcessing.posDefaultGoalZone2 = null;
+                        }
+                    }
                 }
                 
                 desireProcessing.runSupervisorDecisions(step, supervisor, this);
@@ -235,6 +263,10 @@ public class StepUtilities {
             
             Thread t3 = new Thread(runnable);
             t3.start();
+            
+            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Supervisor: " + supervisor.getName()
+            + " , GZ1: " + desireProcessing.posDefaultGoalZone1 +
+            " , GZ2: " + desireProcessing.posDefaultGoalZone2);
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Step: " + step);

@@ -29,8 +29,10 @@ import massim.protocol.messages.scenario.Actions;
  * @author Melinda Betz
  */
 public class DesireUtilities {
-    public Point posDefaultGoalZone1 = new Point(28, 54);
-    public Point posDefaultGoalZone2 = new Point(9, 1);
+    public Point posDefaultGoalZone1 = null;
+    public Point posDefaultGoalZone2 = null;
+    //public Point posDefaultGoalZone1 = new Point(28, 54);
+    //public Point posDefaultGoalZone2 = new Point(9, 1);
     //public Point posDefaultGoalZone1 = new Point(18, 14);
     //public Point posDefaultGoalZone2 = new Point(18, 14);
     

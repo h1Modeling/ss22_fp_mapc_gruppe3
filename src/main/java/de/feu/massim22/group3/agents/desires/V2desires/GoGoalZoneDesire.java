@@ -26,8 +26,8 @@ public class GoGoalZoneDesire extends BeliefDesire {
     BdiAgentV2 goalZoneAgent = null;
     Point nearestGoalZone;
     boolean defaultGoalZone = false;
-    Point posDefaultGoalZone1 = new Point(28, 54);
-    Point posDefaultGoalZone2 = new Point(9, 1);
+    Point posDefaultGoalZone1;
+    Point posDefaultGoalZone2;
 
     /**
      * Instantiates a new GoGoalZoneDesire.
@@ -40,6 +40,8 @@ public class GoGoalZoneDesire extends BeliefDesire {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoGoalZoneDesire, Step: " + belief.getStep());
         this.agent = agent;
+        posDefaultGoalZone1 = this.agent.desireProcessing.posDefaultGoalZone1;
+        posDefaultGoalZone2 = this.agent.desireProcessing.posDefaultGoalZone2;
     }
 
     /**
@@ -90,15 +92,25 @@ public class GoGoalZoneDesire extends BeliefDesire {
                     }
                 }
             }
-            
-           /* defaultGoalZone = true;
-            result = true;
+         
+            if (posDefaultGoalZone1 != null || posDefaultGoalZone2 != null) {
+                defaultGoalZone = true;
+                result = true;
 
-            if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone1) 
-                    < Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone2)) 
-                nearestGoalZone = posDefaultGoalZone1;
-            else
-                nearestGoalZone = posDefaultGoalZone2;   */            
+                if (posDefaultGoalZone1 != null || posDefaultGoalZone2 == null) {
+                    nearestGoalZone = posDefaultGoalZone1;
+                } else {
+                    if (posDefaultGoalZone1 == null || posDefaultGoalZone2 != null) {
+                        nearestGoalZone = posDefaultGoalZone2;
+                    } else {
+                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone1) 
+                                < Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone2))
+                            nearestGoalZone = posDefaultGoalZone1;
+                        else
+                            nearestGoalZone = posDefaultGoalZone2;
+                    }
+                }
+            }
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 7");
