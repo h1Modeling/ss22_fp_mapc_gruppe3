@@ -365,7 +365,9 @@ public class Supervisor implements ISupervisor {
                         break;
                     }
                 }
-                sendGuardGoalZoneTask(agentForGGZD, target_gz);
+                if (target_gz != null) {
+                    sendGuardGoalZoneTask(agentForGGZD, target_gz);
+                }
             }
         }
 

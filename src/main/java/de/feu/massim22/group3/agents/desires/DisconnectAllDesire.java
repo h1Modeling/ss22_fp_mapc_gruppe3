@@ -3,8 +3,6 @@ package de.feu.massim22.group3.agents.desires;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.belief.Belief;
-import massim.protocol.data.TaskInfo;
-import massim.protocol.data.Thing;
 
 /**
  * The Class <code>DisconnectAllDesire</code> models the desire disconnect from all attached

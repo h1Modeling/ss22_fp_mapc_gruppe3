@@ -337,6 +337,15 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
 //        }
         
         case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
+            // Inform Team Mate to cancel group desire
+            if (!belief.getGroupDesireType().equals(GroupDesireTypes.NONE)) {
+                String partner = belief.getGroupDesirePartner();
+                if (!partner.equals("")) {
+                    Parameter agentPara =  new Identifier(belief.getAgentShortName());
+                    Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DONE_OR_CANCELED.name(), agentPara);
+                    forwardMessage(message, partner, belief.getAgentShortName());
+                }
+            }
             belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
             // Delete WalkByGetRoleDesire so it does not get in conflict with getting
             // the digger role
