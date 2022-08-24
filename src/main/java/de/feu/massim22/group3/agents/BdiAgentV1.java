@@ -88,6 +88,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
 
     private int finalWidthX= -99;
     private int finalWidthY= -99;
+
+    private int measure_move_count = -1;
     public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
         super(name, mailbox);
         this.eisSender = eisSender;
@@ -391,7 +393,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             break;
         }
         case MEASURE_MOVE: {
-
+            measure_move_count++;
             // ggf muessen wir zaehlen wie oft der agent an seiner startline vorbeikommt
             // durhc diese Zahl muessen wir die gesamtzahl teilen, damit wir die richtige breite/Hoehe bekommen.
             // und warumhat We mal einen zuviel ud mal einen zu wenig??
@@ -430,7 +432,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                             say(belief.getStep() + " "+ "Added  1 - result:" + moveStepCount);
                         }
                         if (belief.getLastActionParams().get(0).equals(DirectionUtil.oppositeDirection(mybaseDirection))) {
-                            moveStepCount = moveStepCount - 1;
+                            if (measure_move_count > 0)
+                                moveStepCount = moveStepCount - 1;
 //                            if (mybaseDirection.equals("n") || mybaseDirection.equals("s"))
                             say(belief.getStep() + " "+ "Subtracted  1 - result:" + moveStepCount);
                         }
@@ -594,7 +597,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 }
 
                 if (forcedIntention) {
-                    say(this.step() +"Measure Done Recieved");
+//                    say(this.step() +"Measure Done Recieved");
                     forcedIntention = false;
                     setIntention(null);
 
