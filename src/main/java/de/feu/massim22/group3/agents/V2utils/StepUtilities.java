@@ -259,29 +259,38 @@ public class StepUtilities {
                     Point nearestGoalZone = null;
                     Point nearestGoalZoneRelativ = Point.castToPoint(agent.getBelief().getNearestRelativeManhattanGoalZone());
                     
+                    AgentLogger.info(Thread.currentThread().getName() + " set goalzones: " + agent.getName()
+                    + " , nearestGoalZoneRelativ: " + nearestGoalZoneRelativ);
+                    
                     if (nearestGoalZoneRelativ != null) {
                         nearestGoalZone = Point.castToPoint(agent.getBelief().getPosition()).add(nearestGoalZoneRelativ);
                         
-                        if (desireProcessing.posDefaultGoalZone1 == null) {
-                            desireProcessing.posDefaultGoalZone1 = new Point(nearestGoalZone);
+                        AgentLogger.info(Thread.currentThread().getName() + " set goalzones: " + agent.getName()
+                        + " , " + agent.getBelief().getPosition() + " , nearestGoalZone: " + nearestGoalZone);
+                        
+                        AgentLogger.info(Thread.currentThread().getName() + " set goalzones: " + agent.getName()
+                        + " 1: " + agent.desireProcessing.posDefaultGoalZone1 + " , 2: " + agent.desireProcessing.posDefaultGoalZone2);
+                        
+                        if (agent.desireProcessing.posDefaultGoalZone1 == null) {
+                            agent.desireProcessing.posDefaultGoalZone1 = new Point(nearestGoalZone);
                         } else {
-                            if (Point.distance(desireProcessing.posDefaultGoalZone1, nearestGoalZone) > 10) {
-                                desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
+                            if (Point.distance(agent.desireProcessing.posDefaultGoalZone1, nearestGoalZone) > 10) {
+                                agent.desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
                             }
                         }
                         
-                        if (desireProcessing.posDefaultGoalZone2 == null) {
-                            desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
+                        if (agent.desireProcessing.posDefaultGoalZone2 == null) {
+                            agent.desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
                         }
-                    } else {
-                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), desireProcessing.posDefaultGoalZone1) <= 5) {
-                            desireProcessing.posDefaultGoalZone1 = null;
+                    }/* else {
+                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), agent.desireProcessing.posDefaultGoalZone1) <= 5) {
+                            agent.desireProcessing.posDefaultGoalZone1 = null;
                         }
                         
-                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), desireProcessing.posDefaultGoalZone2) <= 5) {
-                            desireProcessing.posDefaultGoalZone2 = null;
+                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), agent.desireProcessing.posDefaultGoalZone2) <= 5) {
+                            agent.desireProcessing.posDefaultGoalZone2 = null;
                         }
-                    }
+                    }*/
                 }
                 
                 desireProcessing.runSupervisorDecisions(step, supervisor, this);
