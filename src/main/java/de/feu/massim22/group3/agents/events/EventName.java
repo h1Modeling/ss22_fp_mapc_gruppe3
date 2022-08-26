@@ -47,4 +47,6 @@ public enum EventName {
     SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE,
     /** The supervisor instructs to delete all current group desires. */
     SUPERVISOR_PERCEPT_DELETE_GROUP_DESIRES,
+    /** The supervisor instructs to explore the map size */
+    SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE,
 }

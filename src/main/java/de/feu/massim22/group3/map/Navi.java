@@ -58,6 +58,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private boolean busy = false;
     private static boolean debug = true;
     private final int defaultMapSize = 30;
+    private Integer horizontalMapSize = null;
+    private Integer verticalMapSize = null;
+    private boolean mapDiscovered = false;
+
+    private boolean horizontalMapSizeInDiscover = false;
+    private boolean verticalMapSizeInDiscover = false;
     
     private List<CalcResult> calcResults = new ArrayList<>();
     
@@ -828,9 +834,78 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         return map.getMeetingPoints();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Point getGameMapSize(String supervisor) {
         GameMap map = maps.get(supervisor);
         return map.getMapSize();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean isHorizontalMapSizeInDiscover() {
+        return horizontalMapSizeInDiscover;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean isVerticalMapSizeInDiscover() {
+        return verticalMapSizeInDiscover;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean setHorizontalMapSizeInDiscover(boolean value) {
+        boolean oldState = horizontalMapSizeInDiscover;
+        horizontalMapSizeInDiscover = value;
+        return !oldState;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean setVerticalMapSizeInDiscover(boolean value) {
+        boolean oldState = verticalMapSizeInDiscover;
+        verticalMapSizeInDiscover = value;
+        return !oldState;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void setHorizontalMapSize(int value) {
+        horizontalMapSize = value;
+        if (verticalMapSize != null && !mapDiscovered) {
+            mapDiscovered = true;
+            for (GameMap map : maps.values()) {
+                map.setFinalSize(horizontalMapSize, verticalMapSize);
+            }
+            DirectionUtil.setMapSize(horizontalMapSize, verticalMapSize);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void setVerticalMapSize(int value) {
+        verticalMapSize = value;
+        if (horizontalMapSize != null && !mapDiscovered) {
+            mapDiscovered = true;
+            for (GameMap map : maps.values()) {
+                map.setFinalSize(horizontalMapSize, verticalMapSize);
+            }
+            DirectionUtil.setMapSize(horizontalMapSize, verticalMapSize);
+        }
     }
 }

@@ -712,21 +712,6 @@ public abstract class BeliefDesire implements IDesire {
      * @param p the Point to rotate
      * @return the rotated point
      */
-
-    //Melinda
-    private String dir2;
-    private boolean dir2Used = false;
-
-    protected ActionInfo fullfillPreconditions() {
-        for (IDesire d : precondition) {
-            if (!d.isFulfilled().value()) {
-                AgentLogger.info("Next action for agent " + belief.getAgentShortName() + " from " + d.getName());
-                return d.getNextActionInfo();
-            }
-        }
-        return null;
-    }
-
     public Point getCCRotatedPoint(Point p) {
         return new Point(p.y, -p.x);
     }

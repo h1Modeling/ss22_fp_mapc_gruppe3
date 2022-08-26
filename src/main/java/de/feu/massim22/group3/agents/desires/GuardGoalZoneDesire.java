@@ -678,7 +678,6 @@ public class GuardGoalZoneDesire extends BeliefDesire {
 
     // Method for recursive call from getAllAdjacentThings()
     private AdjacentThings getAdjacentThings(Point p, AdjacentThings adjThings) {
-        System.out.println("AdjacentThings with point " + p.toString());
         List<Point> pointsToCheck = new ArrayList<Point>();
         pointsToCheck.add(new Point(p.x + 1, p.y));
         pointsToCheck.add(new Point(p.x - 1, p.y));
@@ -746,7 +745,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
      */
     @Override
     public int getPriority() {
-        return 1500;
+        return 5000;
     }
 
     class AdjacentThings {

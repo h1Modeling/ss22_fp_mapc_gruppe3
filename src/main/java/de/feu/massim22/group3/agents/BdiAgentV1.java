@@ -14,6 +14,7 @@ import de.feu.massim22.group3.agents.desires.DeliverAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.desires.DeliverBlockDesire;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
 import de.feu.massim22.group3.agents.desires.ExploreDesire;
+import de.feu.massim22.group3.agents.desires.ExploreMapSizeDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
 import de.feu.massim22.group3.agents.desires.GetBlockDesire;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
@@ -296,7 +297,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 }
             }
             if (block != null) {
-                System.out.println(getName() + " Receive Block added " + agent);
                 belief.setGroupDesireType(GroupDesireTypes.RECEIVE_ATTACH);
                 belief.setGroupDesirePartner(agent);
                 belief.setGroupDesireBlockDetail(block.type);
@@ -337,19 +337,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
 //        }
         
         case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
-            // Inform Team Mate to cancel group desire
-            if (!belief.getGroupDesireType().equals(GroupDesireTypes.NONE)) {
-                String partner = belief.getGroupDesirePartner();
-                if (!partner.equals("")) {
-                    Parameter agentPara =  new Identifier(belief.getAgentShortName());
-                    Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DONE_OR_CANCELED.name(), agentPara);
-                    forwardMessage(message, partner, belief.getAgentShortName());
-                }
-            }
             belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
-            // Delete WalkByGetRoleDesire so it does not get in conflict with getting
-            // the digger role
-            desires.removeIf(d -> d.getName().equals(WalkByGetRoleDesire.class.getSimpleName()));
             List<Parameter> parameters = event.getParameters();
             int pointX_gz = PerceptUtil.toNumber(parameters, 0, Integer.class);
             int pointY_gz = PerceptUtil.toNumber(parameters, 1, Integer.class);
@@ -373,6 +361,16 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             }
             break;
         }
+        case SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE: {
+            belief.setGroupDesireType(GroupDesireTypes.EXPLORE);
+            List<Parameter> parameters = event.getParameters();
+            String teamMate = PerceptUtil.toStr(parameters, 0);
+            String teamMateShort = PerceptUtil.toStr(parameters, 1);
+            String direction = PerceptUtil.toStr(parameters, 2);
+            int guideOffset = PerceptUtil.toNumber(parameters, 3, Integer.class);
+            desires.add(new ExploreMapSizeDesire(belief, teamMateShort, teamMate, supervisor.getName(), direction, guideOffset));
+            break;
+        }
         default:
             throw new IllegalArgumentException("Message is not handled: " + taskName);
         }
@@ -384,9 +382,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         desires.add(new DigFreeDesire(belief));
         desires.add(new WaitNearGoalZoneDesire(belief));
         desires.add(new FreedomDesire(belief));
-        // TODO remove / modify if sim roles change
-        // not usable for now because of need to adopt a clear role (like digger)--> conflict
-        // with this line.
+
         String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
         desires.add(new WalkByGetRoleDesire(belief, actions));
     }
