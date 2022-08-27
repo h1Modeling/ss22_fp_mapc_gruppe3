@@ -31,7 +31,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block. <BR>
-     * Konfiguration: A○■ <BR>
+     * Configuration: A○■ <BR>
      * Move Direction: ->
      */
     @Test
@@ -59,7 +59,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed vertical move when blocked by block. <BR>
-     * Konfiguration: A● <BR>
+     * Configuration: A● <BR>
      * Move Direction: ->
      */
     @Test
@@ -84,7 +84,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block. <BR>
-     * Konfiguration: ○■ <BR>
+     * Configuration: ○■ <BR>
      *                A <BR>
      * Move Direction: ->
      */
@@ -113,7 +113,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block. <BR>
-     * Konfiguration: ○■ <BR>
+     * Configuration: ○■ <BR>
      *                A■ <BR>
      * Move Direction: ->
      */
@@ -145,7 +145,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Clear with attached block. <BR>
-     * Konfiguration:  ■ <BR>
+     * Configuration:  ■ <BR>
      *               ○A■ <BR>
      * Move Direction: ->
      */
@@ -178,7 +178,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Move with attached block - Agent should not clear blocks if not needed. <BR>
-     * Konfiguration:  ■ <BR>
+     * Configuration:  ■ <BR>
      *               ○A● <BR>
      * Move Direction: ->
      */
@@ -210,7 +210,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Clear with attached block - Agent should not clear blocks if not needed. <BR>
-     * Konfiguration:  ■ <BR>
+     * Configuration:  ■ <BR>
      *               ○A● <BR>
      *                ■ <BR>
      * Move Direction: ->
@@ -246,7 +246,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Clear with enemies and blocks around - Agent should not clear blocks if not needed. <BR>
-     * Konfiguration: ■ <BR>
+     * Configuration: ■ <BR>
      *               EA● <BR>
      *                E <BR>
      * Move Direction: ->
@@ -280,7 +280,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block. <BR>
-     * Konfiguration: ○■ <BR>
+     * Configuration: ○■ <BR>
      *                ○ <BR>
      *                A <BR>
      * Move Direction: ->
@@ -314,7 +314,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Move with attached block. <BR>
-     * Konfiguration: ■ <BR>
+     * Configuration: ■ <BR>
      *                ○ <BR>
      *                A <BR>
      * Move Direction: ↑
@@ -345,7 +345,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed horizontal move when blocked by block. <BR>
-     * Konfiguration: ● <BR>
+     * Configuration: ● <BR>
      *                A <BR>
      * Move Direction: ↑
      */
@@ -371,7 +371,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block. <BR>
-     * Konfiguration:  ■ <BR>
+     * Configuration:  ■ <BR>
      *                A○ <BR>
      * Move Direction: ↑
      */
@@ -400,7 +400,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block. <BR>
-     * Konfiguration: ■■ <BR>
+     * Configuration: ■■ <BR>
      *                A○ <BR>
      * Move Direction: ↑ 
      */
@@ -432,7 +432,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Clear with attached block. <BR>
-     * Konfiguration:  ■■ <BR>
+     * Configuration:  ■■ <BR>
      *                 A <BR>
      *                 ○ <BR>
      * Move Direction: ↑
@@ -466,7 +466,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Move with attached block - Agent should not clear blocks if not needed. <BR>
-     * Konfiguration: ●■ <BR>
+     * Configuration: ●■ <BR>
      *                A <BR>
      *                ○ <BR>
      * Move Direction: ↑
@@ -499,7 +499,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Move with attached block - Agent should not clear blocks if not needed. <BR>
-     * Konfiguration: ●■ <BR>
+     * Configuration: ●■ <BR>
      *               ■A <BR>
      *                ○ <BR>
      * Move Direction: ↑
@@ -534,7 +534,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Clear with enemies and blocks around - Agent should not clear blocks if not needed. <BR>
-     * Konfiguration: ● <BR>
+     * Configuration: ● <BR>
      *               EA■ <BR>
      *                E <BR>
      * Move Direction: ↑
@@ -568,7 +568,7 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block. <BR>
-     * Konfiguration: ■ <BR>
+     * Configuration: ■ <BR>
      *                ○○A <BR>
      * Move Direction: ↑
      */
@@ -601,7 +601,7 @@ class BeliefDesireTest {
 
     /**
      * Test for move.
-     * Konfiguration: E
+     * Configuration: E
      *                ● 
      *                  
      *                 A○
@@ -634,11 +634,11 @@ class BeliefDesireTest {
 
     /**
      * Test for needed Rotation with attached block.
-     * Konfiguration:  ■ ■
+     * Configuration:  ■ ■
      *               ■ A ■
      *                 ○
      *                  ■
-     * Move Direction: ↑
+     * Move Direction: ->
      */
     @Test
     public void testGetActionForMove20() {
@@ -667,6 +667,456 @@ class BeliefDesireTest {
                 assertEquals("clear", test.value().getName());
                 assertEquals(-1, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
                 assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for moving around block.
+     * Configuration:
+     *                 A ●
+     *                 ○
+     *                 
+     * Move Direction: ->
+     */
+    @Test
+    public void testGetActionForMove21() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_BLOCK, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(0, 1));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForMove("e", "");
+                assertEquals("move", test.value().getName());
+                assertEquals("s", PerceptUtil.toStr(test.value().getParameters(), 0));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for moving around block.
+     * Configuration:
+     *                 A 
+     *                 ○ ●
+     *                 
+     * Move Direction: ->
+     */
+    @Test
+    public void testGetActionForMove22() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 1, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_BLOCK, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(0, 1));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForMove("e", "");
+                assertEquals("rotate", test.value().getName());
+                assertEquals("cw", PerceptUtil.toStr(test.value().getParameters(), 0));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for avoiding block.
+     * Configuration:
+     *                 A ○ 
+     *                 ●
+     */
+    @Test
+    public void testGetActionForCWRotation1() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_BLOCK, "b2"));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCWRotation("");
+                assertEquals("rotate", test.value().getName());
+                assertEquals("ccw", PerceptUtil.toStr(test.value().getParameters(), 0));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for avoiding block.
+     * Configuration:  ■
+     *                 A ○ 
+     *                 ●
+     */
+    @Test
+    public void testGetActionForCWRotation2() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_BLOCK, "b2"));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCWRotation("");
+                assertEquals("clear", test.value().getName());
+                assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
+                assertEquals(-1, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for clearing obstacle.
+     * Configuration:  ■
+     *                 A ○ 
+     *                 ■
+     */
+    @Test
+    public void testGetActionForCWRotation3() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_OBSTACLE, ""));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCWRotation("");
+                assertEquals("clear", test.value().getName());
+                assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
+                assertEquals(1, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+
+    /**
+     * Test for default rotation.
+     * Configuration:  ■
+     *                 A ○ 
+     *                   ■
+     */
+    @Test
+    public void testGetActionForCWRotation4() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(1, 1, Thing.TYPE_OBSTACLE, ""));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCWRotation("");
+                assertEquals("rotate", test.value().getName());
+                assertEquals("cw", PerceptUtil.toStr(test.value().getParameters(), 0));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for avoiding agent.
+     * Configuration:  ■
+     *                 A ○ 
+     *                 T
+     */
+    @Test
+    public void testGetActionForCWRotation5() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_ENTITY, "A"));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCWRotation("");
+                assertEquals("clear", test.value().getName());
+                assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
+                assertEquals(-1, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for avoiding agents.
+     * Configuration:  T
+     *                 A ○ 
+     *                 T
+     */
+    @Test
+    public void testGetActionForCWRotation6() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_ENTITY, "A"));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_ENTITY, "A"));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCWRotation("");
+                assertEquals("skip", test.value().getName());
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+        /**
+     * Test for avoiding block.
+     * Configuration:  ●
+     *                 A ○ 
+     *                 
+     */
+    @Test
+    public void testGetActionForCCWRotation1() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_BLOCK, "b2"));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCCWRotation("");
+                assertEquals("rotate", test.value().getName());
+                assertEquals("cw", PerceptUtil.toStr(test.value().getParameters(), 0));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for avoiding block.
+     * Configuration:  ●
+     *                 A ○ 
+     *                 ■
+     */
+    @Test
+    public void testGetActionForCCWRotation2() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_BLOCK, "b2"));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCCWRotation("");
+                assertEquals("clear", test.value().getName());
+                assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
+                assertEquals(1, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for clearing obstacle.
+     * Configuration:  ■
+     *                 A ○ 
+     *                 ■
+     */
+    @Test
+    public void testGetActionForCCWRotation3() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_OBSTACLE, ""));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCCWRotation("");
+                assertEquals("clear", test.value().getName());
+                assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
+                assertEquals(-1, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+
+    /**
+     * Test for default rotating.
+     * Configuration:    ■
+     *                 A ○ 
+     *                 ■ 
+     */
+    @Test
+    public void testGetActionForCCWRotation4() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(1, -1, Thing.TYPE_OBSTACLE, ""));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCCWRotation("");
+                assertEquals("rotate", test.value().getName());
+                assertEquals("ccw", PerceptUtil.toStr(test.value().getParameters(), 0));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for avoiding agent.
+     * Configuration:  T
+     *                 A ○ 
+     *                 ■
+     */
+    @Test
+    public void testGetActionForCCWRotation5() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_ENTITY, "A"));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_OBSTACLE, ""));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCCWRotation("");
+                assertEquals("clear", test.value().getName());
+                assertEquals(0, PerceptUtil.toNumber(test.value().getParameters(), 0, Integer.class));
+                assertEquals(1, PerceptUtil.toNumber(test.value().getParameters(), 1, Integer.class));
+                return null;
+            }
+        };
+        d.isFulfilled();
+    }
+
+    /**
+     * Test for avoiding agents.
+     * Configuration:  T
+     *                 A ○ 
+     *                 T
+     */
+    @Test
+    public void testGetActionForCCWRotation6() {
+        // Create Belief
+        Belief b = new Belief("Agent");
+        var percept = new ArrayList<Percept>();
+        Percept t1 = PerceptUtil.fromThing(new Thing(1, 0, Thing.TYPE_BLOCK, "b1"));
+        Percept t2 = PerceptUtil.fromThing(new Thing(0, 1, Thing.TYPE_ENTITY, "A"));
+        Percept t3 = PerceptUtil.fromThing(new Thing(0, -1, Thing.TYPE_ENTITY, "A"));
+        Percept a1 = PerceptUtil.fromAttachedPoint(new Point(1, 0));
+        percept.add(t1);
+        percept.add(t2);
+        percept.add(t3);
+        percept.add(a1);
+        b.update(percept);
+        BeliefDesire d = new BeliefDesire(b) {
+            @Override
+            public BooleanInfo isFulfilled() {
+                ActionInfo test = this.getActionForCCWRotation("");
+                assertEquals("skip", test.value().getName());
                 return null;
             }
         };
