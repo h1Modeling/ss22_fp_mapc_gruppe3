@@ -53,20 +53,39 @@ TODO Gruppentreffen, Github
 TODO Java, Bdi, 2 Agentensysteme, UML
 
 \section{Gruppenbeitrag Heinz Stadler}
+Nach einer ausführlichen Einarbeitung in die Thematik der Multiagentensysteme, erfolgte die Analyse der Ergebnisse des 15. Multi-Agent Programming Contest \cite{Ahlbrecht2021}. Diese ergab, dass neben der Entscheidungsfindung der Agenten, der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{Ahlbrecht2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}), eine wesentliche Schwierigkeit der Aufgabe bilden. \\
+Als Folge dessen entschied sich der Autor mit dem Aufbau der Wissensverwaltung (siehe \ref{wissensverwaltung}) zu beginnen. Diese umfasst eine Datenstruktur zur Speicherung der von der Simulation übermittelten Informationen, sowie eine Lösung zum Aufbau einer globalen Karte des Simulationsgebiets. Nach Fertigstellung der Karte und deren funktionalen Verifikation, wurde parallel an der Konzeptionierung des Agentensystem V1 (siehe \ref{agentV1}) sowie der Implementierung einer intelligenten Wegführung (siehe \ref{wegfindung}) gearbeitet. Um die Ergebnisse der Wegführung und das Entscheidungsverhalten der Agenten effektiv verifizieren zu können, folgte die Erstellung eines graphischen Analysewerkzeugs (siehe \ref{verifikation}) das im weiten Entwicklungsverlauf stetig weiterentwickelt wurde und sich als sehr hilfreich bei der Fehlerfindung zeigte.
  
-\subsection{Agent V1 - Architektur}
-Aufbau
+\subsection{Agent V1 - Architektur}\label{agentV1}
+\begin{wrapfigure}{r}{0.56\linewidth}
+\includegraphics{./Referenzen/Architekturdiagramm.pdf}
+\caption{Dummy figure.}
+\label{g3:architecture}
+\end{wrapfigure}
+Das Agentensystem V1 wurde federführend vom Autor konzipiert, in der Gruppe abgestimmt und schließlich selbstständig implementiert. Es erweitert das BDI-Konzept \cite{Bratman1987} um zusätzliche Daten-, Berechnungs- und Entscheidungsebenen, die in Abbildung \ref{g3:architecture} illustriert sind. \\
+Das System kombiniert das Konzept des BDI-Agenten mit dem Konzept einer bidirektionalen vertikalen Schichtarchitektur \cite[S. 61-62]{Weiss2000}, auf die in Abschnitt
+\ref{absichtsfindung} näher eingegangen wird. \\
+Jeder BDI-Agent wurde mit einer Vorgesetzteninstanz kombiniert und in einem Thread gekapselt. Die Kommunikation zwischen Agenten erfolgt über Nachrichten. Agenten können zu Agentengruppen zusammengefasst werden, welche die im Simulationsverlauf erhaltenen Umgebungsinformationen in einer gemeinsamen Karte verwalten. Die Karte und die Module zur Wegführung werden von einem zentralem Navigationsmodul, das als Einzelstück ausgeführt wurde, verwaltet. 
 
-\subsection{Wissensverwaltung}
-Belief
 
-\subsection{Wegfindung}
+
+ Dies ermöglicht die parallelisierte Entscheidungsfindung und unterstreicht die konzeptionelle Eigenständig der Agenten untereinander. Agenten können zu Agentengruppen zusammengefasst werden. In jeder Agentengruppe bleibt der Vorgesetzte des Agenten mit der niedrigsten Index aktiv und übernimmt die Vorgesetztenrolle der anderen Agenten in der Gruppe. Die  
+
+\subsection{Wissensverwaltung}\label{wissensverwaltung}
+Belief, Karten
+\\
+\\
+Die zur Kommunikation mit dem Simulationsserver gewählte Bibliothek EISMASSim \cite{EISMASSim} ermöglicht die Abfrage der aktuellen Simulationsinformationen in der Form von Percepts. Da Percepts eine universelle Datenstruktur, unabhängig vom jeweiligen Dateninhalt ist, wurde die Java Klasse Belief erstellt. In dieser werden die aktuellen Percepts in einfach zu verarbeitende Java Datenstrukturen umgewandelt. \\
+Zusätzlich werden die aktuellen Informationen aus dem Sichtfeld der Agenten in eine weitere Datenstruktur GameMap, im Folgenden als Karte bezeichnet, gespeichert. Die Karte hat zum Ziel umfangreiches Wissen über die Umgebung der Agenten zu sammeln. Sie besteht aus einzelnen Zellen, die chronologisch Informationen der Agenten persistiert. Die Karte ermöglicht Informationen von Agenten, die nachweislich inkorrekte Daten gesendet haben, zu entfernen. Des Weiteren können verschiedene Karten zusammengeführt werden, wobei die Chronologie der enthaltenen Daten gewahrt wird. \\
+Da die absolute Position der Agenten zum Simulationsbeginn nicht bekannt ist, stellt das Zusammenführen einzelner Karten eine Schwierigkeit dar. Im Nachfolgenden wird 
+
+\subsection{Wegfindung}\label{wegfindung}
 Pathfinding
 
-\subsection{Ziel- und Absichtsfindung}
+\subsection{Ziel- und Absichtsfindung}\label{absichtsfindung}
 Desires
 
-\subsection{Verifikation und Problemfindung}
+\subsection{Verifikation und Problemfindung}\label{verifikation}
 Tests / Debugger
 
 \subsection{...}
