@@ -41,7 +41,7 @@ public interface INaviAgentV1 extends INavi {
      */
     PathFindingResult[][] updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
             List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score,
-            Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedPoints);
+            Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedPoints, List<Point> marker);
     
     /**
      * Sends current agent data to the <code>GraphicalDebugger</code>.
