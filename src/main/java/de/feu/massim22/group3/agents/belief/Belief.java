@@ -54,6 +54,7 @@ public class Belief {
     // Step Beliefs
     private int step;
     private Set<Thing> things = new HashSet<>();
+    private Set<Thing> marker = new HashSet<>();
     private Set<TaskInfo> taskInfo = new HashSet<>();
     private Set<TaskInfo> taskInfoAtLastStep = new HashSet<>();
     private List<TaskInfo> newTasks = new ArrayList<>();
@@ -134,7 +135,11 @@ public class Belief {
                     int y = toNumber(p, 1, Integer.class);
                     String type = toStr(p, 2);
                     String details = toStr(p, 3);
-                    things.add(new Thing(x, y, type, details));
+                    if (type.equals(Thing.TYPE_MARKER)) {
+                        marker.add(new Thing(x, y, type, details));
+                    } else {
+                        things.add(new Thing(x, y, type, details));
+                    }
                     break;
                 case "task":
                     String name = toStr(p, 0);
@@ -634,12 +639,34 @@ public class Belief {
     }
 
     /**
-     * Gets the Things the agent currently has in vision.
+     * Gets the Things, excluding markers, the agent currently has in vision.
      * 
      * @return the things in vision
      */
     public Set<Thing> getThings() {
         return things;
+    }
+
+    /**
+     * Gets the marker the agent currently has in vision.
+     * 
+     * @return the markers in vision
+     */
+    public List<Thing> getMarker() {
+        return new ArrayList<>(marker);
+    }
+
+    /**
+     * Gets a List of Points containing position information about the marker in vision.
+     * 
+     * @return the position of the marker in vision
+     */
+    public List<Point> getMarkerPoints() {
+        List<Point> result = new ArrayList<>();
+        for (var m : marker) {
+            result.add(new Point(m.x, m.y));
+        }
+        return result;
     }
 
     /**
@@ -1450,6 +1477,7 @@ public class Belief {
         // clearing
         roles.clear();
         things.clear();
+        marker.clear();
         taskInfo.clear();
         normsInfo.clear();
         lastActionParams.clear();
@@ -1625,5 +1653,23 @@ public class Belief {
         
         return reachableRoleZonesX;
     }
-    // Melinda end
+    
+    /**
+     * Tests if the agent or an attached Thing to the agent is overlapping with a clear marker.
+     * 
+     * @return true if the agent or an attached Thing to the agent is overlapping with a clear marker
+     */
+    public boolean isInClearDanger() {
+        List<Point> toTest = new ArrayList<>(getOwnAttachedPoints());
+        toTest.add(new Point(0, 0));
+
+        for (Thing m : marker) {
+            for (Point p : toTest) {
+                if (p.equals(new Point(m.x, m.y))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -13,6 +13,7 @@ import de.feu.massim22.group3.agents.desires.BooleanInfo;
 import de.feu.massim22.group3.agents.desires.DeliverAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.desires.DeliverBlockDesire;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
+import de.feu.massim22.group3.agents.desires.EscapeClearDesire;
 import de.feu.massim22.group3.agents.desires.ExploreDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
 import de.feu.massim22.group3.agents.desires.GetBlockDesire;
@@ -389,6 +390,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         // with this line.
         String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
         desires.add(new WalkByGetRoleDesire(belief, actions));
+        desires.add(new EscapeClearDesire(belief));
     }
 
     private void updateDesires() {
