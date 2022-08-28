@@ -59,34 +59,49 @@ Als Folge dessen entschied sich der Autor mit dem Aufbau der Wissensverwaltung (
 \subsection{Agent V1 - Architektur}\label{agentV1}
 \begin{wrapfigure}{r}{0.56\linewidth}
 \includegraphics{./Referenzen/Architekturdiagramm.pdf}
-\caption{Dummy figure.}
+\caption{Architekturdiagramm Agent V1}
 \label{g3:architecture}
 \end{wrapfigure}
 Das Agentensystem V1 wurde federführend vom Autor konzipiert, in der Gruppe abgestimmt und schließlich selbstständig implementiert. Es erweitert das BDI-Konzept \cite{Bratman1987} um zusätzliche Daten-, Berechnungs- und Entscheidungsebenen, die in Abbildung \ref{g3:architecture} illustriert sind. \\
-Das System kombiniert das Konzept des BDI-Agenten mit dem Konzept einer bidirektionalen vertikalen Schichtarchitektur \cite[S. 61-62]{Weiss2000}, auf die in Abschnitt
-\ref{absichtsfindung} näher eingegangen wird. \\
-Jeder BDI-Agent wurde mit einer Vorgesetzteninstanz kombiniert und in einem Thread gekapselt. Die Kommunikation zwischen Agenten erfolgt über Nachrichten. Agenten können zu Agentengruppen zusammengefasst werden, welche die im Simulationsverlauf erhaltenen Umgebungsinformationen in einer gemeinsamen Karte verwalten. Die Karte und die Module zur Wegführung werden von einem zentralem Navigationsmodul, das als Einzelstück ausgeführt wurde, verwaltet. 
+Das System kombiniert den Aufbau eines BDI-Agenten mit einer bidirektionalen vertikalen Schichtarchitektur \cite[S. 61-62]{Weiss2000}, auf die in Abschnitt
+\ref{absichtsfindung} näher eingegangen wird.
 
+Jeder Agent wurde mit einer Vorgesetzteninstanz, die eine zusätzliche Entscheidungsebene bildet, kombiniert und in einem Thread parallelisiert. Werden Agenten zu einer Gruppe zusammengeführt, bleibt eine Vorgesetzeninstanz aktiv. Die sonstigen Instanzen der Gruppe werden passiv und übernehmen im Weiteren nur noch die Weiterleitung von Nachrichten an die aktive Entität.
 
+Die Kommunikation zwischen Instanzen in verschiedenen Threads erfolgt über Nachrichten, die in einer threadsicheren Warteschlange zwischengespeichert werden. Die Verständigung des Agenten mit seinem direkten Vorgesetzten wird mittels Methodenaufrufen realisiert.
 
- Dies ermöglicht die parallelisierte Entscheidungsfindung und unterstreicht die konzeptionelle Eigenständig der Agenten untereinander. Agenten können zu Agentengruppen zusammengefasst werden. In jeder Agentengruppe bleibt der Vorgesetzte des Agenten mit der niedrigsten Index aktiv und übernimmt die Vorgesetztenrolle der anderen Agenten in der Gruppe. Die  
+Agentengruppen aktualisieren eine gemeinsame Karte mit im Simulationsverlauf erhaltenen Umgebungsinformationen. Diese und Module zur Wegführung werden von einem zentralem threadsicheren Navigationsmodul, das als Einzelstück ausgeführt wurde, verwaltet. 
+
 
 \subsection{Wissensverwaltung}\label{wissensverwaltung}
-Belief, Karten
-\\
-\\
-Die zur Kommunikation mit dem Simulationsserver gewählte Bibliothek EISMASSim \cite{EISMASSim} ermöglicht die Abfrage der aktuellen Simulationsinformationen in der Form von Percepts. Da Percepts eine universelle Datenstruktur, unabhängig vom jeweiligen Dateninhalt ist, wurde die Java Klasse Belief erstellt. In dieser werden die aktuellen Percepts in einfach zu verarbeitende Java Datenstrukturen umgewandelt. \\
-Zusätzlich werden die aktuellen Informationen aus dem Sichtfeld der Agenten in eine weitere Datenstruktur GameMap, im Folgenden als Karte bezeichnet, gespeichert. Die Karte hat zum Ziel umfangreiches Wissen über die Umgebung der Agenten zu sammeln. Sie besteht aus einzelnen Zellen, die chronologisch Informationen der Agenten persistiert. Die Karte ermöglicht Informationen von Agenten, die nachweislich inkorrekte Daten gesendet haben, zu entfernen. Des Weiteren können verschiedene Karten zusammengeführt werden, wobei die Chronologie der enthaltenen Daten gewahrt wird. \\
-Da die absolute Position der Agenten zum Simulationsbeginn nicht bekannt ist, stellt das Zusammenführen einzelner Karten eine Schwierigkeit dar. Im Nachfolgenden wird 
+Jeder Agent hat Zugriff auf eine individuelle Wissensbasis, seine Beliefs, die von der Simulation bereitgestellte Informationen auswertet und speichert. \\
+Die Details in der Wissensbasis über das Simulationsgebiets beschränkt sich auf das aktuelle Sichtfeld des Agenten. Es ist weder die Größe des Simulationsgebiets, noch die absolute Position des Agenten in diesem bekannt. 
+Aus diesem Grund werden aktuelle Daten aus dem Sichtfeld aller Agenten einer Gruppe an das Navigationsmodul gesendet, das diese in einer Karten-Datenstruktur chronologisch persistiert. Die Karte schafft somit agentenübergreifend ein Gedächnis über deren Umgebung.
+
+Beim Simulationsstart erhält jeder Agent eine Initialkarte mit festgelegter Größe (Abb. \ref{Karte} Punkt 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Punkt 2). Treffen sich zwei Agenten, die nicht in der gleichen Gruppe sind, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen weitergeleitet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden die Gruppen vereinigt und deren Karten überlagert und schließlich zusammengeführt (Abb. \ref{Karte} Punkt 3). Wurde die Kartengröße durch einzelne Agenten erfolgreich ermittelt, wird die Karte beschnitten, wobei die Informationen abgeschnittener Spalten auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen.
+\begin{figure}[h]
+\includegraphics{./Referenzen/Kartenmerge.pdf}
+\caption{Gruppenkarte}
+\label{Karte}
+\end{figure}
 
 \subsection{Wegfindung}\label{wegfindung}
-Pathfinding
+Die 
+Pathfinding, 2 Stufiges System
 
 \subsection{Ziel- und Absichtsfindung}\label{absichtsfindung}
-Desires
+Desires, verticale Schichtarchitektur
+
+\begin{wrapfigure}{r}{0.56\linewidth}
+\includegraphics{./Referenzen/Entscheidungsfindung.pdf}
+\caption{Architekturdiagramm Agent V1}
+\label{g3:architecture}
+\end{wrapfigure}
 
 \subsection{Verifikation und Problemfindung}\label{verifikation}
 Tests / Debugger
+
+\subsection{Rekapitulation}
 
 \subsection{...}
 
