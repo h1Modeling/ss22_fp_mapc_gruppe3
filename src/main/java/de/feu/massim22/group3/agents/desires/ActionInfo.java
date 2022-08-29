@@ -116,11 +116,11 @@ public record ActionInfo(Action value, String info) {
      * Creates an ActionInfo instance for the massim Action submit.
      * 
      * @param task the name of the task which should be submitted
-     * @param info additional information about the reasoning which provided the action
+     * @param info additional information about the reasoning which provided the action (V2: Number of blocks for task)
      * @return the submit ActionInfo
      */
     public static ActionInfo SUBMIT(String task, String info) {
-        Action a = new Action(Actions.SUBMIT, new Identifier(task));
+        Action a = new Action(Actions.SUBMIT, new Identifier(task), new Identifier(info));
         return new ActionInfo(a, info);
     }
 

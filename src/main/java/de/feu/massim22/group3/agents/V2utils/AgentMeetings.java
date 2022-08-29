@@ -161,15 +161,32 @@ public class AgentMeetings {
     private static void evaluateMapSize(Meeting meeting) {
         Meeting fm = newMeeting(meeting.agent1.firstMeeting[meeting.agent2().index]);
         Meeting m = newMeeting(meeting);
-        
-        AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings.evaluateMapSize - firstMeeting: " 
-        + fm.toString() + " , meeting: " + m.toString());
-        
-        int height = (m.nmpAgent2.y - fm.nmpAgent2.y) - (m.nmpAgent1.y - fm.nmpAgent1.y) - (m.relAgent2.y - fm.relAgent2.y);
-        int width = (m.nmpAgent2.x - fm.nmpAgent2.x) - (m.nmpAgent1.x - fm.nmpAgent1.x) - (m.relAgent2.x - fm.relAgent2.x);
-        
-        AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings - height: " 
-        + height + " , width: " + width);
+
+        AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings.evaluateMapSize - firstMeeting: "
+                + fm.toString() + " , meeting: " + m.toString());
+
+        int height = Math.abs(m.nmpAgent2.y - fm.nmpAgent2.y) - (m.nmpAgent1.y - fm.nmpAgent1.y)
+                - (m.relAgent2.y - fm.relAgent2.y);
+        int width = Math.abs(m.nmpAgent2.x - fm.nmpAgent2.x) - (m.nmpAgent1.x - fm.nmpAgent1.x)
+                - (m.relAgent2.x - fm.relAgent2.x);
+
+        AgentLogger
+                .info(Thread.currentThread().getName() + " AgentMeetings - height: " + height + " , width: " + width);
+
+        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent1)
+                && AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent2)
+                || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent1)
+                        && AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent2)) {
+            if (height > 0 && height != AgentCooperations.mapSize.y) {
+                AgentCooperations.setMapSize(new Point(AgentCooperations.mapSize.x, height));
+                StepUtilities.exploreVerticalMapSizeFinished = true;
+            }
+
+            if (width > 0 && width != AgentCooperations.mapSize.x) {
+                AgentCooperations.setMapSize(new Point(width, AgentCooperations.mapSize.y));
+                StepUtilities.exploreHorizontalMapSizeFinished = true;
+            }
+        }
     }
     
     private static Meeting newMeeting(Meeting meeting) {

@@ -1,13 +1,10 @@
 package de.feu.massim22.group3.agents.desires.V2desires;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
-import de.feu.massim22.group3.agents.V2utils.Point;
+import de.feu.massim22.group3.agents.V2utils.*;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
-import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import eis.iilang.Identifier;
 
 /**
  * The class <code>ExploreMapSizeDesire</code> models the desire to explore the map size.
@@ -17,7 +14,6 @@ import eis.iilang.Identifier;
 public class ExploreMapSizeDesire extends BeliefDesire {
 
     private BdiAgentV2 agent;
-    private String supervisor;
 
     /**
      * Instantiates a new ExploreMapSizeDesire.
@@ -27,11 +23,10 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      * @param agent the agent who wants to go to a goal zone
      * 
      */
-    public ExploreMapSizeDesire(Belief belief, String supervisor, BdiAgentV2 agent) {
+    public ExploreMapSizeDesire(Belief belief, BdiAgentV2 agent) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start ExploreMapSizeDesire");
         this.agent = agent;
-        this.supervisor = supervisor;
     }
 
     /**
@@ -51,7 +46,10 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isExecutable() {
-        if (AgentCooperations.exists(agent.desireProcessing.stepUtilities.exploreHorizontalMapSize, agent)) {
+        AgentLogger.info(
+                Thread.currentThread().getName() + " ExploreMapSizeDesire.isExecutable() - Agent: " + agent.getName());
+        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, agent)
+                || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, agent)) {
             return new BooleanInfo(true, "");
         }
         
@@ -66,21 +64,25 @@ public class ExploreMapSizeDesire extends BeliefDesire {
     @Override
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(
-                Thread.currentThread().getName() + "ExploreMapSizeDesire.getNextAction() - Agent: " + agent.getName());
+                Thread.currentThread().getName() + " ExploreMapSizeDesire.getNextAction() - Agent: " + agent.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " ExploreMapSizeDesire.getNextAction() - horizontal: " 
+                + (AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, agent) != null ? 
+                        AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, agent).toString() : ""));
+        AgentLogger.info(Thread.currentThread().getName() + " ExploreMapSizeDesire.getNextAction() - vertical: " 
+        + (AgentCooperations.get(StepUtilities.exploreVerticalMapSize, agent) != null ? 
+                AgentCooperations.get(StepUtilities.exploreVerticalMapSize, agent).toString() : ""));
         
-        
-
-        if (AgentCooperations.exists(agent.desireProcessing.stepUtilities.exploreHorizontalMapSize, agent, 2) 
-            || AgentCooperations.exists(agent.desireProcessing.stepUtilities.exploreVerticalMapSize, agent, 2)) {
+        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, agent, 2) 
+            || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, agent, 2)) {
             return ActionInfo.SKIP("2000 waiting for explore map size finished");
         }
         
-        if (AgentCooperations.exists(agent.desireProcessing.stepUtilities.exploreHorizontalMapSize, agent, 1)) {
+        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, agent, 1)) {
             return agent.desireProcessing.getActionForMove(agent, "e", "e");
         }
         
-        if (AgentCooperations.exists(agent.desireProcessing.stepUtilities.exploreHorizontalMapSize, agent, 1)) {
-            return agent.desireProcessing.getActionForMove(agent, "n", "n");
+        if (AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, agent, 1)) {
+            return agent.desireProcessing.getActionForMove(agent, "s", "s");
         }
 
         return ActionInfo.SKIP("0010 should not happen");
@@ -91,10 +93,10 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      * 
      * @param the new supervisor
      */
-    @Override
+   /* @Override
     public void update(String supervisor) {
         this.supervisor = supervisor;
-    }
+    }*/
 
     /**
      * Gets the priority.

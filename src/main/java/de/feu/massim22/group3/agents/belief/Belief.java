@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
@@ -87,7 +88,7 @@ public class Belief {
     private String groupDesirePartner = "";
     private boolean isWaiting = false;
     
-    private Point mapSize = new Point(50, 50);
+    private Point mapSize = new Point(500, 500);
     private Point absolutePosition;
 
     /**
@@ -254,7 +255,7 @@ public class Belief {
                 }
             }
         updateOwnAttachedPoints();
-        updatePosition();
+        //updatePosition();
         updateNewTasks();
         updateAttachedThings();
     }
@@ -1373,7 +1374,7 @@ public class Belief {
     }
 
     private void updatePosition() {
-        if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
+          if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
             if (lastActionParams.size() == 0) return;
             String dir = lastActionParams.get(0);
             // Success
@@ -1454,16 +1455,17 @@ public class Belief {
     }
     
     /**
-     * Updates the position of a agent (used from the outside).
+     * Updates the position of an agent (used from the outside).
      * 
      */
     public void updatePositionFromExternal() {
+        setMapSize(AgentCooperations.mapSize);
         String dir = null;
-        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
+        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
-                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Success: " +  lastActionParams);
+                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Success: " +  lastActionParams);
                 
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
@@ -1474,7 +1476,7 @@ public class Belief {
 
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Partial: " +  lastActionParams);
+                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Partial: " +  lastActionParams);
                 move(lastActionParams.get(0));
                 moveNonModuloPosition(lastActionParams.get(0));
             }
@@ -1482,7 +1484,7 @@ public class Belief {
         
         position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
         position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
-        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
+        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Nachher: " +  getPosition());
     }
         
     private Point nonModuloPosition = new Point(0, 0);

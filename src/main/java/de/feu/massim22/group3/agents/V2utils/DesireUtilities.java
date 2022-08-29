@@ -115,15 +115,34 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , LooseWeightDesire");
         
-        if (agent.getBelief().getRole().name().equals("default") 
-                && doDecision(agent, new GoAdoptRoleDesire(agent.getBelief(), agent, "worker"))) {
+            if (agent.getBelief().getRole().name().equals("default")
+                    && doDecision(agent, new GoAdoptRoleDesire(agent.getBelief(), agent, "worker"))) {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
-                + " , GoAdoptRoleDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
-                + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
-                + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-            } else 
+                        + " , GoAdoptRoleDesire , Action: "
+                        + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName()
+                        + " , Parameter: "
+                        + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                        + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
+            } else
                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , GoAdoptRoleDesire - worker");
+
+            AgentLogger.info(Thread.currentThread().getName() + " ExploreMapSizeDesire() - Agent: " + agent.getName()
+                    + " , horizontal: " + StepUtilities.exploreHorizontalMapSizeStarted + " , vertical: "
+                    + StepUtilities.exploreVerticalMapSizeStarted);
+
+            if ((StepUtilities.exploreHorizontalMapSizeStarted || StepUtilities.exploreVerticalMapSizeStarted)
+                    && doDecision(agent, new ExploreMapSizeDesire(agent.getBelief(), agent))) {
+                AgentLogger
+                        .info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
+                                + " , ExploreMapSizeDesire , Action: "
+                                + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName()
+                                + " , Parameter: "
+                                + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
+                                 + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
+            } else
+                AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        + " , ExploreMapSizeDesire");
         
         agent.decisionsDone = true;
         return result;
@@ -196,11 +215,11 @@ public class DesireUtilities {
                         + " , Pos: " + agent.getBelief().getPosition()+ " , abs: " 
                                 + ((Point.castToPoint(agent.getBelief().getAbsolutePosition()) != null) ? Point.castToPoint(agent.getBelief().getAbsolutePosition()) : "") + " , Step: " + agent.getBelief().getStep());
                 AgentLogger.info(
-                        Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName()
+                        Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: " + agent.getName()
                                 + " , lA: " + agent.getBelief().getLastAction() + " , lAR: " + agent.getBelief().getLastActionResult());
                 for (String para : agent.getBelief().getLastActionParams()) {
                     AgentLogger.info(
-                            Thread.currentThread().getName() + ".getNextAction() - Agent: " + agent.getName()
+                            Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: " + agent.getName()
                                     + " , para: " + para);           
                 }
               
@@ -222,7 +241,6 @@ public class DesireUtilities {
                         + agent.getName() + " , nicht in Zone: " + !agent.getBelief().getGoalZones().contains(Point.zero()) 
                         + " , in Zone: "+ agent.getBelief().getGoalZones().contains(Point.zero()) + " , att. Size: "
                         + agent.desireProcessing.attachedThings.size());
-                
                                 
                 if (!agent.blockAttached
                 && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlockA(agent, task).type))) {
@@ -359,7 +377,10 @@ public class DesireUtilities {
             if (desire.getOutputAction().getName().equals(Actions.SKIP))
                 result = 10;
             else
-                result = 1500;
+                if (agent.getBelief().getRoleZones().contains(Point.zero()))
+                    result = 2500;
+                else
+                    result = 1500;
             break;
         case "DigFreeDesire":
             result = 1900;
@@ -369,7 +390,10 @@ public class DesireUtilities {
             break;
         case "LocalExploreDesire":
             result = 100;
-            break;            
+            break;    
+        case "ExploreMapSizeDesire":
+            result = 2000;
+            break;     
         case "GoAbandonedBlockDesire":
             if (desire.getOutputAction().getName().equals(Actions.ATTACH))
                 result = 290;

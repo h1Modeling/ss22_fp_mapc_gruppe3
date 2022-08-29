@@ -14,7 +14,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Heinz Stadler
  */
 public class DirectionUtil {
-    public static Point mapSize = new Point(64, 92);
+    public static Point mapSize = new Point(500, 500);
 
     /**
      * Translates a direction code from pathfinding into a string containing the direction chars.

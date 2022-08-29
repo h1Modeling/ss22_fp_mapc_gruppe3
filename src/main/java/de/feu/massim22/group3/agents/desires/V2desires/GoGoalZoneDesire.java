@@ -42,6 +42,9 @@ public class GoGoalZoneDesire extends BeliefDesire {
         this.agent = agent;
         posDefaultGoalZone1 = this.agent.desireProcessing.posDefaultGoalZone1;
         posDefaultGoalZone2 = this.agent.desireProcessing.posDefaultGoalZone2;
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire"
+        + " , GZ1: " + posDefaultGoalZone1 +
+        " , GZ2: " + posDefaultGoalZone2);
     }
 
     /**
@@ -97,10 +100,10 @@ public class GoGoalZoneDesire extends BeliefDesire {
                 defaultGoalZone = true;
                 result = true;
 
-                if (posDefaultGoalZone1 != null || posDefaultGoalZone2 == null) {
+                if (posDefaultGoalZone1 != null && posDefaultGoalZone2 == null) {
                     nearestGoalZone = posDefaultGoalZone1;
                 } else {
-                    if (posDefaultGoalZone1 == null || posDefaultGoalZone2 != null) {
+                    if (posDefaultGoalZone1 == null && posDefaultGoalZone2 != null) {
                         nearestGoalZone = posDefaultGoalZone2;
                     } else {
                         if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone1) 
@@ -127,7 +130,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        if (goalZoneAgent == null && !defaultGoalZone) {
+        if (goalZoneAgent == null && nearestGoalZone == null) {
             AgentLogger.info(Thread.currentThread().getName()
                     + " runSupervisorDecisions - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
             AgentLogger.info(
@@ -189,7 +192,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
                     + goalZoneAgent.getName() + " , " + goalZoneAgent.getBelief().getPosition());
             else
              // default GoalZone 
-                AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZone from strange agent: "
+                AgentLogger.info(Thread.currentThread().getName() + " GoGoalZoneDesire - default GoalZone agent: "
                         + agent.getName() + " , " + agent.getBelief().getPosition());
                        
             String direction = DirectionUtil.getDirection(agent.getBelief().getPosition(), nearestGoalZone);

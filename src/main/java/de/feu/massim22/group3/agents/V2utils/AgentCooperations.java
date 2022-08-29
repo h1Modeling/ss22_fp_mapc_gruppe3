@@ -17,11 +17,12 @@ import massim.protocol.data.TaskInfo;
  */
 public class AgentCooperations {
     public static List<Cooperation> cooperations = new ArrayList<Cooperation>();
-    private static int maxMaster = 2;
-    private static int max2BMaster = 1;
+    private static int maxMaster = 3;
+    private static int max2BMaster = 2;
     private static int max3BMaster = 1;
-    private static int maxTypes = 2;
+    private static int maxTypes = 3;
     public static int[] scores = {0, 0, 0, 0};
+    public static Point mapSize = new Point(500, 500);
     
     /**
      * A cooperation is being set.
@@ -277,6 +278,15 @@ public class AgentCooperations {
        result = result + " ### " + toString(coop);
         
         return result;
+    }
+    
+    /**
+     * Updates the mapsize field.
+     * 
+     * @param mapSize -  new mapSize to set
+     */
+    public static void setMapSize(Point mapSize) {
+        AgentCooperations.mapSize = mapSize;
     }
     
     /**

@@ -8,8 +8,6 @@ import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
  * @author Melinda Betz
  */
 public class Point extends java.awt.Point {
-    
-    public static Point mapSize = new Point(50, 50);
 
 	 /**
      * Initializes a new Instance of Point with two integers.
@@ -152,6 +150,7 @@ public class Point extends java.awt.Point {
      * @return abs(a.x - b.x)+abs(a.y-b.y)
      */
     public int distance(Point b) {
+        Point mapSize = AgentCooperations.mapSize;
         //return Math.abs(this.x - b.x) + Math.abs(this.y - b.y); // Manhattan
         return (Math.min(Math.abs(this.x - b.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(this.x - b.x)) % mapSize.x)
                 + Math.min(Math.abs(this.y - b.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(this.y - b.y)) % mapSize.y)); // Manhattan
@@ -164,6 +163,7 @@ public class Point extends java.awt.Point {
      * @return abs(a.x - b.x)+abs(a.y-b.y)
      */
     public static int distance(Point a, Point b) {
+        Point mapSize = AgentCooperations.mapSize;
         //return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); // Manhattan
         return (Math.min(Math.abs(a.x - b.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(a.x - b.x)) % mapSize.x)
                 + Math.min(Math.abs(a.y - b.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(a.y - b.y)) % mapSize.y)); // Manhattan   

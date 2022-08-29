@@ -32,6 +32,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
+    private boolean absolutePositions = true;
     //public boolean absolutePositions = false;
 
     public DesireUtilities desireProcessing = new DesireUtilities();
@@ -78,7 +79,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
      */
     @Override
     public Action step() {
-        System.out.println(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + (belief.getStep()+1) + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + (belief.getStep()+1) + " , Agent: " + this.getName());
         desires = new ArrayList<IDesire>();
         updateBeliefs();
         supervisor.setDecisionsDone(false);
@@ -86,7 +87,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         beliefsDone = false; // Agent
         desireProcessing.moveIteration = 0;
 
-        System.out.println(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() Start in neuem Thread - Step: " + belief.getStep() + " , Agent: " + this.getName());
         // map update with updateAgent (without startCalculating?)
         updateMap();
 
@@ -97,7 +98,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
 
         // wating for PATHFINDER_RESULT 
-        System.out.println(Thread.currentThread().getName() + " step() Waiting for beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         while (true) {
             if (!beliefsDone) {
                      try {
@@ -106,7 +107,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     e.printStackTrace();
                 }
             } else {
-                    System.out.println(Thread.currentThread().getName() + " step() beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
+                    AgentLogger.info(Thread.currentThread().getName() + " step() beliefsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
                     Thread t4 = new Thread(() -> desireProcessing.runAgentDecisions(belief.getStep(), this));
                     t4.start();
                     break;
@@ -114,7 +115,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
 
         // wating for decisions done (agent and supervisor)
-        System.out.println(Thread.currentThread().getName() + " step() Waiting for decisionsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
+        AgentLogger.info(Thread.currentThread().getName() + " step() Waiting for decisionsDone - Step: " + belief.getStep() + " , Agent: " + this.getName());
         
         while (true) {
             if (!(decisionsDone && supervisor.getDecisionsDone())) {
@@ -129,14 +130,14 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     Cooperation coop = AgentCooperations.get(this);
 
                     if (coop.master().equals(this)) {
-                        System.out.println(Thread.currentThread().getName() + " step() coop: " + coop.toString());
+                        AgentLogger.info(Thread.currentThread().getName() + " step() coop: " + coop.toString());
 
                         if (desireProcessing.taskReachedDeadline(this, coop.task())) {
-                            System.out.println(Thread.currentThread().getName() + " step() task reached deadline ");
+                            AgentLogger.info(Thread.currentThread().getName() + " step() task reached deadline ");
 
                             if (coop.statusMaster().equals(Status.Connected) 
                                     && desireProcessing.doDecision(this, new DisconnectMultiBlocksDesire(this.belief, coop.task(), this))) {
-                                System.out.println(Thread.currentThread().getName() + " Desire added - Agent: "
+                                AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: "
                                         + this.getName() + " , DisconnectMultiBlocksDesire , Action: "
                                         + this.getDesires().get(this.getDesires().size() - 1).getOutputAction().getName()
                                         + " , Parameter: "
@@ -144,7 +145,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                                         + " , Task: " + coop.task().name + " , Prio: " + desireProcessing
                                                 .getPriority(this.getDesires().get(this.getDesires().size() - 1), this));
                             } else
-                                System.out.println(Thread.currentThread().getName() + " Desire not added - Agent: "
+                                AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: "
                                         + this.getName() + " , DisconnectMultiBlocksDesire");
                             
                             AgentCooperations.remove(coop);
@@ -163,7 +164,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
         
         // next Action
-        System.out.println(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() 
+        AgentLogger.info(Thread.currentThread().getName() + " step() End - Step: " + belief.getStep() + " , Agent: " + this.getName() 
         + " , Intention: " + intention.getName() + " , Action: " +  intention.getOutputAction().getName() 
         + " , Params: " +  intention.getOutputAction().getParameters());
         return intention.getOutputAction();
@@ -174,27 +175,43 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         belief.update(percepts);
         belief.updatePositionFromExternal();
         
-        System.out.println(Thread.currentThread().getName() + " updateBeliefs() , Agent: " + this.getName()
+        AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() , Agent: " + this.getName()
         + " , Position: " + belief.getPosition()
         + " , absolute Position: " 
         + ((Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : ""));
         
         if (belief.getStep() == 0) {
-            System.out.println(Thread.currentThread().getName()
+            AgentLogger.info(Thread.currentThread().getName()
                     + " step() updateBeliefs - getAbsolutePosition() false - startPosition: " + startPosition
                     + " , absolute startPosition: "
                     + ((Point.castToPoint(belief.getAbsolutePosition()) != null)
                             ? Point.castToPoint(belief.getAbsolutePosition())
                             : ""));
         }
+        
+        if (belief.getStep() == 0) {
+            if (absolutePositions) {
+                if (Point.castToPoint(belief.getAbsolutePosition()) != null) {
+                    startPosition = Point.castToPoint(belief.getAbsolutePosition());
+                    belief.setPosition(startPosition);
+                    
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - getAbsolutePosition() true, dyn - startPosition: " 
+                            + startPosition);
+                }         
+            } else {
+                AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - getAbsolutePosition() false - startPosition: " 
+                        + startPosition + " , absolute startPosition: " 
+                        + ((Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : ""));
+            }
+        }
    
         
-     /*   if (AgentCooperations.exists(desireProcessing.stepUtilities.exploreHorizontalMapSize, this)
-                || AgentCooperations.exists(desireProcessing.stepUtilities.exploreVerticalMapSize, this)) {
-            Cooperation coop = AgentCooperations.get(desireProcessing.stepUtilities.exploreHorizontalMapSize, this);
+        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, this)
+                || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, this)) {
+            Cooperation coop = AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, this);
 
             if (coop == null) {
-                coop = AgentCooperations.get(desireProcessing.stepUtilities.exploreVerticalMapSize, this);
+                coop = AgentCooperations.get(StepUtilities.exploreVerticalMapSize, this);
             }
 
             if ((coop.master().equals(this) || coop.helper().equals(this))
@@ -203,8 +220,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 isBusy = false;
             }
         }
-        */
-        //System.out.println(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
+        
+        //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {
             if (belief.getLastAction().equals(Actions.ROTATE)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
@@ -226,7 +243,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     }
                 }
             }
-            //System.out.println(Thread.currentThread().getName() + " updateBeliefs() BB , Agent: " + this.getName());             
+            //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() BB , Agent: " + this.getName());             
             if (belief.getLastAction().equals(Actions.ATTACH)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 Thing t = belief.getThingWithTypeAt(belief.getLastActionParams().get(0), Thing.TYPE_BLOCK);
@@ -262,7 +279,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     }
                 }
             }
-            //System.out.println(Thread.currentThread().getName() + " updateBeliefs() CC , Agent: " + this.getName()); 
+            //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() CC , Agent: " + this.getName()); 
             if (belief.getLastAction().equals(Actions.SUBMIT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 blockAttached = false;
@@ -282,61 +299,61 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 
                 if (belief.getLastActionParams().size() == 2) {
                     AgentCooperations.scores[Integer.parseInt(belief.getLastActionParams().get(1))]++;
-                    System.out.println(Thread.currentThread().getName() + " Step: " + belief.getStep()
+                    AgentLogger.info(Thread.currentThread().getName() + " Step: " + belief.getStep()
                     + " , Scores: " + AgentCooperations.scores[1]
                             + " , " + AgentCooperations.scores[2]
                                     + " , " + AgentCooperations.scores[3]); 
                 }
             }
 
-            System.out.println(Thread.currentThread().getName() + " step() updateBeliefs - belief.getLastAction(): " 
+            AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - belief.getLastAction(): " 
             + belief.getLastAction() + " , " + belief.getLastActionResult() + " , Agent: " + this.getName());
 
             if (belief.getLastAction().equals(Actions.CONNECT)
                     && belief.getLastActionResult().equals(ActionResults.SUCCESS)) {
                 if (AgentCooperations.exists(this)) {
                     Cooperation coop = AgentCooperations.get(this);
-                    System.out.println(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop);
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop);
                     
                     if (coop.master().getName().equals(this.getName())) {
-                        System.out.println(Thread.currentThread().getName() + " step() updateBeliefs - master");
+                        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - master");
                         AgentCooperations.setStatusMaster(coop.task(), coop.master(), Status.Connected);
                     }
                     
                     if (coop.helper().getName().equals(this.getName())) {
-                        System.out.println(Thread.currentThread().getName() + " step() updateBeliefs - helper");
+                        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - helper");
                         AgentCooperations.setStatusHelper(coop.task(), coop.helper(), Status.Connected);
                     }
                     
                     if ((coop.helper2() != null && coop.helper2().getName().equals(this.getName()))) {
-                        System.out.println(Thread.currentThread().getName() + " step() updateBeliefs - helper2");
+                        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - helper2");
                         AgentCooperations.setStatusHelper2(coop.task(), coop.helper2(), Status.Connected);
                     }
                     coop = AgentCooperations.get(this);
-                    System.out.println(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop);
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - coop: " + coop);
                 }
             }
         }
         
         
         
-        System.out.println(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " isBusy: " + isBusy 
+        AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " isBusy: " + isBusy 
                 + " , Agent: " + this.getName()+ " , Step: " + belief.getStep() + " , attBlocks: " + StepUtilities.getAttachedBlocks());
               
      /*   for (Percept percept : percepts) {
             if (percept.getName() == "attached"){
-            System.out.println(this.getName(),
+            AgentLogger.info(this.getName(),
                     "Percept - attached: " +
                     String.format("%s - %s", percept.getName(), percept.getParameters()));
             }
             
             if (percept.getName() == "position"){
-            System.out.println(this.getName(),
+            AgentLogger.info(this.getName(),
                     "Percept: " + String.format("%s - %s", percept.getName(), percept.getParameters()) 
                     + " , absolutePosition: " + belief.getAbsolutePosition() + " , beliefPosition: " + belief.getPosition());
             }
         }*/
-        //System.out.println(belief.toString());
+        //AgentLogger.info(belief.toString());
     }
 
     /**

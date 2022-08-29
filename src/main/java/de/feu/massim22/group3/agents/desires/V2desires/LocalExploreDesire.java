@@ -71,10 +71,10 @@ public class LocalExploreDesire extends BeliefDesire {
                     .stringToInt(agent.desireProcessing.walkCircles(agent, 10).toString());
             agent.exploreDirection2 = (agent.exploreDirection2 + 5) % 4;
         } else {
-            if (agent.desireProcessing.posDefaultGoalZone1 != null || agent.desireProcessing.posDefaultGoalZone2 == null) {                
+            if (agent.desireProcessing.posDefaultGoalZone1 != null && agent.desireProcessing.posDefaultGoalZone2 == null) {                
                 agent.exploreDirection =DirectionUtil.stringToInt( DirectionUtil.getDirection(agent.getBelief().getPosition(), agent.desireProcessing.posDefaultGoalZone1));
             } else {
-                if (agent.desireProcessing.posDefaultGoalZone1 == null || agent.desireProcessing.posDefaultGoalZone2 != null) {
+                if (agent.desireProcessing.posDefaultGoalZone1 == null && agent.desireProcessing.posDefaultGoalZone2 != null) {
                     agent.exploreDirection = DirectionUtil.stringToInt( DirectionUtil.getDirection(agent.getBelief().getPosition(), agent.desireProcessing.posDefaultGoalZone2));
                 } else {
                     if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), agent.desireProcessing.posDefaultGoalZone1) 

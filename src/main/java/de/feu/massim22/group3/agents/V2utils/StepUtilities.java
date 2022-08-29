@@ -32,8 +32,10 @@ public class StepUtilities {
     
     public static boolean exploreHorizontalMapSizeStarted = false;
     public static boolean exploreVerticalMapSizeStarted = false;
-    public TaskInfo exploreHorizontalMapSize = new TaskInfo("exploreHorizontalMapSize", 0, 0, new HashSet<Thing>());
-    public TaskInfo exploreVerticalMapSize = new TaskInfo("exploreVerticalMapSize", 0, 0, new HashSet<Thing>());
+    public static boolean exploreHorizontalMapSizeFinished = false;
+    public static boolean exploreVerticalMapSizeFinished = false;
+    public static TaskInfo exploreHorizontalMapSize = new TaskInfo("exploreHorizontalMapSize", 1000, 0, new HashSet<Thing>());
+    public static TaskInfo exploreVerticalMapSize = new TaskInfo("exploreVerticalMapSize", 1000, 0, new HashSet<Thing>());
     
     boolean mergeGroups = true;
     boolean alwaysAgentMeetings = true;
@@ -156,24 +158,49 @@ public class StepUtilities {
                             recordAgentMeeting( agent1, agent2, foundAgent.get(j).position);
                             recordAgentMeeting( agent2, agent1, foundAgent.get(k).position);
 
-                            // starting explore map size
-                        /*    if (!agent1.isBusy && !agent2.isBusy && !agent1.blockAttached && !agent2.blockAttached) {
+                            // starting explore map size (meeting data was saved in AgentMeetings)
+                            if (!agent1.isBusy && !agent2.isBusy && !agent1.blockAttached && !agent2.blockAttached) {
+                                AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map possible - Agent1: "
+                                        + agent1.getName() + " , Agent2: " + agent2.getName());
                                 if (!exploreHorizontalMapSizeStarted) {
-                                    AgentCooperations
-                                            .setCooperation(new AgentCooperations.Cooperation(exploreHorizontalMapSize,
+                                    AgentCooperations.setCooperation(new AgentCooperations.Cooperation(exploreHorizontalMapSize,
                                                     agent1, Status.Explore, agent2, Status.Wait, null, Status.No2));
+                                    AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map horizontal: "
+                                            + AgentCooperations.get(exploreHorizontalMapSize, agent1, 1));
                                     exploreHorizontalMapSizeStarted = true;
                                     agent1.isBusy = true;
                                     agent2.isBusy = true;
                                 } else if (!exploreVerticalMapSizeStarted) {
-                                    AgentCooperations
-                                            .setCooperation(new AgentCooperations.Cooperation(exploreVerticalMapSize,
+                                    AgentCooperations.setCooperation(new AgentCooperations.Cooperation(exploreVerticalMapSize,
                                                     agent1, Status.Explore, agent2, Status.Wait, null, Status.No2));
+                                    AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map horizontal: "
+                                            + AgentCooperations.get(exploreVerticalMapSize, agent1, 1));
                                     exploreVerticalMapSizeStarted = true;
                                     agent1.isBusy = true;
                                     agent2.isBusy = true;
                                 }
-                            }*/
+                            }
+                            
+                            // finishing explore map size (evaluation was done in AgentMeetings)
+                            if (exploreHorizontalMapSizeFinished
+                                    && AgentCooperations.exists(exploreHorizontalMapSize, agent1)) {
+                                Cooperation coop = AgentCooperations.get(exploreHorizontalMapSize, agent1);
+                                AgentCooperations.remove(coop);
+                                agent1.isBusy = false;
+                                agent2.isBusy = false;
+                                AgentLogger.info(Thread.currentThread().getName()
+                                        + " doGroupProcessing() explore map horizontal known map size: "
+                                        + AgentCooperations.mapSize.toString());
+                            } else if (exploreVerticalMapSizeFinished
+                                    && AgentCooperations.exists(exploreVerticalMapSize, agent1)) {
+                                Cooperation coop = AgentCooperations.get(exploreVerticalMapSize, agent1);
+                                AgentCooperations.remove(coop);
+                                agent1.isBusy = false;
+                                agent2.isBusy = false;
+                                AgentLogger.info(Thread.currentThread().getName()
+                                        + " doGroupProcessing() explore map vertical known map size: "
+                                        + AgentCooperations.mapSize.toString());
+                            }
                             
                             // Are the agents both from different groups ?
                             if (mergeGroups && !(agent1.supervisor == agent2.supervisor)) {
@@ -272,16 +299,24 @@ public class StepUtilities {
                         + " 1: " + agent.desireProcessing.posDefaultGoalZone1 + " , 2: " + agent.desireProcessing.posDefaultGoalZone2);
                         
                         if (agent.desireProcessing.posDefaultGoalZone1 == null) {
-                            agent.desireProcessing.posDefaultGoalZone1 = new Point(nearestGoalZone);
+                            for (BdiAgentV2 a : allAgents) {
+                                if (a.supervisor.getName().equals(agent.supervisor.getName())) {
+                                    a.desireProcessing.posDefaultGoalZone1 = new Point(nearestGoalZone);
+                                }
+                            }                           
                         } else {
-                            if (Point.distance(agent.desireProcessing.posDefaultGoalZone1, nearestGoalZone) > 10) {
-                                agent.desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
+                            if (agent.desireProcessing.posDefaultGoalZone2 == null
+                                    && Point.distance(agent.desireProcessing.posDefaultGoalZone1, nearestGoalZone) > 10) {
+                                for (BdiAgentV2 a : allAgents) {
+                                    if (a.supervisor.getName().equals(agent.supervisor.getName())) {
+                                        a.desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
+                                    }
+                                } 
                             }
-                        }
-                        
-                        if (agent.desireProcessing.posDefaultGoalZone2 == null) {
+                        }                       
+                        /*if (agent.desireProcessing.posDefaultGoalZone2 == null) {
                             agent.desireProcessing.posDefaultGoalZone2 = new Point(nearestGoalZone);
-                        }
+                        }*/
                     }/* else {
                         if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), agent.desireProcessing.posDefaultGoalZone1) <= 5) {
                             agent.desireProcessing.posDefaultGoalZone1 = null;
@@ -299,9 +334,7 @@ public class StepUtilities {
             Thread t3 = new Thread(runnable);
             t3.start();
             
-            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Supervisor: " + supervisor.getName()
-            + " , GZ1: " + desireProcessing.posDefaultGoalZone1 +
-            " , GZ2: " + desireProcessing.posDefaultGoalZone2);
+            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Supervisor: " + supervisor.getName());
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Step: " + step);
@@ -393,8 +426,8 @@ public class StepUtilities {
                             newPosAgentFound.y + (agent.getBelief().getPosition().y - agentFound.getBelief().getPosition().y));
                 }
 
-                newPosAgent.x = (((newPosAgent.x % Point.mapSize.x) + Point.mapSize.x) % Point.mapSize.x);
-                newPosAgent.y = (((newPosAgent.y % Point.mapSize.y) + Point.mapSize.y) % Point.mapSize.y);
+                newPosAgent.x = (((newPosAgent.x % AgentCooperations.mapSize.x) + AgentCooperations.mapSize.x) % AgentCooperations.mapSize.x);
+                newPosAgent.y = (((newPosAgent.y % AgentCooperations.mapSize.y) + AgentCooperations.mapSize.y) % AgentCooperations.mapSize.y);
                 agent.getBelief().setPosition(newPosAgent);
                 updateMap(agent);
             }
