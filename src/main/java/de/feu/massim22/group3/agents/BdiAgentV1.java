@@ -328,14 +328,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             setIntention(null);
             break;
         }
-//        case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
-//            belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
-//            List<Parameter> parameters = event.getParameters();
-//            String dir = PerceptUtil.toStr(parameters, 0);
-//            desires.add(new GuardGoalZoneDesire(belief, dir, supervisor.getName()));
-//            break;
-//        }
-        
         case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
             belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
             List<Parameter> parameters = event.getParameters();
@@ -345,7 +337,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                     supervisor.getName()));
             break;
         }
-        
         case SUPERVISOR_PERCEPT_GUARD_DISPENSER: {
             belief.setGroupDesireType(GroupDesireTypes.GUARD_DISPENSER);
             List<Parameter> parameters = event.getParameters();
@@ -369,6 +360,13 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             String direction = PerceptUtil.toStr(parameters, 2);
             int guideOffset = PerceptUtil.toNumber(parameters, 3, Integer.class);
             desires.add(new ExploreMapSizeDesire(belief, teamMateShort, teamMate, supervisor.getName(), direction, guideOffset));
+            break;
+        }
+        case MAP_SIZE_DISCOVERED: {
+            List<Parameter> parameters = event.getParameters();
+            int x = PerceptUtil.toNumber(parameters, 0, Integer.class);
+            int y = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            belief.setMapSize(x, y);
             break;
         }
         default:

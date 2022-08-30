@@ -1462,16 +1462,16 @@ public class Belief {
     private void move(String dir) {
         switch (dir) {
             case "n":
-                position.y -= 1;
+                position.y = mapSize == null ? position.y - 1 : (position.y + mapSize.y - 1) % mapSize.y;
                 break;
             case "e":
-                position.x += 1;
+                position.x = mapSize == null ? position.x + 1 : (position.x + mapSize.x + 1) % mapSize.x;
                 break;
             case "s":
-                position.y += 1;
+                position.y = mapSize == null ? position.y + 1 : (position.y + mapSize.y + 1) % mapSize.y;
                 break;
             case "w":
-                position.x -= 1;
+                position.x = mapSize == null ? position.x - 1 : (position.x + mapSize.x - 1) % mapSize.x;
                 break;
         }
     }
@@ -1482,7 +1482,6 @@ public class Belief {
     private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
 
-     // Melinda start
     /**
      * Gets the absolute position from a agent.
      * 
@@ -1617,5 +1616,15 @@ public class Belief {
         }
         
         return reachableRoleZonesX;
+    }
+
+    /**
+     * Sets the map size.
+     * 
+     * @param x the width of the map
+     * @param y the height of the map
+     */
+    public void setMapSize(int x, int y) {
+        mapSize = new Point(x, y);
     }
 }

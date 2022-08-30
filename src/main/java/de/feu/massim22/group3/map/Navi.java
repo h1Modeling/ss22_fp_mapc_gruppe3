@@ -886,11 +886,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     public synchronized void setHorizontalMapSize(int value) {
         horizontalMapSize = value;
         if (verticalMapSize != null && !mapDiscovered) {
-            mapDiscovered = true;
-            for (GameMap map : maps.values()) {
-                map.setFinalSize(horizontalMapSize, verticalMapSize);
-            }
-            DirectionUtil.setMapSize(horizontalMapSize, verticalMapSize);
+            setMapSize();
         }
     }
 
@@ -901,11 +897,23 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     public synchronized void setVerticalMapSize(int value) {
         verticalMapSize = value;
         if (horizontalMapSize != null && !mapDiscovered) {
-            mapDiscovered = true;
-            for (GameMap map : maps.values()) {
-                map.setFinalSize(horizontalMapSize, verticalMapSize);
-            }
-            DirectionUtil.setMapSize(horizontalMapSize, verticalMapSize);
+            setMapSize();
+        }
+    }
+
+    private void setMapSize() {
+        mapDiscovered = true;
+        for (GameMap map : maps.values()) {
+            map.setFinalSize(horizontalMapSize, verticalMapSize);
+        }
+        DirectionUtil.setMapSize(horizontalMapSize, verticalMapSize);
+
+        // Inform agents
+        Parameter xPara = new Numeral(horizontalMapSize);
+        Parameter yPara = new Numeral(verticalMapSize);
+        Percept message = new Percept(EventName.MAP_SIZE_DISCOVERED.name(), xPara, yPara);
+        for (String agent : agentSupervisor.keySet()) {
+            mailService.sendMessage(message, agent, name);
         }
     }
 }
