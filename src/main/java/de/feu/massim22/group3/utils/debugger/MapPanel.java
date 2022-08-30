@@ -94,18 +94,7 @@ public class MapPanel extends JPanel {
         if (selectedCell.x >= 0 && selectedCell.y >= 0 && 
             data.map()[selectedCell.y][selectedCell.x] == CellType.TEAMMATE) {
             String name = data.agentPosition().get(selectedCell);
-            selectedAgentName = name;
             debugger.selectAgent(name);
-            
-            // Get index of selected agent for pathfinding results
-            List<String> agents = data.agents();
-            for (int i = 0; i < agents.size(); i++) {
-                String agent = agents.get(i);
-                if (name != null && name.equals(agent)) {
-                    selectedAgentIndex = i;
-                    break;
-                }
-            }
         } else {
             debugger.selectAgent(null);
             selectedAgentIndex = -1;
@@ -297,6 +286,24 @@ public class MapPanel extends JPanel {
 
     private synchronized InterestingPoint getInterestingPoint(int index) {
         return data.interestingPoints().size() > index ? data.interestingPoints().get(index) : null;
+    }
+
+    /**
+     * Selects the agent in the map and shows it's path finding information.
+     * 
+     * @param name the name of the agent
+     */
+    synchronized void selectAgent(String name) {
+        selectedAgentName = name;
+        // Get index of selected agent for pathfinding results
+        List<String> agents = data.agents();
+        for (int i = 0; i < agents.size(); i++) {
+            String agent = agents.get(i);
+            if (name != null && name.equals(agent)) {
+                selectedAgentIndex = i;
+                break;
+            }
+        }
     }
 
     /**

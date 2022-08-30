@@ -60,7 +60,7 @@ class PathFinder {
         }
         // Load Shader Code
         try {
-            shader = getResourceFileAsString("shader2.glsl");
+            shader = getResourceFileAsString("shader3.glsl");
         } catch (IOException e) {
             AgentLogger.severe("Failed to load PathFinding Shader - " + e.getLocalizedMessage());
         }
@@ -73,9 +73,8 @@ class PathFinder {
      */
     static void close(long context) {
         // Free Resources
-        glfwMakeContextCurrent(context);
-        glfwTerminate();
-        glfwMakeContextCurrent(0);
+        glfwDestroyWindow(context);
+        //glfwTerminate(); // Destroys all windows
     }
 
     /**

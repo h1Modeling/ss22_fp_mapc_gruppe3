@@ -2,7 +2,6 @@ package de.feu.massim22.group3.agents.supervisor;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
