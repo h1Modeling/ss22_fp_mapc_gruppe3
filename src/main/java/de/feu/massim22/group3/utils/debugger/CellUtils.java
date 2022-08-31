@@ -162,6 +162,7 @@ class CellUtils {
             case GroupDesireTypes.GUARD_DISPENSER: return new Color(87, 127, 137);
             case GroupDesireTypes.RECEIVE_ATTACH: return new Color(255, 255, 0);
             case GroupDesireTypes.DELIVER_ATTACH: return new Color(186, 255, 0);
+            
             default: return new Color(background, background, background);
         }
     }

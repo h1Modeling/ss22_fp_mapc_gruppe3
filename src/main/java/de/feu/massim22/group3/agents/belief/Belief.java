@@ -79,7 +79,6 @@ public class Belief {
 
     // Group 3 Beliefs
     private Point position = new Point(0, 0);
-    private Set<Thing> thingsAtLastStep = new HashSet<>();
     private List<ReachableDispenser> reachableDispensers = new ArrayList<>();
     private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
     private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
@@ -181,7 +180,7 @@ public class Belief {
                         role = toStr(p, 0);
                     }				
                     break;
-                    case "violation" :
+                case "violation":
                     violations.add(toStr(p, 0));
                     break;
                 case "norm":
@@ -463,12 +462,6 @@ public class Belief {
             result.add(new Subject(type, name, quantity, details));
         }
         return result;
-    }
-
-    private record AgentSurveyStepEvent(String name, String role, int energy) implements StepEvent {
-        public String toString() {
-            return "Agent " + name + " with role " + role + " and energy " + energy;
-        }
     }
 
     private record ThingSurveyStepEvent(String name, int distance) implements StepEvent {
@@ -1269,6 +1262,12 @@ public class Belief {
                 }
             }
         }
+        int distRoleZone = 999;
+        for (ReachableRoleZone roleZone : reachableRoleZones) {
+            if (roleZone.distance() < distRoleZone) {
+                distRoleZone = roleZone.distance();
+            }
+        }
         AgentLogger.fine(getAgentShortName() + " Belief",
                 "uniqueGoalZones: " + uniqueGoalZones.toString());
         AgentLogger.fine(getAgentShortName() + " Belief",
@@ -1288,7 +1287,7 @@ public class Belief {
 
         return new AgentReport(attachedThings, energy, deactivated, availableActions,
             position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName,
-            numOfDistinctGoalZones, nearestGoalZone, goalZone2, groupDesireBlockDetail);
+            numOfDistinctGoalZones, nearestGoalZone, goalZone2, groupDesireBlockDetail, distRoleZone);
     }
 
     /**
@@ -1472,7 +1471,6 @@ public class Belief {
         // Remove old connection reports (step is not updated yet is actually from last step)
         connectionReports.removeIf(r -> r.step == step - 1);
         // copy things
-        thingsAtLastStep = new HashSet<>(things);
         taskInfoAtLastStep = new HashSet<>(taskInfo);
         // clearing
         roles.clear();
@@ -1492,16 +1490,16 @@ public class Belief {
     private void move(String dir) {
         switch (dir) {
             case "n":
-                position.y -= 1;
+                position.y = mapSize == null ? position.y - 1 : (position.y + mapSize.y - 1) % mapSize.y;
                 break;
             case "e":
-                position.x += 1;
+                position.x = mapSize == null ? position.x + 1 : (position.x + mapSize.x + 1) % mapSize.x;
                 break;
             case "s":
-                position.y += 1;
+                position.y = mapSize == null ? position.y + 1 : (position.y + mapSize.y + 1) % mapSize.y;
                 break;
             case "w":
-                position.x -= 1;
+                position.x = mapSize == null ? position.x - 1 : (position.x + mapSize.x - 1) % mapSize.x;
                 break;
         }
     }
@@ -1512,7 +1510,6 @@ public class Belief {
     private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
 
-     // Melinda start
     /**
      * Gets the absolute position from a agent.
      * 
@@ -1528,12 +1525,9 @@ public class Belief {
      */
     public void updatePositionFromExternal() {
         String dir = null;
-        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
-                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Success: " +  lastActionParams);
-                
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
                     move(dir);
@@ -1541,9 +1535,8 @@ public class Belief {
                 }
             }
 
-            // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
+            // Partial Success (Only really OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Partial: " +  lastActionParams);
                 move(lastActionParams.get(0));
                 moveNonModuloPosition(lastActionParams.get(0));
             }
@@ -1551,7 +1544,6 @@ public class Belief {
         
         position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
         position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
-        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal Nachher: " +  getPosition());
     }
         
     private Point nonModuloPosition = new Point(0, 0);
@@ -1652,6 +1644,16 @@ public class Belief {
         }
         
         return reachableRoleZonesX;
+    }
+
+    /**
+     * Sets the map size.
+     * 
+     * @param x the width of the map
+     * @param y the height of the map
+     */
+    public void setMapSize(int x, int y) {
+        mapSize = new Point(x, y);
     }
     
     /**

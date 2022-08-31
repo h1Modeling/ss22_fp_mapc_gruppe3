@@ -73,7 +73,6 @@ public class GuardGoalZoneDesireTest {
         // Create and test Desire
         GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
-        System.out.println(adjThings);
         assertEquals(3, adjThings.numOfAdjBlocks());
         assertEquals(0, adjThings.numOfAdjFriendlyAgents());
         assertEquals(1, adjThings.numOfAdjEnemyAgents());
@@ -107,7 +106,6 @@ public class GuardGoalZoneDesireTest {
         // Create and test Desire
         GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
-        System.out.println(adjThings);
         assertEquals(3, adjThings.numOfAdjBlocks());
         assertEquals(2, adjThings.numOfAdjFriendlyAgents());
         assertEquals(2, adjThings.numOfAdjEnemyAgents());
@@ -144,7 +142,6 @@ public class GuardGoalZoneDesireTest {
         // Create and test Desire
         GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
         AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
-        System.out.println(adjThings);
         assertEquals(4, adjThings.numOfAdjBlocks());
         assertEquals(2, adjThings.numOfAdjFriendlyAgents());
         assertEquals(2, adjThings.numOfAdjEnemyAgents());

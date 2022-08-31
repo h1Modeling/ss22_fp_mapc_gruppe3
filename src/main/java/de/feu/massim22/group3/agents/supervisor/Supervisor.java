@@ -2,7 +2,6 @@ package de.feu.massim22.group3.agents.supervisor;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +51,7 @@ public class Supervisor implements ISupervisor {
     // Agents for GuardGoalZoneDesire
     private String agentGroupForGGZD = "31";
     // Number of designated GuardGoalZone agents (only 0, 1 or 2 implemented)
-    private int numOfGgzdAgents = 2;
+    private int numOfGgzdAgents = 1;
 
     /**
      * Instantiates a new Supervisor.
@@ -233,6 +232,7 @@ public class Supervisor implements ISupervisor {
         List<Entry<String, AgentReport>> agentsCarryingBlock2 = new ArrayList<>();
         List<Entry<String, AgentReport>> agentsCarryingBlock3 = new ArrayList<>();
         List<Entry<String, AgentReport>> agentsCarryingBlock4 = new ArrayList<>();
+        List<Entry<String, AgentReport>> agentsAllowedForGroupTask = new ArrayList<>();
 
         // Flags if agents are tasked to get a block with type according to the array index.
         boolean[] gettingBlock = {false, false, false, false, false};
@@ -244,9 +244,16 @@ public class Supervisor implements ISupervisor {
 
         int maxDistance = 30;
         int maxDistanceGoalZone = 50;
+        boolean roleZoneVisible = false;
+
         // put Reports in Lists
         for (Entry<String, AgentReport> entry : reports.entrySet()) {
             AgentReport r = entry.getValue();
+
+            // Test for role zone
+            if (r.distanceRoleZone() < 100) {
+                roleZoneVisible = true;
+            }
 
             // Testing get Block group desire
             if (r.groupDesireType().equals(GroupDesireTypes.GET_BLOCK)) {
@@ -259,6 +266,11 @@ public class Supervisor implements ISupervisor {
             }
 
             if (r.groupDesireType().equals(GroupDesireTypes.NONE) && !r.deactivated()) {
+                // Disallow A31 because of guard goal zone
+                //if (!entry.getKey().equals(agentGroupForGGZD)) {
+                    agentsAllowedForGroupTask.add(entry);
+                //}
+
                 if (r.distanceGoalZone() < maxDistanceGoalZone) {
                     agentsNearGoalZone.add(entry);
                 }
@@ -316,9 +328,56 @@ public class Supervisor implements ISupervisor {
         agentsCarryingBlock3.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock4.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
 
+        // Discover vertical Map Size
+        if (roleZoneVisible && agentsAllowedForGroupTask.size() > 1) {
+            boolean verticalNotExplored = Navi.<INaviAgentV1>get().setVerticalMapSizeInDiscover(true);
+            if (verticalNotExplored) {
+                var agent1Report = agentsAllowedForGroupTask.get(0);
+                var agent2Report = agentsAllowedForGroupTask.get(1);
+                Point a1Pos = agent1Report.getValue().position();
+                Point a2Pos = agent2Report.getValue().position();
+                String a1Dir = a1Pos.getY() < a2Pos.getY() ? "n" : "s";
+                String a2Dir = a1Pos.getY() < a2Pos.getY() ? "s" : "n";
+                String agent1 = agent1Report.getValue().agentActionName();
+                String agent2 = agent2Report.getValue().agentActionName();
+                String agent1Short = agent1Report.getKey();
+                String agent2Short = agent2Report.getKey();
+                // Send message
+                sendExploreMapSizeTask(agent1Short, agent2, agent2Short, a1Dir, (int)Math.floor((a1Pos.x - a2Pos.x) / 2));
+                sendExploreMapSizeTask(agent2Short, agent1, agent1Short, a2Dir, (int)Math.ceil((a2Pos.x - a1Pos.x) / 2));
+                
+                agentsAllowedForGroupTask.remove(agent1Report);
+                agentsAllowedForGroupTask.remove(agent2Report);
+            }
+        }
+
+        // Discover horizontal Map Size
+        if (roleZoneVisible && agentsAllowedForGroupTask.size() > 1) {
+            boolean horizontalNotExplored = Navi.<INaviAgentV1>get().setHorizontalMapSizeInDiscover(true);
+            if (horizontalNotExplored) {
+                var agent1Report = agentsAllowedForGroupTask.get(0);
+                var agent2Report = agentsAllowedForGroupTask.get(1);
+                Point a1Pos = agent1Report.getValue().position();
+                Point a2Pos = agent2Report.getValue().position();
+                String a1Dir = a1Pos.getX() < a2Pos.getX() ? "w" : "e";
+                String a2Dir = a1Pos.getX() < a2Pos.getX() ? "e" : "w";
+                String agent1 = agent1Report.getValue().agentActionName();
+                String agent2 = agent2Report.getValue().agentActionName();
+                String agent1Short = agent1Report.getKey();
+                String agent2Short = agent2Report.getKey();
+                // Send message
+                sendExploreMapSizeTask(agent1Short, agent2, agent2Short, a1Dir, (int)Math.floor((a1Pos.y - a2Pos.y) / 2));
+                sendExploreMapSizeTask(agent2Short, agent1, agent1Short, a2Dir, (int)Math.ceil((a2Pos.y - a1Pos.y) / 2));
+
+                agentsAllowedForGroupTask.remove(agent1Report);
+                agentsAllowedForGroupTask.remove(agent2Report);
+            }
+        }
+
+        boolean mapSizeInDiscover = Navi.get().isVerticalMapSizeInDiscover() && Navi.get().isHorizontalMapSizeInDiscover();
         // GuardGoalZoneDesire (GGZD) is only assigned in one supervisor-group to avoid
         // that it is assigned to too many agents at the same time
-        if (numOfGgzdAgents >= 1 && getName().equals(agentGroupForGGZD)) {
+        if (numOfGgzdAgents >= 1 && getName().equals(agentGroupForGGZD) && mapSizeInDiscover && reports.size() > 3) {
             // Get map size
             Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getName());
             // Extract goal zones from AgentReport
@@ -341,7 +400,9 @@ public class Supervisor implements ISupervisor {
             // If GGZD not already assigned
             if (!agentsGGZD.contains(agentGroupForGGZD)
                     && goalZones.size() > 0
-                    && assignedGoalZones.size() == 0) {
+                    && assignedGoalZones.size() == 0
+                    && r != null && r.groupDesireType().equals(GroupDesireTypes.NONE)
+                    && !agentsWithTask.containsKey(agentGroupForGGZD)) {
                 sendGuardGoalZoneTask(agentGroupForGGZD, goalZones.get(0));
             }
             else if (numOfGgzdAgents >= 2
@@ -365,7 +426,9 @@ public class Supervisor implements ISupervisor {
                         break;
                     }
                 }
-                if (target_gz != null) {
+                var report = reports.get(agentForGGZD);
+                boolean isFree = report.groupDesireType().equals(GroupDesireTypes.NONE) && !agentsWithTask.containsKey(agentGroupForGGZD);
+                if (target_gz != null && isFree) {
                     sendGuardGoalZoneTask(agentForGGZD, target_gz);
                 }
             }
@@ -456,6 +519,17 @@ public class Supervisor implements ISupervisor {
         }
     }
 
+    private void sendExploreMapSizeTask(String agent, String teamMate, String teamMateShort, String direction, int guideOffset) {
+        Parameter teamMatePara = new Identifier(teamMate);
+        Parameter teamMateShortPara = new Identifier(teamMateShort);
+        Parameter directionPara = new Identifier(direction);
+        Parameter guideOffsetPara = new Numeral(guideOffset);
+        Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE.name(),
+            teamMatePara, teamMateShortPara, directionPara, guideOffsetPara);
+        parent.forwardMessage(message, agent, name);
+        agentsWithTask.put(agent, true);
+    }
+
     private void sendGuardGoalZoneTask(String agent, Point gz) {
         // GGZD...GuardGoalZoneDesire
         assignedGoalZones.add(gz);
@@ -501,8 +575,9 @@ public class Supervisor implements ISupervisor {
         }
     }
 
-    private List<String[]> getAgentsFor2BlockTask(int maxWaitingTime, List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2) {
-        List<String[]> taskAgents = new ArrayList<>();
+    private String[][] getAgentsFor2BlockTask(int maxWaitingTime, List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2) {
+        String[][] taskAgents = new String[2][2];
+        int minDiff = 999;
         for (var agent1 : agents1) {
             if (agentsWithTask.containsKey(agent1.getKey())) continue;
             for (var agent2 : agents2) {
@@ -511,11 +586,20 @@ public class Supervisor implements ISupervisor {
                 var report2 = agent2.getValue();
                 var waitingTime = Math.abs(report1.distanceGoalZone() - report2.distanceGoalZone());
                 var distanceBetweenGoalZones = Math.abs(report1.nearestGoalZone().x - report2.nearestGoalZone().x) + Math.abs(report1.nearestGoalZone().y - report2.nearestGoalZone().y);
-                if (waitingTime < maxWaitingTime && distanceBetweenGoalZones < 25) {
+                var distBetweenAgents = Math.abs(report1.position().x - report2.position().x) + Math.abs(report1.position().y - report2.position().y);
+                // Agents near Different Goal Zones or if both are in goal zone use distance to get closest match
+                if (distanceBetweenGoalZones > 15 || report1.distanceGoalZone() == 0 || report2.distanceGoalZone() == 0 ||  
+                        report1.distanceGoalZone() < 5 && report2.distanceGoalZone() < 5) {
+                    waitingTime = 1000;
+                }
+                // Use agents which are similar close to the goal zone or near each other
+                waitingTime = Math.min(waitingTime, distBetweenAgents);
+                if (waitingTime < maxWaitingTime && waitingTime < minDiff) {
+                    minDiff = waitingTime;
                     String[] data1 = {agent1.getKey(), report1.agentActionName()};
-                    taskAgents.add(data1);
+                    taskAgents[0] = data1;
                     String[] data2 = {agent2.getKey(), report2.agentActionName()};
-                    taskAgents.add(data2);
+                    taskAgents[1] = data2;
                 }
             }
         }
@@ -525,11 +609,11 @@ public class Supervisor implements ISupervisor {
     private void doTwoBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, TaskInfo info, boolean identicalBlocks, boolean singleBlockTaskExists) {
 
         int maxWaitingTime = singleBlockTaskExists ? 10 : 30;
-        List<String[]> taskAgents = getAgentsFor2BlockTask(maxWaitingTime, agents1, agents2);
+        String[][] taskAgents = getAgentsFor2BlockTask(maxWaitingTime, agents1, agents2);
 
-        if (taskAgents.size() > 1) {
-           String[] agent1 = taskAgents.get(0);
-           String[] agent2 = taskAgents.get(1);
+        if (taskAgents[0][0] != null) {
+           String[] agent1 = taskAgents[0];
+           String[] agent2 = taskAgents[1];
            agentsWithTask.put(agent1[0], true);
            agentsWithTask.put(agent2[0], true);
 
@@ -577,10 +661,9 @@ public class Supervisor implements ISupervisor {
             
             if (!goalAgent.equals(dispenserAgent)) {
                 Percept messageGoal = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_BLOCK.name(), taskPara, dispenserAgentPara);
-                Percept messageDispenser = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_BLOCK.name(), taskPara, goalAgentPara);
-                /* 
+                Percept messageDispenser = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_BLOCK.name(), taskPara, goalAgentPara); 
                 parent.forwardMessage(messageGoal, goalAgent, name);
-                parent.forwardMessage(messageDispenser, dispenserAgent, name); */
+                parent.forwardMessage(messageDispenser, dispenserAgent, name);
             }
         }
     }

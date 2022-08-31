@@ -39,7 +39,7 @@ import massim.protocol.data.Thing;
 public record AgentReport(List<Thing> attachedThings, int energy, boolean deactivated,
         Set<String> actions, Point position, int[] distanceDispenser, int distanceGoalZone,
         String groupDesireType, int step, String agentActionName, int numOfDistinctGoalZones,
-        Point nearestGoalZone, Point goalZone2, String groupDesireBlock) {
+        Point nearestGoalZone, Point goalZone2, String groupDesireBlock, int distanceRoleZone) {
     
     /**
     * Creates a Percept Function from the data in the record.
@@ -83,11 +83,12 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         Parameter pointXGoalZone2 = new Numeral(goalZone2.x);
         Parameter pointYGoalZone2 = new Numeral(goalZone2.y);
         Parameter groupDesireBlockPara = new Identifier(groupDesireBlock);
+        Parameter distanceRoleZonePara = new Numeral(distanceRoleZone);
         
         return new Function(SupervisorEventName.REPORT.name(), attachedPara, energyPara, deactivatedPara,
             actionPara, posXPara, posYPara, distancePara, distanceGoalZonePara, groupDesirePara, stepPara,
             agentActionNamePara, numOfDistinctGZs, pointXGoalZone, pointXGoalZone2, pointYGoalZone,
-            pointYGoalZone2, groupDesireBlockPara);
+            pointYGoalZone2, groupDesireBlockPara, distanceRoleZonePara);
     }
 
     /**
@@ -122,9 +123,10 @@ public record AgentReport(List<Thing> attachedThings, int energy, boolean deacti
         Point nearestGoalZone = new Point(goalX, goalY);
         Point pointGoalZone2 = new Point(pointXGoalZone2, pointYGoalZone2);
         String groupDesireBlock = PerceptUtil.toStr(paras, 16);
+        int distanceRoleZone = PerceptUtil.toNumber(paras, 17, Integer.class);
         return new AgentReport(attached, energy, deactivated, actions, position, distanceDispenser,
             distanceGoalZone, groupDesire, step, agentActionName, numOfDistinctGZs, nearestGoalZone,
-            pointGoalZone2, groupDesireBlock);
+            pointGoalZone2, groupDesireBlock, distanceRoleZone);
     }
 }
 
