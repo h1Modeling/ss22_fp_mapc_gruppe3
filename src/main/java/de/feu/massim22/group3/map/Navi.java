@@ -605,14 +605,16 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         // y = 0: Position of agents
         // y = 1: Form of agent (attached blocks)
         // y = 2: Goal Position
+        // y = 3: Map discovered = 1, not discovered = 0;
         int maxNumberGoals = 64;
-        int dataY = 3;
+        int dataY = 4;
         List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals, true);
         int numberGoals = interestingPoints.size();
         int textureSize = Math.max(agentSize, numberGoals);
         Point dataSize = new Point(textureSize, dataY);
         FloatBuffer dataTextureBuffer = BufferUtils.createFloatBuffer(textureSize * dataY * channelSize);
-        for (int y = 0; y < 3; y++) {
+        int mapSizeDiscovered = mapDiscovered ? 1 : 0; 
+        for (int y = 0; y < dataY; y++) {
             for (int x = 0; x < textureSize; x++) {
                 // Agent position
                 if (y == 0 && x < agentSize) {
@@ -636,7 +638,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     Point p = ip.point();
                     dataTextureBuffer.put(p.x);
                     dataTextureBuffer.put(p.y);
-                } 
+                }
+                else if (y == 3) {
+                    dataTextureBuffer.put(mapSizeDiscovered);
+                    dataTextureBuffer.put(mapSizeDiscovered);
+                }
                 // Fill Rest
                 else {
                     dataTextureBuffer.put(0);
@@ -701,7 +707,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             Parameter pointY = new Numeral(absPoint.y);
             Parameter ipData = new Identifier(ip.data());
 
-            // Send Manhatten distance if calculation failed
+            // Send Manhattan distance if calculation failed
             int dist = resultData.distance() > 0 
                 ? resultData.distance() 
                 : Math.abs(absPoint.x - agentPosition.x) + Math.abs(absPoint.y - agentPosition.y);

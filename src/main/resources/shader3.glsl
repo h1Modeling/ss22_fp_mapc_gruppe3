@@ -179,9 +179,7 @@ void main() {
     			add(cell);
     		}
     	}
-		float test = mapDiscovered == 1 ? 99.0 : 10.0; 
-    	//imageStore( map, ivec3(end.x,end.y,agentImageId), vec4( current.moved, current.dir, 0, 0) );
-		imageStore( map, ivec3(end.x,end.y,agentImageId), vec4( test, current.dir, 0, 0) );
+    	imageStore( map, ivec3(end.x,end.y,agentImageId), vec4( current.moved, current.dir, 0, 0) );
 		// Stop at End
 		if (currPos == end) {
 			break;
