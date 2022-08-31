@@ -191,6 +191,8 @@ public class MapPanel extends JPanel {
                 InterestingPoint ip = getInterestingPoint(i);
                 if (ip != null) {
                     Point p = ip.point();
+                    double agentOffset = ip.cellType() == CellType.TEAMMATE ? 0.75 : 0;
+                    Rectangle2D.Double textRect = new Rectangle2D.Double(p.x * cellWidth + offsetX + 1, (p.y - agentOffset) * cellWidth + offsetY + 1, cellWidth - 2, cellWidth - 2);
                     Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX + 1, p.y * cellWidth + offsetY + 1, cellWidth - 2, cellWidth - 2);
                     g2d.setColor(new Color(38,162, 255));
                     g2d.draw(rect);   
@@ -199,7 +201,7 @@ public class MapPanel extends JPanel {
                         PathFindingResult[][] groupResult = data.pathFindingResult();
                         PathFindingResult result = groupResult[selectedAgentIndex][i];
                         String distance = String.valueOf(result.distance());
-                        CellUtils.drawCenteredString(g2d, distance, rect, Color.BLACK);
+                        CellUtils.drawCenteredString(g2d, distance, textRect, Color.BLACK);
                     }
                 }
             }

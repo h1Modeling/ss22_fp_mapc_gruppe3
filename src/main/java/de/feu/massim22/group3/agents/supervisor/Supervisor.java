@@ -575,8 +575,9 @@ public class Supervisor implements ISupervisor {
         }
     }
 
-    private List<String[]> getAgentsFor2BlockTask(int maxWaitingTime, List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2) {
-        List<String[]> taskAgents = new ArrayList<>();
+    private String[][] getAgentsFor2BlockTask(int maxWaitingTime, List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2) {
+        String[][] taskAgents = new String[2][2];
+        int minDiff = 999;
         for (var agent1 : agents1) {
             if (agentsWithTask.containsKey(agent1.getKey())) continue;
             for (var agent2 : agents2) {
@@ -585,11 +586,20 @@ public class Supervisor implements ISupervisor {
                 var report2 = agent2.getValue();
                 var waitingTime = Math.abs(report1.distanceGoalZone() - report2.distanceGoalZone());
                 var distanceBetweenGoalZones = Math.abs(report1.nearestGoalZone().x - report2.nearestGoalZone().x) + Math.abs(report1.nearestGoalZone().y - report2.nearestGoalZone().y);
-                if (waitingTime < maxWaitingTime && distanceBetweenGoalZones < 25) {
+                var distBetweenAgents = Math.abs(report1.position().x - report2.position().x) + Math.abs(report1.position().y - report2.position().y);
+                // Agents near Different Goal Zones or if both are in goal zone use distance to get closest match
+                if (distanceBetweenGoalZones > 15 || report1.distanceGoalZone() == 0 || report2.distanceGoalZone() == 0 ||  
+                        report1.distanceGoalZone() < 5 && report2.distanceGoalZone() < 5) {
+                    waitingTime = 1000;
+                }
+                // Use agents which are similar close to the goal zone or near each other
+                waitingTime = Math.min(waitingTime, distBetweenAgents);
+                if (waitingTime < maxWaitingTime && waitingTime < minDiff) {
+                    minDiff = waitingTime;
                     String[] data1 = {agent1.getKey(), report1.agentActionName()};
-                    taskAgents.add(data1);
+                    taskAgents[0] = data1;
                     String[] data2 = {agent2.getKey(), report2.agentActionName()};
-                    taskAgents.add(data2);
+                    taskAgents[1] = data2;
                 }
             }
         }
@@ -599,11 +609,11 @@ public class Supervisor implements ISupervisor {
     private void doTwoBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, TaskInfo info, boolean identicalBlocks, boolean singleBlockTaskExists) {
 
         int maxWaitingTime = singleBlockTaskExists ? 10 : 30;
-        List<String[]> taskAgents = getAgentsFor2BlockTask(maxWaitingTime, agents1, agents2);
+        String[][] taskAgents = getAgentsFor2BlockTask(maxWaitingTime, agents1, agents2);
 
-        if (taskAgents.size() > 1) {
-           String[] agent1 = taskAgents.get(0);
-           String[] agent2 = taskAgents.get(1);
+        if (taskAgents[0][0] != null) {
+           String[] agent1 = taskAgents[0];
+           String[] agent2 = taskAgents[1];
            agentsWithTask.put(agent1[0], true);
            agentsWithTask.put(agent2[0], true);
 
