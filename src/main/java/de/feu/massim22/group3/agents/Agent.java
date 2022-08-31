@@ -55,7 +55,7 @@ public abstract class Agent {
      * @param receiver the receiving agent
      * @param sender the agent sending the message
      */
-    protected void sendMessage(Percept message, String receiver, String sender){
+    public void sendMessage(Percept message, String receiver, String sender){
         mailbox.sendMessage(message, receiver, sender);
     }
 
@@ -64,7 +64,7 @@ public abstract class Agent {
      * @param message the message to broadcast
      * @param sender the agent sending the message
      */
-    void broadcast(Percept message, String sender){
+    public void broadcast(Percept message, String sender){
         mailbox.broadcast(message, sender);
     }
 

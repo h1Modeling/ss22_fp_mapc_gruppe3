@@ -58,4 +58,7 @@ public enum EventName {
     MEASURE_DONE,
 
     SIZE_SEND,
+
+    MEASUREMENT_STARTED,
+    SEND_MEASUREMENT_STARTED,
 }

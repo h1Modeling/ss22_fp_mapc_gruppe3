@@ -8,6 +8,7 @@ import de.feu.massim22.group3.agents.supervisor.ISupervisor;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.map.Navi;
+import de.feu.massim22.group3.utils.PerceptUtil;
 import eis.iilang.Identifier;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
@@ -48,17 +49,12 @@ public class MeasureMapDesire  extends BeliefDesire {
 
     private String supervisorDirection = "";
 
+    int widthX = -99;
+    int widthY = -99;
+
+
     private BooleanInfo fulfilled = new BooleanInfo(false, "No done yet");
-
-//    public String getSupervisorDirection() {return supervisorDirection;}
-
-/*
-    private Percept pn = new Percept(EventName.MEASURE_MOVE.toString(),new Identifier("n"));
-    private Percept ps = new Percept(EventName.MEASURE_MOVE.toString(),new Identifier("s"));
-    private Percept pe = new Percept(EventName.MEASURE_MOVE.toString(),new Identifier("e"));
-    private Percept pw = new Percept(EventName.MEASURE_MOVE.toString(),new Identifier("w"));
-*/
-
+    private Boolean unfulfillable = false;
 
     public MeasureMapDesire(Belief belief, Supervisor supervisor, Navi navi /* ,MailService mailservice */) {
         super(belief);
@@ -79,7 +75,11 @@ public class MeasureMapDesire  extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-       return fulfilled;
+       return new BooleanInfo(!(widthX == -99 || widthY == -99),"Fulfillmentstate");
+    }
+
+    public BooleanInfo isUnfulfillable() {
+        return new BooleanInfo(unfulfillable, getName());
     }
 
     @Override
@@ -98,40 +98,49 @@ public class MeasureMapDesire  extends BeliefDesire {
         if (!this.initialized)
         {
             this.initialize();
-        }
 
-        String thisDirection = "";
-        String thisDirAgent = "";
+            // send all other, not to start measurement too
+            List<Parameter> parameterList = new ArrayList<Parameter>();
+            parameterList.add(new Identifier(supervisor.getName()));
+            Percept message = new Percept(EventName.SEND_MEASUREMENT_STARTED.toString(), parameterList);
+            supervisor.sendMessage(message, supervisor.getName(),supervisor.getName());
+
+        String ActionAgent = "";
+        String CounterAgent = "";
+        String ActionDirection = "";
+        int Distance = 0;
+        int BasePos = 0;
         Percept p;
 
+
         for(Map.Entry m:AgentDirections.entrySet()){
-
-/*
-            if (m.getValue().equals(supervisor.getName())){
-                thisDirection = m.getKey().toString();
-                thisDirAgent = m.getValue().toString();
-            }
-
- */
-//            else {
-//                p = pn;
+                ActionAgent = m.getValue().toString();
+                ActionDirection = m.getKey().toString();
                 switch (m.getKey().toString()) {
-                    case "n" :
-                    case "s" :
-                        p = BuildMeasureMovePercept(m.getKey().toString(),NorthSouthDistance,NorthSouthBasePos);
-                    break;
-                    case "e" :
-                    case "w" :
-                    default:
-                        p = BuildMeasureMovePercept(m.getKey().toString(),WestEastDistance,WestEastBasePos);
-                    break;
+                    case "n" :  CounterAgent = AgentDirections.get("s");
+                                Distance = NorthSouthDistance;
+                                BasePos = NorthSouthBasePos;
+                                break;
+                    case "s" :  CounterAgent = AgentDirections.get("n");
+                                Distance = NorthSouthDistance;
+                                BasePos = NorthSouthBasePos;
+                                break;
+                    case "e" :  CounterAgent = AgentDirections.get("w");
+                                Distance = WestEastDistance;
+                                BasePos = WestEastBasePos;
+                                break;
+                    case "w" :  CounterAgent = AgentDirections.get("e");
+                                Distance = WestEastDistance;
+                                BasePos = WestEastBasePos;
+                                break;
                 }
 
-                this.supervisor.sendMessage(p,m.getValue().toString(),supervisor.getName());
-  //          }
+                p = BuildMeasureMovePercept(ActionDirection,Distance,BasePos,CounterAgent);
+                this.supervisor.sendMessage(p,ActionAgent,supervisor.getName());
+
         }
-//        this.supervisorDirection = thisDirection;
-//        return getActionForMove(thisDirection, thisDirAgent); // Supervisor hold the MapDesire
+       }
+
         return ActionInfo.SKIP("SuperVisor does not move");
     }
 
@@ -152,13 +161,16 @@ public class MeasureMapDesire  extends BeliefDesire {
 
         List<java.awt.Point> AgentPositions = new ArrayList<Point>();
         for(int i = 0; i<5; i++) {
-            //Why does this not work??
             if (!this.AgentList.get(i).equals(this.supervisor.getName())) {
-//                System.out.println("Me:" + this.AgentList.get(i) + " Supervisor:"+this.supervisor.getName());
                 AgentPositions.add(this.navi.getPosition(this.AgentList.get(i), this.supervisor.getName()));
                 freeAgents.add(this.AgentList.get(i));
             }
         }
+
+        for (int i = 0; i<freeAgents.size(); i++) {
+            System.out.println(freeAgents.get(i) + " "+ AgentPositions.get(i).toString());
+        }
+
 
         if (AgentPositions.get(0).y < AgentPositions.get(1).y) {
             northindex = 0;
@@ -205,110 +217,44 @@ public class MeasureMapDesire  extends BeliefDesire {
         for(Map.Entry m:AgentDirections.entrySet()){
             System.out.println(m.getKey()+" "+m.getValue());
         }
+
         System.out.println("INIT: NSDist:"+NorthSouthDistance+ " NSBasePos: "+ NorthSouthBasePos + "INIT: WEDist:"+WestEastDistance+ " WEBasePos: "+ WestEastBasePos);
         initialized = true;
-
-
-/* old version , worked so lala
-        int northindex = 0;
-        int southindex = 0;
-        int westindex = 0;
-        int eastindex = 0;
-
-        List<String> freeAgents = new ArrayList<String>();
-
-        List<java.awt.Point> AgentPositions = new ArrayList<Point>();
-        for(int i = 0; i<5; i++) {
-            //Why does this not work??
-            if (!this.AgentList.get(i).equals(this.supervisor.getName())) {
-                System.out.println("Me:" + this.AgentList.get(i) + " Supervisor:"+this.supervisor.getName());
-                AgentPositions.add(this.navi.getPosition(this.AgentList.get(i), this.supervisor.getName()));
-                freeAgents.add(this.AgentList.get(i));
-            }
-        }
-
-        for (int i = 1 ; i<4; i++) {
-            if (AgentPositions.get(i).x < AgentPositions.get(westindex).x) { westindex = i;}
-            if (AgentPositions.get(i).x > AgentPositions.get(eastindex).x) { eastindex = i;}
-            if (AgentPositions.get(i).y > AgentPositions.get(southindex).y) {southindex = i;}  // switched, neg. Y = Norden!
-            if (AgentPositions.get(i).y < AgentPositions.get(northindex).y) {northindex = i;}
-
-        }
-
-//        Set<Integer> availIndicies = new LinkedHashSet<Integer>();
-        Set<Integer> availIndicies = new LinkedHashSet<Integer>();
-        Set<String> availDirections = new LinkedHashSet<String>();
-        for (int i = 0; i<4; i++) {
-            availIndicies.add(i);
-        }
-        availDirections.add("n");
-        availDirections.add("s");
-        availDirections.add("e");
-        availDirections.add("w");
-
-        AgentDirections.put("n",freeAgents.get(northindex));
-        availDirections.remove("n");
-        availIndicies.remove(northindex);
-
-        if (availIndicies.contains(southindex)) {
-            AgentDirections.put("s",freeAgents.get(southindex));
-            availDirections.remove("s");
-            availIndicies.remove(southindex);
-        }
-
-        if (availIndicies.contains(westindex)) {
-            AgentDirections.put("w", freeAgents.get(westindex));
-            availDirections.remove("w");
-            availIndicies.remove(westindex);
-        }
-
-        if (availIndicies.contains(eastindex)) {
-            AgentDirections.put("e", freeAgents.get(eastindex));
-            availDirections.remove("e");
-            availIndicies.remove(eastindex);
-        }
-
-        if (availIndicies.size() >0 ) {
-            String dir = "";
-            for (int i : availIndicies) {
-                if (availDirections.contains("s")) {
-                    dir = "s";
-                    southindex = i;
-                } else if (availDirections.contains("e")) {
-                    dir = "e";
-                    eastindex = i;
-                } else if (availDirections.contains("w")) {
-                    dir = "w";
-                    westindex = i;
-                }
-                AgentDirections.put(dir, freeAgents.get(i));
-                availDirections.remove(dir);
-            }
-
-        }
-
-        NorthSouthDistance = AgentPositions.get(northindex).y - AgentPositions.get(southindex).y;
-        NorthSouthBasePos = (AgentPositions.get(northindex).x + AgentPositions.get(southindex).x)/2;
-        WestEastDistance = AgentPositions.get(eastindex).x - AgentPositions.get(westindex).x;
-        WestEastBasePos = (AgentPositions.get(eastindex).y+ AgentPositions.get(westindex).y)/2;
-
-        for(Map.Entry m:AgentDirections.entrySet()){
-            System.out.println(m.getKey()+" "+m.getValue());
-        }
-        System.out.println("INIT: NSDist:"+NorthSouthDistance+ " NSBasePos: "+ NorthSouthBasePos + "INIT: WEDist:"+WestEastDistance+ " WEBasePos: "+ WestEastBasePos);
-        initialized = true;
-  //      Navi.get().
-
- */
     }
 
-    private Percept BuildMeasureMovePercept(String direction,int InitialDistance, int BasePos) {
+    private Percept BuildMeasureMovePercept(String direction,int InitialDistance, int BasePos, String CounterAgentName) {
         List<Parameter> parameterList = new ArrayList<Parameter>();
         parameterList.add(new Identifier(direction));
         parameterList.add(new Identifier(Integer.valueOf(InitialDistance).toString()));
         parameterList.add(new Identifier(Integer.valueOf(BasePos).toString()));
+        parameterList.add(new Identifier(CounterAgentName));
         return new Percept(EventName.MEASURE_MOVE.toString(),parameterList);
     }
 
-    public void setFulfilled(boolean status) {fulfilled = new BooleanInfo(status, "done");}
+    public void SizeValueSend(Percept event) {
+
+        List<Parameter> parameters = event.getParameters();
+        String CorrXY = PerceptUtil.toStr(parameters, 0);
+        int value = Integer.valueOf(PerceptUtil.toStr(parameters, 1));
+
+        switch (CorrXY) {
+            case "X" : widthX = value;
+                break;
+            case "Y" : widthY = value;
+        }
+
+        System.out.println("Widthx:"+widthX+" WidthY:"+widthY+ " Isfullfilled"+isFulfilled().toString());
+        if (isFulfilled().value()) {
+           System.out.println("Final X:"+widthX+" Y:"+widthY);
+            List<Parameter> parameterList = new ArrayList<Parameter>();
+            Percept p = new Percept(EventName.MEASURE_DONE.toString(), parameterList);
+            for (String agentName : AgentList) {
+                supervisor.sendMessage(p,agentName, this.getName());
+            }
+        }
+    }
+
+    public void setUnfulfillable(Boolean value) { unfulfillable = value;}
+
+
 }

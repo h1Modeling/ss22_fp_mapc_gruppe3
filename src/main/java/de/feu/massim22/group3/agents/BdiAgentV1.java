@@ -79,17 +79,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
      * @param index the index of the agent in the agent team
      */
 
-    private boolean forcedIntention = false;
-    private int moveStepCount = 0;
-    private int moveStartDistance = 0;
-
-    private int myBaseLine = 0;
-    private String mybaseDirection = "";
-
-    private int finalWidthX= -99;
-    private int finalWidthY= -99;
-
-    private int measure_move_count = -1;
     public BdiAgentV1(String name, MailService mailbox, EisSender eisSender, int index) {
         super(name, mailbox);
         this.eisSender = eisSender;
@@ -184,14 +173,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     }
     
     private void performEvent(Percept event, String sender) {
-/*
-        if (isNull(intention)) {
-            say ("Intention is NUll");
-        } else {
-            say("My intention" + intention.getName() );
-        }
-
- */
         String taskKey = event.getName();
         EventName taskName = EventName.valueOf(taskKey);
         switch (taskName) {
@@ -393,281 +374,93 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             break;
         }
         case MEASURE_MOVE: {
-            measure_move_count++;
-            // ggf muessen wir zaehlen wie oft der agent an seiner startline vorbeikommt
-            // durhc diese Zahl muessen wir die gesamtzahl teilen, damit wir die richtige breite/Hoehe bekommen.
-            // und warumhat We mal einen zuviel ud mal einen zu wenig??
-
-//            say("GetLastActioNIntention:" + belief.getLastActionIntention());
 
             List<Parameter> parameters = event.getParameters();
             if (parameters.size() > 0) {
                 String direction = PerceptUtil.toStr(parameters, 0);
-                //            say("LastAction:" +  belief.getLastAction() + " Result: "+ belief.getLastActionResult() +" para0: " + direction);
-                moveStartDistance = Integer.valueOf(PerceptUtil.toStr(parameters, 1));
-                myBaseLine = Integer.valueOf(PerceptUtil.toStr(parameters, 2));
+                int initialDistance = Integer.parseInt(PerceptUtil.toStr(parameters, 1));
+                int basepos = Integer.parseInt(PerceptUtil.toStr(parameters, 2));
+                String counterPartAgent = PerceptUtil.toStr(parameters, 3);
+                say("will set desire for direction:"+direction);
 
-                if (belief.getLastActionIntention().equals("MeasureMoveDesire")) {
-                    // last step was a successfull move to the direction given to the intention
-                    // this couldm be wwrong, because the intention could be given a  walk around
-                    // we need to communicate some kind of Base direction and a base coordinate!
-                    // second one for aligning the movement on a straigt line to be sure to meet opponent again!!
-                    Set<Thing> things = belief.getThings();
-                    Point myPosition = belief.getPosition();
-                    String la = belief.getLastAction();
-                    String lar = belief.getLastActionResult();
-                    String lap1 = "@";
-                    if (belief.getLastActionParams().size() > 0) {
-                        lap1 = belief.getLastActionParams().get(0);
-                    }
-//                    if (mybaseDirection.equals("n") || mybaseDirection.equals("s"))
-                        say(belief.getStep() + " "+ direction+ " MyPosition: " + myPosition.toString() + "Direction: " + direction + " Aktueller StepCount " + moveStepCount + " LastAction:" + la + " LastResult:" + lar + " Last Dir:" + lap1);
-                    if (belief.getLastAction().equals("move")
-                            // but know at least the we size was to low, maybe there the is... Check is wrong ...
-                            && belief.getLastActionResult().equals("success")) {
-
-                        if (belief.getLastActionParams().get(0).equals(mybaseDirection)) {
-                            moveStepCount = moveStepCount + 1;
-//                            if (mybaseDirection.equals("n") || mybaseDirection.equals("s"))
-                            say(belief.getStep() + " "+ "Added  1 - result:" + moveStepCount);
-                        }
-                        if (belief.getLastActionParams().get(0).equals(DirectionUtil.oppositeDirection(mybaseDirection))) {
-                            if (measure_move_count > 0)
-                                moveStepCount = moveStepCount - 1;
-//                            if (mybaseDirection.equals("n") || mybaseDirection.equals("s"))
-                            say(belief.getStep() + " "+ "Subtracted  1 - result:" + moveStepCount);
-                        }
-                    }
-                    for (Thing t : things) {
-                        if (t.type.equals(Thing.TYPE_ENTITY) && !(t.x == 0 && t.y == 0)) {
-                            if (t.details.equals(belief.getTeam())) {
-                                if (isPositionInMoveDirection(t.x, t.y, direction)) {
-                                    ////                                say(belief.getStep() + " Position is in Move Direction ("+direction+") " + t.toString());
-                                    // THis percept needs more parameter ..
-                                    // we need the position to check ... ( and need to know what coordinat-system we are in (ours or initial)
-                                    // we need th sender name if we can get it directly in the even
-                                    // we need a new Event .. MEASURE_MEET or something like that
-                                    // maybe we need to send the steps with it, to end the counting a early as paossible
-
-
-                                    // die Frage sit nicht siehst du an der Inversen Position einen Thing?
-                                    // Sondern die Frage ist, ist deine Position x,y und siehst du ein Thing das
-                                    // mit deiner Position , a,b ergibt
-                                    // spricht wunsch position des Object senden und eigene Position sendne!!
-                                    // das hier drunter ist demnach falsch!!
-
-                                    List<Parameter> parameterList = new ArrayList<Parameter>();
-                                    parameterList.add(new Identifier(direction));
-                                    parameterList.add(new Identifier(getName()));
-                                    Integer value = t.x * -1;
-                                    parameterList.add(new Identifier(value.toString()));
-                                    value = t.y * -1;
-                                    parameterList.add(new Identifier(value.toString()));
-                                    parameterList.add(new Identifier(Integer.valueOf(moveStepCount).toString()));
-                                    parameterList.add(new Identifier(Integer.valueOf(moveStartDistance).toString()));
-                                    Percept p = new Percept(EventName.MEASURE_MEET.toString(), parameterList);
-                                    broadcast(p, getName());
-                                    //verschhicke  die Frage, welcher Agent mich an der Genannten Position sieht
-                                    ////                                say(belief.getStep() + " We found possible Agent at (" + t.x + ","+t.y+")");
-                                }
-                            }
-                            // broadcast  an alle Agenten, melde dich bei mir   wenn ihr einen Agenten auf pos x,y seht.
-                            // so meldt sich der agent auf der Psoition von thing. wenn dieser Agent einen passenden Namen hat ( nord sucht sued etc)
-                            // und die relatibve position auf der anderen Seite ist ( ggf sogar nur dann broadcast schidken) dann haben wir unser gegenstueck gefunden !!)
-                            // auf diese weise soltle es moeglich sein dass sich die agenten finden un die entsprechenden positionen bestimmt werden koennen!!
-
-
-                        }
-                    }
-
-                }
-
-                //            say("Measure Move:" + direction + " " + event.getParameters().toString());
-                forcedIntention = true;
-                setIntention(new MeasureMoveDesire(belief, /*taskInfo,*/ this.getName(), this.getName(), supervisor.getName(), direction, moveStartDistance, myBaseLine));
-                mybaseDirection = direction;
+                addDesire(new MeasureMoveDesire(belief, this.getName(), this.getName(), this.supervisor.getName(), direction, initialDistance, basepos, (Supervisor)supervisor,counterPartAgent));
             }
             break;
         }
             case MEASURE_MEET: {
                 if (!this.getName().equals(this.supervisor.getName())) {
-
-                    String sendDirection;
-                    String myDirection = mybaseDirection;
-                    List<Parameter> parameters = event.getParameters();
-                    if (parameters.size() > 0) {
-                        sendDirection = String.valueOf(parameters.get(0));
-
-                        for (Thing t : belief.getThings()) {
-                            // hier muss noch type prüfung und zugehörigkeit rein
-                            if (t.type.equals(Thing.TYPE_ENTITY) && t.details.equals(belief.getTeam())) {
-                                if ((t.x == Integer.parseInt(String.valueOf(parameters.get(2))))
-                                        && (t.y == Integer.parseInt(String.valueOf(parameters.get(3))))) {
-//                            say(belief.getStep() + " MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
-                                    if (finalWidthX == -99) {
-                                        if ((myDirection.equals("w") && sendDirection.equals("e") && t.x < 0)
-                                                || (myDirection.equals("e") && sendDirection.equals("w") && t.x > 0)) {
-                                            say(belief.getStep() + " WE-MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
-                                            int westeastSize = moveStepCount  // stepcount of this agent
-                                                    + Integer.valueOf(String.valueOf(parameters.get(4))) //moveStepCount of Other agent
-                                                    + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) // StartDistance as given by other Agent
-                                                      // unclear wether the Math.abs is helpful around the start distance or not ...
-                                                    + Math.abs(t.x);
-                                            //found matching agent, size = calculated
-                                            say(belief.getStep() + " The we Size is" + westeastSize);
-                                            finalWidthX = westeastSize;
-                                            sendPartialSize("X",westeastSize);
-
-                                            //TODO: calculation is wrong so we need to look into that to correct that
-                                            // and than find a way to set the measure to navi and to end the desires
-                                            // maybe we also need to find a tweak to relase two agents
-                                            // without killing the Desire conditions for MeasureMApDesire.
-                                            // but for the first run we would hold the two agents that already finished their job
-
-                                            // have to look into the calculations ..
-                                            // have to implement the baseline logic
-
-                                            break;
-                                        }
-                                    }
-                                    if (finalWidthY == -99) {
-                                        say(belief.getStep() + " T:" + t.toString()); // we need to put the right sings into the output here, to see what we need to do ..
-                                        if ((myDirection.equals("s") && sendDirection.equals("n") && t.y > 0)
-                                                || (myDirection.equals("n") && sendDirection.equals("s") && t.y < 0)) {
-                                            say(belief.getStep() + " NS-MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
-                                            //found matching agent, size = calculated
-                                            int northsouthSize = moveStepCount  // stepcount of this agent
-                                                    + Integer.valueOf(String.valueOf(parameters.get(4))) //moveStepCount of Other agent
-                                                    + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) // StartDistance as given by other Agent
-                                                    + Math.abs(t.y);
-                                            say(belief.getStep() + " The ns Size is" + northsouthSize);
-                                            finalWidthY = northsouthSize;
-                                            sendPartialSize("Y",northsouthSize);
-                                            break;
-                                        }
-                                    }
-                                }
+                        for (IDesire d: desires) {
+                            if (d.getName().equals("MeasureMoveDesire")) {
+                                ((MeasureMoveDesire) d).checkForMeeting(event,belief);
                             }
                         }
-//                        System.out.println("WE:"+finalWidthX +  " NS:"+finalWidthY);
-/*
-                        if (finalWidthX != -99 && finalWidthY != -99) {
-
-                            say("Final X:"+finalWidthX+" Y:"+finalWidthY);
-                            List<Parameter> parameterList = new ArrayList<Parameter>();
-                            parameterList.add(new Identifier(Integer.valueOf(finalWidthX).toString()));
-                            parameterList.add(new Identifier(Integer.valueOf(finalWidthY).toString()));
-                            Percept p = new Percept(EventName.MEASURE_DONE.toString(), parameterList);
-                            sendMessage(p,this.supervisor.getName(),this.getName());
-
-                            // sende nachricht an den Supervisor to end the desire
-                            // send the maxvalues with you
-                            // let the desires stop
-                        }
- */
-
-
-
-                        // broadcast worked, parameter lifting worked.
-                        // maybe we need to send stepcount with it or other things like that.
-                        // wenn s and n meet or w and e meet and find the oposite point
-                        // then we should generate a match and find a way to handle the result !
                     }
-                }
                 break;
             }
             case MEASURE_DONE: {
-                IDesire foundDesire = null;
-                if (this.getName().equals(this.supervisor.getName())) {
-                    List<String> agents = ((Supervisor) this.supervisor).getAgents();
-
-                    for (IDesire d : desires) {
-                        if (d.getName().equals("MeasureMapDesire")) {
-                            ((MeasureMapDesire) d).setFulfilled(true);
-                            foundDesire = d;
-                        }
-                    }
-                    if (!isNull(foundDesire)) {
-                        desires.remove(foundDesire);
-                        foundDesire = null;
-                        for (int i = 0; i < agents.size(); i++) {
-                            sendMessage(event, agents.get(i), this.getName());
-                        }
-                    }
-                }
-
-                if (forcedIntention) {
-//                    say(this.step() +"Measure Done Recieved");
-                    forcedIntention = false;
-                    setIntention(null);
-
-                    for (IDesire d : desires) {
-                        if (d.getName().equals("MeasureMoveDesire")) {
-                            ((MeasureMoveDesire) d).setFulfilled(true);
-                            foundDesire = d;
-                        }
-                    }
-                    if (!isNull(foundDesire)) {
-                        desires.remove(foundDesire);
-                    }
+                IDesire temp = getDesireByName("MeasureMoveDesire");
+                if (!isNull(temp)) {
+                    MeasureMoveDesire mmd = (MeasureMoveDesire)temp;
+                    mmd.setFulfilled(true);
                 }
                 break;
             }
         case SIZE_SEND: {
-            List<Parameter> parameters = event.getParameters();
-            String CorrXY = PerceptUtil.toStr(parameters, 0);
-            int value = Integer.valueOf(PerceptUtil.toStr(parameters, 1));
+            say("size send recieved");
+            IDesire temp = getDesireByName("MeasureMapDesire");
 
-            switch (CorrXY) {
-                case "X" : finalWidthX = value;
-                break;
-                case "Y" : finalWidthY = value;
-            }
-
-            if (finalWidthX != -99 && finalWidthY != -99) {
-
-                say(this.step() +"Final X:"+finalWidthX+" Y:"+finalWidthY);
-                List<Parameter> parameterList = new ArrayList<Parameter>();
-                parameterList.add(new Identifier(Integer.valueOf(finalWidthX).toString()));
-                parameterList.add(new Identifier(Integer.valueOf(finalWidthY).toString()));
-                Percept p = new Percept(EventName.MEASURE_DONE.toString(), parameterList);
-                sendMessage(p,this.supervisor.getName(),this.getName());
+            if (!isNull(temp)) {
+                MeasureMapDesire mmd = (MeasureMapDesire)temp;
+                mmd.SizeValueSend(event);
             }
             break;
         }
+            case SEND_MEASUREMENT_STARTED: {
+                List<Parameter> parameterList = new ArrayList<Parameter>();
+                parameterList.add(new Identifier(getName()));
+                Percept message = new Percept(EventName.MEASUREMENT_STARTED.toString(),parameterList);
+                broadcast(message,getName());
+                break;
+            }
+
+            case MEASUREMENT_STARTED: {
+                List<Parameter> parameters = event.getParameters();
+
+                if (parameters.size() > 0) {
+                    String MeasurementSupervisor = PerceptUtil.toStr(parameters, 0);
+
+                    if (!MeasurementSupervisor.equals(getName()) && !MeasurementSupervisor.equals(supervisor.getName())) {
+
+                        MeasureMapDesire MMapDesire = null;
+                        MeasureMoveDesire MMoveDesire = null;
+
+                        for (IDesire d : desires) {
+                            if (d.getName().equals("MeasureMapDesire")) {
+                                MMapDesire = (MeasureMapDesire) d;
+                                break;
+                            }
+                            if (d.getName().equals("MeasureMoveDesire")) {
+                                MMoveDesire = (MeasureMoveDesire) d;
+                                break;
+                            }
+
+                        }
+                        if (!isNull(MMapDesire)) {
+                            MMapDesire.setUnfulfillable(true);
+                        }
+                        if (!isNull(MMoveDesire)) {
+                            MMoveDesire.setUnfulfillable(true);
+                        }
+                    }
+                }
+                break;
+            }
         default:
             throw new IllegalArgumentException("Message is not handled: " + taskName);
         }
     }
 
-    private void sendPartialSize(String axis,int size) {
-
-        List<Parameter> parameterList = new ArrayList<Parameter>();
-        parameterList.add(new Identifier(axis));
-        parameterList.add(new Identifier(Integer.valueOf(size).toString()));
-        Percept p = new Percept(EventName.SIZE_SEND.toString(), parameterList);
-        sendMessage(p,this.supervisor.getName(),this.getName());
-    }
-
-	
-    private boolean isPositionInMoveDirection( int x, int y,String direction) {
-
-        switch(direction) {
-            case "n" :
-                return ( y <= 0);
-//                return (y >= 0);
-            case "s":
-                return (y >= 0);
-//                return ( y <= 0);
-            case "e":
-                return (0 <= x);
-            case "w":
-                 return (0 >= x);
-       }
-        return false;
-    }
     private void addBasicDesires() {
-        desires.add(new MeasureMapDesire(belief,(Supervisor) supervisor,Navi.get()));
         desires.add(new ExploreDesire(belief, supervisor.getName(), getName()));
         desires.add(new LooseWeightDesire(belief));
         desires.add(new DigFreeDesire(belief));
@@ -676,6 +469,7 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
 
         String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
         desires.add(new WalkByGetRoleDesire(belief, actions));
+        desires.add(new MeasureMapDesire(belief,(Supervisor) supervisor,Navi.get()));
         desires.add(new EscapeClearDesire(belief));
     }
 
@@ -725,7 +519,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     }
 
     private void findIntention() {
-        if (!forcedIntention) {
             List<DesireDebugData> debugData = new ArrayList<>();
             for (int i = desires.size() - 1; i >= 0; i--) {
                 IDesire d = desires.get(i);
@@ -741,7 +534,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 }
             }
             Navi.<INaviAgentV1>get().updateDesireDebugData(debugData, getName());
-        }
     }
     
     private void updatePercepts() {
@@ -787,5 +579,14 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     public void initSupervisorStep() {
         int step = belief.getStep();
         this.supervisor.initStep(step);
+    }
+
+    public IDesire getDesireByName(String DesireName) {
+            for (IDesire d : desires) {
+                if (d.getName().equals(DesireName)) {
+                    return d;
+                }
+            }
+        return null;
     }
 }
