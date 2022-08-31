@@ -50,6 +50,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private Map<String, GameMap> maps = new HashMap<>();
     private Map<String, String> agentSupervisor = new HashMap<>(); // Agent Key, Supervisor Value
     private Map<String, Integer> agentStep = new HashMap<>();
+    private Map<String, List<Point>> debugMarker = new HashMap<>();
     private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
     private Map<String, PathFinder> pathFinder = new HashMap<>();
@@ -64,6 +65,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
     private boolean horizontalMapSizeInDiscover = false;
     private boolean verticalMapSizeInDiscover = false;
+    private int step = -1;
     
     private List<CalcResult> calcResults = new ArrayList<>();
     
@@ -224,7 +226,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     @Override
     public synchronized PathFindingResult[][] updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
             Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps,
-            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedThings) {
+            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedThings, List<Point> marker) {
 
         updateMap(supervisor, agent, agentIndex, position, vision, things, goalPoints, rolePoints, step, team, maxSteps,
                 score, normsInfo, taskInfo, attachedThings);
@@ -244,6 +246,22 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             }
         }
 
+        GameMap map = maps.get(supervisor);
+
+        // Update Debug Marker
+        List<Point> data = debugMarker.getOrDefault(supervisor, new ArrayList<>());
+        if (step > this.step) {
+            this.step = step;
+            data.clear();
+            debugMarker.put(supervisor, data);
+        } else {
+            Point topLeft = map.getTopLeft();
+            for (Point p : marker) {
+                data.add(new Point(position.x + p.x - topLeft.x, position.y + p.y - topLeft.y));
+            }
+            debugMarker.put(supervisor, data);
+        }
+
         // Start calculation
         if (allSent) {
             filterKnownTeamMatesFromGreetData(supervisor);
@@ -251,7 +269,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             if (haveAllAgentsSentData(step)) {
                 makeMergeSuggestions();
             }
-            GameMap map = maps.get(supervisor);
+
             return startCalculation(supervisor, map);
         }
         return null;
@@ -668,7 +686,8 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
             // Update debugger
             if (debug) {
-                GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
+                var marker = debugMarker.getOrDefault(supervisor, new ArrayList<>());
+                GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents, marker);
                 debugger.setGroupData(debugData);
             }
             

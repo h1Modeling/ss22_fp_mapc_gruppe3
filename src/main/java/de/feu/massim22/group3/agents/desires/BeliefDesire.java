@@ -246,8 +246,7 @@ public abstract class BeliefDesire implements IDesire {
                     Point target = DirectionUtil.rotateCCW(p);
                     return ActionInfo.CLEAR(target, desire);
                 }
-
-                return ActionInfo.SKIP(desire);
+                return ActionInfo.SKIP("Can't move because of attached");
             }
         }
         // Test Agent

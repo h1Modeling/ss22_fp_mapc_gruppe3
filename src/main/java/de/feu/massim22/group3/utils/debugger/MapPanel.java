@@ -185,6 +185,17 @@ public class MapPanel extends JPanel {
                 }
             }
 
+            // Marker
+            for (Point p : data.marker()) {
+                if (p != null) {
+                    Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
+                    g2d.setColor(new Color(249,240, 107));
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(0.4f));
+                    g2d.fill(rect);
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(1f));
+                }
+            }
+
             // Interesting Points Distances
             g2d.setStroke(new BasicStroke(2));
             for (int i = 0; i< data.interestingPoints().size(); i++) {

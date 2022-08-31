@@ -19,140 +19,100 @@
 %\renewcommand\UrlFont{\color{blue}\rmfamily}
 %
 \usepackage[ngerman]{babel}
+\usepackage{wrapfig}
 \begin{document}
 %
-\title{Contribution Title\thanks{Supported by organization x.}}
+\title{Gruppe 3: Catchphrase?}
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{Melinda Betz\inst{1}\and
-Phil Heger\inst{1}\and
-Heinz Stadler\inst{1}\and
-Björn Wladasch\inst{1}}
+\author{...\inst{1}\and
+...\inst{1}\and
+...\inst{1}\and
+...\inst{1}}
 %
 \authorrunning{F. Author et al.}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
 \institute{FernUniversität in Hagen, Universitätsstraße 47, 58097 Hagen, Deutschland
-\email{\{melinda.betz,phil.heger,heinz.stadler,bjoern.wladasch\}@studium.fernuni-hagen.de}\\
+\email{\{...\}@studium.fernuni-hagen.de}\\
 \url{https://www.fernuni-hagen.de}}
 %
 \maketitle              % typeset the header of the contribution
 %
-\begin{abstract}
-TODO Miri im Hauptdokument
-
-\keywords{TODO Miri im Hauptdokument.}
-\end{abstract}
-%
-%
 %
 \section{Einleitung}
-\section{Kommunikation Seminar}
-\section{Dokumentationen Gruppe 3}
-TODO Einleitung mit kurzer Übersicht über Gruppe
-\subsection{Auswahl technischer Rahmenbedingungen und Kommunikation}
-TODO Entscheidung Java \\
-TODO Github \\
-TODO Gruppentreffen und generelle Kommunikation
-\subsection{Softwarearchitektur}
-TODO Entscheidung 2 Architekturen \\
-TODO Diagramm Hauptbestandteile und Erklärung \\
-TODO UML erwähnen
-\subsubsection{Parallelisierung}
-TODO Threadingkonzept 
-\subsubsection{Synchronisation und Kommunikation}
-TODO Supervisor, Navi, Kommunikation zwischen Agenten
-\subsubsection{Wissensverwaltung}
-TODO Beliefs und Map
-\subsubsection{Ziel- und Absichtsfindung}
-TODO Desires und Intentions
-\subsubsection{Wegfindung}
-TODO Pathfinding
-\subsection{Problemerkundung, Verständnisaufbau und Lösungsstrategien}
-TODO Allgemein Entwicklungsprozess
-\subsubsection{Tests}
-\subsubsection{Debugging}
-\subsubsection{Turniere}
-\subsection{Rekapitualition und Ausblick}
-TODO Rekapitulation Vor- und Nachteile von 2 Architekturen \\
-TODO Schwierigkeiten und Lösungsstrategien \\
-TODO Ausblick und Verbesserungspotential \\
+Diese Arbeit wurde Rahmen des Fachpraktikums "`Multiagentenprogrammierung"' in einer Gruppenarbeit von vier Informatik-Studenten erstellt. Die Aufgabe umfasste die Bearbeitung des "`MASSim 2022: Agents Assemble III"' Szenarios \cite{EISMASSim}. Hierbei interagieren zwei oder mehr Teams auf einer 2-dimensionalen, aus Feldern bestehenden Karte. Jedes Team kontrolliert eine definierte Anzahl an Agenten, die verschiedene Aktionen ausführen können. Daneben existieren noch Hindernisse, Blöcke verschiedener Typen und sogenannte Dispenser, bei denen diese Blöcke erzeugt werden. Einige Felder der Karte sind als Zielzonen und Rollenzonen definiert. Ziel des Szenarios ist es, mithilfe der Agenten Blöcke zu sammeln, zu einer vorgegebenen Konfiguration zusammenzusetzen und in einer Zielzone abzugeben. Für jede erfolgreich bearbeitete Aufgabe gibt es Punkte. \\
 
+Das Szenario läuft auf einem zentralen Server. Die Simulation ist rundenbasiert. Der Server sendet zu Beginn jeder Runde Informationen über die Umgebung an die Agenten. Diese verarbeiten die Informationen und senden die in der aktuellen Runde auszuführende Aktion an den Server. Dieser prüft die Eingaben der Agenten und aktualisiert den Zustand der Simulation. Die Aufgabe des Fachpraktikums besteht darin, das Agenten-Programm zu entwickeln. Dabei müssen die Agenten die Aufgaben möglichst effizient und kooperativ bearbeiten, um so viele Punkte wie möglich zu erzielen.
 
-Subsequent paragraphs, however, are indented.
+\section{Kommunikation und Kommunikationsmittel}
+Die gruppeninterne Kommunikation erfolgte über den für das Fachpraktikum eingerichteten Discord-Server. Wir trafen uns jeden Mittwoch im Sprachchat der Gruppe, um anfangs die grundsätzliche Softwarearchitektur mittels UML-Diagrammen zu entwickeln und später über aktuelle Aufgaben und Probleme zu sprechen. Der Gruppen-Chat wurde darüber hinaus für kurzfristige Absprachen genutzt.\\
 
-\subsubsection{Softwarearchitektur} Only two levels of
-headings should be numbered. Lower level headings remain unnumbered;
-they are formatted as run-in headings.
+Die Quelltext-Verwaltung erfolgte über das Versionsverwaltungssystem Github, dessen Issue-Management wir ebenfalls verwendeten. Hier wurden alle Aufgaben zusammengetragen und jeweils ein Bearbeiter zugeordnet. Aus dem jeweiligen Issue wurde jeweils ein Feature Branch erstellt, in dem Bearbeitung der Aufgabe erfolgte. Abschließend wurden die Änderungen des Feature Branches mittels eines Pull Requests auf den Master Branch angewendet. Das Repositorium wurde so konfiguriert, dass ein Pull Request erst freigegeben wird, wenn er durch mindestens ein anderes Gruppenmitglied überprüft wurde. Dadurch sollte die Qualität des Quelltextes erhöht und das gemeinsame Verständnis des Quelltextes gefördert werden.
 
+\section{Technische Rahmenbedingungen und Softwarebasisarchitektur}
+Für die programmiertechnische Umsetzung entschieden wir uns für die Programmiersprache Java, da alle Gruppenmitglieder mindestens über grundlegende Kenntnisse dieser Programmiersprache verfügten. Außerdem ist Java eine stark typisierte Programmiersprache, wodurch einige Programmierfehler schon vor der Ausführung des Programms entdeckt werden können und so die Wahrscheinlichkeit von Laufzeitfehlern reduziert wird. Würde ein Laufzeitfehler während einer Simulation auftreten, dann müsste das Programm manuell neu gestartet werden. Während der Reaktionszeit bis zum Neustart läuft die Simulation (das Server-Programm) weiter. Für die während dieser Zeit laufenden Runden werden keine Aktionen gesendet, wodurch diese ungenutzt bleiben. Außerdem gehen alle bisher gesammelten Informationen (Objektzustände) verloren und müssen neu gesammelt werden.\\
 
-\paragraph{Sample Heading (Fourth Level)}
-The contribution should contain no more than four levels of
-headings. Table~\ref{tab1} gives a summary of all heading levels.
+Das objektorientierte Programmierparadigma, auf dem auch Java basiert, weist einige Gemeinsamkeiten mit dem Konzept der Agenten auf. Sowohl Objekte als auch Agenten besitzen einen gekapselten, inneren Zustand, führen Aktionen (Methoden) aus, um diesen Zustand zu verändern und kommunizieren mittels des Nachrichtenversands miteinander. Dennoch gibt es auch eine Reihe von Aspekten, die nicht standardmäßig im objektorientierten Programmierparadigma enthalten sind, aber trotzdem mithilfe objektorientierter Programmiersprachen implementiert werden können. Dazu zählt beispielsweise, dass eine Methode eines Objektes, solange sie öffentlich ist, jederzeit von anderen Objekten aufgerufen werden kann, während ein Agent selbst entscheidet, wann er eine Aktion ausführt. Ein weiterer Unterschied ist, dass Objekte in einem objektorientierten Programm standardmäßig nur einen gemeinsamen Ausführungsstrang aufweisen. Das Konzept der Agenten sieht hingegen einen eigenen Ausführungsstrang für jeden Agenten vor \cite{Weiss2000}.\\
 
-\begin{table}
-\caption{Table captions should be placed above the
-tables.}\label{tab1}
-\begin{tabular}{|l|l|l|}
-\hline
-Heading level &  Example & Font size and style\\
-\hline
-Title (centered) &  {\Large\bfseries Lecture Notes} & 14 point, bold\\
-1st-level heading &  {\large\bfseries 1 Introduction} & 12 point, bold\\
-2nd-level heading & {\bfseries 2.1 Printing Area} & 10 point, bold\\
-3rd-level heading & {\bfseries Run-in Heading in Bold.} Text follows & 10 point, bold\\
-4th-level heading & {\itshape Lowest Level Heading.} Text follows & 10 point, italic\\
-\hline
-\end{tabular}
-\end{table}
+Das in dieser Arbeit entwickelte Agentensystem basiert auf der BDI-Architektur. Diese Architektur ist eine Abstraktion des menschlichen Denkens bzw. Schlussfolgerns. Das heißt sie versucht zu beschreiben, wie Menschen sich für ihre nächste Handlung entscheiden, um dadurch übergeordnete Ziele zu erreichen. Die Komponenten der BDI-Architektur sind:
+\begin{itemize}
+\item{{\bf Beliefs:} Informationen, die der Agent über seine Umwelt besitzt}
+\item{{\bf Desires:} Handlungsoptionen bzw. mögliche Ziele des Agenten}
+\item{{\bf Intentions:} Ziele, für die sich der Agent entschieden hat und an deren Realisierung gerade gearbeitet wird}
+\end{itemize}
 
+Die Beliefs werden dabei durch eine Funktion auf Basis der Wahrnehmung der Umgebung und der aktuellen Beliefs aktualisiert. Die Desires werden aus den Beliefs und den aktuellen Intentions ermittelt. Die eigentliche Schlussfolgerung der nächsten Handlungen, also die Auswahl der Intentions, erfolgt durch eine Filter-Funktion, bei der die aktuellen Beliefs, Desires und Intentions einfließen. Der Vorteil dieser Architektur ist, dass eine funktionale Zerlegung des Agenten in die oben genannten Subsysteme vorgegeben ist. Die Komponenten erscheinen dabei intuitiv, da die BDI-Architektur auf dem menschlichen Denkmodell basiert \cite{Weiss2000}.\\
 
-\noindent Displayed equations are centered and set on a separate
-line.
-\begin{equation}
-x + y = z
-\end{equation}
-Please try to avoid rasterized images for line-art diagrams and
-schemas. Whenever possible, use vector graphics instead (see
-Fig.~\ref{fig1}).
+Auf der Grundlage der BDI-Architektur erarbeiteten wir anhand von Klassen-UML-Diagrammen konkrete Systemarchitekturen. Die UML-Diagramme stellen aufgrund der übersichtlichen, visuellen Darstellung des komplexen Systems eine gute Diskussionsgrundlage dar.
 
-\begin{figure}
-\includegraphics[width=\textwidth]{fig1.eps}
-\caption{A figure caption is always placed below the illustration.
-Please note that short captions are centered, while long ones are
-justified by the macro package automatically.} \label{fig1}
-\end{figure}
+TODO Bdi, 2 Agentensysteme, UML, Java
 
-\begin{theorem}
-This is a sample theorem. The run-in heading is set in bold, while
-the following text appears in italics. Definitions, lemmas,
-propositions, and corollaries are styled the same way.
-\end{theorem}
-%
-% the environments 'definition', 'lemma', 'proposition', 'corollary',
-% 'remark', and 'example' are defined in the LLNCS documentclass as well.
-%
-\begin{proof}
-Proofs, examples, and remarks have the initial word in italics,
-while the following text appears in normal font.
-\end{proof}
-For citations of references, we prefer the use of square brackets
-and consecutive numbers. Citations using labels or the author/year
-convention are also acceptable. The following bibliography provides
-a sample reference list with entries for journal
-articles~\cite{ref_article1}, an LNCS chapter~\cite{ref_lncs1}, a
-book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
-and a homepage~\cite{ref_url1}. Multiple citations are grouped
-\cite{ref_article1,ref_lncs1,ref_book1},
-\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
+\section{Gruppenbeitrag Heinz Stadler}
+ 
+\subsection{Agent V1 - Architektur}
+Aufbau
 
-\subsubsection{Acknowledgements} Please place your acknowledgments at
-the end of the paper, preceded by an unnumbered run-in heading (i.e.
-3rd-level heading).
+\subsection{Wissensverwaltung}
+Belief
+
+\subsection{Wegfindung}
+Pathfinding
+
+\subsection{Ziel- und Absichtsfindung}
+Desires
+
+\subsection{Verifikation und Problemfindung}
+Tests / Debugger
+
+\subsection{...}
+
+\section{Gruppenbeitrag Melinda Betz}
+
+\section{Gruppenbeitrag Phil Heger}
+\subsection{Logging}
+\subsection{Strategien zum Stören gegnerischer Agenten}
+\subsubsection{Dispenser blockieren}
+\subsubsection{Goal Zone verteidigen}
+
+\section{Gruppenbeitrag Björn Wladasch}
+
+\section{Turniere}
+\subsubsection{Turnier 2}
+\subsubsection{Turnier 3}
+\subsubsection{Turnier 4}
+\subsubsection{Turnier 5}
+\subsubsection{Turnier 6}
+
+\section{Rekapitulation und Ausblick}
+Vor- und Nachteile der Entscheidung von zwei Architekturen
+Was sollte noch verbessert werden
+Wie sind wir zufrieden
+
 
 %
 % ---- Bibliography ----
@@ -164,24 +124,15 @@ the end of the paper, preceded by an unnumbered run-in heading (i.e.
 % \bibliography{mybibliography}
 %
 \begin{thebibliography}{8}
-\bibitem{ref_article1}
-Author, F.: Article title. Journal \textbf{2}(5), 99--110 (2016)
-
-\bibitem{ref_lncs1}
-Author, F., Author, S.: Title of a proceedings paper. In: Editor,
-F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
-Springer, Heidelberg (2016). \doi{10.10007/1234567890}
-
-\bibitem{ref_book1}
-Author, F., Author, S., Author, T.: Book title. 2nd edn. Publisher,
-Location (1999)
-
-\bibitem{ref_proc1}
-Author, A.-B.: Contribution title. In: 9th International Proceedings
-on Proceedings, pp. 1--2. Publisher, Location (2010)
-
-\bibitem{ref_url1}
-LNCS Homepage, \url{http://www.springer.com/lncs}. Last accessed 4
-Oct 2017
+	\bibitem{EISMASSim}
+	github.com/agentcontest/massim\_2022, agentcontest/massim\_2022, \\ https://github.com/agentcontest/massim\_2022/blob/main/docs/eismassim.md, EISMASSim Documentation, 21.08.2022
+	\bibitem{Weiss2000}
+	Weiss, G.: Multiagent Systems, 2. Auflage, The MIT Press, Cambridge, 2000
+	\bibitem{Ahlbrecht2021}
+	Ahlbrecht, T., Dix, J., Fiekas. N. und T. Krausburg: The Multi-Agent Programming Contest 2021, Springer, Heidelberg, 2021
+	\bibitem{Hart1968}
+	Hart, P. E., Nilsson, N. J. und Raphael, B.: A Formal Basis for the Heuristic Determination of Minimum Cost Paths, in IEEE Transactions on Systems Science and Cybernetics, 4. Auflage, Nummer 2, Seiten 100-107, Juli 1968
+	\bibitem{Bratman1987}
+	Bratman, M.: Intention, plans, and practical reason, Harvard University Press, Cambridge, 1987
 \end{thebibliography}
 \end{document}
