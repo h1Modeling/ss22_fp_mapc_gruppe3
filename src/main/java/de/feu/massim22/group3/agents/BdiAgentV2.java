@@ -32,7 +32,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
-    private boolean absolutePositions = true;
+    private boolean absolutePositions = false;
     //public boolean absolutePositions = false;
 
     public DesireUtilities desireProcessing = new DesireUtilities();

@@ -127,11 +127,8 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
                         + " , GoAdoptRoleDesire - worker");
 
-            AgentLogger.info(Thread.currentThread().getName() + " ExploreMapSizeDesire() - Agent: " + agent.getName()
-                    + " , horizontal: " + StepUtilities.exploreHorizontalMapSizeStarted + " , vertical: "
-                    + StepUtilities.exploreVerticalMapSizeStarted);
-
             if ((StepUtilities.exploreHorizontalMapSizeStarted || StepUtilities.exploreVerticalMapSizeStarted)
+                    && !(StepUtilities.exploreHorizontalMapSizeFinished && StepUtilities.exploreVerticalMapSizeFinished)
                     && doDecision(agent, new ExploreMapSizeDesire(agent.getBelief(), agent))) {
                 AgentLogger
                         .info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
@@ -373,24 +370,25 @@ public class DesireUtilities {
 
         switch (desire.getName()) {
         
-        case "GoAdoptRoleDesire":
-            if (desire.getOutputAction().getName().equals(Actions.SKIP))
-                result = 10;
-            else
-                if (agent.getBelief().getRoleZones().contains(Point.zero()))
-                    result = 2500;
-                else
-                    result = 1500;
-            break;
-        case "DigFreeDesire":
+        case "DigFreeDesire": // this is a BdiAgentV1-Desire
             result = 1900;
             break;
-        case "FreedomDesire":
+        case "FreedomDesire": // this is a BdiAgentV1-Desire
             result = 2000;
             break;
         case "LocalExploreDesire":
             result = 100;
-            break;    
+            break; 
+        case "GoAdoptRoleDesire":
+            if (desire.getOutputAction().getName().equals(Actions.SKIP))
+                result = 10;
+            else
+                if (desire.getOutputAction().getName().equals(Actions.ADOPT))
+                    // get new role even during explore map size which has priority 2000
+                    result = 2500;
+                else
+                    result = 1500;
+            break;
         case "ExploreMapSizeDesire":
             result = 2000;
             break;     
@@ -474,10 +472,10 @@ public class DesireUtilities {
             else    
                 result = 1100;
             break;
-        case "LooseWeightDesire":
+        case "LooseWeightDesire": // this is a BdiAgentV1-Desire
             result = 1400;
             break;
-        case "DisconnectMultiBlocksDesire":
+        case "DisconnectMultiBlocksDesire": // this is not used anymore
             result = 2500;
             break;
         }

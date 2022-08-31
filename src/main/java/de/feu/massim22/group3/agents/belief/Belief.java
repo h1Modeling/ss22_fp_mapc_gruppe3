@@ -1494,8 +1494,17 @@ public class Belief {
      * 
      * @return the non modulo position of an agent as point
      */
-    public Point getNonModuloPosition() {
+    public Point getNonModPosition() {
         return nonModuloPosition;
+    }
+    
+    /**
+     * Sets the non modulo position of an agent as point.
+     * 
+     * @param  the non modulo position of an agent as point
+     */
+    public void setNonModPosition(Point pos) {
+        nonModuloPosition = new Point(pos);
     }
     
     private void moveNonModuloPosition(String dir) {

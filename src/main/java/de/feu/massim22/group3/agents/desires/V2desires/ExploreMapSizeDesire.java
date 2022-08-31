@@ -78,11 +78,11 @@ public class ExploreMapSizeDesire extends BeliefDesire {
         }
         
         if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, agent, 1)) {
-            return agent.desireProcessing.getActionForMove(agent, "e", "e");
+            return agent.desireProcessing.getActionForMove(agent, "e", "e", getName());
         }
         
         if (AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, agent, 1)) {
-            return agent.desireProcessing.getActionForMove(agent, "s", "s");
+            return agent.desireProcessing.getActionForMove(agent, "s", "s", getName());
         }
 
         return ActionInfo.SKIP("0010 should not happen");
