@@ -61,6 +61,12 @@ public class MeetAgentAtGoalZoneDesire extends BeliefDesire {
     public ActionInfo getNextActionInfo() {
         for (ReachableTeammate mate : belief.getReachableTeammates()) {
             if (mate.name().equals(agent)) {
+                // Move closer to Goal Zone to avoid blocking team mate
+                var nearestGoalZone = belief.getNearestGoalZone();
+                if (nearestGoalZone.distance() > 10 && mate.distance() < 10) {
+                    String dir = DirectionUtil.intToString(nearestGoalZone.direction());
+                    return getActionForMove(dir, getName());
+                }
                 int dirCode = mate.direction();
                 String dir = DirectionUtil.intToString(dirCode);
                 return getActionForMove(dir.substring(0, 1), getName());

@@ -159,7 +159,7 @@ public abstract class BeliefDesire implements IDesire {
         if (w != null && w.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(-1, 0), getName());
         
         // TODO AGENT is stuck
-        return ActionInfo.SKIP("Agent is Stuck in getInteratedActionForMove");
+        return ActionInfo.SKIP("Agent is Stuck in getIteratedActionForMove");
     }
 
     private boolean roleAllowsTwoCellMove() {
@@ -279,7 +279,7 @@ public abstract class BeliefDesire implements IDesire {
         } else {
             // Try to move in different direction to improve situation
             if (attached.size() > 0) {
-                // Move in oposite direction of attached block
+                // Move in opposite direction of attached block
                 Point p = attached.get(0);
                 Point newDir = new Point(-p.x, -p.y);
                 String newDirString = getDirectionFromPoint(newDir);

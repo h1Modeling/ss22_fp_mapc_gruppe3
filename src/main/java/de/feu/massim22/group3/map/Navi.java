@@ -144,7 +144,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         agentStep.put(name, -1);
         long context = PathFinder.createOpenGlContext();
         openGlHandler.put(name, context);
-        pathFinder.put(name, new PathFinder(context));
+        pathFinder.put(name, new PathFinder(context, debug));
     }
     
     /**
@@ -425,7 +425,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 return;
             }
         }
-        AgentLogger.info("Groupmerge with key " + mergeKey + " is starting");
+        AgentLogger.info("Group merge with key " + mergeKey + " is starting");
 
         // Merge to Group
         String agents[] = map.keySet().toArray(new String[map.size()]);

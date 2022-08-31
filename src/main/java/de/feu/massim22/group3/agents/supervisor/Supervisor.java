@@ -377,7 +377,7 @@ public class Supervisor implements ISupervisor {
         boolean mapSizeInDiscover = Navi.get().isVerticalMapSizeInDiscover() && Navi.get().isHorizontalMapSizeInDiscover();
         // GuardGoalZoneDesire (GGZD) is only assigned in one supervisor-group to avoid
         // that it is assigned to too many agents at the same time
-        if (numOfGgzdAgents >= 1 && getName().equals(agentGroupForGGZD) && mapSizeInDiscover) {
+        if (numOfGgzdAgents >= 1 && getName().equals(agentGroupForGGZD) && mapSizeInDiscover && reports.size() > 3) {
             // Get map size
             Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getName());
             // Extract goal zones from AgentReport
@@ -661,10 +661,9 @@ public class Supervisor implements ISupervisor {
             
             if (!goalAgent.equals(dispenserAgent)) {
                 Percept messageGoal = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_BLOCK.name(), taskPara, dispenserAgentPara);
-                Percept messageDispenser = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_BLOCK.name(), taskPara, goalAgentPara);
-                /* 
+                Percept messageDispenser = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_BLOCK.name(), taskPara, goalAgentPara); 
                 parent.forwardMessage(messageGoal, goalAgent, name);
-                parent.forwardMessage(messageDispenser, dispenserAgent, name); */
+                parent.forwardMessage(messageDispenser, dispenserAgent, name);
             }
         }
     }
