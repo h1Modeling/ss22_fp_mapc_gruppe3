@@ -1471,6 +1471,7 @@ public class Belief {
                     dir = lastActionParams.get(i);
                     move(dir);
                     moveNonModuloPosition(dir);
+                    moveMapSizePosition(dir);
                 }
             }
 
@@ -1479,15 +1480,27 @@ public class Belief {
                 AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Partial: " +  lastActionParams);
                 move(lastActionParams.get(0));
                 moveNonModuloPosition(lastActionParams.get(0));
+                moveMapSizePosition(lastActionParams.get(0));
             }
         }
         
+        position = calcPositionModulo(position);
+        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Nachher: " +  getPosition());
+    }
+    
+    /**
+     * recalculates the position of an agent using modulo with map size.
+     * 
+     */
+    public Point calcPositionModulo(Point position) {
+        setMapSize(AgentCooperations.mapSize);
         position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
         position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
-        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Nachher: " +  getPosition());
+        return position;
     }
         
     private Point nonModuloPosition = new Point(0, 0);
+    private Point exploreMapSizePosition = new Point(0, 0);
     
     /**
      * Gets the non modulo position of an agent as point.
@@ -1520,6 +1533,41 @@ public class Belief {
                 break;
             case "w":
                 nonModuloPosition.x -= 1;
+                break;
+        }
+    }
+    
+    /**
+     * Gets the exploreMapSizePosition position of an agent as point.
+     * 
+     * @return the exploreMapSizePosition of an agent as point
+     */
+    public Point getMapSizePosition() {
+        return exploreMapSizePosition;
+    }
+    
+    /**
+     * Sets the exploreMapSizePosition of an agent as point.
+     * 
+     * @param  the new exploreMapSizePosition of an agent as point
+     */
+    public void setMapSizePosition(Point pos) {
+        exploreMapSizePosition = new Point(pos);
+    }
+    
+    private void moveMapSizePosition(String dir) {
+        switch (dir) {
+            case "n":
+                exploreMapSizePosition.y -= 1;
+                break;
+            case "e":
+                exploreMapSizePosition.x += 1;
+                break;
+            case "s":
+                exploreMapSizePosition.y += 1;
+                break;
+            case "w":
+                exploreMapSizePosition.x -= 1;
                 break;
         }
     }

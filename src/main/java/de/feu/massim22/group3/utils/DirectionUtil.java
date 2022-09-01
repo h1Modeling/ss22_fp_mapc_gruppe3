@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
@@ -14,7 +15,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Heinz Stadler
  */
 public class DirectionUtil {
-    public static Point mapSize = new Point(500, 500);
+    //public static Point mapSize = new Point(500, 500);
 
     /**
      * Translates a direction code from pathfinding into a string containing the direction chars.
@@ -159,7 +160,7 @@ public class DirectionUtil {
     public static String getDirection(Point from, Point to) {
         String result = " ";
         Point pointTarget = new Point(to.x - from.x, to.y - from.y);
-        Point pointTargetAround = new Point(to.x - from.x - mapSize.x, to.y - from.y - mapSize.y);
+        Point pointTargetAround = new Point(to.x - from.x - AgentCooperations.mapSize.x, to.y - from.y - AgentCooperations.mapSize.y);
 
         /*AgentLogger.info(Thread.currentThread().getName() + " getDirection - from/to: " + from.toString() + " , "
                 + to.toString() + " , pointTarget/pointTargetAround: " + pointTarget.toString() + " , "
