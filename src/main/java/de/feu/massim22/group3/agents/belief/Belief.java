@@ -16,6 +16,8 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.supervisor.AgentReport;
 import de.feu.massim22.group3.map.CellType;
+import de.feu.massim22.group3.map.INaviAgentV1;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.map.ZoneType;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.DirectionUtil;
@@ -38,6 +40,7 @@ import massim.protocol.data.Subject.Type;
  *
  * @author Heinz Stadler
  * @author Melinda Betz (minor contribution)
+ * @author Phil Heger (minor contribution)
  */
 public class Belief {
 
@@ -52,6 +55,7 @@ public class Belief {
     // Step Beliefs
     private int step;
     private Set<Thing> things = new HashSet<>();
+    private Set<Thing> marker = new HashSet<>();
     private Set<TaskInfo> taskInfo = new HashSet<>();
     private Set<TaskInfo> taskInfoAtLastStep = new HashSet<>();
     private List<TaskInfo> newTasks = new ArrayList<>();
@@ -76,7 +80,6 @@ public class Belief {
 
     // Group 3 Beliefs
     private Point position = new Point(0, 0);
-    private Set<Thing> thingsAtLastStep = new HashSet<>();
     private List<ReachableDispenser> reachableDispensers = new ArrayList<>();
     private List<ReachableGoalZone> reachableGoalZones = new ArrayList<>();
     private List<ReachableRoleZone> reachableRoleZones = new ArrayList<>();
@@ -88,7 +91,7 @@ public class Belief {
     private String groupDesirePartner = "";
     private boolean isWaiting = false;
     
-    private Point mapSize = new Point(500, 500);
+    private Point mapSize;
     private Point absolutePosition;
 
     /**
@@ -132,7 +135,11 @@ public class Belief {
                     int y = toNumber(p, 1, Integer.class);
                     String type = toStr(p, 2);
                     String details = toStr(p, 3);
-                    things.add(new Thing(x, y, type, details));
+                    if (type.equals(Thing.TYPE_MARKER)) {
+                        marker.add(new Thing(x, y, type, details));
+                    } else {
+                        things.add(new Thing(x, y, type, details));
+                    }
                     break;
                 case "task":
                     String name = toStr(p, 0);
@@ -165,16 +172,16 @@ public class Belief {
                             roleSpeedArray[i] = roleSpeedList.get(i);
                         }
                         double change = toNumber(p, 4, Double.class);
-                        int maxDistance = toNumber(p, 1, Integer.class);					
+                        int maxDistance = toNumber(p, 1, Integer.class);                    
                         Role r = new Role(roleName, roleVision, roleActions, roleSpeedArray, change, maxDistance);
-                        roles.put(roleName, r);		
+                        roles.put(roleName, r);     
                     } 
                     // Step percept
                     else {
                         role = toStr(p, 0);
-                    }				
+                    }               
                     break;
-                    case "violation" :
+                case "violation":
                     violations.add(toStr(p, 0));
                     break;
                 case "norm":
@@ -458,12 +465,6 @@ public class Belief {
         return result;
     }
 
-    private record AgentSurveyStepEvent(String name, String role, int energy) implements StepEvent {
-        public String toString() {
-            return "Agent " + name + " with role " + role + " and energy " + energy;
-        }
-    }
-
     private record ThingSurveyStepEvent(String name, int distance) implements StepEvent {
         public String toString() {
             return name + " " + distance + " cells away";  
@@ -632,12 +633,34 @@ public class Belief {
     }
 
     /**
-     * Gets the Things the agent currently has in vision.
+     * Gets the Things, excluding markers, the agent currently has in vision.
      * 
      * @return the things in vision
      */
     public Set<Thing> getThings() {
         return things;
+    }
+
+    /**
+     * Gets the marker the agent currently has in vision.
+     * 
+     * @return the markers in vision
+     */
+    public List<Thing> getMarker() {
+        return new ArrayList<>(marker);
+    }
+
+    /**
+     * Gets a List of Points containing position information about the marker in vision.
+     * 
+     * @return the position of the marker in vision
+     */
+    public List<Point> getMarkerPoints() {
+        List<Point> result = new ArrayList<>();
+        for (var m : marker) {
+            result.add(new Point(m.x, m.y));
+        }
+        return result;
     }
 
     /**
@@ -805,6 +828,21 @@ public class Belief {
      * @return the role
      */
     public Role getRoleByActions(String[] actions) {
+        // determine Role with best values for clear
+        if (actions.length == 1 && actions[0].equals("clear")) {
+            double maxFactor = 0;
+            Role bestClearRole = null;
+            for (Role r : roles.values()) {
+                double curFactor = r.clearChance() * r.clearMaxDistance();
+                if (curFactor > maxFactor) {
+                    maxFactor = curFactor;
+                    bestClearRole = r;
+                }
+            }
+            AgentLogger.info("bestClearRole is " + bestClearRole.name());
+            return bestClearRole;
+        }
+
         List<Role> possibleRoles = new ArrayList<>();
         for (Role r : roles.values()) {
             boolean allFound = true;
@@ -1205,14 +1243,52 @@ public class Belief {
         }
         int distGoalZone = 999;
         Point nearestGoalZone = new Point(0, 0);
+        List<Point> uniqueGoalZones = new ArrayList<Point>();
+        Point gameMapSize = Navi.<INaviAgentV1>get().getGameMapSize(getAgentShortName());
         for (ReachableGoalZone goalZone : reachableGoalZones) {
             if (goalZone.distance() < distGoalZone) {
                 distGoalZone = goalZone.distance();
                 nearestGoalZone = goalZone.position();
             }
+            if (uniqueGoalZones.size() == 0) {
+                uniqueGoalZones.add(goalZone.position());
+            }
+            else {
+                for (Point uniqueGoalZone : uniqueGoalZones) {
+                    // Goal zone already in uniqueGoalZones then check next reachable goal zone
+                    if (!DirectionUtil.pointsWithinDistance(uniqueGoalZone, goalZone.position(), gameMapSize, 15)) {
+                        uniqueGoalZones.add(goalZone.position());
+                        break;
+                    }
+                }
+            }
         }
+        int distRoleZone = 999;
+        for (ReachableRoleZone roleZone : reachableRoleZones) {
+            if (roleZone.distance() < distRoleZone) {
+                distRoleZone = roleZone.distance();
+            }
+        }
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "uniqueGoalZones: " + uniqueGoalZones.toString());
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "nearestGoalZone: " + nearestGoalZone.toString());
+        Point goalZone2 = new Point(0, 0);
+        int numOfDistinctGoalZones = uniqueGoalZones.size();
+        // Select a different goal zone (not the nearest goal zone)
+        for (Point uniqueGoalZone : uniqueGoalZones) {
+            if (!nearestGoalZone.equals(new Point(0, 0))
+                    && !DirectionUtil.pointsWithinDistance(uniqueGoalZone, nearestGoalZone, gameMapSize, 15)) {
+                goalZone2 = uniqueGoalZone;
+                break;
+            }
+        }
+        AgentLogger.fine(getAgentShortName() + " Belief",
+                "goalZone2: " + goalZone2.toString());
+
         return new AgentReport(attachedThings, energy, deactivated, availableActions,
-            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName, nearestGoalZone, groupDesireBlockDetail);
+            position, distanceDispenser, distGoalZone, groupDesireType, step, agentFullName,
+            numOfDistinctGoalZones, nearestGoalZone, goalZone2, groupDesireBlockDetail, distRoleZone);
     }
 
     /**
@@ -1374,7 +1450,7 @@ public class Belief {
     }
 
     private void updatePosition() {
-          if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
+        if (lastAction != null && !lastActionResult.equals(ActionResults.FAILED) && lastAction.equals(Actions.MOVE)) {
             if (lastActionParams.size() == 0) return;
             String dir = lastActionParams.get(0);
             // Success
@@ -1396,11 +1472,11 @@ public class Belief {
         // Remove old connection reports (step is not updated yet is actually from last step)
         connectionReports.removeIf(r -> r.step == step - 1);
         // copy things
-        thingsAtLastStep = new HashSet<>(things);
         taskInfoAtLastStep = new HashSet<>(taskInfo);
         // clearing
         roles.clear();
         things.clear();
+        marker.clear();
         taskInfo.clear();
         normsInfo.clear();
         lastActionParams.clear();
@@ -1415,16 +1491,16 @@ public class Belief {
     private void move(String dir) {
         switch (dir) {
             case "n":
-                position.y -= 1;
+                position.y = mapSize == null ? position.y - 1 : (position.y + mapSize.y - 1) % mapSize.y;
                 break;
             case "e":
-                position.x += 1;
+                position.x = mapSize == null ? position.x + 1 : (position.x + mapSize.x + 1) % mapSize.x;
                 break;
             case "s":
-                position.y += 1;
+                position.y = mapSize == null ? position.y + 1 : (position.y + mapSize.y + 1) % mapSize.y;
                 break;
             case "w":
-                position.x -= 1;
+                position.x = mapSize == null ? position.x - 1 : (position.x + mapSize.x - 1) % mapSize.x;
                 break;
         }
     }
@@ -1435,7 +1511,6 @@ public class Belief {
     private static record ConnectionReport(String agent, int step, List<Point> points) {
     }
 
-     // Melinda start
     /**
      * Gets the absolute position from a agent.
      * 
@@ -1643,5 +1718,33 @@ public class Belief {
         
         return reachableRoleZonesX;
     }
-    // Melinda end
+
+    /**
+     * Sets the map size.
+     * 
+     * @param x the width of the map
+     * @param y the height of the map
+     */
+    public void setMapSize(int x, int y) {
+        mapSize = new Point(x, y);
+    }
+    
+    /**
+     * Tests if the agent or an attached Thing to the agent is overlapping with a clear marker.
+     * 
+     * @return true if the agent or an attached Thing to the agent is overlapping with a clear marker
+     */
+    public boolean isInClearDanger() {
+        List<Point> toTest = new ArrayList<>(getOwnAttachedPoints());
+        toTest.add(new Point(0, 0));
+
+        for (Thing m : marker) {
+            for (Point p : toTest) {
+                if (p.equals(new Point(m.x, m.y))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
