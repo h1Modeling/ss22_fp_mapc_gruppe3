@@ -91,6 +91,7 @@ public class Belief {
     private boolean isWaiting = false;
     
     private Point mapSize;
+    private Point mapTopLeft;
     private Point absolutePosition;
 
     /**
@@ -1490,16 +1491,16 @@ public class Belief {
     private void move(String dir) {
         switch (dir) {
             case "n":
-                position.y = mapSize == null ? position.y - 1 : (position.y + mapSize.y - 1) % mapSize.y;
+                position.y = mapSize == null ? position.y - 1 : (((position.y + mapSize.y - 1 - mapTopLeft.y) % mapSize.y) + mapTopLeft.y);
                 break;
             case "e":
-                position.x = mapSize == null ? position.x + 1 : (position.x + mapSize.x + 1) % mapSize.x;
+                position.x = mapSize == null ? position.x + 1 : (((position.x + mapSize.x + 1 - mapTopLeft.x) % mapSize.x) + mapTopLeft.x);
                 break;
             case "s":
-                position.y = mapSize == null ? position.y + 1 : (position.y + mapSize.y + 1) % mapSize.y;
+                position.y = mapSize == null ? position.y + 1 : (((position.y + mapSize.y + 1 - mapTopLeft.y) % mapSize.y) + mapTopLeft.y);
                 break;
             case "w":
-                position.x = mapSize == null ? position.x - 1 : (position.x + mapSize.x - 1) % mapSize.x;
+                position.x = mapSize == null ? position.x - 1 : (((position.x + mapSize.x - 1 - mapTopLeft.x) % mapSize.x) + mapTopLeft.x);
                 break;
         }
     }
@@ -1555,6 +1556,16 @@ public class Belief {
      */
     public Point getNonModuloPosition() {
         return nonModuloPosition;
+    }
+
+    /**
+     * Sets the top left position of the map.
+     * This is only used if the map size is already discovered.
+     * 
+     * @param topLeft the position of the top left cell in the game map
+     */
+    public void setTopLeft(Point topLeft) {
+        this.mapTopLeft = topLeft; 
     }
     
     private void moveNonModuloPosition(String dir) {
