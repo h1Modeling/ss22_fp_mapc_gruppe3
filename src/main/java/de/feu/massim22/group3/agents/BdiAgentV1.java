@@ -210,12 +210,16 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         }
         case UPDATE_GROUP: {
             List<Parameter> parameters = event.getParameters();
-            String newSupervisor = ((Identifier)parameters.get(0)).getValue();
-            int offsetX = (int)((Numeral)parameters.get(1)).getValue();
-            int offsetY = (int)((Numeral)parameters.get(2)).getValue();
+            String newSupervisor = PerceptUtil.toStr(parameters, 0);
+            int offsetX = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            int offsetY = PerceptUtil.toNumber(parameters, 2, Integer.class);
+            int topLeftX = PerceptUtil.toNumber(parameters, 3, Integer.class);
+            int topLeftY = PerceptUtil.toNumber(parameters, 4, Integer.class);
             Point oldPosition = belief.getPosition();
             Point newPosition = new Point(oldPosition.x + offsetX, oldPosition.y + offsetY);
+            Point topLeft = new Point(topLeftX, topLeftY);
             belief.setPosition(newPosition);
+            belief.setTopLeft(topLeft);
             supervisor.setName(newSupervisor);
             break;
         }
@@ -367,7 +371,10 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             List<Parameter> parameters = event.getParameters();
             int x = PerceptUtil.toNumber(parameters, 0, Integer.class);
             int y = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            int topLeftX = PerceptUtil.toNumber(parameters, 2, Integer.class);
+            int topLeftY = PerceptUtil.toNumber(parameters, 3, Integer.class);
             belief.setMapSize(x, y);
+            belief.setTopLeft(new Point(topLeftX, topLeftY));
             break;
         }
         default:
