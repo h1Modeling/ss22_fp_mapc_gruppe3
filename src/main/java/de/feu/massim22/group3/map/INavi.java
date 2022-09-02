@@ -74,4 +74,44 @@ public interface INavi extends Disposable {
      * @param team the name of the team the agent belongs to
      */
     void resetAgent(String name, String team);
+
+    /**
+     * Tests if already agents try to discover the horizontal map size.
+     * @return true if agents are already trying to discover the horizontal map size
+     */
+    boolean isHorizontalMapSizeInDiscover();
+
+    /**
+     * Tests if already agents try to discover the vertical map size.
+     * @return true if agents are already trying to discover the vertical map size
+     */
+    boolean isVerticalMapSizeInDiscover();
+
+    /**
+     * Sets if the horizontal map size is currently in discovery.
+     * @param value true if the horizontal map size is currently in discovery
+     * @return true if the horizontal map size wasn't already in discovery 
+     */
+    boolean setHorizontalMapSizeInDiscover(boolean value);
+
+
+    /**
+     * Sets if the vertical map size is currently in discovery.
+     * @param value true if the vertical map size is currently in discovery
+     * @return true if the vertical map size wasn't already in discovery 
+     */
+    boolean setVerticalMapSizeInDiscover(boolean value);
+
+    /**
+     * Sets the horizontal size of the map.
+     * @param value the horizontal map size
+     * @return
+     */
+    void setHorizontalMapSize(int value);
+
+    /**
+     * Sets the vertical size of the map.
+     * @param value the vertical map size
+     */
+    void setVerticalMapSize(int value);
 }

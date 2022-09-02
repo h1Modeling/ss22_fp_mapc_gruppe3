@@ -2,6 +2,7 @@ package de.feu.massim22.group3.agents;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -12,7 +13,9 @@ import de.feu.massim22.group3.agents.desires.BooleanInfo;
 import de.feu.massim22.group3.agents.desires.DeliverAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.desires.DeliverBlockDesire;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
+import de.feu.massim22.group3.agents.desires.EscapeClearDesire;
 import de.feu.massim22.group3.agents.desires.ExploreDesire;
+import de.feu.massim22.group3.agents.desires.ExploreMapSizeDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
 import de.feu.massim22.group3.agents.desires.GetBlockDesire;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
@@ -23,16 +26,13 @@ import de.feu.massim22.group3.agents.desires.ReceiveAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.desires.ReceiveBlockDesire;
 import de.feu.massim22.group3.agents.desires.WaitNearGoalZoneDesire;
 import de.feu.massim22.group3.agents.desires.WalkByGetRoleDesire;
+import de.feu.massim22.group3.agents.desires.GuardGoalZoneDesire;
+import de.feu.massim22.group3.agents.desires.GuardDispenserDesire;
 import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.agents.supervisor.AgentReport;
 import de.feu.massim22.group3.agents.supervisor.ISupervisor;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
-
-import de.feu.massim22.group3.agents.desires.*;
-import de.feu.massim22.group3.agents.events.EventName;
-import de.feu.massim22.group3.agents.supervisor.*;
-
 import de.feu.massim22.group3.communication.EisSender;
 import de.feu.massim22.group3.communication.MailService;
 import de.feu.massim22.group3.map.INaviAgentV1;
@@ -298,7 +298,6 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 }
             }
             if (block != null) {
-                System.out.println(getName() + " Receive Block added " + agent);
                 belief.setGroupDesireType(GroupDesireTypes.RECEIVE_ATTACH);
                 belief.setGroupDesirePartner(agent);
                 belief.setGroupDesireBlockDetail(block.type);
@@ -330,6 +329,47 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             setIntention(null);
             break;
         }
+        case SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE: {
+            belief.setGroupDesireType(GroupDesireTypes.GUARD_GOAL_ZONE);
+            List<Parameter> parameters = event.getParameters();
+            int pointX_gz = PerceptUtil.toNumber(parameters, 0, Integer.class);
+            int pointY_gz = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            desires.add(new GuardGoalZoneDesire(belief, new Point(pointX_gz, pointY_gz),
+                    supervisor.getName()));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_GUARD_DISPENSER: {
+            belief.setGroupDesireType(GroupDesireTypes.GUARD_DISPENSER);
+            List<Parameter> parameters = event.getParameters();
+            String block = PerceptUtil.toStr(parameters, 0);
+            desires.add(new GuardDispenserDesire(belief, block, supervisor.getName()));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_DELETE_GROUP_DESIRES:{
+            for (Iterator<IDesire> iterator = desires.iterator(); iterator.hasNext();) {
+                if (iterator.next().isGroupDesire()) {
+                    iterator.remove();
+                }
+            }
+            break;
+        }
+        case SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE: {
+            belief.setGroupDesireType(GroupDesireTypes.EXPLORE);
+            List<Parameter> parameters = event.getParameters();
+            String teamMate = PerceptUtil.toStr(parameters, 0);
+            String teamMateShort = PerceptUtil.toStr(parameters, 1);
+            String direction = PerceptUtil.toStr(parameters, 2);
+            int guideOffset = PerceptUtil.toNumber(parameters, 3, Integer.class);
+            desires.add(new ExploreMapSizeDesire(belief, teamMateShort, teamMate, supervisor.getName(), direction, guideOffset));
+            break;
+        }
+        case MAP_SIZE_DISCOVERED: {
+            List<Parameter> parameters = event.getParameters();
+            int x = PerceptUtil.toNumber(parameters, 0, Integer.class);
+            int y = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            belief.setMapSize(x, y);
+            break;
+        }
         default:
             throw new IllegalArgumentException("Message is not handled: " + taskName);
         }
@@ -341,9 +381,10 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         desires.add(new DigFreeDesire(belief));
         desires.add(new WaitNearGoalZoneDesire(belief));
         desires.add(new FreedomDesire(belief));
-        // TODO remove / modify if sim roles change
+
         String[] actions = {"request", "attach", "connect", "disconnect", "submit"};
         desires.add(new WalkByGetRoleDesire(belief, actions));
+        desires.add(new EscapeClearDesire(belief));
     }
 
     private void updateDesires() {
@@ -427,8 +468,9 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         Set<NormInfo> normsInfo = belief.getNormsInfo(); 
         Set<TaskInfo> taskInfo = belief.getTaskInfo();
         List<Point> attachedThings = belief.getOwnAttachedPoints();
+        List<Point> marker = belief.getMarkerPoints();
         Navi.<INaviAgentV1>get().updateMapAndPathfind(this.supervisor.getName(), this.getName(), index, position, vision, things, goalPoints,
-                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo, attachedThings);
+                rolePoints, step, team, maxSteps, score, normsInfo, taskInfo, attachedThings, marker);
     }
 
     private record PerceptMessage(String sender, Percept percept) {

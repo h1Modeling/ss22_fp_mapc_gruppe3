@@ -47,9 +47,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private static Navi instance;
     private String name = "Navi";
     private MailService mailService;
-    public Map<String, GameMap> maps = new HashMap<>();
+    private Map<String, GameMap> maps = new HashMap<>();
     private Map<String, String> agentSupervisor = new HashMap<>(); // Agent Key, Supervisor Value
     private Map<String, Integer> agentStep = new HashMap<>();
+    private Map<String, List<Point>> debugMarker = new HashMap<>();
     private Map<String, List<AgentGreet>> supervisorGreetData = new HashMap<>();
     private Map<String, Long> openGlHandler = new HashMap<>();
     private Map<String, PathFinder> pathFinder = new HashMap<>();
@@ -58,6 +59,13 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private boolean busy = false;
     private static boolean debug = true;
     private final int defaultMapSize = 30;
+    private Integer horizontalMapSize = null;
+    private Integer verticalMapSize = null;
+    private boolean mapDiscovered = false;
+
+    private boolean horizontalMapSizeInDiscover = false;
+    private boolean verticalMapSizeInDiscover = false;
+    private int step = -1;
     
     private List<CalcResult> calcResults = new ArrayList<>();
     
@@ -138,7 +146,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         agentStep.put(name, -1);
         long context = PathFinder.createOpenGlContext();
         openGlHandler.put(name, context);
-        pathFinder.put(name, new PathFinder(context));
+        pathFinder.put(name, new PathFinder(context, debug));
     }
     
     /**
@@ -218,7 +226,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     @Override
     public synchronized PathFindingResult[][] updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision,
             Set<Thing> things, List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps,
-            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedThings) {
+            int score, Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedThings, List<Point> marker) {
 
         updateMap(supervisor, agent, agentIndex, position, vision, things, goalPoints, rolePoints, step, team, maxSteps,
                 score, normsInfo, taskInfo, attachedThings);
@@ -238,6 +246,22 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             }
         }
 
+        GameMap map = maps.get(supervisor);
+
+        // Update Debug Marker
+        List<Point> data = debugMarker.getOrDefault(supervisor, new ArrayList<>());
+        if (step > this.step) {
+            this.step = step;
+            data.clear();
+            debugMarker.put(supervisor, data);
+        } else {
+            Point topLeft = map.getTopLeft();
+            for (Point p : marker) {
+                data.add(new Point(position.x + p.x - topLeft.x, position.y + p.y - topLeft.y));
+            }
+            debugMarker.put(supervisor, data);
+        }
+
         // Start calculation
         if (allSent) {
             filterKnownTeamMatesFromGreetData(supervisor);
@@ -245,7 +269,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             if (haveAllAgentsSentData(step)) {
                 makeMergeSuggestions();
             }
-            GameMap map = maps.get(supervisor);
+
             return startCalculation(supervisor, map);
         }
         return null;
@@ -419,7 +443,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 return;
             }
         }
-        AgentLogger.info("Groupmerge with key " + mergeKey + " is starting");
+        AgentLogger.info("Group merge with key " + mergeKey + " is starting");
 
         // Merge to Group
         String agents[] = map.keySet().toArray(new String[map.size()]);
@@ -465,6 +489,12 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 mailService.sendMessage(supervisorMessage, newSupervisor, name);
             }
         }
+
+        // Free OpenGl Resources
+        pathFinder.remove(oldSupervisor);
+        long context = openGlHandler.get(oldSupervisor);
+        openGlHandler.remove(oldSupervisor);
+        PathFinder.close(context);
         
         // Update Debugger
         if (debug) {
@@ -593,14 +623,16 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         // y = 0: Position of agents
         // y = 1: Form of agent (attached blocks)
         // y = 2: Goal Position
+        // y = 3: Map discovered = 1, not discovered = 0;
         int maxNumberGoals = 64;
-        int dataY = 3;
+        int dataY = 4;
         List<InterestingPoint> interestingPoints = map.getInterestingPoints(maxNumberGoals, true);
         int numberGoals = interestingPoints.size();
         int textureSize = Math.max(agentSize, numberGoals);
         Point dataSize = new Point(textureSize, dataY);
         FloatBuffer dataTextureBuffer = BufferUtils.createFloatBuffer(textureSize * dataY * channelSize);
-        for (int y = 0; y < 3; y++) {
+        int mapSizeDiscovered = mapDiscovered ? 1 : 0; 
+        for (int y = 0; y < dataY; y++) {
             for (int x = 0; x < textureSize; x++) {
                 // Agent position
                 if (y == 0 && x < agentSize) {
@@ -624,7 +656,11 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                     Point p = ip.point();
                     dataTextureBuffer.put(p.x);
                     dataTextureBuffer.put(p.y);
-                } 
+                }
+                else if (y == 3) {
+                    dataTextureBuffer.put(mapSizeDiscovered);
+                    dataTextureBuffer.put(mapSizeDiscovered);
+                }
                 // Fill Rest
                 else {
                     dataTextureBuffer.put(0);
@@ -650,7 +686,8 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
             // Update debugger
             if (debug) {
-                GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents);
+                var marker = debugMarker.getOrDefault(supervisor, new ArrayList<>());
+                GroupDebugData debugData = new GroupDebugData(supervisor, cells, topLeft, interestingPoints, result, agentPosition, roleZones, goalZones, agents, marker);
                 debugger.setGroupData(debugData);
             }
             
@@ -689,7 +726,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
             Parameter pointY = new Numeral(absPoint.y);
             Parameter ipData = new Identifier(ip.data());
 
-            // Send Manhatten distance if calculation failed
+            // Send Manhattan distance if calculation failed
             int dist = resultData.distance() > 0 
                 ? resultData.distance() 
                 : Math.abs(absPoint.x - agentPosition.x) + Math.abs(absPoint.y - agentPosition.y);
@@ -820,5 +857,88 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     public List<Point> getMeetingPoints(String supervisor) {
         GameMap map = maps.get(supervisor);
         return map.getMeetingPoints();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Point getGameMapSize(String supervisor) {
+        GameMap map = maps.get(supervisor);
+        return map.getMapSize();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean isHorizontalMapSizeInDiscover() {
+        return horizontalMapSizeInDiscover;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean isVerticalMapSizeInDiscover() {
+        return verticalMapSizeInDiscover;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean setHorizontalMapSizeInDiscover(boolean value) {
+        boolean oldState = horizontalMapSizeInDiscover;
+        horizontalMapSizeInDiscover = value;
+        return !oldState;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized boolean setVerticalMapSizeInDiscover(boolean value) {
+        boolean oldState = verticalMapSizeInDiscover;
+        verticalMapSizeInDiscover = value;
+        return !oldState;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void setHorizontalMapSize(int value) {
+        horizontalMapSize = value;
+        if (verticalMapSize != null && !mapDiscovered) {
+            setMapSize();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void setVerticalMapSize(int value) {
+        verticalMapSize = value;
+        if (horizontalMapSize != null && !mapDiscovered) {
+            setMapSize();
+        }
+    }
+
+    private void setMapSize() {
+        mapDiscovered = true;
+        for (GameMap map : maps.values()) {
+            map.setFinalSize(horizontalMapSize, verticalMapSize);
+        }
+        DirectionUtil.setMapSize(horizontalMapSize, verticalMapSize);
+
+        // Inform agents
+        Parameter xPara = new Numeral(horizontalMapSize);
+        Parameter yPara = new Numeral(verticalMapSize);
+        Percept message = new Percept(EventName.MAP_SIZE_DISCOVERED.name(), xPara, yPara);
+        for (String agent : agentSupervisor.keySet()) {
+            mailService.sendMessage(message, agent, name);
+        }
     }
 }

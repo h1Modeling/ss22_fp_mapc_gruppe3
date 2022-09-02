@@ -5,11 +5,8 @@ import java.awt.Point;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.map.CellType;
-import de.feu.massim22.group3.map.INaviAgentV1;
-import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.Convert;
 import de.feu.massim22.group3.utils.DirectionUtil;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
 
 public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {

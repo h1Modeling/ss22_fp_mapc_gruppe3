@@ -41,4 +41,14 @@ public enum EventName {
     SUPERVISOR_PERCEPT_DONE_OR_CANCELED,
     /** The supervisor sent a reply to an attach request. */
     ATTACH_REPLY,
+    /** The supervisor instructs to guard a dispenser. */
+    SUPERVISOR_PERCEPT_GUARD_DISPENSER,
+    /** The supervisor instructs to guard a goal zone. */
+    SUPERVISOR_PERCEPT_GUARD_GOAL_ZONE,
+    /** The supervisor instructs to delete all current group desires. */
+    SUPERVISOR_PERCEPT_DELETE_GROUP_DESIRES,
+    /** The supervisor instructs to explore the map size */
+    SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE,
+    /** The map size is discovered and sent to all agents */
+    MAP_SIZE_DISCOVERED,
 }

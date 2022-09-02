@@ -1,18 +1,12 @@
 package de.feu.massim22.group3.agents.desires.V2desires;
 
 import java.awt.Point;
-import java.util.*;
 
-import de.feu.massim22.group3.agents.BdiAgentV1;
 import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import eis.iilang.Action;
-import eis.iilang.Identifier;
-import massim.protocol.data.Subject.Type;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;

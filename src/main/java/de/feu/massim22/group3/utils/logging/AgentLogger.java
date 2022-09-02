@@ -22,7 +22,7 @@ public class AgentLogger {
     // Also sets max. Level for the separate files!
     private static Level MAIN_LOG_LEVEL = Level.ALL;
     // Level for separate (filtered) log files
-    private static Level FILES_LOG_LEVEL = Level.ALL;
+    private static Level FILES_LOG_LEVEL = Level.OFF;
 
     private static Logger logger = null;
     // tags given with logging statements to specify file name of log file

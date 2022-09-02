@@ -159,7 +159,7 @@ public abstract class BeliefDesire implements IDesire {
         if (w != null && w.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(-1, 0), getName());
         
         // TODO AGENT is stuck
-        return ActionInfo.SKIP("Agent is Stuck in getInteratedActionForMove");
+        return ActionInfo.SKIP("Agent is Stuck in getIteratedActionForMove");
     }
 
     private boolean roleAllowsTwoCellMove() {
@@ -246,8 +246,7 @@ public abstract class BeliefDesire implements IDesire {
                     Point target = DirectionUtil.rotateCCW(p);
                     return ActionInfo.CLEAR(target, desire);
                 }
-
-                return ActionInfo.SKIP(desire);
+                return ActionInfo.SKIP("Can't move because of attached");
             }
         }
         // Test Agent
@@ -279,7 +278,7 @@ public abstract class BeliefDesire implements IDesire {
         } else {
             // Try to move in different direction to improve situation
             if (attached.size() > 0) {
-                // Move in oposite direction of attached block
+                // Move in opposite direction of attached block
                 Point p = attached.get(0);
                 Point newDir = new Point(-p.x, -p.y);
                 String newDirString = getDirectionFromPoint(newDir);
@@ -712,21 +711,6 @@ public abstract class BeliefDesire implements IDesire {
      * @param p the Point to rotate
      * @return the rotated point
      */
-
-    //Melinda
-    private String dir2;
-    private boolean dir2Used = false;
-
-    protected ActionInfo fullfillPreconditions() {
-        for (IDesire d : precondition) {
-            if (!d.isFulfilled().value()) {
-                AgentLogger.info("Next action for agent " + belief.getAgentShortName() + " from " + d.getName());
-                return d.getNextActionInfo();
-            }
-        }
-        return null;
-    }
-
     public Point getCCRotatedPoint(Point p) {
         return new Point(p.y, -p.x);
     }

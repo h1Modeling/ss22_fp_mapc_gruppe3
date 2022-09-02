@@ -4,18 +4,18 @@ import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
  * The Class <code>DirectionUtil</code> contains static methods to convert Between string directions, int code directions and Point directions.
  *
  * @author Melinda Betz
  * @author Heinz Stadler
+ * @author Phil Heger (minor contribution)
  */
 public class DirectionUtil {
-    //public static Point mapSize = new Point(500, 500);
+
+    private static Point mapSize = null;
 
     /**
      * Translates a direction code from pathfinding into a string containing the direction chars.
@@ -160,11 +160,28 @@ public class DirectionUtil {
     public static String getDirection(Point from, Point to) {
         String result = " ";
         Point pointTarget = new Point(to.x - from.x, to.y - from.y);
-        Point pointTargetAround = new Point(to.x - from.x - AgentCooperations.mapSize.x, to.y - from.y - AgentCooperations.mapSize.y);
 
-        /*AgentLogger.info(Thread.currentThread().getName() + " getDirection - from/to: " + from.toString() + " , "
-                + to.toString() + " , pointTarget/pointTargetAround: " + pointTarget.toString() + " , "
-                + pointTargetAround.toString());*/
+        // Map Size not discovered yet
+        if (DirectionUtil.mapSize == null) {
+            if (pointTarget.x == 0) {
+                return pointTarget.y < 0 ? "n" : "s";
+            }
+    
+            if (pointTarget.y == 0) {
+                return pointTarget.x < 0 ? "w" : "e";
+            }
+    
+            if (pointTarget.x != 0 && pointTarget.y != 0) {
+                if (Math.abs(pointTarget.x) > Math.abs(pointTarget.y)) {
+                    return pointTarget.x < 0 ? "w" : "e";
+                }
+                return pointTarget.y < 0 ? "n" : "s";
+            }
+            return " ";
+        }
+
+        // Map Size discovered
+        Point pointTargetAround = new Point(to.x - from.x - mapSize.x, to.y - from.y - mapSize.y);
 
         if (pointTarget.x == 0) {
             if ((pointTarget.y < 0 && Math.abs(pointTargetAround.y) >= Math.abs(pointTarget.y))
@@ -297,5 +314,64 @@ public class DirectionUtil {
         }
         
         return outDirection;
+    }
+
+    /**
+     * Points can have negative values because the map edges can be traversed. This method
+     * provides the point with positive coordinates
+     * 
+     * @param p point to be normalized
+     * @param mapSize x and y dimensions of the map
+     * @return normalized point p with only positive coordinates
+     */
+    public static Point normalizePointOntoMap(Point p, Point mapSize) {
+        // Correct negative values
+        int signP_x = Integer.signum(p.x);
+        int signP_y = Integer.signum(p.y);
+        int px = signP_x == -1 ? p.x + mapSize.x : p.x;
+        int py = signP_y == -1 ? p.y + mapSize.y : p.y;
+        // Correct points larger than mapSize
+        px = p.x >= mapSize.x ? px - mapSize.x : px;
+        py = p.y >= mapSize.y ? py - mapSize.y : py;
+        // if one correction is not enough
+        if (px >= 0 && py >= 0 && px < mapSize.x && py < mapSize.y) {
+            return new Point(px, py);
+        }
+        else {
+            return normalizePointOntoMap(new Point(px, py), mapSize);
+        }
+    }
+
+    /**
+     * Check if two points are within the given distance. The vicinity is also checked over the map
+     * edges because the map edges can be traversed.
+     * @param p1 point 1
+     * @param p2 point 2
+     * @param mapSize size of the game map
+     * @param distance Manhatten distance for the vicinity check
+     * @return true if distance is smaller or equal to the given distance value
+     */
+    public static boolean pointsWithinDistance(Point p1, Point p2, Point mapSize, int distance) {
+            Point p1_n = normalizePointOntoMap(p1, mapSize);
+            Point p2_n = normalizePointOntoMap(p2, mapSize);
+            if (       Math.abs(p1_n.x - p2_n.x            ) + Math.abs(p1_n.y - p2_n.y)             <= distance
+                    || Math.abs(p1_n.x - p2_n.x + mapSize.x) + Math.abs(p1_n.y - p2_n.y)             <= distance
+                    || Math.abs(p1_n.x - p2_n.x - mapSize.x) + Math.abs(p1_n.y - p2_n.y)             <= distance
+                    || Math.abs(p1_n.x - p2_n.x            ) + Math.abs(p1_n.y - p2_n.y + mapSize.y) <= distance
+                    || Math.abs(p1_n.x - p2_n.x            ) + Math.abs(p1_n.y - p2_n.y - mapSize.y) <= distance
+                    || Math.abs(p1_n.x - p2_n.x + mapSize.x) + Math.abs(p1_n.y - p2_n.y + mapSize.y) <= distance
+                    || Math.abs(p1_n.x - p2_n.x - mapSize.x) + Math.abs(p1_n.y - p2_n.y - mapSize.y) <= distance) {
+                return true;
+            }
+            return false;
+    }
+
+    /**
+     * Sets the map size.
+     * @param x the with of the map
+     * @param y the height of the map
+     */
+    public static void setMapSize(int x, int y) {
+        DirectionUtil.mapSize = new Point(x, y);
     }
 }
