@@ -1718,6 +1718,24 @@ public class Belief {
         
         return reachableRoleZonesX;
     }
+    
+    public void updateRgz(Set<Point> inSet) {
+        List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
+        
+        for (Point inPos : inSet) {
+            //Point pos = calcPositionModulo(inPos);
+            Point pos = inPos;
+            Point agentPos = getPosition();     
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableGoalZone rdnew = new ReachableGoalZone(pos, distance, direction);
+            reachableGoalZonesX.add(rdnew);
+        }
+   
+        reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
+        this.reachableGoalZones = reachableGoalZonesX;
+    }
 
     /**
      * Sets the map size.

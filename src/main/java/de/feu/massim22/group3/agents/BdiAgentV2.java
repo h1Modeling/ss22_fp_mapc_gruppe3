@@ -1,23 +1,23 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
+
+//import java.awt.Point;
+import java.util.*;
+
 import de.feu.massim22.group3.agents.V2utils.*;
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.IDesire;
 import de.feu.massim22.group3.agents.desires.V2desires.DisconnectMultiBlocksDesire;
+import de.feu.massim22.group3.agents.belief.reachable.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.communication.MailService;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
-
-//import java.awt.Point;
-import java.util.List;
-import java.util.ArrayList;
-
 import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -33,7 +33,6 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     private boolean absolutePositions = false;
-    //public boolean absolutePositions = false;
 
     public DesireUtilities desireProcessing = new DesireUtilities();
     public boolean decisionsDone;
@@ -56,6 +55,8 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public int index;
     public Point startPosition = new Point(Point.zero());
     public Meeting[] firstMeeting = new Meeting[11];
+    
+    public Set<java.awt.Point> rgz = new HashSet<>();
 
     /**
      * Initializes a new Instance of BdiAgentV2.

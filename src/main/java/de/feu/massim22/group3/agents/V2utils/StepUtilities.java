@@ -272,12 +272,7 @@ public class StepUtilities {
                 }
             });
         }
-        
-        /*
-         * loop for all agents about roles to adopt
-         */
-        //desireProcessing.manageAgentRoles();
-        
+               
         /*
          * loop for all groups (after merge) with map update and group decisions
          */
@@ -298,7 +293,31 @@ public class StepUtilities {
                     AgentLogger.info(Thread.currentThread().getName() + " nach updateFromPathFinding: " + agent.getName());
                     //AgentLogger.info(Thread.currentThread().getName() + agent.getBelief().reachablesToString());
                     
-                    // update goalzones for supervisor
+                    // update goalzones version 1 for supervisor  
+                    List<java.awt.Point> list = new ArrayList<java.awt.Point>(agent.getBelief().getGoalZones());
+                    List<java.awt.Point> listNeu = new ArrayList<>();
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , list alt: " + list);  
+                    
+                    for (java.awt.Point p : list) {  
+                        AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p alt: " + p);
+ 
+                        p = new java.awt.Point(agent.getBelief().getNonModPosition().x + p.x,
+                                agent.getBelief().getNonModPosition().y + p.y);
+                        listNeu.add(p);
+                        
+                        AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p neu: " + p);  
+                    } 
+
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , list neu: " + listNeu);                 
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + supervisor.getName() 
+                            + " , rgz alt: " + ((BdiAgentV2) supervisor.getParent()).rgz); 
+                    
+                    ((BdiAgentV2) agent.supervisor.getParent()).rgz.addAll(listNeu);
+                    
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + supervisor.getName() 
+                            + " , rgz neu: " + ((BdiAgentV2) supervisor.getParent()).rgz);   
+                    
+                    // update goalzones version 2 for supervisor
                     Point nearestGoalZone = null;
                     Point nearestGoalZoneRelativ = Point.castToPoint(agent.getBelief().getNearestRelativeManhattanGoalZone());
                     
@@ -334,6 +353,11 @@ public class StepUtilities {
                             }
                         }
                     }
+                }
+                
+                for (String strA : supervisor.getAgents()) {
+                    BdiAgentV2 a = getAgent(strA);
+                    a.getBelief().updateRgz(((BdiAgentV2) supervisor.getParent()).rgz);
                 }
                 
                 desireProcessing.runSupervisorDecisions(step, supervisor, this);
@@ -440,13 +464,34 @@ public class StepUtilities {
                     newNonModPosAgent = new Point(newNonModPosAgentFound.x + (agent.getBelief().getNonModPosition().x - agentFound.getBelief().getNonModPosition().x),
                             newNonModPosAgentFound.y + (agent.getBelief().getNonModPosition().y - agentFound.getBelief().getNonModPosition().y));
                 }
+                
+                if (agent.getName().equals(supervisorToMerge.getName())) {
+                    //recalculate rgz for new supervisor
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , " + newPosAgentFound + " , " + agentFound.getBelief().getPosition());
+                    List<java.awt.Point> listNeu = new ArrayList<>();
+                    
+                    for (java.awt.Point p : agent.rgz) {
+                        AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p alt: " + p);  
+                        
+                        p = new java.awt.Point(newNonModPosAgentFound.x + (p.x - agentFound.getBelief().getNonModPosition().x),
+                                newNonModPosAgentFound.y + (p.y - agentFound.getBelief().getNonModPosition().y));
+                        listNeu.add(p);
+                        
+                        AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p neu: " + p);
+                    } 
+                    
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + supervisorGroup.getName() 
+                            + " , rgz alt: " + ((BdiAgentV2) supervisorGroup.getParent()).rgz); 
+                    
+                    ((BdiAgentV2) supervisorGroup.getParent()).rgz.addAll(listNeu);
+                    
+                    AgentLogger.info(Thread.currentThread().getName() + " - " + supervisorGroup.getName() 
+                            + " , rgz neu: " + ((BdiAgentV2) supervisorGroup.getParent()).rgz);  
+                }
 
                 newPosAgent.x = (((newPosAgent.x % AgentCooperations.mapSize.x) + AgentCooperations.mapSize.x) % AgentCooperations.mapSize.x);
                 newPosAgent.y = (((newPosAgent.y % AgentCooperations.mapSize.y) + AgentCooperations.mapSize.y) % AgentCooperations.mapSize.y);
-                agent.getBelief().setPosition(newPosAgent);
-                
-                //newNonModPosAgent.x = (((newNonModPosAgent.x % AgentCooperations.mapSize.x) + AgentCooperations.mapSize.x) % AgentCooperations.mapSize.x);
-                //newNonModPosAgent.y = (((newNonModPosAgent.y % AgentCooperations.mapSize.y) + AgentCooperations.mapSize.y) % AgentCooperations.mapSize.y);
+                agent.getBelief().setPosition(newPosAgent);               
                 agent.getBelief().setNonModPosition(newNonModPosAgent);
                 
                 updateMap(agent);

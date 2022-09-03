@@ -233,7 +233,7 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , GoalZones: " + agent.getBelief().getGoalZones());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
-                        + agent.getName() + " , ReachableGoalZones: " + agent.getBelief().getReachableGoalZonesX());
+                        + agent.getName() + " , ReachableGoalZones: " + agent.getBelief().getReachableGoalZones());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , nicht in Zone: " + !agent.getBelief().getGoalZones().contains(Point.zero()) 
                         + " , in Zone: "+ agent.getBelief().getGoalZones().contains(Point.zero()) + " , att. Size: "
