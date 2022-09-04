@@ -92,6 +92,12 @@ public class ExploreMapSizeDesire extends BeliefDesire {
             }
         }
 
+        // Loose weight
+        if (belief.getOwnAttachedPoints().size() > 0) {
+            String dir = getDirectionFromPoint(belief.getOwnAttachedPoints().get(0));
+            return ActionInfo.DETACH(dir, dir);
+        }
+
         // Move closer to guide line
         if (Math.abs(guideOffset) > 1) {
             if (direction.equals("n") || direction.equals("s")) {

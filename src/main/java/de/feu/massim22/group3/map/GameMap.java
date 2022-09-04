@@ -232,11 +232,7 @@ public class GameMap {
         int cellY = getCellY(y);
         MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step);
         if (cellY >= 0 && cellY < cells.length && cellX >= 0 && cellX < cells[0].length) {
-            CellType current = cells[cellY][cellX].getCellType();
-            // Dispenser don't change during sim and can be overwritten by blocks
-            if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
-                cells[cellY][cellX].addReport(report);
-            }
+            cells[cellY][cellX].addReport(report);
         }
     }
 

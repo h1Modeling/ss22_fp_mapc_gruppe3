@@ -13,6 +13,7 @@ import de.feu.massim22.group3.agents.desires.BooleanInfo;
 import de.feu.massim22.group3.agents.desires.DeliverAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.desires.DeliverBlockDesire;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
+import de.feu.massim22.group3.agents.desires.DropBlockDesire;
 import de.feu.massim22.group3.agents.desires.EscapeClearDesire;
 import de.feu.massim22.group3.agents.desires.ExploreDesire;
 import de.feu.massim22.group3.agents.desires.ExploreMapSizeDesire;
@@ -414,6 +415,11 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             int topLeftY = PerceptUtil.toNumber(parameters, 3, Integer.class);
             belief.setMapSize(x, y);
             belief.setTopLeft(new Point(topLeftX, topLeftY));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_DROP_BLOCK: {
+            desires.removeIf(d -> d instanceof GetBlockDesire);
+            desires.add(new DropBlockDesire(belief));
             break;
         }
         default:

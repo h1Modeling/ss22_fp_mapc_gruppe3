@@ -314,7 +314,30 @@ public class Supervisor implements ISupervisor {
                     }
                 }
             }
+
+            if (r.groupDesireType().equals(GroupDesireTypes.GET_BLOCK) && !r.deactivated()) {
+                if (r.attachedThings().size() == 1) {
+                    Thing t = r.attachedThings().get(0);
+                    
+                    if (t.details.equals("b0")) {
+                        agentsCarryingBlock0.add(entry);
+                    }
+                    if (t.details.equals("b1")) {
+                        agentsCarryingBlock1.add(entry);
+                    }
+                    if (t.details.equals("b2")) {
+                        agentsCarryingBlock2.add(entry);
+                    }
+                    if (t.details.equals("b3")) {
+                        agentsCarryingBlock3.add(entry);
+                    }
+                    if (t.details.equals("b4")) {
+                        agentsCarryingBlock4.add(entry);
+                    }
+                }
+            }
         }
+
         // Sort
         agentsNearGoalZone.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsNearDispenser0.sort((a, b) -> a.getValue().distanceDispenser()[0] - b.getValue().distanceDispenser()[0]);
@@ -327,6 +350,46 @@ public class Supervisor implements ISupervisor {
         agentsCarryingBlock2.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock3.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock4.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
+
+        // Try to balance block carriage
+        int[] blockCarried = {0, 0, 0, 0, 0};
+
+        for (var entry : reports.entrySet()) {
+            String agent = entry.getKey();
+            var report = entry.getValue();
+            if (report.attachedThings().size() > 0) {
+                Thing t = report.attachedThings().get(0);
+                if (t.type.equals(Thing.TYPE_BLOCK)) {
+                    try {
+                        int index = Integer.parseInt(t.details.substring(1));
+                        blockCarried[index] += 1;
+                        // Test if two block task with two blocks of this kind exists
+                        boolean keep = false;
+                        for (var task : tasks) {
+                            boolean allSame = task.requirements.stream().allMatch(r -> r.type.equals(t.details));
+                            if (allSame && task.requirements.size() < 4) {
+                                keep = true;
+                            }
+                        }
+
+                        // Too many agents carry the same block
+                        if (blockCarried[index] > 0.6 * reports.size() && !keep) {
+                            if (!report.groupDesireType().equals(GroupDesireTypes.DELIVER_ATTACH) 
+                                    && !report.groupDesireType().equals(GroupDesireTypes.RECEIVE_ATTACH)) {
+                                sendDropBlock(agent);
+                                agentsCarryingBlock0.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock1.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock2.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock3.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock4.removeIf(a -> a.getKey().equals(agent));
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        AgentLogger.severe("Block detail is no Integer.");
+                    }
+                }
+            }
+        }
 
         // Discover vertical Map Size
         if (roleZoneVisible && agentsAllowedForGroupTask.size() > 1) {
@@ -613,6 +676,11 @@ public class Supervisor implements ISupervisor {
                 }
             }
         }
+    }
+
+    private void sendDropBlock(String agent) {
+        Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DROP_BLOCK.name());
+        parent.forwardMessage(message, agent, name);
     }
 
     private void sendExploreMapSizeTask(String agent, String teamMate, String teamMateShort, String direction, int guideOffset) {

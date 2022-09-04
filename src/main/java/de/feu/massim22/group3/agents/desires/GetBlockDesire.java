@@ -59,6 +59,9 @@ public class GetBlockDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isUnfulfillable() {
+        if (belief.getReachableGoalZones().size() == 0) {
+            return new BooleanInfo(true, "Lost goal zone");
+        }
         for (var info : belief.getTaskInfo()) {
             // two-block tasks
             if (info.requirements.size() <= 2) {

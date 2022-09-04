@@ -239,7 +239,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
                         Point pos = belief.getPosition();
                         Point relPos = new Point(posTeammate.x - pos.x, posTeammate.y - pos.y);
                         // Blocked by agent or block with different target detail
-                        if (blocking != null && ((blocking.type.equals(Thing.TYPE_ENTITY) && !relPos.equals(blockingPos)) || blocking.type.equals(Thing.TYPE_BLOCK) && !blocking.details.equals(t.details))) {
+                        if (blocking != null && ((blocking.type.equals(Thing.TYPE_ENTITY) && !relPos.equals(blockingPos)) || blocking.type.equals(Thing.TYPE_BLOCK) && !blocking.details.equals(t.type))) {
                             if (straightMovePossible("n")) {
                                 return ActionInfo.MOVE("n", getName());
                             }

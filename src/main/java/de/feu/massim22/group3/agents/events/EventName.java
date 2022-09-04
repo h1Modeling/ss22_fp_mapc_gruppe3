@@ -53,6 +53,8 @@ public enum EventName {
     SUPERVISOR_PERCEPT_DELETE_GROUP_DESIRES,
     /** The supervisor instructs to explore the map size */
     SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE,
+    /** The supervisor instructs to drop the current attached block. */
+    SUPERVISOR_PERCEPT_DROP_BLOCK,
     /** The map size is discovered and sent to all agents */
     MAP_SIZE_DISCOVERED,
 }
