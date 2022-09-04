@@ -794,9 +794,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
      * {@inheritDoc}
      */
     @Override
-    public String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent) {
+    public String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent, String lastMoveDirection) {
         GameMap map = maps.get(supervisor);
-        return map.getDirectionToNearestUndiscoveredPoint(agent);
+        return map.getDirectionToNearestUndiscoveredPoint(agent, lastMoveDirection);
     }
     
     /**

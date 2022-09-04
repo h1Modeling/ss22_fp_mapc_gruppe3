@@ -2,8 +2,6 @@ package de.feu.massim22.group3.agents.desires;
 
 import massim.protocol.data.Thing;
 
-import java.awt.Point;
-
 import de.feu.massim22.group3.agents.belief.Belief;
 
 /**
@@ -39,13 +37,13 @@ public class GetBlockDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isFulfilled() {
-        for (Thing t : belief.getAttachedThings()) {
-            if (t.type.equals(Thing.TYPE_BLOCK) && t.details.equals(block) && belief.getGoalZones().contains(new Point(0, 0))) {
-                belief.setGroupDesireBlockDetail("");
-                return new BooleanInfo(true, getName());
-            } 
+        for (var d : precondition) {
+            var dIsFulfilled = d.isFulfilled();
+            if (!dIsFulfilled.value()) {
+                return dIsFulfilled;
+            }
         }
-        return new BooleanInfo(false, "Block not attached yet");
+        return new BooleanInfo(true, getName());
     }
 
     /**
@@ -61,12 +59,29 @@ public class GetBlockDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isUnfulfillable() {
+        if (belief.getReachableGoalZones().size() == 0) {
+            return new BooleanInfo(true, "Lost goal zone");
+        }
         for (var info : belief.getTaskInfo()) {
+            // two-block tasks
             if (info.requirements.size() <= 2) {
                 for (var req : info.requirements) {
                     if (req.type.equals(block)) {
                         return new BooleanInfo(false, "");
                     }
+                }
+            }
+            // Easy three-block task
+            if (info.requirements.size() == 3) {
+                int countDist1 = 0;
+                int countDist2 = 0;
+                for (Thing t : info.requirements) {
+                    int dist = Math.abs(t.x) + Math.abs(t.y);
+                    if (dist == 1) countDist1 += 1;
+                    if (dist == 2) countDist2 += 1;
+                }
+                if (countDist1 == 1 && countDist2 == 2) {
+                    return new BooleanInfo(false, "");
                 }
             }
         }

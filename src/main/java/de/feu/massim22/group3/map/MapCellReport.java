@@ -73,6 +73,15 @@ public class MapCellReport {
     long getReportTime() {
         return reportTime;
     }
+
+    /**
+     * Copy the cell type of the provided report to the cell type of the object .
+     * 
+     * @param report the report to copy from
+     */
+    void copyCellTypeFromReport(MapCellReport report) {
+        this.cellType = report.cellType;
+    }
     
     /**
      * Creates a new <code>MapCellReport> with CellType.UNKNOWN and ZoneType.NONE.

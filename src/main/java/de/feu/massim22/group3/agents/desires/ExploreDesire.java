@@ -40,7 +40,8 @@ public class ExploreDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        String dir = Navi.<INaviAgentV1>get().getDirectionToNearestUndiscoveredPoint(supervisor, agent);
+        String lastDirection = belief.getLastMoveDirection();
+        String dir = Navi.<INaviAgentV1>get().getDirectionToNearestUndiscoveredPoint(supervisor, agent, lastDirection);
         return getActionForMove(dir + dir, getName());
     }
 

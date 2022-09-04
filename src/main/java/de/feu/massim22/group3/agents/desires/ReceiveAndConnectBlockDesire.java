@@ -14,6 +14,7 @@ import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.Actions;
 
 /**
  * The Class <code>ReceiveAndConnectBlockDesire</code> models the desire to receive and connect
@@ -25,6 +26,9 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     
     private String agent;
     private String agentFullName;
+    private int agentBlockIndex;
+    private String agent2;
+    private String agent2FullName;
     private TaskInfo task;
     private boolean submitted = false;
     private Thing block;
@@ -32,7 +36,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     private String supervisor;
 
     /**
-     * Instantiates a new ReceiveAndConnectBlockDesire.
+     * Instantiates a new ReceiveAndConnectBlockDesire with one team mate.
      * 
      * @param belief the belief of the agent
      * @param task the task the belief is based on
@@ -63,6 +67,39 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
         requirements.add(block);
         TaskInfo info = new TaskInfo(task.name, task.deadline, task.reward, requirements);
         precondition.add(new GetBlocksInOrderDesire(belief, info));
+        if (task.requirements.size() == 2) {
+            for (int i = 0; i < task.requirements.size(); i++) {
+                Thing t = task.requirements.get(i);
+                if (getDistance(t) > 1) {
+                    agentBlockIndex = i;
+                    break;
+                }
+            }
+        }    
+    }
+
+    /**
+     * Instantiates a new ReceiveAndConnectBlockDesire with two team mates.
+     * 
+     * @param belief the belief of the agent
+     * @param task the task the belief is based on
+     * @param agent1 the first agent to meet
+     * @param agent1FullName the full name of the first agent to meet
+     * @param agent1BlockIndex the index of the task requirement, the agent has to deliver
+     * @param agent2 the second agent to meet
+     * @param agent2FullName the full name of the second agent to meet
+     * @param agent2BlockIndex the index of the task requirement, the agent has to deliver
+     * @param supervisor the supervisor of the agent group
+     * @param block the block which should be gathered
+     * @param communicator an instance which can send messages to other agents which is normally the agent which holds the desire
+     */
+    public ReceiveAndConnectBlockDesire(Belief belief, TaskInfo task, String agent1, String agent1FullName, int agent1BlockIndex, String agent2,
+            String agent2FullName, int agent2BlockIndex, String supervisor, Thing block, Supervisable communicator) {
+        this(belief, task, agent1, agent1FullName, supervisor, block, communicator);
+        this.agentBlockIndex = agent1BlockIndex;
+        this.agent2 = agent2;
+        this.agent2FullName = agent2FullName;
+        System.out.println("Receive and connect " + getName() + " with " + agent1 + " and " + agent2);
     }
 
     /**
@@ -79,7 +116,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
             boolean submittable = true;
             for (var p : task.requirements) {
                 Thing t = belief.getConnectedThingAt(new Point(p.x, p.y));
-                if (t == null) {
+                if (t == null || !t.details.equals(p.type)) {
                     submittable = false;
                     break;
                 }
@@ -90,37 +127,49 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
             }
 
             // Rotate Block in correct Position
-            Point attached = belief.getOwnAttachedPoints().get(0);
-            Point goal = new Point(block.x, block.y);
-            if (!attached.equals(goal)) {
-                Point cr = getCRotatedPoint(attached);
-                if (cr.equals(goal)) {
-                    return getActionForCWRotation(getName());
+            if (belief.getOwnAttachedPoints().size() == 1) {
+                Point attached = belief.getOwnAttachedPoints().get(0);
+                Point goal = new Point(block.x, block.y);
+                if (!attached.equals(goal)) {
+                    Point cr = getCRotatedPoint(attached);
+                    if (cr.equals(goal)) {
+                        return getActionForCWRotation(getName());
+                    }
+                    return getActionForCCWRotation(getName());
                 }
-                return getActionForCCWRotation(getName());
             }
 
             // Connect
-            boolean inOrder = true;
-            for (Thing t : task.requirements) {
+            int toConnectIndex = -1;
+            for (int i = 0; i < task.requirements.size(); i++) {
+                // Task Thing
+                Thing t = task.requirements.get(i);
+                if (t.equals(block)) {
+                    continue;
+                }
+                // Actual Thing
                 Thing f = belief.getThingWithTypeAt(new Point(t.x, t.y), Thing.TYPE_BLOCK);
-                if (f == null || !f.details.equals(t.type)) {
-                    inOrder = false;
+                if (f != null && f.details.equals(t.type) && !belief.getOwnAttachedPoints().contains(new Point(f.x, f.y))) {
+                    toConnectIndex = i;
                     break;
                 }
             }
 
-            if (inOrder) {
+            if (toConnectIndex >= 0) {
+                // Get agent to connect with
+                String agentToConnect = agent2 == null || toConnectIndex == agentBlockIndex ? agent : agent2;
+                String agentFullNameToConnect = agent2 == null || toConnectIndex == agentBlockIndex ? agentFullName : agent2FullName;
+
                 Point pos = belief.getPosition();
                 Parameter name = new Identifier(belief.getAgentFullName());
                 Parameter step = new Numeral(belief.getStep());
-                Parameter x1 = new Numeral(attached.x + pos.x);
-                Parameter y1 = new Numeral(attached.y + pos.y);
+                Parameter x1 = new Numeral(block.x + pos.x);
+                Parameter y1 = new Numeral(block.y + pos.y);
                 Parameter x2 = new Numeral(pos.x);
                 Parameter y2 = new Numeral(pos.y);
                 Percept message = new Percept(EventName.REPORT_POSSIBLE_CONNECTION.name(), name, step, x1, y1, x2, y2);
-                communicator.forwardMessage(message, agent, belief.getAgentShortName());
-                return ActionInfo.CONNECT(agentFullName, attached, getName());
+                communicator.forwardMessage(message, agentToConnect, belief.getAgentShortName());
+                return ActionInfo.CONNECT(agentFullNameToConnect, block, getName());
             }
 
             // Test if space around requirements
@@ -138,7 +187,10 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
                     testN += obstacleCountAround(new Point(t.x, t.y - 1));
                 }
                 if (testN < obstacleCountAround && goalZoneN) {
-                    return getActionForMove("n", getName());
+                    var info = getActionForMove("n", getName());
+                    if (!info.value().getName().equals(Actions.ROTATE)) {
+                        return info;
+                    }
                 }
                 // East
                 boolean goalZoneE = belief.getGoalZones().contains(new Point(1, 0));
@@ -147,7 +199,10 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
                     testE += obstacleCountAround(new Point(t.x + 1, t.y));
                 }
                 if (testE < obstacleCountAround && goalZoneE) {
-                    return getActionForMove("e", getName());
+                    var info = getActionForMove("e", getName());
+                    if (!info.value().getName().equals(Actions.ROTATE)) {
+                        return info;
+                    }
                 }
                 // South
                 boolean goalZoneS = belief.getGoalZones().contains(new Point(0, 1));
@@ -156,7 +211,10 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
                     testS += obstacleCountAround(new Point(t.x, t.y + 1));
                 }
                 if (testS < obstacleCountAround && goalZoneS) {
-                    return getActionForMove("s", getName());
+                    var info = getActionForMove("s", getName());
+                    if (!info.value().getName().equals(Actions.ROTATE)) {
+                        return info;
+                    }
                 }
                 // West
                 boolean goalZoneW = belief.getGoalZones().contains(new Point(-1, 0));
@@ -165,33 +223,38 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
                     testW += obstacleCountAround(new Point(t.x - 1, t.y));
                 }
                 if (testW < obstacleCountAround && goalZoneW) {
-                    return getActionForMove("w", getName());
+                    var info = getActionForMove("w", getName());
+                    if (!info.value().getName().equals(Actions.ROTATE)) {
+                        return info;
+                    }
                 }
             }
             // Move away if second block position is blocked
-            for (Thing t : task.requirements) {
-                if (getDistance(t) > 1) {
-                    Point blockingPos = new Point(t.x, t.y);
-                    Thing blocking = belief.getThingAt(blockingPos);
-                    Point posTeammate = Navi.get().getPosition(agent, supervisor);
-                    Point pos = belief.getPosition();
-                    Point relPos = new Point(posTeammate.x - pos.x, posTeammate.y - pos.y);
-                    // Blocked by agent or block with different target detail
-                    if (blocking != null && ((blocking.type.equals(Thing.TYPE_ENTITY) && !relPos.equals(blockingPos)) || blocking.type.equals(Thing.TYPE_BLOCK) && !blocking.details.equals(t.details))) {
-                        if (straightMovePossible("n")) {
-                            return ActionInfo.MOVE("n", getName());
+            if (task.requirements.size() < 3) {
+                for (Thing t : task.requirements) {
+                    if (getDistance(t) > 1) {
+                        Point blockingPos = new Point(t.x, t.y);
+                        Thing blocking = belief.getThingAt(blockingPos);
+                        Point posTeammate = Navi.get().getPosition(agent, supervisor);
+                        Point pos = belief.getPosition();
+                        Point relPos = new Point(posTeammate.x - pos.x, posTeammate.y - pos.y);
+                        // Blocked by agent or block with different target detail
+                        if (blocking != null && ((blocking.type.equals(Thing.TYPE_ENTITY) && !relPos.equals(blockingPos)) || blocking.type.equals(Thing.TYPE_BLOCK) && !blocking.details.equals(t.type))) {
+                            if (straightMovePossible("n")) {
+                                return ActionInfo.MOVE("n", getName());
+                            }
+                            if (straightMovePossible("e")) {
+                                return ActionInfo.MOVE("e", getName());
+                            }
+                            if (straightMovePossible("s")) {
+                                return ActionInfo.MOVE("s", getName());
+                            }
+                            if (straightMovePossible("w")) {
+                                return ActionInfo.MOVE("w", getName());
+                            }
                         }
-                        if (straightMovePossible("e")) {
-                            return ActionInfo.MOVE("e", getName());
-                        }
-                        if (straightMovePossible("s")) {
-                            return ActionInfo.MOVE("s", getName());
-                        }
-                        if (straightMovePossible("w")) {
-                            return ActionInfo.MOVE("w", getName());
-                        }
+                        break;
                     }
-                    break;
                 }
             }
             return ActionInfo.SKIP(getName());
@@ -206,6 +269,9 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
     public BooleanInfo isUnfulfillable() {
         if (belief.getStep() > task.deadline) {
             return new BooleanInfo(true, "Deadline has passed");
+        }
+        if (belief.getReachableGoalZones().size() == 0) {
+            return new BooleanInfo(true, "lost goal zone");
         }
         BooleanInfo value = super.isUnfulfillable();
         if (value.value()) {
@@ -277,7 +343,7 @@ public class ReceiveAndConnectBlockDesire extends BeliefDesire {
                 if (isUnconnectedBlock || isObstacle) {
                     result += 1;
                 }
-                // Increase Size for Dispenser because it's not allowed to submit ontop of a dispenser
+                // Increase Size for Dispenser because it's not allowed to submit on top of a dispenser
                 Thing d = belief.getThingWithTypeAt(testPoint, Thing.TYPE_DISPENSER);
                 if (y == 0 && x == 0 && d != null) {
                     result += 10;

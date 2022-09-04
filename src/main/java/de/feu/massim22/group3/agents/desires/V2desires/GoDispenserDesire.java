@@ -26,9 +26,8 @@ public class GoDispenserDesire extends BeliefDesire {
     private BdiAgentV2 agent;
     private String block;
 //    private CellType dispenser;
-    private String supervisor;
     private int distance;
-    private boolean strangeAgent = false;
+    //private boolean strangeAgent = false;
     //private StepUtilities stepUtilities;
 
     /**
@@ -46,7 +45,6 @@ public class GoDispenserDesire extends BeliefDesire {
         this.agent = agent;
         this.block = block;
 //        this.dispenser = Convert.blockNameToDispenser(block);
-        this.supervisor = supervisor;
         //this.stepUtilities = stepUtilities;
     }
 
@@ -218,8 +216,6 @@ public class GoDispenserDesire extends BeliefDesire {
                 }
 
                 ArrayList<Integer> met = new ArrayList<Integer>();
-                int i = 0;
-                boolean alreadyAttached = false;
 
                 for (Meeting meeting : AgentMeetings.find(agent)) {
                     Point metAgent = Point.castToPoint(meeting.agent2().getBelief().getPosition()).translate2To1(meeting);
@@ -228,7 +224,6 @@ public class GoDispenserDesire extends BeliefDesire {
 
                     if (d1.equals(metAgent) || d2.equals(metAgent) || d3.equals(metAgent)) {
                         met.add(meeting.agent2().index);
-                        i++;
                         
                         if ((d1.equals(metAgent) && meeting.agent2().attachedPoints.contains(r1))
                         || (d2.equals(metAgent) && meeting.agent2().attachedPoints.contains(r2))
@@ -287,15 +282,5 @@ public class GoDispenserDesire extends BeliefDesire {
      */
     public String getBlock() {
         return block;
-    }
-
-    /**
-     * Updates supervisor .
-     * 
-     * @param supervisor the new supervisor
-     */
-    @Override
-    public void update(String supervisor) {
-        this.supervisor = supervisor;
     }
 }

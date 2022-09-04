@@ -106,7 +106,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                 BooleanInfo ret = findHelper(info);
                 
                 if (ret.value()) {
-                    BooleanInfo ret2 = findHelper2(info);                   
+                    // BooleanInfo ret2 = findHelper2(info);                   
                 }
 
                 return ret;
@@ -137,7 +137,7 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
                 + " runSupervisorDecisions - MasterMultiBlocksDesire.getNextActionInfo block1: " 
                 + block1 + " block2: " + block2 + " block3: " + block3 + " taskBlock: " + taskBlock);        
         Point agentBlock = agent.getAttachedPoints().get(0);
-        Thing agentThing = agent.getAttachedThings().get(0);
+        // Thing agentThing = agent.getAttachedThings().get(0);
 
         AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - MasterMultiBlocksDesire.getNextActionInfo agentBlocks: "

@@ -31,8 +31,12 @@ public enum EventName {
     SUPERVISOR_PERCEPT_RECEIVE_BLOCK,
     /** The supervisor instructs to deliver a block to an agent which delivers a two block task. */
     SUPERVISOR_PERCEPT_DELIVER_TWO_BLOCK,
+    /** The supervisor instructs to deliver a block to an agent which delivers a three block task. */
+    SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK,
     /** The supervisor instructs to receive a block from an agent and then deliver a two block task. */
     SUPERVISOR_PERCEPT_RECEIVE_TWO_BLOCK,
+    /** The supervisor instructs to receive a block from an agent and then deliver a three block task. */
+    SUPERVISOR_PERCEPT_RECEIVE_THREE_BLOCK,
     /** The supervisor instructs to get a block. */
     SUPERVISOR_PERCEPT_GET_BLOCK,
     /** The last supervisor order should be canceled. */
@@ -49,6 +53,8 @@ public enum EventName {
     SUPERVISOR_PERCEPT_DELETE_GROUP_DESIRES,
     /** The supervisor instructs to explore the map size */
     SUPERVISOR_PERCEPT_EXPLORE_MAP_SIZE,
+    /** The supervisor instructs to drop the current attached block. */
+    SUPERVISOR_PERCEPT_DROP_BLOCK,
     /** The map size is discovered and sent to all agents */
     MAP_SIZE_DISCOVERED,
 }
