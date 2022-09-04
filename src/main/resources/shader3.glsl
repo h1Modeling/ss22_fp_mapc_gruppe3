@@ -77,8 +77,8 @@ Cell pop(inout Cell[queueSize] cells) {
 
 // Get Manhatten Distance between points
 float distance(ivec2 start, ivec2 finish, int mapDiscovered, ivec2 mapSize) {
-	int x = mapDiscovered == 1 ? min(abs(finish.x - start.x), abs(finish.x - start.x - mapSize.x)) : abs(finish.x - start.x);
-	int y = mapDiscovered == 1 ? min(abs(finish.y - start.y), abs(finish.y - start.y - mapSize.y)) : abs(finish.y - start.y);
+	int x = mapDiscovered == 1 ? min(min(abs(finish.x - start.x), abs(finish.x - start.x - mapSize.x)), abs(finish.x - start.x + mapSize.x)) : abs(finish.x - start.x);
+	int y = mapDiscovered == 1 ? min(min(abs(finish.y - start.y), abs(finish.y - start.y - mapSize.y)), abs(finish.y - start.y + mapSize.y)) : abs(finish.y - start.y);
 	return x + y;
 }
 

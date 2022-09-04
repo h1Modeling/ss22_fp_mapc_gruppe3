@@ -1,6 +1,7 @@
 package de.feu.massim22.group3.agents.desires;
 
 import java.util.List;
+import java.util.Random;
 
 import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
@@ -63,7 +64,7 @@ public class MeetAgentAtGoalZoneDesire extends BeliefDesire {
             if (mate.name().equals(agent)) {
                 // Move closer to Goal Zone to avoid blocking team mate
                 var nearestGoalZone = belief.getNearestGoalZone();
-                if (nearestGoalZone.distance() > 10 && mate.distance() < 10) {
+                if (nearestGoalZone.distance() > 10 && mate.distance() < 10 && new Random().nextFloat() > 0.5) {
                     String dir = DirectionUtil.intToString(nearestGoalZone.direction());
                     return getActionForMove(dir, getName());
                 }

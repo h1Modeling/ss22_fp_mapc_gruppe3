@@ -31,12 +31,14 @@ public class GetBlocksInOrderDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isFulfilled() {
-        for (Thing t : info.requirements) {
-            Thing atAgent = belief.getThingWithTypeAt(new Point(t.x, t.y), Thing.TYPE_BLOCK);
-            if (atAgent == null || !atAgent.details.equals(t.type)) {
-                String ea = atAgent == null ? t.details + " not at agent" : "";
-                String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
-                return new BooleanInfo(false, ea + ed);
+        if (belief.getAttachedPoints().size() < 2) {
+            for (Thing t : info.requirements) {
+                Thing atAgent = belief.getThingWithTypeAt(new Point(t.x, t.y), Thing.TYPE_BLOCK);
+                if (atAgent == null || !atAgent.details.equals(t.type)) {
+                    String ea = atAgent == null ? t.details + " not at agent" : "";
+                    String ed = atAgent != null && !atAgent.details.equals(t.type) ? "Wrong Block attached" : "";
+                    return new BooleanInfo(false, ea + ed);
+                }
             }
         }
         return new BooleanInfo(true, "");

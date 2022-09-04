@@ -91,9 +91,10 @@ public interface INaviAgentV1 extends INavi {
      * 
      * @param supervisor the name of the supervisor of the group the agent is part of
      * @param agent the name of the agent
+     * @param lastMoveDirection the direction of the last move of the agent
      * @return the direction to the nearest undiscovered point - can be "n", "e", "s", "w"
      */
-    String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent);
+    String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent, String lastMoveDirection);
 
     /**
      * Gets the state of the <code>Navi</code>

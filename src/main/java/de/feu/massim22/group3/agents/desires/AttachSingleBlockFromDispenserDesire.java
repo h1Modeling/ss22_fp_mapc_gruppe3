@@ -13,14 +13,12 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
 
     private Thing block;
     private CellType dispenser;
-    private String supervisor;
 
     public AttachSingleBlockFromDispenserDesire(Belief belief, Thing block, String supervisor) {
         super(belief);
         //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start AttachSingleBlockFromDispenserDesire");
         this.block = block;
         this.dispenser = Convert.blockNameToDispenser(block);
-        this.supervisor = supervisor;
     }
 
     @Override
@@ -118,23 +116,18 @@ public class AttachSingleBlockFromDispenserDesire extends BeliefDesire {
         */
         // Move
         Point p = belief.getNearestRelativeManhattanDispenser(block.type);
-        int manhattenDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
+        int manhattanDistance = p != null ? Math.abs(p.x) + Math.abs(p.y) : 1000;
         ReachableDispenser rd = belief.getNearestDispenser(dispenser);
         // From Pathfinding
-        if (rd != null && rd.distance() < 6 * manhattenDistance) {
+        if (rd != null && rd.distance() < 6 * manhattanDistance) {
             String dir = DirectionUtil.intToString(rd.direction());
             if (dir.length() > 0) {
                 return getActionForMove(dir.substring(0, 1), getName());
             }
         }
 
-        // Manhatten
+        // Manhattan
         String dir = getDirectionToRelativePoint(p);
         return getActionForMove(dir, getName());
-    }
-
-    @Override
-    public void update(String supervisor) {
-        this.supervisor = supervisor;
     }
 }

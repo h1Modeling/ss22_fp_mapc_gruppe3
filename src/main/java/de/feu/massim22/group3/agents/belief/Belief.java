@@ -89,6 +89,7 @@ public class Belief {
     private String groupDesireBlockDetail = "";
     private String groupDesirePartner = "";
     private boolean isWaiting = false;
+    private String lastMoveDirection = "n";
     
     private Point mapSize;
     private Point mapTopLeft;
@@ -697,7 +698,7 @@ public class Belief {
      * @return last action name
      */
     public String getLastAction() {
-        return lastAction;
+        return lastAction == null ? Actions.NO_ACTION : lastAction;
     }
 
     /**
@@ -706,7 +707,7 @@ public class Belief {
      * @return the result of the last action
      */
     public String getLastActionResult() {
-        return lastActionResult;
+        return lastActionResult == null ? ActionResults.UNPROCESSED : lastActionResult;
     }
 
     /**
@@ -1489,6 +1490,7 @@ public class Belief {
     }
 
     private void move(String dir) {
+        lastMoveDirection = dir;
         switch (dir) {
             case "n":
                 position.y = mapSize == null ? position.y - 1 : (((position.y + mapSize.y - 1 - mapTopLeft.y) % mapSize.y) + mapTopLeft.y);
@@ -1684,5 +1686,14 @@ public class Belief {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets the direction of the last move.
+     * 
+     * @return the direction of the last move or "n" if no move was made before.
+     */
+    public String getLastMoveDirection() {
+        return lastMoveDirection;
     }
 }

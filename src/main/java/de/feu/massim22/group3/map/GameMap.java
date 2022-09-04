@@ -594,9 +594,10 @@ public class GameMap {
     /**
      * Gets the direction to the nearest undiscovered Point relative to an agent in this map.
      * @param agent the agent from which to calculate
+     * @param lastMoveDirection the direction of the last move
      * @return the direction ("n", "e", "s", "w") to the nearest undiscovered Point
      */
-    String getDirectionToNearestUndiscoveredPoint(String agent) {
+    String getDirectionToNearestUndiscoveredPoint(String agent, String lastMoveDirection) {
         Point agentPos = getInternalAgentPosition(agent);
         int step = 1;
         while (step < Math.max(cells.length, cells[0].length)) {
@@ -650,6 +651,14 @@ public class GameMap {
             }
             step++;
         }
+ 
+        // Keep direction
+        float keepDirection = new Random().nextFloat();
+        if (keepDirection > 0.1 && lastMoveDirection != null) {
+            return lastMoveDirection;
+        }
+
+        // Fully random move
         float random = new Random().nextFloat();
         if (random < 0.25) {
             return "n";

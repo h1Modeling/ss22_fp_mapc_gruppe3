@@ -10,6 +10,7 @@ import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
+import massim.protocol.messages.scenario.Actions;
 
 import java.awt.Point;
 
@@ -158,7 +159,12 @@ public abstract class BeliefDesire implements IDesire {
         Thing w = belief.getThingAt("w");
         if (w != null && w.type.equals(Thing.TYPE_OBSTACLE)) return ActionInfo.CLEAR(new Point(-1, 0), getName());
         
-        // TODO AGENT is stuck
+        // Try to clear unconnected blocks
+        if (isClearable(n) && !belief.getAttachedPoints().contains(new Point(0, -1))) return ActionInfo.CLEAR(new Point(0,-1), getName());
+        if (isClearable(s) && !belief.getAttachedPoints().contains(new Point(0, 1))) return ActionInfo.CLEAR(new Point(0,1), getName());
+        if (isClearable(e) && !belief.getAttachedPoints().contains(new Point(1, 0))) return ActionInfo.CLEAR(new Point(1,0), getName());
+        if (isClearable(w) && !belief.getAttachedPoints().contains(new Point(-1, 0))) return ActionInfo.CLEAR(new Point(-1,0), getName());
+
         return ActionInfo.SKIP("Agent is Stuck in getIteratedActionForMove");
     }
 
@@ -211,6 +217,29 @@ public abstract class BeliefDesire implements IDesire {
         }
 
         List<Point> attached = belief.getOwnAttachedPoints();
+ 
+        // If Block is blocking try to first make space to be able to move around
+        /* 
+        Thing inDir = belief.getThingAt(dirPoint);
+        if (inDir != null && inDir.type.equals(Thing.TYPE_BLOCK) && !belief.getAttachedThings().contains(inDir)) {
+            Thing cw = belief.getThingCRotatedAt(dirPoint);
+            Thing ccw = belief.getThingCCRotatedAt(dirPoint);
+            Point cwP = getCRotatedPoint(dirPoint);
+            Point ccwP = getCCRotatedPoint(dirPoint);
+            if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE)) {
+                return ActionInfo.CLEAR(cwP, desire);
+            }
+            if (ccw != null && ccw.type.equals(Thing.TYPE_OBSTACLE)) {
+                return ActionInfo.CLEAR(ccwP, desire);
+            }
+            // Try move
+            if (cw == null) {
+                return getIteratedActionForMove(getDirectionFromPoint(cwP), desire);
+            }
+            if (ccw == null) {
+                return getActionForMove(getDirectionFromPoint(ccwP), desire);
+            }
+        }*/
 
         // Rotate attached
         for (Point p : attached) {
@@ -224,18 +253,22 @@ public abstract class BeliefDesire implements IDesire {
                 Point ccwP = getCCRotatedPoint(p);
 
                 // Move away from direction if possible
+                boolean lastActionCcwr = belief.getLastAction().equals(Actions.ROTATE) && belief.getLastActionParams().size() > 0 
+                    && belief.getLastActionParams().get(0).equals("ccw");
+                boolean lastActionCwr = belief.getLastAction().equals(Actions.ROTATE) && belief.getLastActionParams().size() > 0 
+                    && belief.getLastActionParams().get(0).equals("cw");
                 if (isFree(cw) && isFree(ccw)) {
-                    if (isFree(cw) && !cwP.equals(dirPoint)) {
+                    if (isFree(cw) && !cwP.equals(dirPoint) && !lastActionCcwr) {
                         return ActionInfo.ROTATE_CW(desire);
                     }
-                    if (isFree(ccw) && !ccwP.equals(dirPoint)) {
+                    if (isFree(ccw) && !ccwP.equals(dirPoint) && !lastActionCwr) {
                         return ActionInfo.ROTATE_CCW(desire);
                     }
                 }
-                if (isFree(cw)) {
+                if (isFree(cw) && !lastActionCcwr) {
                     return ActionInfo.ROTATE_CW(desire);
                 }
-                if (isFree(ccw)) {
+                if (isFree(ccw) && !lastActionCwr) {
                     return ActionInfo.ROTATE_CCW(desire);
                 }
                 if (cw != null && cw.type.equals(Thing.TYPE_OBSTACLE) && !cwP.equals(dirPoint)) {
