@@ -105,7 +105,7 @@ public class GameMap {
      * The position is measured in the internal coordinate system of the <code>GameMap</code> with 0/0
      * at the top left of the map.
      * 
-     * @param name the name of the agent
+     * @param agent the name of the agent
      * @return the position of the agent in the coordinate system of the agent
      */  
     Point getInternalAgentPosition(String agent) {
@@ -200,7 +200,7 @@ public class GameMap {
     /**
      * Creates a copy of the internal Array of CellTypes for the <code>GraphicalDebugger</code>
      * 
-     * @see GraphicalDebugger
+     * @see de.feu.massim22.group3.utils.debugger.GraphicalDebugger
      * @return a two-dimensional Array of type CellType
      */
     CellType[][] getDebugCells() {
@@ -367,10 +367,10 @@ public class GameMap {
     }
 
     /**
-     * Gets a <code>Map<Point, String></code> with all agent positions relative to the internal coordinate system of the map.
+     * Gets a <code>Map</code> with all agent positions relative to the internal coordinate system of the map.
      * The key of the map is the agent name, the value is the agent position.
      * 
-     * @return the <code>Map<Point, String></code> with all agent positions relative to the internal coordinate system of the map
+     * @return the <code>Map</code> with all agent positions relative to the internal coordinate system of the map
      */
     Map<Point, String> getDebugAgentPosition() {
         Map<Point, String> result = new HashMap<>();
@@ -668,11 +668,11 @@ public class GameMap {
     }
 
     /**
-     * Gets a <code>List<InterestingPoint></code> which contains information about Dispensers, GoalZones and RoleZones.
+     * Gets a <code>List</code> which contains information about Dispensers, GoalZones and RoleZones.
      * 
      * @param maxCount the maximum number of InterestingPoints which should be returned 
      * @param useRoleZones if true, RoleZones will be added to the list
-     * @return a <code>List<InterestingPoint></code> of this <code>GameMap</code>
+     * @return a <code>List</code> of Interesting Points from this <code>GameMap</code>
      */
     public List<InterestingPoint> getInterestingPoints(int maxCount, boolean useRoleZones) {
         List<InterestingPoint> result = new ArrayList<>();

@@ -105,7 +105,6 @@ public interface INavi extends Disposable {
     /**
      * Sets the horizontal size of the map.
      * @param value the horizontal map size
-     * @return
      */
     void setHorizontalMapSize(int value);
 

@@ -91,7 +91,7 @@ class NaviTest {
         assertEquals(3, result[0][1].distance());
     }
 
-    /*
+    /**
      * Path finding test:
      * - - ■ - -
      * - - ■ - -

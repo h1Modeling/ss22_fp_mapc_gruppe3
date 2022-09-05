@@ -507,6 +507,11 @@ public class Belief {
         return groupDesirePartner;
     }
 
+    /**
+     * Gets the details of all attached things to the agent combined in a String.
+     * 
+     * @return the details of all attached things to the agent combined in a String
+     */
     public String getAttachedThingsDebugString() {
         String result = "";
         for (Thing t : attachedThings) {

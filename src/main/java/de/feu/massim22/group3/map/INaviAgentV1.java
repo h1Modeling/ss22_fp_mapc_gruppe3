@@ -57,7 +57,7 @@ public interface INaviAgentV1 extends INavi {
      * @param groupDesirePartner the name of the team mate which performs a group desire with the agent
      * @param groupDesireBlock the block on which the group desire is based on
      * @param attachedThingsDebugString a String containing information about the attached things of the agent
-     * @see GraphicalDebugger
+     * @see de.feu.massim22.group3.utils.debugger.GraphicalDebugger
      */
     void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType, String groupDesirePartner, String groupDesireBlock, String attachedThingsDebugString);
     
@@ -66,7 +66,7 @@ public interface INaviAgentV1 extends INavi {
      * 
      * @param data a List of DesireDebugData
      * @param agent the name of the agent
-     * @see GraphicalDebugger
+     * @see de.feu.massim22.group3.utils.debugger.GraphicalDebugger
      */
     void updateDesireDebugData(List<DesireDebugData> data, String agent);
 

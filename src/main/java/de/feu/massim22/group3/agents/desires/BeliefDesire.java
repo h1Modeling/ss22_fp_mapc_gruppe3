@@ -22,7 +22,14 @@ import java.awt.Point;
  * @author Melinda Betz (minor contribution)
  */
 public abstract class BeliefDesire implements IDesire {
+    /**
+     * The Belief of the agent.
+     */
     protected Belief belief;
+
+    /**
+     * A List of preconditions which will be processed before the actual Desire.
+     */
     protected List<IDesire> precondition = new ArrayList<>();
     private Action outputAction;
     private int moveIteration = 0;

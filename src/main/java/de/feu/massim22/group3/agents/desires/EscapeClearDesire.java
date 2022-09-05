@@ -4,8 +4,18 @@ import de.feu.massim22.group3.agents.belief.Belief;
 
 import java.awt.Point;
 
+/**
+ * The Class <code>EscapeClearDesire</code> models the desire to avoid regions which have a clear marker attached.
+ * 
+ * @author Heinz Stadler
+ */
 public class EscapeClearDesire extends BeliefDesire {
 
+    /**
+     * Instantiates a new EscapeClearDesire.
+     * 
+     * @param belief the belief of the agent
+     */
     public EscapeClearDesire(Belief belief) {
         super(belief);
     }

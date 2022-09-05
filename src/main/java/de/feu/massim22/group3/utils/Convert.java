@@ -59,7 +59,24 @@ public class Convert {
             case DISPENSER_4: return "b4";
             default: return "";
         }
-    } 
+    }
+
+    /**
+     * Translates a block to a dispenser CellType according to the block detail.
+     * 
+     * @param blockDetail the detail of the block
+     * @return the CellType of the dispenser
+     */
+    public static CellType dispenserToCellType(String blockDetail) {
+        switch (blockDetail) {
+            case "b0": return CellType.DISPENSER_0;
+            case "b1": return CellType.DISPENSER_1;
+            case "b2": return CellType.DISPENSER_2;
+            case "b3": return CellType.DISPENSER_3;
+            case "b4": return CellType.DISPENSER_4;
+            default: return CellType.UNKNOWN;
+        }
+    }
 
     private static CellType blockToCellType(String blockDetail) {
         switch (blockDetail) {
@@ -68,17 +85,6 @@ public class Convert {
             case "b2": return CellType.BLOCK_2;
             case "b3": return CellType.BLOCK_3;
             case "b4": return CellType.BLOCK_4;
-            default: return CellType.UNKNOWN;
-        }
-    }
-
-    public static CellType dispenserToCellType(String blockDetail) {
-        switch (blockDetail) {
-            case "b0": return CellType.DISPENSER_0;
-            case "b1": return CellType.DISPENSER_1;
-            case "b2": return CellType.DISPENSER_2;
-            case "b3": return CellType.DISPENSER_3;
-            case "b4": return CellType.DISPENSER_4;
             default: return CellType.UNKNOWN;
         }
     }
