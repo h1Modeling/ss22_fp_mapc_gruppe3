@@ -57,6 +57,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public Meeting[] firstMeeting = new Meeting[11];
     
     public Set<java.awt.Point> rgz = new HashSet<>();
+    public Set<Thing> disp = new HashSet<>();
 
     /**
      * Initializes a new Instance of BdiAgentV2.

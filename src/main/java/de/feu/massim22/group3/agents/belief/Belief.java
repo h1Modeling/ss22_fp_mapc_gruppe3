@@ -1,7 +1,7 @@
 package de.feu.massim22.group3.agents.belief;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class Belief {
     private String team;
     private int teamSize;
     private int steps;
-    private Map<String, Role> roles = new HashMap<>();
+    //private Map<String, Role> roles = new HashMap<>();
 
     // Step Beliefs
     private int step;
@@ -174,7 +174,7 @@ public class Belief {
                         double change = toNumber(p, 4, Double.class);
                         int maxDistance = toNumber(p, 1, Integer.class);                    
                         Role r = new Role(roleName, roleVision, roleActions, roleSpeedArray, change, maxDistance);
-                        roles.put(roleName, r);     
+//                        roles.put(roleName, r);     
                     } 
                     // Step percept
                     else {
@@ -601,8 +601,9 @@ public class Belief {
      * @return the size of the vision
      */
     public int getVision() {
-        Role r = roles.get(role);
-        return r == null ? 0 : r.vision();
+ //       Role r = roles.get(role);
+    //    return r == null ? 0 : r.vision();
+    return 0;
     }
 
     /**
@@ -809,7 +810,8 @@ public class Belief {
      * @return the current role
      */
     public Role getRole() {
-        return roles.get(role);
+    //    return roles.get(role);
+        return null;
     }
 
     /**
@@ -818,7 +820,8 @@ public class Belief {
      * @return all possible Roles in a map.
      */
     public Map<String, Role> getRoles() {
-        return roles;
+       // return roles;
+        return null;
     }
 
     /**
@@ -832,19 +835,19 @@ public class Belief {
         if (actions.length == 1 && actions[0].equals("clear")) {
             double maxFactor = 0;
             Role bestClearRole = null;
-            for (Role r : roles.values()) {
+/*            for (Role r : roles.values()) {
                 double curFactor = r.clearChance() * r.clearMaxDistance();
                 if (curFactor > maxFactor) {
                     maxFactor = curFactor;
                     bestClearRole = r;
                 }
-            }
+            }*/
             AgentLogger.info("bestClearRole is " + bestClearRole.name());
             return bestClearRole;
         }
 
         List<Role> possibleRoles = new ArrayList<>();
-        for (Role r : roles.values()) {
+        /*for (Role r : roles.values()) {
             boolean allFound = true;
             for (String action : actions) {
                 if (!r.actions().contains(action)) {
@@ -854,7 +857,7 @@ public class Belief {
             if (allFound) {
                 possibleRoles.add(r);
             }
-        }
+        }*/
         possibleRoles.sort((a, b) -> b.maxSpeed(0) - a.maxSpeed(0));
         return possibleRoles.size() > 0 ? possibleRoles.get(0) : null;
     }
@@ -1010,6 +1013,21 @@ public class Belief {
         d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
 
         return d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
+    }
+    
+    /**
+     * Gets all dispenser in vision.
+     * 
+     * @return the nearest point next to a dispenser with the provided type
+     */
+    public List<Thing> getDispenser() {
+        List<Thing> d = new ArrayList<>(things);
+        // Filter
+        d.removeIf(r -> !r.type.equals(Thing.TYPE_DISPENSER));
+        // Sort
+        //d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+
+        return d.size() > 0 ? d : null;
     }
 
     /**
@@ -1227,14 +1245,14 @@ public class Belief {
     public AgentReport getAgentReport() {
         // Calculate available Actions
         Set<String> availableActions = new HashSet<>();
-        Role d = roles.get("default");
+        /*Role d = roles.get("default");
         if (d != null) {
             availableActions.addAll(d.actions());
         }
         Role r = roles.get(role);
         if (r != null) {
             availableActions.addAll(r.actions());
-        }
+        }*/
         // Calculate dispenser
         int[] distanceDispenser = {999, 999, 999, 999, 999};
         for (ReachableDispenser dispenser : reachableDispensers) {
@@ -1351,10 +1369,10 @@ public class Belief {
                 .append(System.lineSeparator())
                 .append("Roles: ")
                 .append(System.lineSeparator());
-        for (Role r : roles.values()) {
+       /* for (Role r : roles.values()) {
             b.append(r.toJSON())
                     .append(System.lineSeparator());
-        }
+        }*/
         b.append(System.lineSeparator())
                 .append("Step Beliefs:")
                 .append(System.lineSeparator())
@@ -1474,7 +1492,7 @@ public class Belief {
         // copy things
         taskInfoAtLastStep = new HashSet<>(taskInfo);
         // clearing
-        roles.clear();
+        //roles.clear();
         things.clear();
         marker.clear();
         taskInfo.clear();
@@ -1719,11 +1737,15 @@ public class Belief {
         return reachableRoleZonesX;
     }
     
+    /**
+     * Sets the reachableGoalZones without pathfinding.
+     * 
+     * @param Set of goal zone points
+     */
     public void updateRgz(Set<Point> inSet) {
         List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
         
         for (Point inPos : inSet) {
-            //Point pos = calcPositionModulo(inPos);
             Point pos = inPos;
             Point agentPos = getPosition();     
             int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
@@ -1735,6 +1757,28 @@ public class Belief {
    
         reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
         this.reachableGoalZones = reachableGoalZonesX;
+    }
+    
+    /**
+     * Sets the reachableDispensers without pathfinding.
+     * 
+     * @param Set of dispensers
+     */
+    public void updateDisp(Set<Thing> inSet) {
+        List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
+        
+        for (Thing inThing : inSet) {
+            Point pos = new Point(inThing.x, inThing.y);
+            Point agentPos = getPosition();     
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableDispenser rdnew = new ReachableDispenser(pos,  CellType.valueOf(inThing.details), distance, direction, "x");
+            reachableDispensersX.add(rdnew);
+        }
+   
+        reachableDispensersX.sort((a, b) -> a.distance() - b.distance());
+        this.reachableDispensers = reachableDispensersX;
     }
 
     /**
