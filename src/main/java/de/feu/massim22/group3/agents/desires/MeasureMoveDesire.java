@@ -8,6 +8,7 @@ import de.feu.massim22.group3.agents.events.EventName;
 import de.feu.massim22.group3.agents.supervisor.ISupervisor;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.communication.MailService;
+import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import massim.protocol.data.TaskInfo;
@@ -19,10 +20,7 @@ import eis.iilang.Percept;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.Point;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 
@@ -42,7 +40,7 @@ public class MeasureMoveDesire extends BeliefDesire {
 
     private int basePos = 0;
 
-    private int measure_move_count = -1;
+//    private int measure_move_count = -1;
 
     private int moveStepCount = 0;
 
@@ -55,6 +53,8 @@ public class MeasureMoveDesire extends BeliefDesire {
     private MailService mailbox;
 
     private String counterPartAgent;
+
+    private int callCount = 0;
 
     public MeasureMoveDesire(Belief belief, String agent, String agentFullName, String supervisor, String direction , int InitialDistance, int BasePos, Supervisor supervisorObject,String counterPartAgent) {
         super(belief);
@@ -69,32 +69,47 @@ public class MeasureMoveDesire extends BeliefDesire {
     }
 
     public ActionInfo getNextActionInfo() {
-
         ActionInfo ai = null;
 
-        //bewerte letzten Step
-        scoreLastStep();
+        //bewerte letzten Step#
+        if (callCount > 0) {
+            scoreLastStep();
+        }
+        callCount++;
 
         // check for attached blocks and remove
         ai = checkForNeedOfDetach();
         if (!isNull(ai)) { return ai; }
 
-        ai = handleThingInDirection();
-        if (!isNull(ai)) {return ai;}
+//        ai = handleThingInDirection();
+//        if (!isNull(ai)) {return ai;}
+// ist das fehlen jetzt ein problem
 
-        checkForMeasureMates(); // maybe this has to be done earlier
+
+        checkForMeasureMates();
 
         // check for Basesituation
         ai = adjustTOBaseline();
+// oder baut das hier jetzt auf andere weise mist?
         if (!isNull(ai)) { return  ai; }
 
 //        checkForMeasureMates(); // maybe this has to be done earlier
 
-        return ActionInfo.MOVE(direction, getName());
+//        return ActionInfo.MOVE(direction, getName());
+        return getActionForMove(direction, getName());
     }
 
     @Override
     public BooleanInfo isFulfilled() {
+/*
+        Navi navi = Navi.get();
+         if (direction.equals("w") || direction.equals(("e")))
+             return new BooleanInfo((!navi.isHorizontalMapSizeInDiscover() ), getName());
+ //       if (direction.equals("n") || direction.equals(("s")))
+        else
+            return new BooleanInfo((!navi.isVerticalMapSizeInDiscover() ), getName());
+
+ */
         return new BooleanInfo((fullfilled ), getName());
     }
 
@@ -127,7 +142,8 @@ public class MeasureMoveDesire extends BeliefDesire {
     private ActionInfo checkForNeedOfDetach() {
 
 //        System.out.println(this.agent+ " Mypos:" + mypos.toString());
-        for ( Point gap :belief.getAttachedPoints()) {
+        for (Point gap: belief.getOwnAttachedPoints()) {
+//        for ( Point gap :belief.getAttachedPoints()) {
 //            System.out.print(this.agent + " GAP" + gap.toString());
             if ((Math.abs(gap.x) == 1 && gap.y == 0) || (Math.abs(gap.y) == 1 && gap.x == 0)) {
 //was                String d = DirectionUtil.getDirection(new Point(0,9),gap);
@@ -220,7 +236,8 @@ public class MeasureMoveDesire extends BeliefDesire {
         }
 
         if (!direction.equals(nextDirection)) {
-            return ActionInfo.MOVE(nextDirection, getName());
+            //return ActionInfo.MOVE(nextDirection, getName());
+            return getActionForMove(nextDirection,getName());
         }
 
         return null;
@@ -229,52 +246,59 @@ public class MeasureMoveDesire extends BeliefDesire {
 
     private void scoreLastStep() {
 
-        measure_move_count++;
         Point myPosition = belief.getPosition();
         String la = belief.getLastAction();
         String lar = belief.getLastActionResult();
-        String lap1 = "@";
         if (belief.getLastActionParams().size() > 0) {
-            lap1 = belief.getLastActionParams().get(0);
+            String lap1 = belief.getLastActionParams().get(0);
+            System.out.println(agent +" Last actions: "+ la + " " + lap1 + " " + lar + " ");
         }
         if (belief.getLastAction().equals("move")
                 && belief.getLastActionResult().equals("success")) {
             if (belief.getLastActionParams().get(0).equals(direction)) {
                 moveStepCount = moveStepCount + 1;
+                System.out.println(agent + " Movestep:" + moveStepCount + " (+1)");
             }
             if (belief.getLastActionParams().get(0).equals(DirectionUtil.oppositeDirection(direction))) {
-                if (measure_move_count > 0)
                     moveStepCount = moveStepCount - 1;
+                System.out.println(agent + " Movestep:" + moveStepCount + " (-1)");
             }
         }
     }
 
     private void checkForMeasureMates() {
 
-        System.out.println(belief.getAgentShortName() +" " + belief.getPosition().toString() + " (checkForMeasureMates)");
+//        System.out.println(belief.getAgentShortName() +" " + belief.getPosition().toString() + " (checkForMeasureMates)");
 
+        Map<String,Point> AgentPos = new HashMap<String,Point>();
+        Map<String,Point> AgentIntPos = new HashMap<String,Point>();
+        String Team = belief.getTeam();
+        Navi n = Navi.get();
+        int tsize = belief.getTeamSize();
+
+        Point MyPosition = n.getPosition(agent,supervisorObject.getName());
         Set<Thing> things = belief.getThings();
         for (Thing t : things) {
             if (t.type.equals(Thing.TYPE_ENTITY) && !(t.x == 0 && t.y == 0)) {
                 if (t.details.equals(belief.getTeam())) {
                     if (isPositionInMoveDirection(t.x, t.y, direction)) {
-                        List<Parameter> parameterList = new ArrayList<Parameter>();
-                        parameterList.add(new Identifier(direction));
-                        parameterList.add(new Identifier(getName()));
-                        Integer value = t.x * -1;
-                        parameterList.add(new Identifier(value.toString()));
-                        value = t.y * -1;
-                        parameterList.add(new Identifier(value.toString()));
-                        parameterList.add(new Identifier(Integer.valueOf(moveStepCount).toString()));
-                        parameterList.add(new Identifier(Integer.valueOf(InitialDistance).toString()));
-                        Percept p = new Percept(EventName.MEASURE_MEET.toString(), parameterList);
-                        supervisorObject.sendMessage(p, counterPartAgent , getName());
+                        Point ThingAbs = new Point(MyPosition.x+t.x,MyPosition.y+t.y);
+                        int AgentId =  n.getAgentIdAtPoint(supervisorObject.getName(),ThingAbs);
+                        if (AgentId == 0) {
+                            List<Parameter> parameterList = new ArrayList<Parameter>();
+                            parameterList.add(new Identifier(direction));
+                            parameterList.add(new Identifier(getName()));
+                            Integer value = t.x * -1;
+                            parameterList.add(new Identifier(value.toString()));
+                            value = t.y * -1;
+                            parameterList.add(new Identifier(value.toString()));
+                            parameterList.add(new Identifier(Integer.valueOf(moveStepCount).toString()));
+                            parameterList.add(new Identifier(Integer.valueOf(InitialDistance).toString()));
+                            Percept p = new Percept(EventName.MEASURE_MEET.toString(), parameterList);
+                            supervisorObject.sendMessage(p, counterPartAgent, getName());
+                        }
                     }
                 }
-
-                //irgendwo implementieren:
-                // - andere informieren, das das Desire vergeben ist !
-
             }
         }
     }
@@ -298,14 +322,9 @@ public class MeasureMoveDesire extends BeliefDesire {
         return false;
     }
 
-    /*
-    - test agains complex card ( lets see wether he diggs or not and so on ..
-     ( so we need to change the card ! )
-     */
 
     public void checkForMeeting(Percept event, Belief belief ) {
         String sendDirection;
-        String myDirection = direction; // to be refactored!!
         List<Parameter> parameters = event.getParameters();
         if (parameters.size() > 0) {
             sendDirection = String.valueOf(parameters.get(0));
@@ -313,59 +332,69 @@ public class MeasureMoveDesire extends BeliefDesire {
             for (Thing t : belief.getThings()) {
                 if (t.type.equals(Thing.TYPE_ENTITY) && t.details.equals(belief.getTeam())) {
                     if ((t.x == Integer.parseInt(String.valueOf(parameters.get(2))))
-                            && (t.y == Integer.parseInt(String.valueOf(parameters.get(3))))) {
-                            System.out.println(agent + " " +belief.getStep() + " MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
-                        if (finalWidthX == -99) {
-                            System.out.println(agent + " in FinalWidthX");
-                            if ((myDirection.equals("w") && sendDirection.equals("e") && t.x <= 0)
-                                    || (myDirection.equals("e") && sendDirection.equals("w") && t.x >= 0)) {
-                                System.out.println(belief.getStep() + " WE-MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
-                                int westeastSize = moveStepCount  // stepcount of this agent
-                                        + Integer.valueOf(String.valueOf(parameters.get(4))) //moveStepCount of Other agent
-                                        + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) // StartDistance as given by other Agent
-                                        // unclear wether the Math.abs is helpful around the start distance or not ...
-                                        + Math.abs(t.x);
-                                System.out.println("west:"+moveStepCount + "+" + Integer.valueOf(String.valueOf(parameters.get(4))) +"+"+Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) + "+"+ Math.abs(t.x));
-                                //found matching agent, size = calculated
-                                System.out.println(belief.getStep() + " The we Size is" + westeastSize);
-                                finalWidthX = westeastSize;
-                                sendPartialSize("X",westeastSize);
-                                break;
-                            }
-                        }
-                        if (finalWidthY == -99) {
-                            System.out.println(agent + " in FinalWidthY");
+                            && (t.y == Integer.parseInt(String.valueOf(parameters.get(3))))
+                            && (callCount > 0) ) {
                             System.out.println(agent + " " +belief.getStep() + " T:" + t.toString()); // we need to put the right sings into the output here, to see what we need to do ..
-                            if ((myDirection.equals("s") && sendDirection.equals("n") && t.y >= 0)
-                                    || (myDirection.equals("n") && sendDirection.equals("s") && t.y <= 0)) {
-                                System.out.println(agent +" "+ belief.getStep() + " NS-MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
-                                //found matching agent, size = calculated
-                                int northsouthSize = moveStepCount  // stepcount of this agent
-                                        + Integer.valueOf(String.valueOf(parameters.get(4))) //moveStepCount of Other agent
-                                        + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) // StartDistance as given by other Agent
-                                        + Math.abs(t.y);
-                                System.out.println("north:"+moveStepCount + "+" + Integer.valueOf(String.valueOf(parameters.get(4))) +"+"+Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) + "+"+ Math.abs(t.y));
-                                System.out.println(belief.getStep() + " The ns Size is" + northsouthSize);
-                                finalWidthY = northsouthSize;
-                                sendPartialSize("Y",northsouthSize);
+                            System.out.println(agent + " " +belief.getStep() + " MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
+                            Navi navi = Navi.get();
+//                        if (finalWidthX == -99) {
+//                            System.out.println(agent + " in FinalWidthX");
+                            if ((direction.equals("w") && sendDirection.equals("e") && t.x <= 0)
+                                    || (direction.equals("e") && sendDirection.equals("w") && t.x >= 0)) {
+
+                                if (navi.isHorizontalMapSizeInDiscover()) {
+                                    System.out.println(agent + " " + belief.getStep() + " WE-MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
+                                    int westeastSize = moveStepCount  // stepcount of this agent
+                                            + Integer.valueOf(String.valueOf(parameters.get(4))) //moveStepCount of Other agent
+                                            + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) // StartDistance as given by other Agent
+                                            // unclear wether the Math.abs is helpful around the start distance or not ...
+                                            + Math.abs(t.x);
+                                    System.out.println(agent + " " +"west:" + moveStepCount + "+" + Integer.valueOf(String.valueOf(parameters.get(4))) + "+" + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) + "+" + Math.abs(t.x));
+                                    //found matching agent, size = calculated
+                                    System.out.println(agent + " " + belief.getStep() + " The we Size is" + westeastSize);
+//                                finalWidthX = westeastSize;
+                                    navi.setHorizontalMapSize(westeastSize);
+//                                sendPartialSize();
+                                }
+                                fullfilled = true;
                                 break;
                             }
-                        }
+//                        }
+//                        if (finalWidthY == -99) {
+//                            System.out.println(agent + " in FinalWidthY");
+                            if ((direction.equals("s") && sendDirection.equals("n") && t.y >= 0)
+                                    || (direction.equals("n") && sendDirection.equals("s") && t.y <= 0)) {
+                                if (navi.isVerticalMapSizeInDiscover()) {
+                                    System.out.println(agent + " " + belief.getStep() + " NS-MEET:" + parameters.get(0) + " " + parameters.get(1) + " " + parameters.get(2) + " " + parameters.get(3));
+                                    //found matching agent, size = calculated
+                                    int northsouthSize = moveStepCount  // stepcount of this agent
+                                            + Integer.valueOf(String.valueOf(parameters.get(4))) //moveStepCount of Other agent
+                                            + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) // StartDistance as given by other Agent
+                                            + Math.abs(t.y);
+                                    System.out.println(agent + " " + "north:" + moveStepCount + "+" + Integer.valueOf(String.valueOf(parameters.get(4))) + "+" + Math.abs(Integer.valueOf(String.valueOf(parameters.get(5)))) + "+" + Math.abs(t.y));
+                                    System.out.println(agent + " " + belief.getStep() + " The ns Size is" + northsouthSize);
+//                                finalWidthY = northsouthSize;
+                                    navi.setVerticalMapSize(northsouthSize);
+//                                sendPartialSize();
+                                }
+                                fullfilled = true;
+                                break;
+                            }
+//                        }
                     }
                 }
             }
         }
     }
 
-    private void sendPartialSize(String axis,int size) {
-
+/*
+    private void sendPartialSize() {
         List<Parameter> parameterList = new ArrayList<Parameter>();
-        parameterList.add(new Identifier(axis));
-        parameterList.add(new Identifier(Integer.valueOf(size).toString()));
+//        parameterList.add(new Identifier(axis));
+//        parameterList.add(new Identifier(Integer.valueOf(size).toString()));
         Percept p = new Percept(EventName.SIZE_SEND.toString(), parameterList);
         supervisorObject.sendMessage(p,supervisorObject.getName(),agent);
-        System.out.println("sendPartialSize by "+supervisorObject.getName()+ " Value:"+size + " Axis:"+axis);
+//        System.out.println("sendPartialSize by "+supervisorObject.getName()+ " Value:"+size + " Axis:"+axis);
     }
-
-
+*/
 }

@@ -75,7 +75,11 @@ public class MeasureMapDesire  extends BeliefDesire {
 
     @Override
     public BooleanInfo isFulfilled() {
-       return new BooleanInfo(!(widthX == -99 || widthY == -99),"Fulfillmentstate");
+        return fulfilled;
+    }
+
+    public void setFulfilled(Boolean value) {
+        fulfilled = new BooleanInfo(value,"Measurement done");
     }
 
     public BooleanInfo isUnfulfillable() {
@@ -85,10 +89,15 @@ public class MeasureMapDesire  extends BeliefDesire {
     @Override
     public BooleanInfo isExecutable() {
 
-        if (this.AgentList.size() >4) // Need 5 Agents for 4 directions and a supervisor
+//        if (this.AgentList.size() >3) {// Need 4 Agents for 4 directions
+        if (this.AgentList.size() >4) {// Need 5 Agents for 4 directions and a supervisor
+//            System.out.println("Enough agents :" + supervisor.getName());
             return new BooleanInfo(true, "Enough Agents");
-        else
+        }
+        else {
+//            System.out.println("Not Enough agents :" + supervisor.getName());
             return new BooleanInfo(false, "Not enough Agents");
+        }
     }
 
     @Override
@@ -97,6 +106,10 @@ public class MeasureMapDesire  extends BeliefDesire {
 
         if (!this.initialized)
         {
+            Navi navi = Navi.get();
+            navi.setHorizontalMapSizeInDiscover(true);
+            navi.setVerticalMapSizeInDiscover(true);
+
             this.initialize();
 
             // send all other, not to start measurement too
@@ -139,6 +152,7 @@ public class MeasureMapDesire  extends BeliefDesire {
                 this.supervisor.sendMessage(p,ActionAgent,supervisor.getName());
 
         }
+        fulfilled = new BooleanInfo(true,"Supervisor did its job");
        }
 
         return ActionInfo.SKIP("SuperVisor does not move");
@@ -160,6 +174,12 @@ public class MeasureMapDesire  extends BeliefDesire {
         List<Integer> freeIndexes = new ArrayList<Integer>();
 
         List<java.awt.Point> AgentPositions = new ArrayList<Point>();
+/*
+        for(int i = 0; i<4; i++) {
+            AgentPositions.add(this.navi.getPosition(this.AgentList.get(i), this.supervisor.getName()));
+            freeAgents.add(this.AgentList.get(i));
+        }
+*/
         for(int i = 0; i<5; i++) {
             if (!this.AgentList.get(i).equals(this.supervisor.getName())) {
                 AgentPositions.add(this.navi.getPosition(this.AgentList.get(i), this.supervisor.getName()));
@@ -167,10 +187,10 @@ public class MeasureMapDesire  extends BeliefDesire {
             }
         }
 
+
         for (int i = 0; i<freeAgents.size(); i++) {
             System.out.println(freeAgents.get(i) + " "+ AgentPositions.get(i).toString());
         }
-
 
         if (AgentPositions.get(0).y < AgentPositions.get(1).y) {
             northindex = 0;
@@ -215,7 +235,7 @@ public class MeasureMapDesire  extends BeliefDesire {
         WestEastBasePos = (AgentPositions.get(eastindex).y+ AgentPositions.get(westindex).y)/2;
 
         for(Map.Entry m:AgentDirections.entrySet()){
-            System.out.println(m.getKey()+" "+m.getValue());
+            System.out.println(m.getKey()+" "+m.getValue() + " " + supervisor.getName());
         }
 
         System.out.println("INIT: NSDist:"+NorthSouthDistance+ " NSBasePos: "+ NorthSouthBasePos + "INIT: WEDist:"+WestEastDistance+ " WEBasePos: "+ WestEastBasePos);
@@ -231,6 +251,8 @@ public class MeasureMapDesire  extends BeliefDesire {
         return new Percept(EventName.MEASURE_MOVE.toString(),parameterList);
     }
 
+
+/*
     public void SizeValueSend(Percept event) {
 
         List<Parameter> parameters = event.getParameters();
@@ -253,7 +275,7 @@ public class MeasureMapDesire  extends BeliefDesire {
             }
         }
     }
-
+*/
     public void setUnfulfillable(Boolean value) { unfulfillable = value;}
 
 

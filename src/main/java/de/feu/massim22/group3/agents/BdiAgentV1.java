@@ -69,6 +69,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
     private ISupervisor supervisor;
     private int index;
     private boolean merging = false;
+
+    private boolean didSendMeasurementStarted = false;
     
     /**
      * Instantiates a new Instance of BdiAgentV1.
@@ -397,6 +399,8 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                     }
                 break;
             }
+
+/*
             case MEASURE_DONE: {
                 IDesire temp = getDesireByName("MeasureMoveDesire");
                 if (!isNull(temp)) {
@@ -405,8 +409,39 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 }
                 break;
             }
+
+ */
+
         case SIZE_SEND: {
             say("size send recieved");
+/*
+            List<Parameter> parameters = event.getParameters();
+            if (parameters.size() > 0) {
+                String axis = PerceptUtil.toStr(parameters, 0);
+                int value = Integer.parseInt(PerceptUtil.toStr(parameters, 1));
+                switch (axis.toLowerCase()) {
+                    case "x" :
+                        navi.setHorizontalMapSize(value);
+                        break;
+                    case "y" :
+                        navi.setVerticalMapSize(value);
+                        break;
+                }
+
+ */
+/*
+            Navi navi = Navi.get();
+            if (!navi.isVerticalMapSizeInDiscover() && !navi.isHorizontalMapSizeInDiscover()) {
+                IDesire temp = getDesireByName("MeasureMapDesire");
+                if (!isNull(temp)) {
+                    MeasureMapDesire mmd = (MeasureMapDesire)temp;
+                    mmd.setFulfilled(true);
+                }
+            }
+
+ */
+            break;
+/*
             IDesire temp = getDesireByName("MeasureMapDesire");
 
             if (!isNull(temp)) {
@@ -414,8 +449,11 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 mmd.SizeValueSend(event);
             }
             break;
+
+ */
         }
             case SEND_MEASUREMENT_STARTED: {
+                didSendMeasurementStarted = true;
                 List<Parameter> parameterList = new ArrayList<Parameter>();
                 parameterList.add(new Identifier(getName()));
                 Percept message = new Percept(EventName.MEASUREMENT_STARTED.toString(),parameterList);
@@ -424,32 +462,45 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             }
 
             case MEASUREMENT_STARTED: {
-                List<Parameter> parameters = event.getParameters();
 
-                if (parameters.size() > 0) {
-                    String MeasurementSupervisor = PerceptUtil.toStr(parameters, 0);
+                Boolean doSomething = true;
 
-                    if (!MeasurementSupervisor.equals(getName()) && !MeasurementSupervisor.equals(supervisor.getName())) {
+                if (sender.equals(supervisor.getName())) {
+                    doSomething = false;
+                } else {
+                    if (sender.compareTo(supervisor.getName()) == 1){
+                        doSomething = false;
+                    }
+                }
 
-                        MeasureMapDesire MMapDesire = null;
-                        MeasureMoveDesire MMoveDesire = null;
+                if (doSomething) {
+                    List<Parameter> parameters = event.getParameters();
 
-                        for (IDesire d : desires) {
-                            if (d.getName().equals("MeasureMapDesire")) {
-                                MMapDesire = (MeasureMapDesire) d;
-                                break;
+                    if (parameters.size() > 0) {
+                        String MeasurementSupervisor = PerceptUtil.toStr(parameters, 0);
+
+                        if (!MeasurementSupervisor.equals(getName()) && !MeasurementSupervisor.equals(supervisor.getName())) {
+
+                            MeasureMapDesire MMapDesire = null;
+                            MeasureMoveDesire MMoveDesire = null;
+
+                            for (IDesire d : desires) {
+                                if (d.getName().equals("MeasureMapDesire")) {
+                                    MMapDesire = (MeasureMapDesire) d;
+                                    break;
+                                }
+                                if (d.getName().equals("MeasureMoveDesire")) {
+                                    MMoveDesire = (MeasureMoveDesire) d;
+                                    break;
+                                }
+
                             }
-                            if (d.getName().equals("MeasureMoveDesire")) {
-                                MMoveDesire = (MeasureMoveDesire) d;
-                                break;
+                            if (!isNull(MMapDesire)) {
+                                MMapDesire.setUnfulfillable(true);
                             }
-
-                        }
-                        if (!isNull(MMapDesire)) {
-                            MMapDesire.setUnfulfillable(true);
-                        }
-                        if (!isNull(MMoveDesire)) {
-                            MMoveDesire.setUnfulfillable(true);
+                            if (!isNull(MMoveDesire)) {
+                                MMoveDesire.setUnfulfillable(true);
+                            }
                         }
                     }
                 }
