@@ -6,8 +6,12 @@
     <groupId>de.feu.massim</groupId>
     <artifactId>group3</artifactId>
     <version>2022-1.0</version>
-    <name>Fachpraktikum KI: Multiagentenprogrammierung - Gruppe 3 - SS 22 FernUniversität Hagen</name>
-    <description>TEST TEST</description>
+    <name>Multiagent Programming - Group 3 - SS 22 FernUniversität in Hagen</name>
+    <description>
+        <![CDATA[This site provides a technical documentation of the project "Multiagent Programming - Group 3" which was created by four computer science students at the Fernuniversität in Hagen Summer 2022.
+        It contains data about project dependencies and code documentation in the form of JavaDoc, which can be found in the "Project Reports" section.
+        ]]>
+        </description>
     <url>https://github.com/h1Modeling/ss22_fp_mapc_gruppe3</url>
     <inceptionYear>2022</inceptionYear>
     <developers>
