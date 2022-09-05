@@ -84,9 +84,9 @@ public class MapCellReport {
     }
     
     /**
-     * Creates a new <code>MapCellReport> with CellType.UNKNOWN and ZoneType.NONE.
+     * Creates a new <code>MapCellReport</code> with CellType.UNKNOWN and ZoneType.NONE.
      * 
-     * @return a new <code>MapCellReport> with CellType.UNKNOWN and ZoneType.NONE
+     * @return a new <code>MapCellReport</code> with CellType.UNKNOWN and ZoneType.NONE
      */
     static MapCellReport createEmpty() {
         return new MapCellReport(CellType.UNKNOWN, ZoneType.NONE, -1, 0);

@@ -75,7 +75,7 @@ class ReportListTest {
 
     /**
      * Tests if two lists get correctly merged with a combined list size that results in an overflow.
-     * @throws InterruptedException
+     * @throws InterruptedException when the Thread was interrupted while waiting
      */
     @Test
     void testMerge() throws InterruptedException {
@@ -108,7 +108,7 @@ class ReportListTest {
     
     /**
      * Tests if two lists get correctly merged with a combined list size smaller than the internal list size.
-     * @throws InterruptedException
+     * @throws InterruptedException when the Thread was interrupted while waiting
      */
     @Test
     void testMerge2() throws InterruptedException {

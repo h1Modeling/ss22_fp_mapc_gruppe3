@@ -36,7 +36,7 @@ class MapCellTest {
 
     /**
      * Tests if two cells can be successfully merged without loosing information.
-     * @throws InterruptedException
+     * @throws InterruptedException when the Thread was interrupted while waiting
      */
     @Test
     void testMergeIntoCell() throws InterruptedException {
