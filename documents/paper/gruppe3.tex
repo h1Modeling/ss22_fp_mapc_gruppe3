@@ -62,8 +62,8 @@ Als Folge dessen entschied sich der Autor mit dem Aufbau der Wissensverwaltung (
 \caption{Architekturdiagramm Agent V1}
 \label{g3:architecture}
 \end{wrapfigure}
-Das Agentensystem V1 wurde federführend vom Autor konzipiert, in der Gruppe abgestimmt und schließlich selbstständig implementiert. Es erweitert das BDI-Konzept \cite{Bratman1987} um zusätzliche Daten-, Berechnungs- und Entscheidungsebenen, die in Abbildung \ref{g3:architecture} illustriert sind. \\
-Das System kombiniert den Aufbau eines BDI-Agenten mit einer bidirektionalen vertikalen Schichtarchitektur \cite[S. 61-62]{Weiss2000}, auf die in Abschnitt
+Das Agentensystem V1 wurde vom Autor konzipiert, in der Gruppe abgestimmt und schließlich selbstständig implementiert. Es erweitert das BDI-Konzept \cite{Bratman1987} um zusätzliche Daten-, Berechnungs- und Entscheidungsebenen, die in Abbildung \ref{g3:architecture} illustriert sind. \\
+Das System kombiniert den Aufbau eines BDI-Agenten (vgl. \cite[S. 58]{Weiss2000}) mit einer bidirektionalen vertikalen Schichtarchitektur \cite[S. 61-62]{Weiss2000}, auf die in Abschnitt
 \ref{absichtsfindung} näher eingegangen wird.
 
 Jeder Agent wurde mit einer Vorgesetzteninstanz, die eine zusätzliche Entscheidungsebene bildet, kombiniert und in einem Thread parallelisiert. Werden Agenten zu einer Gruppe zusammengeführt, bleibt eine Vorgesetzeninstanz aktiv. Die sonstigen Instanzen der Gruppe werden passiv und übernehmen im Weiteren nur noch die Weiterleitung von Nachrichten an die aktive Entität.
@@ -74,14 +74,14 @@ Agentengruppen aktualisieren eine gemeinsame Karte mit im Simulationsverlauf erh
 
 
 \subsection{Wissensverwaltung}\label{wissensverwaltung}
-Jeder Agent hat Zugriff auf eine individuelle Wissensbasis, seine Beliefs, die von der Simulation bereitgestellte Informationen auswertet und speichert. \\
-Die Details in der Wissensbasis über das Simulationsgebiets beschränkt sich auf das aktuelle Sichtfeld des Agenten. Es ist weder die Größe des Simulationsgebiets, noch die absolute Position des Agenten in diesem bekannt. 
-Aus diesem Grund werden aktuelle Daten aus dem Sichtfeld aller Agenten einer Gruppe an das Navigationsmodul gesendet, das diese in einer Karten-Datenstruktur chronologisch persistiert. Die Karte schafft somit agentenübergreifend ein Gedächnis über deren Umgebung.
+Jeder Agent hat Zugriff auf eine individuelle Wissensbasis (Beliefs), die von der Simulation bereitgestellte Informationen auswertet und speichert. \\
+Die enthaltenen Umgebungsdaten, beschränken sich auf das aktuelle Sichtfeld des Agenten. Es ist weder die Größe des Simulationsgebiets, noch die absolute Position des Agenten in diesem bekannt. 
+Um aus den partiellen Umgebungsinformationen eine globale Sicht zu erhalten, werden diese an das Navigationsmodul weitergeleitet und in einer chronologisch fortgeschriebenen Karte zusammengeführt.
 
-Beim Simulationsstart erhält jeder Agent eine Initialkarte mit festgelegter Größe (Abb. \ref{Karte} Punkt 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Punkt 2). Treffen sich zwei Agenten, die nicht in der gleichen Gruppe sind, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen weitergeleitet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden die Gruppen vereinigt und deren Karten überlagert und schließlich zusammengeführt (Abb. \ref{Karte} Punkt 3). Wurde die Kartengröße durch einzelne Agenten erfolgreich ermittelt, wird die Karte beschnitten, wobei die Informationen abgeschnittener Spalten auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen.
+Beim Simulationsstart erhält jeder Agent, eine Karte mit festgelegter Initialgröße (Abb. \ref{Karte} Punkt 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Punkt 2). Treffen sich zwei Agenten aus unterschiedlichen Gruppen, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen gemeldet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden deren Karten überlagert und schließlich zusammengeführt (Abb. \ref{Karte} Punkt 3). Die zusammengeführte Karte ermöglicht nun im weiteren Simulationsverlauf die aktuelle Position aller Agenten einer Gruppe untereinander zu bestimmen. Aus dieser Information kann nun durch jeweils zwei Agenten, die sich in entgegengesetzte Richtungen bewegen und sich durch das kontinuierliche Simulationsgebiet zwangsläufig wieder treffen, die Kartengröße ermittelt werden. Ist dies erfolgt, wird die Karte beschnitten, wobei die Informationen abgeschnittener Bereiche auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen (Abb. \ref{Karte} Punkt 4).
 \begin{figure}[h]
 \includegraphics{./Referenzen/Kartenmerge.pdf}
-\caption{Gruppenkarte}
+\caption{Erweiterung und Zusammenführung einzelner Karten}
 \label{Karte}
 \end{figure}
 
