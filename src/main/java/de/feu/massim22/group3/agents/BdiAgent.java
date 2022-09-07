@@ -15,8 +15,19 @@ import de.feu.massim22.group3.communication.MailService;
  */
 public abstract class BdiAgent<T> extends Agent {
     
+    /**
+     * The Belief of the agent.
+     */
     protected Belief belief;
+
+    /**
+     * A List containing the current Desires of the agent.
+     */
     protected List<T> desires = new ArrayList<T>();
+
+    /**
+     * The current Intention of the agent.
+     */
     protected IIntention intention;
 
     /**
@@ -48,6 +59,11 @@ public abstract class BdiAgent<T> extends Agent {
         return desires;
     }
     
+    /**
+     * Gets the current intention of the agent.
+     * 
+     * @return the intention of the agent.
+     */
     public IIntention getIntention() {
        return this.intention;
     }

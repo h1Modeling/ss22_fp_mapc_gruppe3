@@ -94,18 +94,7 @@ public class MapPanel extends JPanel {
         if (selectedCell.x >= 0 && selectedCell.y >= 0 && 
             data.map()[selectedCell.y][selectedCell.x] == CellType.TEAMMATE) {
             String name = data.agentPosition().get(selectedCell);
-            selectedAgentName = name;
             debugger.selectAgent(name);
-            
-            // Get index of selected agent for pathfinding results
-            List<String> agents = data.agents();
-            for (int i = 0; i < agents.size(); i++) {
-                String agent = agents.get(i);
-                if (name != null && name.equals(agent)) {
-                    selectedAgentIndex = i;
-                    break;
-                }
-            }
         } else {
             debugger.selectAgent(null);
             selectedAgentIndex = -1;
@@ -196,12 +185,25 @@ public class MapPanel extends JPanel {
                 }
             }
 
+            // Marker
+            for (Point p : data.marker()) {
+                if (p != null) {
+                    Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX, p.y * cellWidth + offsetY, cellWidth, cellWidth);
+                    g2d.setColor(new Color(249,240, 107));
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(0.4f));
+                    g2d.fill(rect);
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(1f));
+                }
+            }
+
             // Interesting Points Distances
             g2d.setStroke(new BasicStroke(2));
             for (int i = 0; i< data.interestingPoints().size(); i++) {
                 InterestingPoint ip = getInterestingPoint(i);
                 if (ip != null) {
                     Point p = ip.point();
+                    double agentOffset = ip.cellType() == CellType.TEAMMATE ? 0.75 : 0;
+                    Rectangle2D.Double textRect = new Rectangle2D.Double(p.x * cellWidth + offsetX + 1, (p.y - agentOffset) * cellWidth + offsetY + 1, cellWidth - 2, cellWidth - 2);
                     Rectangle2D.Double rect = new Rectangle2D.Double(p.x * cellWidth + offsetX + 1, p.y * cellWidth + offsetY + 1, cellWidth - 2, cellWidth - 2);
                     g2d.setColor(new Color(38,162, 255));
                     g2d.draw(rect);   
@@ -210,7 +212,7 @@ public class MapPanel extends JPanel {
                         PathFindingResult[][] groupResult = data.pathFindingResult();
                         PathFindingResult result = groupResult[selectedAgentIndex][i];
                         String distance = String.valueOf(result.distance());
-                        CellUtils.drawCenteredString(g2d, distance, rect, Color.BLACK);
+                        CellUtils.drawCenteredString(g2d, distance, textRect, Color.BLACK);
                     }
                 }
             }
@@ -297,6 +299,24 @@ public class MapPanel extends JPanel {
 
     private synchronized InterestingPoint getInterestingPoint(int index) {
         return data.interestingPoints().size() > index ? data.interestingPoints().get(index) : null;
+    }
+
+    /**
+     * Selects the agent in the map and shows it's path finding information.
+     * 
+     * @param name the name of the agent
+     */
+    synchronized void selectAgent(String name) {
+        selectedAgentName = name;
+        // Get index of selected agent for pathfinding results
+        List<String> agents = data.agents();
+        for (int i = 0; i < agents.size(); i++) {
+            String agent = agents.get(i);
+            if (name != null && name.equals(agent)) {
+                selectedAgentIndex = i;
+                break;
+            }
+        }
     }
 
     /**

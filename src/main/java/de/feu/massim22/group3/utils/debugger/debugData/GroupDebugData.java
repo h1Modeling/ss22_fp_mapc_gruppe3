@@ -21,11 +21,12 @@ import java.awt.Point;
  * @param roleZones all discovered role zones by the group
  * @param goalZones all discovered goal zones by the group
  * @param agents a list of all agent names
+ * @param marker a list of marker indicating future clear regions
  * 
  * @author Heinz Stadler
  */
 public record GroupDebugData(String supervisor, CellType[][] map, Point mapTopLeft, 
     List<InterestingPoint> interestingPoints, PathFindingResult[][] pathFindingResult,
     Map<Point, String> agentPosition, List<Point> roleZones, List<Point> goalZones,
-    List<String> agents) {
+    List<String> agents, List<Point> marker) {
 }

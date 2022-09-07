@@ -1,19 +1,15 @@
 package de.feu.massim22.group3.agents.V2utils;
 
-//import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.*;
 import massim.protocol.data.*;
 
-//import java.awt.*;
-import java.nio.FloatBuffer;
 
 /**
  * The class <code>StepUtilities</code> contains all the methods that are necessary for the correct sequence of a single step .
@@ -297,13 +293,13 @@ public class StepUtilities {
         Point newPosAgent = null;
         
         GameMap newMap = navi.getMaps().get(supervisorGroup.getName());
-        GameMap oldMap = navi.getMaps().get(supervisorToMerge.getName());
+        // GameMap oldMap = navi.getMaps().get(supervisorToMerge.getName());
 
-        Point refPoint = newPosAgentFound;
-        Point foreignRefPoint = Point.castToPoint(agentFound.getBelief().getPosition());
+        // Point refPoint = newPosAgentFound;
+        // Point foreignRefPoint = Point.castToPoint(agentFound.getBelief().getPosition());
         
         // Merge Map
-        Point offset = Point.castToPoint(newMap.mergeIntoMap(oldMap, foreignRefPoint, refPoint));
+        // Point offset = Point.castToPoint(newMap.mergeIntoMap(oldMap, foreignRefPoint, refPoint));
         navi.getMaps().put(supervisorGroup.getName(), newMap);
          
         List<String> agentsSupervisorGroup = supervisorGroup.getAgents();        
@@ -346,7 +342,6 @@ public class StepUtilities {
         List<String> agents = supervisor.getAgents();
         List<Percept> percepts = new ArrayList<>();
         List<CalcResult> calcResults = new ArrayList<>();
-        FloatBuffer mapBuffer = navi.getMapBuffer(supervisor.getName());
 
         int maxNumberGoals = 64;
         List<InterestingPoint> interestingPoints = navi.getInterestingPoints(supervisor.getName(), maxNumberGoals);

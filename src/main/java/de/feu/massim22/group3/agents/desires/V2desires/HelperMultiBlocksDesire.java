@@ -282,7 +282,7 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
         
         return result;
     }
-    
+    /*
     private boolean existsCommonEdge(Point p2) {
         for (java.awt.Point p1 : DirectionUtil.getCellsIn4Directions()) {
             if ((Math.abs(p2.x - p1.x) == 0 && Math.abs(p2.y - p1.y) == 1)
@@ -293,6 +293,6 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
         }
 
         return false;
-    }
+    } */
 }
 

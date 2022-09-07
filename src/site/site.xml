@@ -15,7 +15,7 @@
   </custom>
   <bannerLeft>
     <name>Icon</name>
-    <src>/images/banner.png</src>
+    <src>/images/banner.svg</src>
     <href>/index.html</href>
     <width>210</width>
   </bannerLeft>

@@ -23,9 +23,9 @@ public enum Status {
     ReadyToSubmit("rts"),
     Submitted("sub");
 
-    private String type;
+    // private String type;
 
     private Status(String type) {
-        this.type = type;
+        // this.type = type;
     }
 }

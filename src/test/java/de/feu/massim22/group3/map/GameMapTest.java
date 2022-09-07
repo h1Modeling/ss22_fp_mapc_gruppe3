@@ -72,7 +72,7 @@ class GameMapTest {
     
     /**
      * Tests if two maps get correctly merged if the game map size isn't discovered yet.
-     * @throws InterruptedException
+     * @throws InterruptedException when the Thread was interrupted while waiting
      */
     @Test
     void testMergeIntoMapUndiscovered() throws InterruptedException {
@@ -87,7 +87,7 @@ class GameMapTest {
 
     /**
      * Tests if two maps get correctly merged if the game map size is already discovered.
-     * @throws InterruptedException
+     * @throws InterruptedException when the Thread was interrupted while waiting
      */
     @Test
     void testMergeIntoMapDiscovered() throws InterruptedException {

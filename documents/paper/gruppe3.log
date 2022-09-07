@@ -2,15 +2,15 @@ This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (prel
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**gruppe3.tex
-(./gruppe3.tex
-LaTeX2e <2021-11-15> patch level 1
-L3 programming layer <2022-04-10> (./llncs.cls
+**./gruppe3.tex
+(gruppe3.tex
+LaTeX2e <2022-06-01> patch level 5
+L3 programming layer <2022-07-04> (llncs.cls
 Document Class: llncs 2022/01/12 v2.21 
  LaTeX document class for Lecture Notes in Computer Science
-(/usr/share/texmf-dist/tex/latex/base/article.cls
+(D:\Program Files\MiKTeX\tex/latex/base\article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
-(/usr/share/texmf-dist/tex/latex/base/size10.clo
+(D:\Program Files\MiKTeX\tex/latex/base\size10.clo
 File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
@@ -25,10 +25,10 @@ File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
 )
-(/usr/share/texmf-dist/tex/latex/tools/multicol.sty
+(D:\Program Files\MiKTeX\tex/latex/tools\multicol.sty
 Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \c@tracingmulticols=\count193
-\mult@box=\box50
+\mult@box=\box51
 \multicol@leftmargin=\dimen139
 \c@unbalance=\count194
 \c@collectmore=\count195
@@ -41,14 +41,13 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \postmulticols=\dimen143
 \multicolsep=\skip49
 \multicolbaselineskip=\skip50
-\partial@page=\box51
-\last@line=\box52
+\partial@page=\box52
+\last@line=\box53
 \maxbalancingoverflow=\dimen144
-\mult@rightbox=\box53
-\mult@grightbox=\box54
-\mult@firstbox=\box55
-\mult@gfirstbox=\box56
-\@tempa=\box57
+\mult@rightbox=\box54
+\mult@grightbox=\box55
+\mult@firstbox=\box56
+\mult@gfirstbox=\box57
 \@tempa=\box58
 \@tempa=\box59
 \@tempa=\box60
@@ -84,17 +83,18 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \@tempa=\box90
 \@tempa=\box91
 \@tempa=\box92
+\@tempa=\box93
 \c@minrows=\count199
 \c@columnbadness=\count266
 \c@finalcolumnbadness=\count267
 \last@try=\dimen145
 \multicolovershoot=\dimen146
 \multicolundershoot=\dimen147
-\mult@nat@firstbox=\box93
-\colbreak@box=\box94
+\mult@nat@firstbox=\box94
+\colbreak@box=\box95
 \mc@col@check@num=\count268
 )
-(/usr/share/texmf-dist/tex/latex/oberdiek/aliascnt.sty
+(D:\Program Files\MiKTeX\tex/latex/oberdiek\aliascnt.sty
 Package: aliascnt 2018/09/07 v1.5 Alias counters (HO)
 )
 \c@chapter=\count269
@@ -125,10 +125,10 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
 \c@@auth=\count272
 \c@auco=\count273
 \instindent=\dimen159
-\authrun=\box95
+\authrun=\box96
 \authorrunning=\toks16
 \tocauthor=\toks17
-\titrun=\box96
+\titrun=\box97
 \titlerunning=\toks18
 \toctitle=\toks19
 \c@theorem=\count274
@@ -148,62 +148,73 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
 \c@remark=\count288
 \headlineindent=\dimen160
 )
-(/usr/share/texmf-dist/tex/latex/base/fontenc.sty
+(D:\Program Files\MiKTeX\tex/latex/base\fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 )
-(/usr/share/texmf-dist/tex/latex/graphics/graphicx.sty
+(D:\Program Files\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+(D:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks20
 )
-(/usr/share/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+(D:\Program Files\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texmf-dist/tex/latex/graphics/trig.sty
+(D:\Program Files\MiKTeX\tex/latex/graphics\trig.sty
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
-(/usr/share/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+(D:\Program Files\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
 
-(/usr/share/texmf-dist/tex/latex/graphics-def/pdftex.def
+(D:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen161
 \Gin@req@width=\dimen162
 )
-(/usr/share/texmf-dist/tex/generic/babel/babel.sty
-Package: babel 2022/02/26 3.73 The Babel package
+(D:\Program Files\MiKTeX\tex/generic/babel\babel.sty
+Package: babel 2022/06/26 3.77 The Babel package
 \babel@savecnt=\count289
 \U@D=\dimen163
-\l@unhyphenated=\language87
+\l@unhyphenated=\language79
 
-(/usr/share/texmf-dist/tex/generic/babel/txtbabel.def)
+(D:\Program Files\MiKTeX\tex/generic/babel\txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count290
 
-(/usr/share/texmf-dist/tex/generic/babel-german/ngerman.ldf
+*************************************
+* Local config file bblopts.cfg used
+*
+(D:\Program Files\MiKTeX\tex/latex/arabi\bblopts.cfg
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
+ babel
+)
+(D:\Program Files\MiKTeX\tex/latex/babel-german\ngerman.ldf
 Language: ngerman 2021/02/27 v2.13 German support for babel (post-1996 orthogra
 phy)
 
-(/usr/share/texmf-dist/tex/generic/babel-german/ngermanb.ldf
+(D:\Program Files\MiKTeX\tex/latex/babel-german\ngermanb.ldf
 Language: ngermanb 2021/02/27 v2.13 German support for babel (post-1996 orthogr
 aphy)
 Package babel Info: Making " an active character on input line 122.
 )))
-(/usr/share/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+(D:\Program Files\MiKTeX\tex/generic/babel/locale/de\babel-ngerman.tex
+Package babel Info: Importing font and identification data for ngerman
+(babel)             from babel-de.ini. Reported on input line 11.
+)
+(D:\Program Files\MiKTeX\tex/latex/wrapfig\wrapfig.sty
 \wrapoverhang=\dimen164
 \WF@size=\dimen165
 \c@WF@wrappedlines=\count291
-\WF@box=\box97
+\WF@box=\box98
 \WF@everypar=\toks21
 Package: wrapfig 2003/01/31  v 3.6
 )
-(/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2022-04-14 L3 backend support: PDF output (pdfTeX)
+(D:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-07-01 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count292
 \l__pdf_internal_box=\box98
 ) (./gruppe3.aux
@@ -230,11 +241,11 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
- (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+ (D:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count293
 \scratchdimen=\dimen166
-\scratchbox=\box99
+\scratchbox=\box100
 \nofMPsegments=\count294
 \nofMParguments=\count295
 \everyMPshowfont=\toks22
@@ -243,14 +254,13 @@ LaTeX Font Info:    ... okay on input line 23.
 \MPnumerator=\count297
 \makeMPintoPDFobject=\count298
 \everyMPtoPDFconversion=\toks23
-) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+) (D:\Program Files\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
 
-(/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
+(D:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 44.
@@ -259,7 +269,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
 4.
 
-(/usr/share/texmf-dist/tex/latex/base/t1cmtt.fd
+(D:\Program Files\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 <./Referenzen/Architekturdiagramm.pdf, id=1, 194.28864pt x 166.82513pt>
@@ -287,7 +297,7 @@ Underfull \hbox (badness 1005) in paragraph at lines 65--68
 
 
 Overfull \hbox (28.47298pt too wide) in paragraph at lines 65--68
-\T1/cmr/m/n/10 [[]] um zu-sätz-li-che Daten-, Berechnungs-
+\T1/cmr/m/n/10 [[]] um zu-sï¿½tz-li-che Daten-, Berechnungs-
  []
 
 <./Referenzen/Kartenmerge.pdf, id=14, 361.59668pt x 161.634pt>

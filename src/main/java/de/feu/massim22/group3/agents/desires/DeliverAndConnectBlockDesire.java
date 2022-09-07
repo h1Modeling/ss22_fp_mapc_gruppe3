@@ -67,6 +67,9 @@ public class DeliverAndConnectBlockDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isUnfulfillable() {
+        if (belief.getReachableGoalZones().size() == 0) {
+            return new BooleanInfo(true, "goal zone lost");
+        }
         if (belief.getStep() > task.deadline) {
             belief.setGroupDesireBlockDetail("");
             belief.setGroupDesirePartner("");

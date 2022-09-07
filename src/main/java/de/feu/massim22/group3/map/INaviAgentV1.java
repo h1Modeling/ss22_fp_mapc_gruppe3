@@ -41,7 +41,7 @@ public interface INaviAgentV1 extends INavi {
      */
     PathFindingResult[][] updateMapAndPathfind(String supervisor, String agent, int agentIndex, Point position, int vision, Set<Thing> things,
             List<Point> goalPoints, List<Point> rolePoints, int step, String team, int maxSteps, int score,
-            Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedPoints);
+            Set<NormInfo> normsInfo, Set<TaskInfo> taskInfo, List<Point> attachedPoints, List<Point> marker);
     
     /**
      * Sends current agent data to the <code>GraphicalDebugger</code>.
@@ -57,7 +57,7 @@ public interface INaviAgentV1 extends INavi {
      * @param groupDesirePartner the name of the team mate which performs a group desire with the agent
      * @param groupDesireBlock the block on which the group desire is based on
      * @param attachedThingsDebugString a String containing information about the attached things of the agent
-     * @see GraphicalDebugger
+     * @see de.feu.massim22.group3.utils.debugger.GraphicalDebugger
      */
     void updateAgentDebugData(String agent, String supervisor, String role, int energy, String lastAction, String lastActionSuccess, String lastActionIntention, String groupDesireType, String groupDesirePartner, String groupDesireBlock, String attachedThingsDebugString);
     
@@ -66,7 +66,7 @@ public interface INaviAgentV1 extends INavi {
      * 
      * @param data a List of DesireDebugData
      * @param agent the name of the agent
-     * @see GraphicalDebugger
+     * @see de.feu.massim22.group3.utils.debugger.GraphicalDebugger
      */
     void updateDesireDebugData(List<DesireDebugData> data, String agent);
 
@@ -91,9 +91,10 @@ public interface INaviAgentV1 extends INavi {
      * 
      * @param supervisor the name of the supervisor of the group the agent is part of
      * @param agent the name of the agent
+     * @param lastMoveDirection the direction of the last move of the agent
      * @return the direction to the nearest undiscovered point - can be "n", "e", "s", "w"
      */
-    String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent);
+    String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent, String lastMoveDirection);
 
     /**
      * Gets the state of the <code>Navi</code>
