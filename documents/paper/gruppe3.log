@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  6 SEP 2022 17:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  7 SEP 2022 18:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -210,6 +210,9 @@ File: l3backend-pdftex.def 2022-04-14 L3 backend support: PDF output (pdfTeX)
 
 LaTeX Warning: Label `g3:architecture' multiply defined.
 
+
+LaTeX Warning: Label `g3:architecture' multiply defined.
+
 )
 \openout1 = `gruppe3.aux'.
 
@@ -298,80 +301,113 @@ Overfull \hbox (14.47224pt too wide) in paragraph at lines 83--84
  []
 
 [2 <./Referenzen/Architekturdiagramm.pdf>]
-<./Referenzen/Entscheidungsfindung.pdf, id=27, 186.11307pt x 317.6609pt>
+<./Referenzen/Pathfinding.pdf, id=27, 81.23987pt x 85.77853pt>
+File: ./Referenzen/Pathfinding.pdf Graphic file (type pdf)
+<use ./Referenzen/Pathfinding.pdf>
+Package pdftex.def Info: ./Referenzen/Pathfinding.pdf  used on input line 91.
+(pdftex.def)             Requested size: 81.23965pt x 85.77832pt.
+
+Overfull \hbox (11.81601pt too wide) in paragraph at lines 91--92
+[][] 
+ []
+
+
+Underfull \hbox (badness 5446) in paragraph at lines 92--92
+[]\T1/cmr/bx/n/9 Abb.3. \T1/cmr/m/n/9 Da-ten-
+ []
+
+
+Package wrapfig Warning: Collision between wrapping environments on input line 
+101.
+
+<./Referenzen/Entscheidungsfindung.pdf, id=28, 186.11307pt x 317.6609pt>
 File: ./Referenzen/Entscheidungsfindung.pdf Graphic file (type pdf)
 <use ./Referenzen/Entscheidungsfindung.pdf>
 Package pdftex.def Info: ./Referenzen/Entscheidungsfindung.pdf  used on input l
-ine 96.
+ine 102.
 (pdftex.def)             Requested size: 186.11261pt x 317.66013pt.
+
+Overfull \hbox (36.20134pt too wide) in paragraph at lines 102--103
+[][] 
+ []
 
 
 Package wrapfig Warning: Stationary wrapfigure forced to float on input line 10
+7.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 10
+8.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
+0.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
 1.
 
 
-Underfull \hbox (badness 2359) in paragraph at lines 105--106
-\T1/cmr/m/n/10 Zahlen, sons-ti-ges Ser-ver Bug,
- []
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
+3.
 
-[3 <./Referenzen/Kartenmerge.pdf> <./Referenzen/Entscheidungsfindung.pdf
 
-pdfTeX warning: /usr/bin/pdflatex (file ./Referenzen/Entscheidungsfindung.pdf):
- PDF inclusion: multiple pdfs with page group included in a single page
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
+5.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
+7.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
+9.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
+1.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
+3.
+
+[3 <./Referenzen/Kartenmerge.pdf> <./Referenzen/Pathfinding.pdf
+
+pdfTeX warning: /usr/bin/pdflatex (file ./Referenzen/Pathfinding.pdf): PDF incl
+usion: multiple pdfs with page group included in a single page
 >]
-Underfull \hbox (badness 2837) in paragraph at lines 123--126
-\T1/cmr/m/n/10 Vor- und Nach-tei-le der Ent-
- []
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
+4.
 
 
-Underfull \hbox (badness 4072) in paragraph at lines 139--140
-[]\T1/cmr/m/n/9 Ahlbrecht, T., Dix, J., Fie-
- []
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
+5.
 
 
-Underfull \hbox (badness 3189) in paragraph at lines 143--144
-\T1/cmr/m/n/9 2. Auf-la-ge, The MIT Press,
- []
-
-
-Overfull \hbox (32.2245pt too wide) in paragraph at lines 145--146
+Underfull \hbox (badness 10000) in paragraph at lines 151--152
 []\T1/cmr/m/n/9 github.com/agentcontest/massim_2022,
  []
 
 
-Overfull \hbox (194.3202pt too wide) in paragraph at lines 145--146
+Overfull \hbox (149.84315pt too wide) in paragraph at lines 151--152
 \T1/cmr/m/n/9 https://github.com/agentcontest/massim_2022/blob/main/docs/eismas
 sim.md,
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
-\T1/cmr/m/n/9 EIS-MAS-Sim Do-cu-men-ta-ti-on,
- []
-
-[4]
-Underfull \hbox (badness 1067) in paragraph at lines 147--148
-\T1/cmr/m/n/9 and prac-ti-cal re-a-son, Har-vard
- []
-
-
-Underfull \hbox (badness 6708) in paragraph at lines 147--148
-\T1/cmr/m/n/9 Uni-ver-si-ty Press, Cam-bridge,
- []
-
-[5] (./gruppe3.aux)
+[4 <./Referenzen/Entscheidungsfindung.pdf>] (./gruppe3.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3110 strings out of 478238
- 49258 string characters out of 5850456
+ 3117 strings out of 478238
+ 49496 string characters out of 5850456
  365874 words of memory out of 5000000
- 21347 multiletter control sequences out of 15000+600000
+ 21353 multiletter control sequences out of 15000+600000
  475735 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,7n,62p,1100b,424s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,7n,62p,1094b,276s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/
 type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm
@@ -380,10 +416,10 @@ type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm
 e/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fo
 nts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/publi
 c/cm-super/sftt0900.pfb>
-Output written on gruppe3.pdf (5 pages, 234329 bytes).
+Output written on gruppe3.pdf (4 pages, 267656 bytes).
 PDF statistics:
  87 PDF objects out of 1000 (max. 8388607)
  54 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

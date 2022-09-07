@@ -78,7 +78,7 @@ Jeder Agent hat Zugriff auf eine individuelle Wissensbasis (Beliefs), die von de
 Die enthaltenen Umgebungsdaten, beschränken sich auf das aktuelle Sichtfeld des Agenten. Es ist weder die Größe des Simulationsgebiets, noch die absolute Position des Agenten in diesem bekannt. 
 Um aus den partiellen Umgebungsinformationen eine globale Sicht zu erhalten, werden diese an das Navigationsmodul weitergeleitet und in einer chronologisch fortgeschriebenen Karte zusammengeführt.
 
-Beim Simulationsstart erhält jeder Agent, eine Karte mit festgelegter Initialgröße (Abb. \ref{Karte} Punkt 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Punkt 2). Treffen sich zwei Agenten aus unterschiedlichen Gruppen, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen gemeldet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden deren Karten überlagert und schließlich zusammengeführt (Abb. \ref{Karte} Punkt 3). Die zusammengeführte Karte ermöglicht nun im weiteren Simulationsverlauf die aktuelle Position aller Agenten einer Gruppe untereinander zu bestimmen. Aus dieser Information kann nun durch jeweils zwei Agenten, die sich in entgegengesetzte Richtungen bewegen und sich durch das kontinuierliche Simulationsgebiet zwangsläufig wieder treffen, die Kartengröße ermittelt werden. Ist dies erfolgt, wird die Karte beschnitten, wobei die Informationen abgeschnittener Bereiche auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen (Abb. \ref{Karte} Punkt 4).
+Beim Simulationsstart erhält jeder Agent, eine Karte mit festgelegter Initialgröße (Abb. \ref{Karte} Punkt 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Punkt 2). Treffen sich zwei Agenten aus unterschiedlichen Gruppen, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen gemeldet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden deren Karten überlagert und schließlich zusammengeführt (Abb. \ref{Karte} Punkt 3). Die entstandene Karte ermöglicht nun im weiteren Simulationsverlauf die aktuelle Position aller Agenten einer Gruppe untereinander zu bestimmen. Aus dieser Information kann nun durch jeweils zwei Agenten, die sich in entgegengesetzte Richtungen bewegen und sich durch das kontinuierliche Simulationsgebiet zwangsläufig wieder treffen, die Kartengröße ermittelt werden. Ist dies erfolgt, wird die Karte beschnitten, wobei die Informationen abgeschnittener Bereiche auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen (Abb. \ref{Karte} Punkt 4).
 \begin{figure}[h]
 \includegraphics{./Referenzen/Kartenmerge.pdf}
 \caption{Erweiterung und Zusammenführung einzelner Karten}
@@ -86,6 +86,12 @@ Beim Simulationsstart erhält jeder Agent, eine Karte mit festgelegter Initialgr
 \end{figure}
 
 \subsection{Wegfindung}\label{wegfindung}
+
+\begin{wrapfigure}{r}{0.2\linewidth}
+\includegraphics{./Referenzen/Pathfinding.pdf}
+\caption{Datenstruktur Wegfindung}
+\label{g3:architecture}
+\end{wrapfigure}
 Die 
 Pathfinding, 2 Stufiges System
 
