@@ -10,6 +10,11 @@ import massim.protocol.messages.scenario.ActionResults;
 
 import java.awt.Point;
 
+/**
+ * The Class <code>ExploreMapSizeDesire</code> models the desire to get information about the map size.
+ * 
+ * @author Heinz Stadler
+ */
 public class ExploreMapSizeDesire extends BeliefDesire {
 
     private String teamMate;
@@ -20,6 +25,16 @@ public class ExploreMapSizeDesire extends BeliefDesire {
     private int guideOffset;
     private int agentOffset = 0;
 
+    /**
+     * Instantiates a new ExploreMapSizeDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param teamMate the name of the team mate which helps to explore the map size
+     * @param teamMateActionName the full name of the team mate (provided by the simulation server) which helps to explore the map size 
+     * @param supervisor the name of the supervisor of the group
+     * @param direction the direction the agent should start to explore
+     * @param guideOffset the number of cells the agent is off the planned exploration line when receiving the Desire. 
+     */
     public ExploreMapSizeDesire(Belief belief, String teamMate, String teamMateActionName, String supervisor, String direction, int guideOffset) {
         super(belief);
         this.teamMate = teamMate;
@@ -90,6 +105,12 @@ public class ExploreMapSizeDesire extends BeliefDesire {
                     return ActionInfo.SURVEY(t, getName());
                 }
             }
+        }
+
+        // Loose weight
+        if (belief.getOwnAttachedPoints().size() > 0) {
+            String dir = getDirectionFromPoint(belief.getOwnAttachedPoints().get(0));
+            return ActionInfo.DETACH(dir, dir);
         }
 
         // Move closer to guide line

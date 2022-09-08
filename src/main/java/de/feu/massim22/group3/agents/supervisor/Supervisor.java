@@ -225,6 +225,7 @@ public class Supervisor implements ISupervisor {
     }
 
     private void doDecision() {
+        List<TaskInfo> sortedTasks = this.tasks.stream().sorted((a, b) -> b.deadline - a.deadline).toList();
         agentsWithTask.clear();
         List<Entry<String, AgentReport>> agentsNearGoalZone = new ArrayList<>();
         List<Entry<String, AgentReport>> agentsNearDispenser0 = new ArrayList<>();
@@ -247,7 +248,7 @@ public class Supervisor implements ISupervisor {
             gettingBlockNearestGoalZone.add(new ArrayList<Point>());
         }
 
-        int maxDistance = 30;
+        int maxDistance = 50;
         int maxDistanceGoalZone = 50;
         boolean roleZoneVisible = false;
 
@@ -318,6 +319,28 @@ public class Supervisor implements ISupervisor {
                     }
                 }
             }
+
+            if (r.groupDesireType().equals(GroupDesireTypes.GET_BLOCK) && !r.deactivated()) {
+                if (r.attachedThings().size() == 1) {
+                    Thing t = r.attachedThings().get(0);
+                    
+                    if (t.details.equals("b0")) {
+                        agentsCarryingBlock0.add(entry);
+                    }
+                    if (t.details.equals("b1")) {
+                        agentsCarryingBlock1.add(entry);
+                    }
+                    if (t.details.equals("b2")) {
+                        agentsCarryingBlock2.add(entry);
+                    }
+                    if (t.details.equals("b3")) {
+                        agentsCarryingBlock3.add(entry);
+                    }
+                    if (t.details.equals("b4")) {
+                        agentsCarryingBlock4.add(entry);
+                    }
+                }
+            }
         }
 
         // Sort
@@ -332,6 +355,46 @@ public class Supervisor implements ISupervisor {
         agentsCarryingBlock2.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock3.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
         agentsCarryingBlock4.sort((a, b) -> a.getValue().distanceGoalZone() - b.getValue().distanceGoalZone());
+
+        // Try to balance block carriage
+        int[] blockCarried = {0, 0, 0, 0, 0};
+
+        for (var entry : reports.entrySet()) {
+            String agent = entry.getKey();
+            var report = entry.getValue();
+            if (report.attachedThings().size() > 0) {
+                Thing t = report.attachedThings().get(0);
+                if (t.type.equals(Thing.TYPE_BLOCK)) {
+                    try {
+                        int index = Integer.parseInt(t.details.substring(1));
+                        blockCarried[index] += 1;
+                        // Test if two block task with two blocks of this kind exists
+                        boolean keep = false;
+                        for (var task : tasks) {
+                            boolean allSame = task.requirements.stream().allMatch(r -> r.type.equals(t.details));
+                            if (allSame && task.requirements.size() < 4) {
+                                keep = true;
+                            }
+                        }
+
+                        // Too many agents carry the same block
+                        if (blockCarried[index] > 0.6 * reports.size() && !keep) {
+                            if (!report.groupDesireType().equals(GroupDesireTypes.DELIVER_ATTACH) 
+                                    && !report.groupDesireType().equals(GroupDesireTypes.RECEIVE_ATTACH)) {
+                                sendDropBlock(agent);
+                                agentsCarryingBlock0.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock1.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock2.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock3.removeIf(a -> a.getKey().equals(agent));
+                                agentsCarryingBlock4.removeIf(a -> a.getKey().equals(agent));
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        AgentLogger.severe("Block detail is no Integer.");
+                    }
+                }
+            }
+        }
 
         // Discover vertical Map Size
         if (roleZoneVisible && agentsAllowedForGroupTask.size() > 1) {
@@ -452,7 +515,7 @@ public class Supervisor implements ISupervisor {
         }
 
         // Test Tasks
-        for (TaskInfo info : tasks) {
+        for (TaskInfo info : sortedTasks) {
             // Ignore Single agent groups
             if (agents.size() < 2) {
                 break;
@@ -474,6 +537,102 @@ public class Supervisor implements ISupervisor {
                 }
                 if (blockDetail.equals("b4")) {
                     //doDeliverSimpleTaskDecision(agentsNearGoalZone, agentsCarryingBlock4, "b4", info);
+                }
+            }
+            // Three Block Task
+            if (info.requirements.size() == 3) {
+                //                                            ○           ○
+                // Only work on 3 block tasks of the form:  A ○    or   A ○ ○    and rotated versions. 
+                //                                            ○
+                int countDist1 = 0;
+                int countDist2 = 0;
+                for (Thing t : info.requirements) {
+                    int dist = Math.abs(t.x) + Math.abs(t.y);
+                    if (dist == 1) countDist1 += 1;
+                    if (dist == 2) countDist2 += 1;
+                }
+                if (countDist1 != 1 || countDist2 != 2) {
+                    continue;
+                }
+                System.out.println("Possible Task available");
+                String block1 = info.requirements.get(0).type;
+                String block2 = info.requirements.get(1).type;
+                String block3 = info.requirements.get(2).type;
+                List<Entry<String, AgentReport>> agentsBlock1 = null;
+                List<Entry<String, AgentReport>> agentsBlock2 = null;
+                List<Entry<String, AgentReport>> agentsBlock3 = null;
+                switch (block1) {
+                    case "b0": agentsBlock1 = agentsCarryingBlock0; break;
+                    case "b1": agentsBlock1 = agentsCarryingBlock1; break;
+                    case "b2": agentsBlock1 = agentsCarryingBlock2; break;
+                    case "b3": agentsBlock1 = agentsCarryingBlock3; break;
+                    case "b4": agentsBlock1 = agentsCarryingBlock4; break;
+                }
+                switch (block2) {
+                    case "b0": agentsBlock2 = agentsCarryingBlock0; break;
+                    case "b1": agentsBlock2 = agentsCarryingBlock1; break;
+                    case "b2": agentsBlock2 = agentsCarryingBlock2; break;
+                    case "b3": agentsBlock2 = agentsCarryingBlock3; break;
+                    case "b4": agentsBlock2 = agentsCarryingBlock4; break;
+                }
+                switch (block3) {
+                    case "b0": agentsBlock3 = agentsCarryingBlock0; break;
+                    case "b1": agentsBlock3 = agentsCarryingBlock1; break;
+                    case "b2": agentsBlock3 = agentsCarryingBlock2; break;
+                    case "b3": agentsBlock3 = agentsCarryingBlock3; break;
+                    case "b4": agentsBlock3 = agentsCarryingBlock4; break;
+                }
+
+                boolean sameBlock13 = block1.equals(block3);
+                boolean sameBlock12 = block1.equals(block2);
+                boolean sameBlock23 = block2.equals(block3);
+                if ((agentsBlock1.size() > 0 && agentsBlock2.size() > 0 && agentsBlock3.size() > 0 && !sameBlock12 && !sameBlock13 && !sameBlock23)
+                    || (sameBlock13 && agentsBlock1.size() > 1 && agentsBlock2.size() > 1)
+                    || (sameBlock23 && agentsBlock1.size() > 0 && agentsBlock2.size() > 1) 
+                    || (sameBlock12 && agentsBlock1.size() > 1 && agentsBlock3.size() > 0)
+                    || (sameBlock12 && sameBlock13 && agentsBlock1.size() > 2)) {
+                    doThreeBlockTaskDecision(agentsBlock1, agentsBlock2, agentsBlock3, info);
+                }
+                else {
+                    List<String> missingBlocks = new ArrayList<>();
+                    if (!sameBlock12 && !sameBlock13 && !sameBlock23) {
+                        if (agentsBlock1.size() == 0) missingBlocks.add(block1);
+                        if (agentsBlock2.size() == 0) missingBlocks.add(block2);
+                        if (agentsBlock3.size() == 0) missingBlocks.add(block3);
+                    }
+                    else if (sameBlock12 && sameBlock13) {
+                        if (agentsBlock1.size() < 3) missingBlocks.add(block1);
+                        if (agentsBlock1.size() < 2) missingBlocks.add(block1);
+                        if (agentsBlock1.size() == 0) missingBlocks.add(block1);
+                    }
+                    else if (sameBlock13) {
+                        if (agentsBlock1.size() < 2) missingBlocks.add(block1);
+                        if (agentsBlock1.size() == 0) missingBlocks.add(block1);
+                        if (agentsBlock2.size() == 0) missingBlocks.add(block2);
+                    }
+                    else if (sameBlock23) {
+                        if (agentsBlock2.size() < 2) missingBlocks.add(block2);
+                        if (agentsBlock2.size() == 0) missingBlocks.add(block2);
+                        if (agentsBlock1.size() == 0) missingBlocks.add(block1);
+                    }
+                    else if (sameBlock12) {
+                        if (agentsBlock1.size() < 2) missingBlocks.add(block1);
+                        if (agentsBlock1.size() == 0) missingBlocks.add(block1);
+                        if (agentsBlock3.size() == 0) missingBlocks.add(block3);
+                    }
+
+                    // Randomly work on task if two block tasks exist
+                    boolean getBlocks = true; // !singleBlockTaskExists && twoBlockTasksCount == 0 ? true : Math.random() < 0.5 - twoBlockTasksCount * 0.1;
+                    
+                    if (getBlocks) {
+                        for (String block : missingBlocks) {
+                            if (block.equals("b0")) sendGetBlockTask(agentsNearDispenser0, "b0");
+                            if (block.equals("b1")) sendGetBlockTask(agentsNearDispenser1, "b1");
+                            if (block.equals("b2")) sendGetBlockTask(agentsNearDispenser2, "b2");
+                            if (block.equals("b3")) sendGetBlockTask(agentsNearDispenser3, "b3");
+                            if (block.equals("b4")) sendGetBlockTask(agentsNearDispenser4, "b4");
+                        }
+                    }
                 }
             }
             // Two Block Task - assign task or assign get block if not carrying already
@@ -524,6 +683,11 @@ public class Supervisor implements ISupervisor {
         }
     }
 
+    private void sendDropBlock(String agent) {
+        Percept message = new Percept(EventName.SUPERVISOR_PERCEPT_DROP_BLOCK.name());
+        parent.forwardMessage(message, agent, name);
+    }
+
     private void sendExploreMapSizeTask(String agent, String teamMate, String teamMateShort, String direction, int guideOffset) {
         Parameter teamMatePara = new Identifier(teamMate);
         Parameter teamMateShortPara = new Identifier(teamMateShort);
@@ -549,6 +713,7 @@ public class Supervisor implements ISupervisor {
         agentsWithTask.put(agent, true);
     }
 
+    /*
     private void sendGuardDispenserTask(List<Entry<String, AgentReport>> agents, String block) {
         // Only first agent which is free will get the task
         for (var entry : agents) {
@@ -563,6 +728,7 @@ public class Supervisor implements ISupervisor {
             }
         }
     }
+    */
 
     private void sendGetBlockTask(List<Entry<String, AgentReport>> agents, String block) {
         // only first agent which is free will get the task
@@ -578,6 +744,55 @@ public class Supervisor implements ISupervisor {
                 break;
             }
         }
+    }
+
+    private String[][] getAgentsFor3BlockTask(int maxWaitingTime, List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, List<Entry<String, AgentReport>> agents3) {
+        String[][] taskAgents = new String[3][2];
+        int minDiff = 999;
+        for (var agent1 : agents1) {
+            if (agentsWithTask.containsKey(agent1.getKey())) continue;
+            for (var agent2 : agents2) {
+                if (agentsWithTask.containsKey(agent2.getKey()) || agent2.getKey().equals(agent1.getKey())) continue;
+                for (var agent3 : agents3) {
+                    if (agentsWithTask.containsKey(agent3.getKey()) || agent3.getKey().equals(agent1.getKey()) || agent3.getKey().equals(agent2.getKey())) continue;
+
+                    var report1 = agent1.getValue();
+                    var report2 = agent2.getValue();
+                    var report3 = agent3.getValue();
+                    var waitingTime1 = Math.abs(report1.distanceGoalZone() - report2.distanceGoalZone());
+                    var waitingTime2 = Math.abs(report1.distanceGoalZone() - report3.distanceGoalZone());
+                    var distanceBetweenGoalZones1 = Math.abs(report1.nearestGoalZone().x - report2.nearestGoalZone().x) + Math.abs(report1.nearestGoalZone().y - report2.nearestGoalZone().y);
+                    var distanceBetweenGoalZones2 = Math.abs(report1.nearestGoalZone().x - report3.nearestGoalZone().x) + Math.abs(report1.nearestGoalZone().y - report3.nearestGoalZone().y);
+                    var distBetweenAgents1 = Math.abs(report1.position().x - report2.position().x) + Math.abs(report1.position().y - report2.position().y);
+                    var distBetweenAgents2 = Math.abs(report1.position().x - report3.position().x) + Math.abs(report1.position().y - report3.position().y);
+
+                    // Agents near Different Goal Zones or if both are in goal zone use distance to get closest match
+                    if (distanceBetweenGoalZones1 > 15 || report1.distanceGoalZone() == 0 || report2.distanceGoalZone() == 0 ||  
+                        report1.distanceGoalZone() < 5 && report2.distanceGoalZone() < 5) {
+                        waitingTime1 = 1000;
+                    }
+                    if (distanceBetweenGoalZones2 > 15 || report1.distanceGoalZone() == 0 || report3.distanceGoalZone() == 0 ||  
+                        report1.distanceGoalZone() < 5 && report3.distanceGoalZone() < 5) {
+                        waitingTime2 = 1000;
+                    }
+                    // Use agents which are similar close to the goal zone or near each other
+                    waitingTime1 = Math.min(waitingTime1, distBetweenAgents1);
+                    waitingTime2 = Math.min(waitingTime2, distBetweenAgents2);
+                    int waitingTimeCombined = Math.max(waitingTime1, waitingTime2);
+
+                    if (waitingTimeCombined < maxWaitingTime && waitingTimeCombined < minDiff) {
+                        minDiff = waitingTimeCombined;
+                        String[] data1 = {agent1.getKey(), report1.agentActionName()};
+                        taskAgents[0] = data1;
+                        String[] data2 = {agent2.getKey(), report2.agentActionName()};
+                        taskAgents[1] = data2;
+                        String[] data3 = {agent3.getKey(), report3.agentActionName()};
+                        taskAgents[2] = data3;
+                    }
+                }
+            }
+        }
+        return taskAgents;
     }
 
     private String[][] getAgentsFor2BlockTask(int maxWaitingTime, List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2) {
@@ -611,6 +826,70 @@ public class Supervisor implements ISupervisor {
         return taskAgents;
     }
 
+    private void doThreeBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, List<Entry<String, AgentReport>> agents3, TaskInfo info) {
+
+        int maxWaitingTime = 30;
+        String[][] taskAgents = getAgentsFor3BlockTask(maxWaitingTime, agents1, agents2, agents3);
+
+        if (taskAgents[0][0] != null) {
+            String[] agent1 = taskAgents[0];
+            String[] agent2 = taskAgents[1];
+            String[] agent3 = taskAgents[2];
+            agentsWithTask.put(agent1[0], true);
+            agentsWithTask.put(agent2[0], true);
+            agentsWithTask.put(agent3[0], true);
+            agents1.removeIf(r -> r.getKey().equals(agent1[0]));
+            agents2.removeIf(r -> r.getKey().equals(agent1[0]));
+            agents3.removeIf(r -> r.getKey().equals(agent1[0]));
+            agents1.removeIf(r -> r.getKey().equals(agent2[0]));
+            agents2.removeIf(r -> r.getKey().equals(agent2[0]));
+            agents3.removeIf(r -> r.getKey().equals(agent2[0]));
+
+            // Send message to agents
+            Parameter taskPara = new Identifier(info.name);
+            Parameter agent1Para = new Identifier(agent1[0]);
+            Parameter agent2Para = new Identifier(agent2[0]);
+            Parameter agent3Para = new Identifier(agent3[0]);
+            Parameter agent1FullPara = new Identifier(agent1[1]);
+            Parameter agent2FullPara = new Identifier(agent2[1]);
+            Parameter agent3FullPara = new Identifier(agent3[1]);
+
+            Thing req0 = info.requirements.get(0);
+            Thing req1 = info.requirements.get(1);
+            Parameter index1 = new Numeral(0);
+            Parameter index2 = new Numeral(1);
+            Parameter index3 = new Numeral(2);
+
+            // Agent 1 is Receiver
+            if (Math.abs(req0.x) + Math.abs(req0.y) == 1) {
+                Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_THREE_BLOCK.name(), taskPara, agent2Para, agent2FullPara, index2, agent3Para, agent3FullPara, index3, index1);
+                Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK.name(), taskPara, agent1Para, agent1FullPara, index2);
+                Percept message3 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK.name(), taskPara, agent1Para, agent1FullPara, index3);
+                parent.forwardMessage(message1, agent1[0], name);
+                parent.forwardMessage(message2, agent2[0], name);
+                parent.forwardMessage(message3, agent3[0], name);
+            }
+            // Agent 2 is Receiver
+            else if (Math.abs(req1.x) + Math.abs(req1.y) == 1) {
+                Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK.name(), taskPara, agent2Para, agent2FullPara, index1);
+                Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_THREE_BLOCK.name(), taskPara, agent1Para, agent1FullPara, index1, agent3Para, agent3FullPara, index3, index2);
+                Percept message3 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK.name(), taskPara, agent2Para, agent2FullPara, index3);
+                parent.forwardMessage(message1, agent1[0], name);
+                parent.forwardMessage(message2, agent2[0], name);
+                parent.forwardMessage(message3, agent3[0], name);
+            }
+            // Agent 3 is Receiver
+            else {
+                Percept message1 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK.name(), taskPara, agent3Para, agent3FullPara, index1);
+                Percept message2 = new Percept(EventName.SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK.name(), taskPara, agent3Para, agent3FullPara, index2);
+                Percept message3 = new Percept(EventName.SUPERVISOR_PERCEPT_RECEIVE_THREE_BLOCK.name(), taskPara, agent1Para, agent1FullPara, index1, agent2Para, agent2FullPara, index2, index3);
+                parent.forwardMessage(message1, agent1[0], name);
+                parent.forwardMessage(message2, agent2[0], name);
+                parent.forwardMessage(message3, agent3[0], name);
+            }
+        }
+    }
+
     private void doTwoBlockTaskDecision(List<Entry<String, AgentReport>> agents1, List<Entry<String, AgentReport>> agents2, TaskInfo info, boolean identicalBlocks, boolean singleBlockTaskExists) {
 
         int maxWaitingTime = singleBlockTaskExists ? 10 : 30;
@@ -621,6 +900,10 @@ public class Supervisor implements ISupervisor {
            String[] agent2 = taskAgents[1];
            agentsWithTask.put(agent1[0], true);
            agentsWithTask.put(agent2[0], true);
+           agents1.removeIf(r -> r.getKey().equals(agent1[0]));
+           agents2.removeIf(r -> r.getKey().equals(agent1[0]));
+           agents1.removeIf(r -> r.getKey().equals(agent2[0]));
+           agents2.removeIf(r -> r.getKey().equals(agent2[0]));
 
             // Send message to agents
             Parameter taskPara = new Identifier(info.name);
@@ -644,6 +927,7 @@ public class Supervisor implements ISupervisor {
         }
     }
 
+    /*
     private void doDeliverSimpleTaskDecision(List<Entry<String, AgentReport>> agentsNearGoalZone, List<Entry<String, AgentReport>> agentsCarryingBlock, String block, TaskInfo info) {
         
         while (agentsNearGoalZone.size() > 0 && agentsCarryingBlock.size() > 0) {
@@ -672,6 +956,7 @@ public class Supervisor implements ISupervisor {
             }
         }
     }
+    */
 
     /**
      * {@inheritDoc}

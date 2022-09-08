@@ -466,6 +466,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         
         // Merge Map
         Point offset = newMap.mergeIntoMap(oldMap, r.getForeignRefPoint(), r.getRefPoint());
+        Point topLeft = newMap.getTopLeft();
 
         maps.put(newSupervisor, newMap);
         
@@ -480,7 +481,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
                 
                 Parameter posOffsetX = new Numeral(offset.x);
                 Parameter posOffsetY = new Numeral(offset.y);
-                Percept agentMessage = new Percept(EventName.UPDATE_GROUP.name(), supervisorPara, posOffsetX, posOffsetY);
+                Parameter topLeftX = new Numeral(topLeft.x);
+                Parameter topLeftY = new Numeral(topLeft.y);
+                Percept agentMessage = new Percept(EventName.UPDATE_GROUP.name(), supervisorPara, posOffsetX, posOffsetY, topLeftX, topLeftY);
                 mailService.sendMessage(agentMessage, agent, name);
                 
                 // Update Supervisor
@@ -791,9 +794,9 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
      * {@inheritDoc}
      */
     @Override
-    public String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent) {
+    public String getDirectionToNearestUndiscoveredPoint(String supervisor, String agent, String lastMoveDirection) {
         GameMap map = maps.get(supervisor);
-        return map.getDirectionToNearestUndiscoveredPoint(agent);
+        return map.getDirectionToNearestUndiscoveredPoint(agent, lastMoveDirection);
     }
     
     /**
@@ -933,11 +936,16 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         }
         DirectionUtil.setMapSize(horizontalMapSize, verticalMapSize);
 
-        // Inform agents
+        // Inform agents - also send map top left
         Parameter xPara = new Numeral(horizontalMapSize);
         Parameter yPara = new Numeral(verticalMapSize);
-        Percept message = new Percept(EventName.MAP_SIZE_DISCOVERED.name(), xPara, yPara);
+        
         for (String agent : agentSupervisor.keySet()) {
+            String supervisor = agentSupervisor.get(agent);
+            Point topLeft = maps.get(supervisor).getTopLeft();
+            Parameter topLeftX = new Numeral(topLeft.x);
+            Parameter topLeftY = new Numeral(topLeft.y);
+            Percept message = new Percept(EventName.MAP_SIZE_DISCOVERED.name(), xPara, yPara, topLeftX, topLeftY); 
             mailService.sendMessage(message, agent, name);
         }
     }

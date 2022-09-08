@@ -67,11 +67,12 @@ public class DesireUtilities {
     public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
     
     /**
-     * The method runs the different agent decisions.
+     * The method runs all task independent decisions.
      *
-     * @param agent the agent who wants to make the decisions
+     * @param step - the active step
+     * @param agent - the agent who wants to make the decisions
      * 
-     * @return the agent decisions are done
+     * @return the decisions are done
      */
     public synchronized boolean runAgentDecisions(int step, BdiAgentV2 agent) {
         boolean result = false;
@@ -170,11 +171,13 @@ public class DesireUtilities {
     
 
     /**
-     * The method runs the different supervisor decisions.
+     * The method runs all task dependent decisions.
      *
-     * @param supevisor the supervisor who wants to make the decisions
+     * @param step - the active step
+     * @param supervisor - the supervisor who wants to make the decisions
+     * @param stepUtilities - the supervisors StepUtilities
      * 
-     * @return the supervisor decisions are done
+     * @return the decisions are done
      */
     public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor, StepUtilities stepUtilities) {
         this.stepUtilities = stepUtilities;
@@ -361,7 +364,8 @@ public class DesireUtilities {
     /**
      * The method has a certain priority for every desire.
      *
-     * @param desire the desire that needs a priority
+     * @param desire - the desire that needs a priority
+     * @param agent - the agent the desire is for
      * 
      * @return the priority
      */
@@ -645,7 +649,7 @@ public class DesireUtilities {
     /**
      *Converts a block into a thing.
      *
-     *@param toTaskBlock block that is being converted
+     *@param toTaskBlock - block that is being converted
      * 
      * @return the converted block
      */
@@ -656,8 +660,8 @@ public class DesireUtilities {
     /**
      *Checks if a block is part of a task.
      *
-     *@param inTaskReq the requirement of the task
-     *@param inBlock the block that is being checked
+     *@param inTaskReqs - the requirements of the task
+     *@param inBlock - the block that is being checked
      * 
      * @return it is part of the task or not
      */
@@ -851,12 +855,12 @@ public class DesireUtilities {
     }
   
     /**
-     * Gets the third block for a certain task.
+     * Is one more block type allowed?
      *
-     *@param agent the agent that wants to get the block
-     * @param task the task that is being done
+     * @param inBlock - the block to be fetched
+     * @param inReqs - the requirements of the task 
      * 
-     * @return the required block
+     * @return a block with an allowed block type
      */
  Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
         Thing result = inBlock;
@@ -1212,14 +1216,19 @@ public class DesireUtilities {
     private boolean existsCommonEdge(Point p2) {
         for (java.awt.Point p1 : DirectionUtil.getCellsIn4Directions()) {
             if ((Math.abs(p2.x - p1.x) == 0 && Math.abs(p2.y - p1.y) == 1)
-                    ||
-                    (Math.abs(p2.y - p1.y) == 0 && Math.abs(p2.x - p1.x) == 1)) {
-                    return true;     
-                }  
+                    || (Math.abs(p2.y - p1.y) == 0 && Math.abs(p2.x - p1.x) == 1)) {
+                return true;
+            }
         }
 
         return false;
     }
-  //record for pathfinding result with distance and direction
+
+    /**
+     * Is an attach made at this dispenser.
+     *
+     * @param position - dispenser position
+     * @param attachMade - attach already made
+     */
     public record DispenserFlag(Point position, Boolean attachMade) {}
 }

@@ -60,4 +60,12 @@ public class GoNearGoalZoneDesire extends BeliefDesire {
         String info = result ? "" : "no reachable goal zones";
         return new BooleanInfo(result, info);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BooleanInfo isUnfulfillable() {
+        return new BooleanInfo(belief.getReachableGoalZones().size() == 0, "");
+    }
 }

@@ -19,7 +19,6 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      * Instantiates a new ExploreMapSizeDesire.
      * 
      * @param belief the belief of the agent
-     * @param supervisor the supervisor of the group
      * @param agent the agent who wants to go to a goal zone
      * 
      */

@@ -90,8 +90,10 @@ public class Belief {
     private String groupDesireBlockDetail = "";
     private String groupDesirePartner = "";
     private boolean isWaiting = false;
+    private String lastMoveDirection = "n";
     
     private Point mapSize;
+    private Point mapTopLeft;
     private Point absolutePosition;
 
     /**
@@ -506,6 +508,11 @@ public class Belief {
         return groupDesirePartner;
     }
 
+    /**
+     * Gets the details of all attached things to the agent combined in a String.
+     * 
+     * @return the details of all attached things to the agent combined in a String
+     */
     public String getAttachedThingsDebugString() {
         String result = "";
         for (Thing t : attachedThings) {
@@ -697,7 +704,7 @@ public class Belief {
      * @return last action name
      */
     public String getLastAction() {
-        return lastAction;
+        return lastAction == null ? Actions.NO_ACTION : lastAction;
     }
 
     /**
@@ -706,7 +713,7 @@ public class Belief {
      * @return the result of the last action
      */
     public String getLastActionResult() {
-        return lastActionResult;
+        return lastActionResult == null ? ActionResults.UNPROCESSED : lastActionResult;
     }
 
     /**
@@ -1504,18 +1511,19 @@ public class Belief {
     }
 
     private void move(String dir) {
+        lastMoveDirection = dir;
         switch (dir) {
             case "n":
-                position.y = mapSize == null ? position.y - 1 : (position.y + mapSize.y - 1) % mapSize.y;
+                position.y = mapSize == null ? position.y - 1 : (((position.y + mapSize.y - 1 - mapTopLeft.y) % mapSize.y) + mapTopLeft.y);
                 break;
             case "e":
-                position.x = mapSize == null ? position.x + 1 : (position.x + mapSize.x + 1) % mapSize.x;
+                position.x = mapSize == null ? position.x + 1 : (((position.x + mapSize.x + 1 - mapTopLeft.x) % mapSize.x) + mapTopLeft.x);
                 break;
             case "s":
-                position.y = mapSize == null ? position.y + 1 : (position.y + mapSize.y + 1) % mapSize.y;
+                position.y = mapSize == null ? position.y + 1 : (((position.y + mapSize.y + 1 - mapTopLeft.y) % mapSize.y) + mapTopLeft.y);
                 break;
             case "w":
-                position.x = mapSize == null ? position.x - 1 : (position.x + mapSize.x - 1) % mapSize.x;
+                position.x = mapSize == null ? position.x - 1 : (((position.x + mapSize.x - 1 - mapTopLeft.x) % mapSize.x) + mapTopLeft.x);
                 break;
         }
     }
@@ -1538,7 +1546,7 @@ public class Belief {
     /**
      * Sets the map size if known.
      * 
-     * @param Point mapSize
+     * @param mapSize - size in point
      */
     public void setMapSize(Point mapSize) {
         this.mapSize = mapSize;
@@ -1581,6 +1589,8 @@ public class Belief {
     /**
      * recalculates the position of an agent using modulo with map size.
      * 
+     * @param position - non modulo position
+     * @return modulo position
      */
     public Point calcPositionModulo(Point position) {
         setMapSize(AgentCooperations.mapSize);
@@ -1600,11 +1610,21 @@ public class Belief {
     public Point getNonModPosition() {
         return nonModuloPosition;
     }
+
+    /**
+     * Sets the top left position of the map.
+     * This is only used if the map size is already discovered.
+     * 
+     * @param topLeft the position of the top left cell in the game map
+     */
+    public void setTopLeft(Point topLeft) {
+        this.mapTopLeft = topLeft; 
+    }
     
     /**
      * Sets the non modulo position of an agent as point.
      * 
-     * @param  the non modulo position of an agent as point
+     * @param pos - the non modulo position of an agent as point
      */
     public void setNonModPosition(Point pos) {
         nonModuloPosition = new Point(pos);
@@ -1639,7 +1659,7 @@ public class Belief {
     /**
      * Sets the exploreMapSizePosition of an agent as point.
      * 
-     * @param  the new exploreMapSizePosition of an agent as point
+     * @param pos - the new exploreMapSizePosition of an agent as point
      */
     public void setMapSizePosition(Point pos) {
         exploreMapSizePosition = new Point(pos);
@@ -1737,7 +1757,7 @@ public class Belief {
     /**
      * Sets the reachableGoalZones without pathfinding.
      * 
-     * @param Set of goal zone points
+     * @param inSet - Set of goal zone points
      */
     public void updateRgz(Set<Point> inSet) {
         List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
@@ -1759,7 +1779,7 @@ public class Belief {
     /**
      * Sets the reachableDispensers without pathfinding.
      * 
-     * @param Set of dispensers
+     * @param inSet - Set of dispensers
      */
     public void updateDisp(Set<Thing> inSet) {
         List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
@@ -1805,5 +1825,14 @@ public class Belief {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets the direction of the last move.
+     * 
+     * @return the direction of the last move or "n" if no move was made before.
+     */
+    public String getLastMoveDirection() {
+        return lastMoveDirection;
     }
 }

@@ -33,7 +33,7 @@ public class AgentMeetings {
      * 
      * @param meeting the meeting to be proved
      * 
-     * @result if the meeting is already existing or not
+     * @return if the meeting is already existing or not
      */
     public static boolean exists(Meeting meeting) {
         boolean result = false;

@@ -14,8 +14,6 @@ public class Point extends java.awt.Point {
      *
      * @param x coordinate of the point
      * @param y coordinate of the point
-     * 
-     * @return the point containing x and y
      */
     public Point(int x, int y) {
         super(x, y);
@@ -25,8 +23,6 @@ public class Point extends java.awt.Point {
      * Initializes a new Instance of Point with one Point vector.
      *
      * @param vector the given Point vector
-     * 
-     * @return the point containing the vector x and y coordinates
      */
     public Point(Point vector) {
         super(vector.x, vector.y);
@@ -65,7 +61,7 @@ public class Point extends java.awt.Point {
     /**
      * Casts a certain Point into a point from type java.awt.Point .
      *
-     * @param point the point that is going to be casted
+     * @param inPoint - the point that is going to be casted
      * 
      * @return the casted point
      */

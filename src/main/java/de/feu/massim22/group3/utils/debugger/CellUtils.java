@@ -105,6 +105,25 @@ class CellUtils {
         }
     }
 
+    /**
+     * Adds a center aligned Text.
+     * 
+     * @param g the Graphics instance the text should be drawn on
+     * @param text the text which should be drawn
+     * @param rect the area the text should be positioned in
+     * @param color the color of the text
+     */
+    static void drawCenteredString(Graphics g, String text, Rectangle2D.Double rect, Color color) {
+        if (text == null) return; 
+        Font font = g.getFont();
+        FontMetrics metrics = g.getFontMetrics(font);
+
+        int x = (int)(rect.x + (rect.width - metrics.stringWidth(text)) / 2);
+        int y = (int)(rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent());
+        g.setColor(color);
+        g.drawString(text, x, y);
+    }
+
     private static void drawDispenser(Graphics2D g2d, Rectangle2D.Double rect, Color c, String name) {
         g2d.setColor(new ColorUIResource(222, 80, 23));
         g2d.fill(rect);
@@ -122,17 +141,6 @@ class CellUtils {
         g2d.setColor(outline);
         g2d.draw(r);
         drawCenteredString(g2d, name, rect, Color.WHITE);
-    }
-
-    static void drawCenteredString(Graphics g, String text, Rectangle2D.Double rect, Color color) {
-        if (text == null) return; 
-        Font font = g.getFont();
-        FontMetrics metrics = g.getFontMetrics(font);
-
-        int x = (int)(rect.x + (rect.width - metrics.stringWidth(text)) / 2);
-        int y = (int)(rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent());
-        g.setColor(color);
-        g.drawString(text, x, y);
     }
 
     private static void drawAgent(Graphics2D g2d, Rectangle2D.Double rect, Color c, int background, String name, boolean selected, String groupDesire) {

@@ -33,8 +33,9 @@ public class GoAdoptRoleDesire extends BeliefDesire {
     /**
      * Instantiates a new GoAdoptRoleDesire.
      * 
-     * @param agent the agent who wants to adopt a role
-     * @param role the role which the agent wants to adopt
+     * @param belief - the agents belief (not really necessary)
+     * @param agent - the agent who wants to adopt a role
+     * @param role - the role which the agent wants to adopt
      * 
      */
     public GoAdoptRoleDesire(Belief belief, BdiAgentV2 agent, String role) {

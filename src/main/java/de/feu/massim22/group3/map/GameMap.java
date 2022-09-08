@@ -105,7 +105,7 @@ public class GameMap {
      * The position is measured in the internal coordinate system of the <code>GameMap</code> with 0/0
      * at the top left of the map.
      * 
-     * @param name the name of the agent
+     * @param agent the name of the agent
      * @return the position of the agent in the coordinate system of the agent
      */  
     Point getInternalAgentPosition(String agent) {
@@ -200,7 +200,7 @@ public class GameMap {
     /**
      * Creates a copy of the internal Array of CellTypes for the <code>GraphicalDebugger</code>
      * 
-     * @see GraphicalDebugger
+     * @see de.feu.massim22.group3.utils.debugger.GraphicalDebugger
      * @return a two-dimensional Array of type CellType
      */
     CellType[][] getDebugCells() {
@@ -232,11 +232,7 @@ public class GameMap {
         int cellY = getCellY(y);
         MapCellReport report = new MapCellReport(cellType, zoneType, agentId, step);
         if (cellY >= 0 && cellY < cells.length && cellX >= 0 && cellX < cells[0].length) {
-            CellType current = cells[cellY][cellX].getCellType();
-            // Dispenser don't change during sim and can be overwritten by blocks
-            if (current != CellType.DISPENSER_0 && current != CellType.DISPENSER_1 && current != CellType.DISPENSER_2 && current != CellType.DISPENSER_3 && current != CellType.DISPENSER_4) {
-                cells[cellY][cellX].addReport(report);
-            }
+            cells[cellY][cellX].addReport(report);
         }
     }
 
@@ -371,10 +367,10 @@ public class GameMap {
     }
 
     /**
-     * Gets a <code>Map<Point, String></code> with all agent positions relative to the internal coordinate system of the map.
+     * Gets a <code>Map</code> with all agent positions relative to the internal coordinate system of the map.
      * The key of the map is the agent name, the value is the agent position.
      * 
-     * @return the <code>Map<Point, String></code> with all agent positions relative to the internal coordinate system of the map
+     * @return the <code>Map</code> with all agent positions relative to the internal coordinate system of the map
      */
     Map<Point, String> getDebugAgentPosition() {
         Map<Point, String> result = new HashMap<>();
@@ -594,9 +590,10 @@ public class GameMap {
     /**
      * Gets the direction to the nearest undiscovered Point relative to an agent in this map.
      * @param agent the agent from which to calculate
+     * @param lastMoveDirection the direction of the last move
      * @return the direction ("n", "e", "s", "w") to the nearest undiscovered Point
      */
-    String getDirectionToNearestUndiscoveredPoint(String agent) {
+    String getDirectionToNearestUndiscoveredPoint(String agent, String lastMoveDirection) {
         Point agentPos = getInternalAgentPosition(agent);
         int step = 1;
         while (step < Math.max(cells.length, cells[0].length)) {
@@ -650,6 +647,14 @@ public class GameMap {
             }
             step++;
         }
+ 
+        // Keep direction
+        float keepDirection = new Random().nextFloat();
+        if (keepDirection > 0.1 && lastMoveDirection != null) {
+            return lastMoveDirection;
+        }
+
+        // Fully random move
         float random = new Random().nextFloat();
         if (random < 0.25) {
             return "n";
@@ -663,11 +668,11 @@ public class GameMap {
     }
 
     /**
-     * Gets a <code>List<InterestingPoint></code> which contains information about Dispensers, GoalZones and RoleZones.
+     * Gets a <code>List</code> which contains information about Dispensers, GoalZones and RoleZones.
      * 
      * @param maxCount the maximum number of InterestingPoints which should be returned 
      * @param useRoleZones if true, RoleZones will be added to the list
-     * @return a <code>List<InterestingPoint></code> of this <code>GameMap</code>
+     * @return a <code>List</code> of Interesting Points from this <code>GameMap</code>
      */
     public List<InterestingPoint> getInterestingPoints(int maxCount, boolean useRoleZones) {
         List<InterestingPoint> result = new ArrayList<>();

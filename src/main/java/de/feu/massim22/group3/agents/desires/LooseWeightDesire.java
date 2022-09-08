@@ -34,14 +34,24 @@ public class LooseWeightDesire extends BeliefDesire {
         if (attached == 1) {
             // Test if block is useful
             Thing block = belief.getAttachedThings().get(0);
+
             for (TaskInfo ti : belief.getTaskInfo()) {
+                int countDist1 = 0;
+                int countDist2 = 0;
                 for (Thing t : ti.requirements) {
+                    int dist = Math.abs(t.x) + Math.abs(t.y);
+                    if (dist == 1) countDist1 += 1;
+                    if (dist == 2) countDist2 += 1;
+                    // one and two-block tasks
                     if (ti.requirements.size() <= 2 && t.type.equals(block.details)) {
                         return new BooleanInfo(true, getName());
                     }
                 }
+                // Easy three-block task
+                if (countDist1 == 1 && countDist2 == 2) {
+                    return new BooleanInfo(true, getName());
+                }
             }
-
         }
         String info = belief.getOwnAttachedPoints().size() + " Things attached";
         return new BooleanInfo(false, info);

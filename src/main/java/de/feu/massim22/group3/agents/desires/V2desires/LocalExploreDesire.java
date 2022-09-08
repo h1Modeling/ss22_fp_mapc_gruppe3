@@ -16,7 +16,6 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 public class LocalExploreDesire extends BeliefDesire {
 
     private BdiAgentV2 agent;
-    private String supervisor;
 
     /**
      * Instantiates a new LocalExploreDesire.
@@ -30,7 +29,6 @@ public class LocalExploreDesire extends BeliefDesire {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start LocalExploreDesire");
         this.agent = agent;
-        this.supervisor = supervisor;
     }
 
     /**
@@ -68,7 +66,7 @@ public class LocalExploreDesire extends BeliefDesire {
         } else {*/
         if (!agent.blockAttached || belief.getReachableGoalZones().size() == 0) {
             agent.exploreDirection = DirectionUtil
-                    .stringToInt(agent.desireProcessing.walkCircles(agent, 10).toString());
+                    .stringToInt(agent.desireProcessing.walkCircles(agent, 10).getValue());
             agent.exploreDirection2 = (agent.exploreDirection2 + 5) % 4;
         } else {
             // Data from Pathfinding
@@ -79,16 +77,6 @@ public class LocalExploreDesire extends BeliefDesire {
 
         return agent.desireProcessing.getActionForMove(agent, DirectionUtil.intToString(agent.exploreDirection),
                 DirectionUtil.intToString(agent.exploreDirection2), getName());
-    }
-
-    /**
-     * Updates the supervisor .
-     * 
-     * @param the new supervisor
-     */
-    @Override
-    public void update(String supervisor) {
-        this.supervisor = supervisor;
     }
 
     /**

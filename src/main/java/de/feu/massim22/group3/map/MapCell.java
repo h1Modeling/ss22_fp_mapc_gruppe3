@@ -25,6 +25,10 @@ public class MapCell {
      * @param report the information which should be stored into the cell
      */
     void addReport(MapCellReport report) {
+        // avoid overriding dispensers by blocks
+        if (recentReport.getCellType().isDispenser()) {
+            report.copyCellTypeFromReport(recentReport);
+        }
         recentReport = report;
         reports.add(report);
     }

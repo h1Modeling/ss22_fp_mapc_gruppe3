@@ -293,12 +293,12 @@ public class DirectionUtil {
         return outDirection;
     }
     
-    // TODO add Method description 
     /**
+     * try not to move in the opposite direction of the agents last wish
      * 
-     * @param inDirection the direction to test
-     * @param agent the agent
-     * @return
+     * @param inDirection - the direction to test
+     * @param agent - the agent
+     * @return new direction 
      */
     public static String proofDirection(String inDirection, BdiAgentV2 agent) {
         String outDirection = inDirection;

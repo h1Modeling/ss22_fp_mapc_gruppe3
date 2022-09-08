@@ -418,7 +418,7 @@ public class AgentCooperations {
      * @param helper the helper from the cooperation
      * @param helper2 the second helper from the cooperation
      * 
-     * @param the status of the master
+     * @return the status of the master
      */
     public static synchronized Status getStatusMaster(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {  
         AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
@@ -444,7 +444,7 @@ public class AgentCooperations {
      * @param helper the helper himself
      * @param helper2 the second helper from the cooperation
      * 
-     * @param the status of the helper
+     * @return the status of the helper
      */
     public static synchronized Status getStatusHelper(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {    
         AgentLogger.info(Thread.currentThread().getName() + " getStatusHelper - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
@@ -463,13 +463,13 @@ public class AgentCooperations {
     /**
      * Record with all the important data of a cooperation.
      * 
-     * @param task the task which is being worked by a cooperation
-     * @param master the master of this cooperation
-     * @param statusMaster the status of the master
-     * @param helper the helper 
-     * @param statusHelper the status of the helper
-     * @param helper2 the second helper 
-     * @param stausHelper2 the status of the second helper
+     * @param task - the task which is being worked by a cooperation
+     * @param master - the master of this cooperation
+     * @param statusMaster - the status of the master
+     * @param helper - the helper 
+     * @param statusHelper - the status of the helper
+     * @param helper2 - the second helper 
+     * @param statusHelper2 - the status of the second helper
      */
     public record Cooperation(TaskInfo task, BdiAgentV2 master, Status statusMaster, BdiAgentV2 helper,
             Status statusHelper, BdiAgentV2 helper2, Status statusHelper2) {

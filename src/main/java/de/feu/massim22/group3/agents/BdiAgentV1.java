@@ -13,6 +13,7 @@ import de.feu.massim22.group3.agents.desires.BooleanInfo;
 import de.feu.massim22.group3.agents.desires.DeliverAndConnectBlockDesire;
 import de.feu.massim22.group3.agents.desires.DeliverBlockDesire;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
+import de.feu.massim22.group3.agents.desires.DropBlockDesire;
 import de.feu.massim22.group3.agents.desires.EscapeClearDesire;
 import de.feu.massim22.group3.agents.desires.ExploreDesire;
 import de.feu.massim22.group3.agents.desires.ExploreMapSizeDesire;
@@ -43,7 +44,6 @@ import de.feu.massim22.group3.utils.debugger.debugData.DesireDebugData;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
-import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import massim.protocol.data.NormInfo;
@@ -210,12 +210,16 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
         }
         case UPDATE_GROUP: {
             List<Parameter> parameters = event.getParameters();
-            String newSupervisor = ((Identifier)parameters.get(0)).getValue();
-            int offsetX = (int)((Numeral)parameters.get(1)).getValue();
-            int offsetY = (int)((Numeral)parameters.get(2)).getValue();
+            String newSupervisor = PerceptUtil.toStr(parameters, 0);
+            int offsetX = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            int offsetY = PerceptUtil.toNumber(parameters, 2, Integer.class);
+            int topLeftX = PerceptUtil.toNumber(parameters, 3, Integer.class);
+            int topLeftY = PerceptUtil.toNumber(parameters, 4, Integer.class);
             Point oldPosition = belief.getPosition();
             Point newPosition = new Point(oldPosition.x + offsetX, oldPosition.y + offsetY);
+            Point topLeft = new Point(topLeftX, topLeftY);
             belief.setPosition(newPosition);
+            belief.setTopLeft(topLeft);
             supervisor.setName(newSupervisor);
             break;
         }
@@ -284,6 +288,25 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             }
             break;
         }
+        case SUPERVISOR_PERCEPT_DELIVER_THREE_BLOCK: {
+            List<Parameter> parameters = event.getParameters();
+            String task = PerceptUtil.toStr(parameters, 0);
+            String agent = PerceptUtil.toStr(parameters, 1);
+            String agentFullName = PerceptUtil.toStr(parameters, 2);
+            int blockIndex = PerceptUtil.toNumber(parameters, 3, Integer.class);
+            TaskInfo taskInfo = belief.getTask(task);
+            Thing block = null;
+            if (taskInfo != null) {
+                block = taskInfo.requirements.get(blockIndex);
+                if (block != null) {
+                    belief.setGroupDesireType(GroupDesireTypes.DELIVER_ATTACH);
+                    belief.setGroupDesirePartner(agent);
+                    belief.setGroupDesireBlockDetail(block.type);
+                    desires.add(new DeliverAndConnectBlockDesire(belief, taskInfo, agent, agentFullName, supervisor.getName(), block, this));
+                }
+            }
+            break;
+        }
         case SUPERVISOR_PERCEPT_RECEIVE_TWO_BLOCK: {
             List<Parameter> parameters = event.getParameters();
             String task = PerceptUtil.toStr(parameters, 0);
@@ -302,6 +325,27 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
                 belief.setGroupDesirePartner(agent);
                 belief.setGroupDesireBlockDetail(block.type);
                 desires.add(new ReceiveAndConnectBlockDesire(belief, taskInfo, agent, agentFullName, supervisor.getName(), block, this));
+            }
+            break;
+        }
+        case SUPERVISOR_PERCEPT_RECEIVE_THREE_BLOCK: {
+            List<Parameter> parameters = event.getParameters();
+            String task = PerceptUtil.toStr(parameters, 0);
+            String agent1 = PerceptUtil.toStr(parameters, 1);
+            String agent1FullName = PerceptUtil.toStr(parameters, 2);
+            int agent1BlockIndex = PerceptUtil.toNumber(parameters, 3, Integer.class);
+            String agent2 = PerceptUtil.toStr(parameters, 4);
+            String agent2FullName = PerceptUtil.toStr(parameters, 5);
+            int agent2BlockIndex = PerceptUtil.toNumber(parameters, 6, Integer.class);
+            int blockIndex = PerceptUtil.toNumber(parameters, 7, Integer.class);
+            TaskInfo taskInfo = belief.getTask(task);
+            Thing block = taskInfo.requirements.get(blockIndex);
+            if (block != null) {
+                belief.setGroupDesireType(GroupDesireTypes.RECEIVE_ATTACH);
+                belief.setGroupDesirePartner(agent1 + " / " + agent2);
+                belief.setGroupDesireBlockDetail(block.type);
+                desires.add(new ReceiveAndConnectBlockDesire(belief, taskInfo, agent1, agent1FullName, agent1BlockIndex, agent2,
+                    agent2FullName, agent2BlockIndex, supervisor.getName(), block, this));
             }
             break;
         }
@@ -367,7 +411,15 @@ public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisa
             List<Parameter> parameters = event.getParameters();
             int x = PerceptUtil.toNumber(parameters, 0, Integer.class);
             int y = PerceptUtil.toNumber(parameters, 1, Integer.class);
+            int topLeftX = PerceptUtil.toNumber(parameters, 2, Integer.class);
+            int topLeftY = PerceptUtil.toNumber(parameters, 3, Integer.class);
             belief.setMapSize(x, y);
+            belief.setTopLeft(new Point(topLeftX, topLeftY));
+            break;
+        }
+        case SUPERVISOR_PERCEPT_DROP_BLOCK: {
+            desires.removeIf(d -> d instanceof GetBlockDesire);
+            desires.add(new DropBlockDesire(belief));
             break;
         }
         default:

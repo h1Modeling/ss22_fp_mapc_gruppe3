@@ -26,9 +26,9 @@ public enum Status {
     Wait("wai"),
     Finished("wai");
 
-    private String type;
+    // private String type;
 
     private Status(String type) {
-        this.type = type;
+        // this.type = type;
     }
 }
