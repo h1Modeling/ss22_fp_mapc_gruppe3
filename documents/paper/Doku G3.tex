@@ -1,0 +1,228 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.21 of 2022/01/12
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage[T1]{fontenc}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encondings may result in incorrect characters.
+%
+\usepackage{graphicx}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following two lines
+% to display URLs in blue roman font according to Springer's eBook style:
+%\usepackage{color}
+%\renewcommand\UrlFont{\color{blue}\rmfamily}
+%
+\usepackage[ngerman]{babel}
+\usepackage{wrapfig}
+\begin{document}
+%
+\title{Gruppe 3: Catchphrase?}
+%
+%\titlerunning{Abbreviated paper title}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{...\inst{1}\and
+...\inst{1}\and
+...\inst{1}\and
+...\inst{1}}
+%
+\authorrunning{F. Author et al.}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{FernUniversität in Hagen, Universitätsstraße 47, 58097 Hagen, Deutschland
+\email{\{...\}@studium.fernuni-hagen.de}\\
+\url{https://www.fernuni-hagen.de}}
+%
+\maketitle              % typeset the header of the contribution
+%
+%
+\section{Einleitung}
+Diese Arbeit wurde Rahmen des Fachpraktikums "`Multiagentenprogrammierung"' in einer Gruppenarbeit von vier Informatik-Studenten erstellt. Die Aufgabe umfasste die Bearbeitung des "`MASSim 2022: Agents Assemble III"' Szenarios \cite{EISMASSim}. Hierbei interagieren zwei oder mehr Teams auf einer 2-dimensionalen, aus Feldern bestehenden Karte. Jedes Team kontrolliert eine definierte Anzahl an Agenten, die verschiedene Aktionen ausführen können. Daneben existieren noch Hindernisse, Blöcke verschiedener Typen und sogenannte Dispenser, bei denen diese Blöcke erzeugt werden. Einige Felder der Karte sind als Zielzonen und Rollenzonen definiert. Ziel des Szenarios ist es, mithilfe der Agenten Blöcke zu sammeln, zu einer vorgegebenen Konfiguration zusammenzusetzen und in einer Zielzone abzugeben. Für jede erfolgreich bearbeitete Aufgabe gibt es Punkte. \\
+
+Das Szenario läuft auf einem zentralen Server. Die Simulation ist rundenbasiert. Der Server sendet zu Beginn jeder Runde Informationen über die Umgebung an die Agenten. Diese verarbeiten die Informationen und senden die in der aktuellen Runde auszuführende Aktion an den Server. Dieser prüft die Eingaben der Agenten und aktualisiert den Zustand der Simulation. Die Aufgabe des Fachpraktikums besteht darin, das Agenten-Programm zu entwickeln. Dabei müssen die Agenten die Aufgaben möglichst effizient und kooperativ bearbeiten, um so viele Punkte wie möglich zu erzielen.
+
+\section{Kommunikation und Kommunikationsmittel}
+Die gruppeninterne Kommunikation erfolgte über den für das Fachpraktikum eingerichteten Discord-Server. Wir trafen uns jeden Mittwoch im Sprachchat der Gruppe, um anfangs die grundsätzliche Softwarearchitektur mittels UML-Diagrammen zu entwickeln und später über aktuelle Aufgaben und Probleme zu sprechen. Der Gruppen-Chat wurde darüber hinaus für kurzfristige Absprachen genutzt.\\
+
+Die Quelltext-Verwaltung erfolgte über das Versionsverwaltungssystem Github, dessen Issue-Management wir ebenfalls verwendeten. Hier wurden alle Aufgaben zusammengetragen und jeweils ein Bearbeiter zugeordnet. Aus dem jeweiligen Issue wurde jeweils ein Feature Branch erstellt, in dem Bearbeitung der Aufgabe erfolgte. Abschließend wurden die Änderungen des Feature Branches mittels eines Pull Requests auf den Master Branch angewendet. Das Repositorium wurde so konfiguriert, dass ein Pull Request erst freigegeben wird, wenn er durch mindestens ein anderes Gruppenmitglied überprüft wurde. Dadurch sollte die Qualität des Quelltextes erhöht und das gemeinsame Verständnis des Quelltextes gefördert werden.
+
+\section{Technische Rahmenbedingungen und Softwarebasisarchitektur}
+Für die programmiertechnische Umsetzung entschieden wir uns für die Programmiersprache Java, da alle Gruppenmitglieder mindestens über grundlegende Kenntnisse dieser Programmiersprache verfügten. Außerdem ist Java eine stark typisierte Programmiersprache, wodurch einige Programmierfehler schon vor der Ausführung des Programms entdeckt werden können und so die Wahrscheinlichkeit von Laufzeitfehlern reduziert wird. Würde ein Laufzeitfehler während einer Simulation auftreten, dann müsste das Programm manuell neu gestartet werden. Während der Reaktionszeit bis zum Neustart läuft die Simulation (das Server-Programm) weiter. Für die während dieser Zeit laufenden Runden werden keine Aktionen gesendet, wodurch diese ungenutzt bleiben. Außerdem gehen alle bisher gesammelten Informationen (Objektzustände) verloren und müssen neu gesammelt werden.\\
+
+Das objektorientierte Programmierparadigma, auf dem auch Java basiert, weist einige Gemeinsamkeiten mit dem Konzept der Agenten auf. Sowohl Objekte als auch Agenten besitzen einen gekapselten, inneren Zustand, führen Aktionen (Methoden) aus, um diesen Zustand zu verändern und kommunizieren mittels des Nachrichtenversands miteinander. Dennoch gibt es auch eine Reihe von Aspekten, die nicht standardmäßig im objektorientierten Programmierparadigma enthalten sind, aber trotzdem mithilfe objektorientierter Programmiersprachen implementiert werden können. Dazu zählt beispielsweise, dass eine Methode eines Objektes, solange sie öffentlich ist, jederzeit von anderen Objekten aufgerufen werden kann, während ein Agent selbst entscheidet, wann er eine Aktion ausführt. Ein weiterer Unterschied ist, dass Objekte in einem objektorientierten Programm standardmäßig nur einen gemeinsamen Ausführungsstrang aufweisen. Das Konzept der Agenten sieht hingegen einen eigenen Ausführungsstrang für jeden Agenten vor \cite{Weiss2000}.\\
+
+Das in dieser Arbeit entwickelte Agentensystem basiert auf der BDI-Architektur. Diese Architektur ist eine Abstraktion des menschlichen Denkens bzw. Schlussfolgerns. Das heißt sie versucht zu beschreiben, wie Menschen sich für ihre nächste Handlung entscheiden, um dadurch übergeordnete Ziele zu erreichen. Die Komponenten der BDI-Architektur sind:
+\begin{itemize}
+\item{{\bf Beliefs:} Informationen, die der Agent über seine Umwelt besitzt}
+\item{{\bf Desires:} Handlungsoptionen bzw. mögliche Ziele des Agenten}
+\item{{\bf Intentions:} Ziele, für die sich der Agent entschieden hat und an deren Realisierung gerade gearbeitet wird}
+\end{itemize}
+
+Die Beliefs werden dabei durch eine Funktion auf Basis der Wahrnehmung der Umgebung und der aktuellen Beliefs aktualisiert. Die Desires werden aus den Beliefs und den aktuellen Intentions ermittelt. Die eigentliche Schlussfolgerung der nächsten Handlungen, also die Auswahl der Intentions, erfolgt durch eine Filter-Funktion, bei der die aktuellen Beliefs, Desires und Intentions einfließen. Der Vorteil dieser Architektur ist, dass eine funktionale Zerlegung des Agenten in die oben genannten Subsysteme vorgegeben ist. Die Komponenten erscheinen dabei intuitiv, da die BDI-Architektur auf dem menschlichen Denkmodell basiert \cite{Weiss2000}.\\
+
+Auf der Grundlage der BDI-Architektur erarbeiteten wir anhand von Klassen-UML-Diagrammen konkrete Systemarchitekturen. Die UML-Diagramme stellen aufgrund der übersichtlichen, visuellen Darstellung des komplexen Systems eine gute Diskussionsgrundlage dar.
+
+TODO Bdi, 2 Agentensysteme, UML, Java
+
+\section{Gruppenbeitrag Heinz Stadler}
+ 
+\subsection{Agent V1 - Architektur}
+Aufbau
+
+\subsection{Wissensverwaltung}
+Belief
+
+\subsection{Wegfindung}
+Pathfinding
+
+\subsection{Ziel- und Absichtsfindung}
+Desires
+
+\subsection{Verifikation und Problemfindung}
+Tests / Debugger
+
+\subsection{...}
+
+\section{Gruppenbeitrag Melinda Betz}
+\subsection{Agent V2 - Architektur}
+Der AgentV2 arbeitet mit der Step-Methode. 
+Er arbeitet auf eigenen Desires (V2desires) und benutzt nicht die Desires des anderen Agenten mit. Außerdem verwendet der Agent nicht das komplette Pathfinding des V1, da dieses OpenGL benutzt, was auf manchen AMD Rechnern nicht, zumindest nicht performant, funktioniert. Meine beiden Rechner sind da keine Ausnahme. Der Agent stellt seine eigenen Berechnungen an. 
+
+\subsection{Task Bearbeitung und Strategie}
+Die Desires welche ein Agent ausführen kann, sind aufgeteilt in Desires die keine Task benötigen, wie z. B. die Bestimmung der Mapgröße und Desires zur Bearbeitung einer Task, wie z. B. Submitten.\\
+
+Der Agent holt sich zuerst eine Rolle in einer Role Zone. Die Rolle Worker wird verwendet, da in der Default Rolle keine Blöcke geholt oder submittet werden können. Diese Rolle kann alles, manches zwar nicht ganz optimal, aber gut genug.\\
+
+Alle Worker holen selbständig einen, zu einer aktiven Task passenden, Block. Dabei darf die maximale Anzahl der vorhandenen Blöcke eines bestimmten Blocktyps nicht überschritten werden. Mit diesem Block bewegen sie sich in Richtung Goal Zone.
+Jeder Agent in einer Goal Zone, der gerade nicht an einer Mehr-Block-Task arbeitet (AgentCooperations), prüft, in jedem Step, für alle aktiven Tasks, ob er den innersten Block dieser Task besitzt. Eine Ein-Block-Task kann so direkt bearbeitet werden (Block in Position bringen und submitten). \\
+
+Für eine Mehr-Block-Task benötigt der Agent noch mindestens einen Helper, um eine neue AgentCooperation mit sich als Master (dieser submittet die zusammengebaute Mehr-Block-Task) bilden zu können. 
+Ein Agent kann sich selbst zum Master machen und die Helper bestimmen welche ihm die Blöcke beschaffen und in der richtigen Reihenfolge zusammensetzen sollen.  
+Die Kommunikation wer wann was macht erfolgt über ein Klasse AgentCooperations sowie Statusabfragen zum Stand der Abarbeitung. Es gibt einstellbare Regeln, wie z.B., dass nicht mehr als drei Agenten gleichzeitig Master sein dürfen. Das soll vor Klumpenbildung in der Goal Zone schützen, da so nur eine begrenzte und kontrollierbare Anzahl an Agenten in und um die Goal Zone beschäftigt ist.
+
+\subsection{Umgebungsfindung und Synchronisation}
+Ein Agent des AgentV2 kennt alles (vor allem Dispenser und GoalZones), was schon einmal in seinem Sichtfeld oder dem eines Agenten seiner Gruppe war. Entfernung und Richtung zu diesen Punkten kann er selbst ermitteln.\\
+
+Bei der Synchronisation geht es neben der beschriebenen Bearbeitung von Mehr-Block-Tasks um die Bestimmung der Mapgröße. Dabei wird für die Ermittlung von Höhe und Breite jeweils aus den ersten beiden Treffen zweier Agenten eine AgentCooperation gebildet. Der Master läuft einmal um die Map herum. Der Helper wartet bis dieser wieder zurück ist. Aus der Position des Masters kann nun die genaue Größe der Map berechnet werden. 
+
+\subsection{Schwierigkeiten und Lösungsstrategien}
+Einige der Schwierigkeiten waren, dass die Größe des Spielfeldes nicht bekannt war und, dass es schwer ist genau zu wissen wer was attached hat, da diese Information im Percept vom Server nicht detailliert enthalten ist. Außerdem hat man Schwierigkeiten, wenn ein Agent mit einer Geschwindigkeit größer zwei läuft, dessen genau Position festzustellen sollte der Agent in einem Schritt abbrechen. Es ist dann nicht möglich herauszufinden in welchem Schritt der Agent abgebrochen ist oder noch viel wichtiger wie viele Schritte dieser bis zum Abbruch gegangen ist. Was zu Problemen bei der Ermittlung der neuen Position des Agenten führt.\\
+
+Einige Lösungsstrategien für die oben aufgeführten Probleme sind, dass die Größe der Karte einfach bei fast allen Turnieren bekannt war. Dass man sich in einer variable merkt, welcher Agent was genau attached hat. Kein Agent läuft schneller als zwei.
+
+\subsection{Tätigkeiten Gruppenlead}
+In der Leadsgruppe haben wir uns regelmäßig getroffen und die Turnierkonfigurationen zusammengestellt sowie allgemeine Punkte besprochen. Diese Treffen waren auch der Ort, um Fragen unserer Teammitglieder anzusprechen und zu klären. 
+\section{Gruppenbeitrag Phil Heger}
+\subsection{Logging}
+\subsection{Strategien zum Stören gegnerischer Agenten}
+\subsubsection{Dispenser blockieren}
+\subsubsection{Goal Zone verteidigen}
+
+\section{Gruppenbeitrag Björn Wladasch}
+
+\section{Turniere}
+Bei den Turnieren sind immer beide Agenten zum Einsatz gekommen. (Ausnahme Turnier 6)\\
+Die Probleme des AgentV2 waren über den Verlauf aller Turniere mehr oder weniger dieselben.  Die Agenten haben sich öfters zu Klumpen zusammengefunden und dabei gegenseitig behindert. Sie haben teilweise ihr Wissen über ihre Umwelt, insbesondere die Lage der Goal Zones, verloren. 
+
+\subsubsection{Turnier 2}
+\subsubsection{Turnier 3}
+\subsubsection{Turnier 4}
+\subsubsection{Turnier 5}
+\subsubsection{Turnier 6\\}
+Bei Turnier 6 ist der AgentV2 nicht zum Einsatz gekommen, da er Probleme mit dem Erkennen und Finden der sich wechselnden Goal Zones hatte und so weniger Tasks wie bisher bearbeiten konnte. Im Nachhinein war dies jedoch nicht so schlimm und der Agent hätte trotzdem zum Einsatz kommen können. 
+
+\section{Rekapitulation und Ausblick}
+Vor- und Nachteile der Entscheidung von zwei Architekturen
+Was sollte noch verbessert werden
+Wie sind wir zufrieden\\
+
+Es gibt eigentlich keine nennenswerten Probleme, wenn man zwei Architekturen hat, beide Agenten erfüllen ihre Anforderungen. 
+
+Im Großen und Ganz bin ich mit meinem AgentenV2 zufrieden. Wo ich noch Verbesserungspotential sehe, sind, wie oben erwähnt, das Problem der „Verklumpung“ und die Einschränkung der Raumwahrnehmung der Agenten. Leider konnte ich diese Probleme in der vorgegebenen Zeit nicht lösen, da der Agent auch immer weiterentwickelt werde musste und so nicht viel Zeit zur Behebung dieser „grundsätzlichen“ Probleme blieb.
+
+\section{FAQ}
+\subsection{Teilnehmer*innen und ihr Hintergrund}
+\subsubsection{Was war die Motivation an dem Praktikum teilzunehmen?\\}
+M: Die Motivation waren Interesse am Thema Künstliche Intelligenz und schon vorhandene Java Kenntnisse.
+\subsection{Statistiken}
+\subsubsection{Wurden die Agents von Grund auf neu implementiert oder auf einer bestehenden Lösung aufgebaut?\\}
+AgentV2: Der Agent wurde von Grund auf neu implementiert (er basiert nur auf dem BasicAgent)
+\subsubsection{Wie viel Zeit wurde in die Entwicklung und Organisation des Praktikums gesteckt?\\}
+M: Jeden Tag 3- 4 Stunden, mal mehr mal weniger
+\subsubsection{Wie war die reingesteckte Zeit im Verlauf des Praktikums verteilt?\\}
+M: Die meiste Zeit wurde für die Entwicklung des Agenten ( Coden ) verwendet, und etwas Zeit davor und währenddessen für die theoretischen Überlegungen was der Agent tun soll. Und Richtung Ende des Praktikums (und währenddessen in Form von Notizen) Zeit für die Doku. 
+\subsubsection{Wie viele Zeilen Code wurden ungefähr geschrieben?\\}
+M: ca 6704
+\subsubsection{Welche Programmiersprache und Entwicklungsumgebung wurde verwendet?\\}
+M: Programmiersprache Java und Entwicklungsumgebung Eclipse
+\subsubsection{Wurden externe Werkzeuge/Bibliotheken verwendet?\\}
+AgentV2: keine
+\subsection{Agenten-System Details}
+\subsubsection{Wie entscheiden die Agenten, was sie machen sollen?\\}
+AgentV2: Ein Agent läuft durch alle Desires und merkt sich alle, in seinem momentanen Zustand ( Belief) ausführbaren. Es werden Prioritäten vergeben und das Desire mit der höchsten Prio wird zur Intention und diese wird dann vom Agent ausgeführt.
+\subsubsection{Wie entscheiden die Agenten, wie sie machen sollen?\\}
+AgentV2: Die Agenten arbeiten so, wie es vorher programmiert wurde (Actions). 
+\subsubsection{Wie arbeiten die Agenten zusammen und wie dezentralisiert ist der Ansatz?\\}
+AgentV2: Sehr dezentralisiert, die Agenten (der Master) suchen sich selbst ihre Hilfen beim Zusammenbauen der Tasks. In der Klasse AgentsCooperations wird festgehalten welcher Agent gerade mit welcher Task beschäftigt ist (und in welchem Status).
+\subsubsection{Kann ein Agent das generelle Verhalten zur Laufzeit ändern?\\}
+AgentV2: Nein, ein Agent erfüllt immer Tasks während der Laufzeit des Programms (außer es existieren gerade keine mit denen er etwas anfangen kann, dann wird gewartet)
+\subsubsection{Wurden Änderungen (z.B kritische Fehler) während eines Turniers vorgenommen?\\}
+AgentV2: Es wurden keine Änderungen während eines Turniers vorgenommen.
+\subsubsection{Wurde Zeit investiert um die Agenten fehlertoleranter zu machen? Wenn ja, wie genau?\\}
+AgentV2: Ja, es wurden viele Testläufe gemacht und immer wenn ein Fehler auftrat wurde dieser so behoben, dass er nicht mehr auftritt (und wenn nur mit einem Skip Befehl).
+\subsection{Szenario und Strategie}
+\subsubsection{Was ist die Hauptstrategie der Agenten?\\}
+AgentV2: Sie holen sich zuerst einmal die Rolle Worker und dann holen sie sich einen Block und laufen mit ihm zur Goal Zone.
+\subsubsection{Haben die Agenten selbstständig eine Strategie entwickelt oder wurde diese bereits in die Implementierung eingebaut?\\}
+AgentV2: Nein, die Strategie wurde in die Implementierung eingebaut.
+\subsubsection{Wurde eine Strategie implementiert, die Agenten anderer Teams mit einbezieht?\\}
+AgentV2: Nein.
+\subsubsection{Wie entscheiden Agenten, welche Aufgabe sie als nächstes übernehmen?\\}
+AgentV2: Die Agenten entscheiden es selbst.
+\subsubsection{Wie koordinieren die Agenten die Arbeit für eine Aufgabe untereinander?\\}
+AgentV2: Die Agenten koordinieren indem sie durch Statusabfragen miteinander kommunizieren, wer wann fertig ist und wann weitergemacht werden kann. 
+\subsubsection{Welche Aspekte des Szenarios waren am Herausforderndsten?\\}
+AgentV2: Wenn man nicht weiß wie groß die Karte ist.
+\subsection{Und die Moral von der Geschichte}
+\subsubsection{Was wurde durch das Praktikum vermittelt?\\}
+M: Selbstständig als Gruppe ein Projekt erarbeiten mit nur wenig vorgaben.
+\subsubsection{Welchen Ratschlag wäre für zukünftige Gruppen sinnvoll?\\}
+M: Nicht mit zu vielen Erwartungen starten, es ist nicht alles so einfach wie man es sich vorstellt
+\subsubsection{Was waren Stärken und Schwächen der Gruppe?\\}
+\subsubsection{Was waren Vorteile und Nachteile der gewählten Programmiersprache und weiterer Werkzeuge?\\}
+Vorteile: die vorgegebenen Schnittstellen waren alle in Java programmiert\\
+Nachteile: keine
+\subsubsection{Welche weiteren Probleme und Herausforderungen kamen im Laufe des Praktikums auf?\\}
+\subsubsection{Was könnte beim nächsten Praktikum verbessert werden?\\}
+\subsubsection{Welcher Aspekt der Gruppenarbeit hat am meisten Zeit in Anspruch genommen?\\}
+M: Koordinieren welches Gruppenmitglied welche Aufgabe übernimmt.
+%
+% ---- Bibliography ----
+%
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+% \bibliographystyle{splncs04}
+% \bibliography{mybibliography}
+%
+\begin{thebibliography}{8}
+	\bibitem{EISMASSim}
+	github.com/agentcontest/massim\_2022, agentcontest/massim\_2022, \\ https://github.com/agentcontest/massim\_2022/blob/main/docs/eismassim.md, EISMASSim Documentation, 21.08.2022
+	\bibitem{Weiss2000}
+	Weiss, G.: Multiagent Systems, 2. Auflage, The MIT Press, Cambridge, 2000
+	\bibitem{Ahlbrecht2021}
+	Ahlbrecht, T., Dix, J., Fiekas. N. und T. Krausburg: The Multi-Agent Programming Contest 2021, Springer, Heidelberg, 2021
+	\bibitem{Hart1968}
+	Hart, P. E., Nilsson, N. J. und Raphael, B.: A Formal Basis for the Heuristic Determination of Minimum Cost Paths, in IEEE Transactions on Systems Science and Cybernetics, 4. Auflage, Nummer 2, Seiten 100-107, Juli 1968
+	\bibitem{Bratman1987}
+	Bratman, M.: Intention, plans, and practical reason, Harvard University Press, Cambridge, 1987
+\end{thebibliography}
+\end{document}
