@@ -1620,6 +1620,7 @@ public class Belief {
     public void setTopLeft(Point topLeft) {
         this.mapTopLeft = topLeft; 
     }
+<<<<<<< HEAD
     
     /**
      * Sets the non modulo position of an agent as point.
@@ -1629,6 +1630,8 @@ public class Belief {
     public void setNonModPosition(Point pos) {
         nonModuloPosition = new Point(pos);
     }
+=======
+>>>>>>> refs/heads/masterMerge
     
     private void moveNonModuloPosition(String dir) {
         switch (dir) {
