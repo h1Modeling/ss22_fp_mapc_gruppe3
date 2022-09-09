@@ -9,6 +9,7 @@ import java.util.Set;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
+import de.feu.massim22.group3.agents.V2utils.StepUtilities;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
@@ -264,7 +265,9 @@ public class Belief {
                 }
             }
         updateOwnAttachedPoints();
-        //updatePosition();
+        if (StepUtilities.getAgent(agentShortName) == null)
+            // BdiAgentV1 is running
+            updatePosition();
         updateNewTasks();
         updateAttachedThings();
     }

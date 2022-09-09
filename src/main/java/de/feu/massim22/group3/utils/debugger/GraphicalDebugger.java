@@ -99,7 +99,7 @@ public class GraphicalDebugger extends JFrame implements Runnable, IGraphicalDeb
         
         setResizable(true);
         pack();
-        setVisible(false);
+        setVisible(true);
         toFront();
     }
 

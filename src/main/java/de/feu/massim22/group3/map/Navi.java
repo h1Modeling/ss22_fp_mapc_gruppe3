@@ -58,7 +58,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
     private boolean busy = false;
     private static boolean debug = true;
-    private final int defaultMapSize = 500;
+    private final int defaultMapSize = 30;
     private Integer horizontalMapSize = null;
     private Integer verticalMapSize = null;
     private boolean mapDiscovered = false;
