@@ -1,16 +1,16 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  7 SEP 2022 18:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  8 SEP 2022 22:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./gruppe3.tex
-(gruppe3.tex
-LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-07-04> (llncs.cls
+**gruppe3.tex
+(./gruppe3.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-04-10> (./llncs.cls
 Document Class: llncs 2022/01/12 v2.21 
  LaTeX document class for Lecture Notes in Computer Science
-(D:\Program Files\MiKTeX\tex/latex/base\article.cls
+(/usr/share/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
-(D:\Program Files\MiKTeX\tex/latex/base\size10.clo
+(/usr/share/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
@@ -25,10 +25,10 @@ File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
 )
-(D:\Program Files\MiKTeX\tex/latex/tools\multicol.sty
+(/usr/share/texmf-dist/tex/latex/tools/multicol.sty
 Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \c@tracingmulticols=\count193
-\mult@box=\box51
+\mult@box=\box50
 \multicol@leftmargin=\dimen139
 \c@unbalance=\count194
 \c@collectmore=\count195
@@ -41,13 +41,14 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \postmulticols=\dimen143
 \multicolsep=\skip49
 \multicolbaselineskip=\skip50
-\partial@page=\box52
-\last@line=\box53
+\partial@page=\box51
+\last@line=\box52
 \maxbalancingoverflow=\dimen144
-\mult@rightbox=\box54
-\mult@grightbox=\box55
-\mult@firstbox=\box56
-\mult@gfirstbox=\box57
+\mult@rightbox=\box53
+\mult@grightbox=\box54
+\mult@firstbox=\box55
+\mult@gfirstbox=\box56
+\@tempa=\box57
 \@tempa=\box58
 \@tempa=\box59
 \@tempa=\box60
@@ -83,18 +84,17 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \@tempa=\box90
 \@tempa=\box91
 \@tempa=\box92
-\@tempa=\box93
 \c@minrows=\count199
 \c@columnbadness=\count266
 \c@finalcolumnbadness=\count267
 \last@try=\dimen145
 \multicolovershoot=\dimen146
 \multicolundershoot=\dimen147
-\mult@nat@firstbox=\box94
-\colbreak@box=\box95
+\mult@nat@firstbox=\box93
+\colbreak@box=\box94
 \mc@col@check@num=\count268
 )
-(D:\Program Files\MiKTeX\tex/latex/oberdiek\aliascnt.sty
+(/usr/share/texmf-dist/tex/latex/oberdiek/aliascnt.sty
 Package: aliascnt 2018/09/07 v1.5 Alias counters (HO)
 )
 \c@chapter=\count269
@@ -125,10 +125,10 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
 \c@@auth=\count272
 \c@auco=\count273
 \instindent=\dimen159
-\authrun=\box96
+\authrun=\box95
 \authorrunning=\toks16
 \tocauthor=\toks17
-\titrun=\box97
+\titrun=\box96
 \titlerunning=\toks18
 \toctitle=\toks19
 \c@theorem=\count274
@@ -148,79 +148,65 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
 \c@remark=\count288
 \headlineindent=\dimen160
 )
-(D:\Program Files\MiKTeX\tex/latex/base\fontenc.sty
+(/usr/share/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 )
-(D:\Program Files\MiKTeX\tex/latex/graphics\graphicx.sty
+(/usr/share/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 
-(D:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty
-Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+(/usr/share/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks20
 )
-(D:\Program Files\MiKTeX\tex/latex/graphics\graphics.sty
-Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+(/usr/share/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
 
-(D:\Program Files\MiKTeX\tex/latex/graphics\trig.sty
+(/usr/share/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
-(D:\Program Files\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
+(/usr/share/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
 
-(D:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def
+(/usr/share/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen161
 \Gin@req@width=\dimen162
 )
-(D:\Program Files\MiKTeX\tex/generic/babel\babel.sty
-Package: babel 2022/06/26 3.77 The Babel package
+(/usr/share/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2022/02/26 3.73 The Babel package
 \babel@savecnt=\count289
 \U@D=\dimen163
-\l@unhyphenated=\language79
+\l@unhyphenated=\language87
 
-(D:\Program Files\MiKTeX\tex/generic/babel\txtbabel.def)
+(/usr/share/texmf-dist/tex/generic/babel/txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count290
 
-*************************************
-* Local config file bblopts.cfg used
-*
-(D:\Program Files\MiKTeX\tex/latex/arabi\bblopts.cfg
-File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
- babel
-)
-(D:\Program Files\MiKTeX\tex/latex/babel-german\ngerman.ldf
+(/usr/share/texmf-dist/tex/generic/babel-german/ngerman.ldf
 Language: ngerman 2021/02/27 v2.13 German support for babel (post-1996 orthogra
 phy)
 
-(D:\Program Files\MiKTeX\tex/latex/babel-german\ngermanb.ldf
+(/usr/share/texmf-dist/tex/generic/babel-german/ngermanb.ldf
 Language: ngermanb 2021/02/27 v2.13 German support for babel (post-1996 orthogr
 aphy)
 Package babel Info: Making " an active character on input line 122.
 )))
-(D:\Program Files\MiKTeX\tex/generic/babel/locale/de\babel-ngerman.tex
-Package babel Info: Importing font and identification data for ngerman
-(babel)             from babel-de.ini. Reported on input line 11.
-)
-(D:\Program Files\MiKTeX\tex/latex/wrapfig\wrapfig.sty
+(/usr/share/texmf-dist/tex/latex/wrapfig/wrapfig.sty
 \wrapoverhang=\dimen164
 \WF@size=\dimen165
 \c@WF@wrappedlines=\count291
-\WF@box=\box98
+\WF@box=\box97
 \WF@everypar=\toks21
 Package: wrapfig 2003/01/31  v 3.6
 )
-(D:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
-File: l3backend-pdftex.def 2022-07-01 L3 backend support: PDF output (pdfTeX)
+(/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-04-14 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count292
 \l__pdf_internal_box=\box98
 ) (./gruppe3.aux
-
-LaTeX Warning: Label `g3:architecture' multiply defined.
-
 
 LaTeX Warning: Label `g3:architecture' multiply defined.
 
@@ -241,11 +227,11 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
- (D:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+ (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count293
 \scratchdimen=\dimen166
-\scratchbox=\box100
+\scratchbox=\box99
 \nofMPsegments=\count294
 \nofMParguments=\count295
 \everyMPshowfont=\toks22
@@ -254,13 +240,14 @@ LaTeX Font Info:    ... okay on input line 23.
 \MPnumerator=\count297
 \makeMPintoPDFobject=\count298
 \everyMPtoPDFconversion=\toks23
-) (D:\Program Files\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
+) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
 
-(D:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+(/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 44.
@@ -269,167 +256,205 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
 4.
 
-(D:\Program Files\MiKTeX\tex/latex/base\t1cmtt.fd
+(/usr/share/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-<./Referenzen/Architekturdiagramm.pdf, id=1, 194.28864pt x 166.82513pt>
+Underfull \hbox (badness 10000) in paragraph at lines 48--49
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
+
+ []
+
+
+Overfull \hbox (8.47385pt too wide) in paragraph at lines 55--56
+[]\T1/cmr/m/n/10 Die Quelltext-Verwaltung er-folg-te über das Ver-si-ons-ver-wa
+l-tungs-sys-tem Github,
+ []
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 59--60
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--62
+
+ []
+
+
+Overfull \hbox (12.5423pt too wide) in paragraph at lines 63--64
+[]\T1/cmr/m/n/10 Das in die-ser Ar-beit ent-wi-ckel-te Agen-ten-sys-tem ba-sier
+t auf der BDI-Architektur.
+ []
+
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 70--71
+
+ []
+
+
+Overfull \hbox (0.97568pt too wide) in paragraph at lines 72--73
+[]\T1/cmr/m/n/10 Auf der Grund-la-ge der BDI-Architektur er-ar-bei-te-ten wir a
+n-hand von Klassen-
+ []
+
+<./Referenzen/Architekturdiagramm.pdf, id=16, 194.28864pt x 166.82513pt>
 File: ./Referenzen/Architekturdiagramm.pdf Graphic file (type pdf)
 <use ./Referenzen/Architekturdiagramm.pdf>
 Package pdftex.def Info: ./Referenzen/Architekturdiagramm.pdf  used on input li
-ne 61.
+ne 83.
 (pdftex.def)             Requested size: 194.28815pt x 166.8247pt.
- [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 1077) in paragraph at lines 65--68
+Underfull \hbox (badness 1077) in paragraph at lines 87--90
 []\T1/cmr/m/n/10 Das Agen-ten-sys-tem V1 wur-de
  []
 
 
-Underfull \hbox (badness 1609) in paragraph at lines 65--68
+Underfull \hbox (badness 1609) in paragraph at lines 87--90
 \T1/cmr/m/n/10 vom Au-tor kon-zi-piert, in der
  []
 
 
-Underfull \hbox (badness 1005) in paragraph at lines 65--68
+Underfull \hbox (badness 1005) in paragraph at lines 87--90
 \T1/cmr/m/n/10 Es er-wei-tert das BDI-Konzept
  []
 
 
-Overfull \hbox (28.47298pt too wide) in paragraph at lines 65--68
-\T1/cmr/m/n/10 [[]] um zu-sï¿½tz-li-che Daten-, Berechnungs-
+Overfull \hbox (28.47298pt too wide) in paragraph at lines 87--90
+\T1/cmr/m/n/10 [[]] um zu-sätz-li-che Daten-, Berechnungs-
  []
 
-<./Referenzen/Kartenmerge.pdf, id=14, 361.59668pt x 161.634pt>
+[3 <./Referenzen/Architekturdiagramm.pdf>]
+<./Referenzen/Kartenmerge.pdf, id=29, 361.59668pt x 161.634pt>
 File: ./Referenzen/Kartenmerge.pdf Graphic file (type pdf)
 <use ./Referenzen/Kartenmerge.pdf>
-Package pdftex.def Info: ./Referenzen/Kartenmerge.pdf  used on input line 83.
+Package pdftex.def Info: ./Referenzen/Kartenmerge.pdf  used on input line 105.
 (pdftex.def)             Requested size: 361.59578pt x 161.63359pt.
 
-Overfull \hbox (14.47224pt too wide) in paragraph at lines 83--84
+Overfull \hbox (14.47224pt too wide) in paragraph at lines 105--106
 [][] 
  []
 
-[2 <./Referenzen/Architekturdiagramm.pdf>]
-<./Referenzen/Pathfinding.pdf, id=27, 81.23987pt x 85.77853pt>
+[4] [5 <./Referenzen/Kartenmerge.pdf>]
+<./Referenzen/Pathfinding.pdf, id=48, 81.23987pt x 85.77853pt>
 File: ./Referenzen/Pathfinding.pdf Graphic file (type pdf)
 <use ./Referenzen/Pathfinding.pdf>
-Package pdftex.def Info: ./Referenzen/Pathfinding.pdf  used on input line 91.
+Package pdftex.def Info: ./Referenzen/Pathfinding.pdf  used on input line 127.
 (pdftex.def)             Requested size: 81.23965pt x 85.77832pt.
 
-Overfull \hbox (11.81601pt too wide) in paragraph at lines 91--92
+Overfull \hbox (11.81601pt too wide) in paragraph at lines 127--128
 [][] 
  []
 
 
-Underfull \hbox (badness 5446) in paragraph at lines 92--92
+Underfull \hbox (badness 5446) in paragraph at lines 128--128
 []\T1/cmr/bx/n/9 Abb.3. \T1/cmr/m/n/9 Da-ten-
  []
 
 
-Package wrapfig Warning: Collision between wrapping environments on input line 
-101.
+Underfull \hbox (badness 10000) in paragraph at lines 125--130
+[]\T1/cmr/m/n/10 PROBLEM SPEI-CHER UND SEI-NE LÖ-SUNG
+ []
 
-<./Referenzen/Entscheidungsfindung.pdf, id=28, 186.11307pt x 317.6609pt>
+
+Package wrapfig Warning: Collision between wrapping environments on input line 
+142.
+
+<./Referenzen/Entscheidungsfindung.pdf, id=49, 186.11307pt x 317.6609pt>
 File: ./Referenzen/Entscheidungsfindung.pdf Graphic file (type pdf)
 <use ./Referenzen/Entscheidungsfindung.pdf>
 Package pdftex.def Info: ./Referenzen/Entscheidungsfindung.pdf  used on input l
-ine 102.
+ine 143.
 (pdftex.def)             Requested size: 186.11261pt x 317.66013pt.
 
-Overfull \hbox (36.20134pt too wide) in paragraph at lines 102--103
+Overfull \hbox (36.20134pt too wide) in paragraph at lines 143--144
 [][] 
  []
 
 
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 10
-7.
-
-
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 10
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 14
 8.
 
 
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
-0.
-
-
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
-1.
-
-
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
-3.
-
-
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
-5.
-
-
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
-7.
-
-
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 11
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 14
 9.
 
 
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 15
 1.
 
 
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
-3.
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 15
+2.
 
-[3 <./Referenzen/Kartenmerge.pdf> <./Referenzen/Pathfinding.pdf
 
-pdfTeX warning: /usr/bin/pdflatex (file ./Referenzen/Pathfinding.pdf): PDF incl
-usion: multiple pdfs with page group included in a single page
->]
-
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 15
 4.
 
 
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 12
-5.
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 15
+6.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 151--152
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 15
+8.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 15
+9.
+
+
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 16
+0.
+
+[6 <./Referenzen/Pathfinding.pdf> <./Referenzen/Entscheidungsfindung.pdf
+
+pdfTeX warning: /usr/bin/pdflatex (file ./Referenzen/Entscheidungsfindung.pdf):
+ PDF inclusion: multiple pdfs with page group included in a single page
+>]
+Underfull \hbox (badness 10000) in paragraph at lines 196--197
 []\T1/cmr/m/n/9 github.com/agentcontest/massim_2022,
  []
 
 
-Overfull \hbox (149.84315pt too wide) in paragraph at lines 151--152
+Overfull \hbox (149.84315pt too wide) in paragraph at lines 196--197
 \T1/cmr/m/n/9 https://github.com/agentcontest/massim_2022/blob/main/docs/eismas
 sim.md,
  []
 
-[4 <./Referenzen/Entscheidungsfindung.pdf>] (./gruppe3.aux)
+[7] (./gruppe3.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3117 strings out of 478238
- 49496 string characters out of 5850456
- 365874 words of memory out of 5000000
- 21353 multiletter control sequences out of 15000+600000
+ 3122 strings out of 478238
+ 49555 string characters out of 5850456
+ 365882 words of memory out of 5000000
+ 21358 multiletter control sequences out of 15000+600000
  475735 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,7n,62p,1094b,276s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,7n,62p,1089b,326s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/
-type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm
--super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200
-.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/shar
-e/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fo
-nts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/cm-super/sftt0900.pfb>
-Output written on gruppe3.pdf (4 pages, 267656 bytes).
+exmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/font
+s/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist/
+fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/pub
+lic/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sf
+bx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></us
+r/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-d
+ist/fonts/type1/public/cm-super/sftt0900.pfb>
+Output written on gruppe3.pdf (7 pages, 316078 bytes).
 PDF statistics:
- 87 PDF objects out of 1000 (max. 8388607)
- 54 compressed objects within 1 object stream
+ 118 PDF objects out of 1000 (max. 8388607)
+ 74 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

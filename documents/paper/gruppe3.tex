@@ -75,7 +75,7 @@ TODO Bdi, 2 Agentensysteme, UML, Java
 
 
 \section{Gruppenbeitrag Heinz Stadler}
-Nach einer ausführlichen Einarbeitung in die Thematik der Multiagentensysteme, erfolgte die Analyse der Ergebnisse des 15. Multi-Agent Programming Contest \cite{Ahlbrecht2021}. Diese ergab, dass neben der Entscheidungsfindung der Agenten, der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{Ahlbrecht2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}), eine wesentliche Schwierigkeit der Aufgabe bilden. \\
+Nach einer ausführlichen Einarbeitung in die Thematik der Multiagentensysteme, erfolgte die Analyse der Ergebnisse des 15. Multi-Agent Programming Contest \cite{Ahlbrecht2021}. Daraus ging hervor, dass nicht nur die Entscheidungsfindung der Agenten eine Herausforderung darstellt, sondern ebenso der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{Ahlbrecht2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}), dar. \\
 Als Folge dessen entschied sich der Autor mit dem Aufbau der Wissensverwaltung (siehe \ref{wissensverwaltung}) zu beginnen. Diese umfasst eine Datenstruktur zur Speicherung der von der Simulation übermittelten Informationen, sowie eine Lösung zum Aufbau einer globalen Karte des Simulationsgebiets. Nach Fertigstellung der Karte und deren funktionalen Verifikation, wurde parallel an der Konzeptionierung des Agentensystem V1 (siehe \ref{agentV1}) sowie der Implementierung einer intelligenten Wegführung (siehe \ref{wegfindung}) gearbeitet. Um die Ergebnisse der Wegführung und das Entscheidungsverhalten der Agenten effektiv verifizieren zu können, folgte die Erstellung eines graphischen Analysewerkzeugs (siehe \ref{verifikation}) das im weiten Entwicklungsverlauf stetig weiterentwickelt wurde und sich als sehr hilfreich bei der Fehlerfindung zeigte.
  
 \subsection{Agent V1 - Architektur}\label{agentV1}
@@ -92,15 +92,15 @@ Jeder Agent wurde mit einer Vorgesetzteninstanz, die eine zusätzliche Entscheid
 
 Die Kommunikation zwischen Instanzen in verschiedenen Threads erfolgt über Nachrichten, die in einer threadsicheren Warteschlange zwischengespeichert werden. Die Verständigung des Agenten mit seinem direkten Vorgesetzten wird mittels Methodenaufrufen realisiert.
 
-Agentengruppen aktualisieren eine gemeinsame Karte mit im Simulationsverlauf erhaltenen Umgebungsinformationen. Diese und Module zur Wegführung werden von einem zentralem threadsicheren Navigationsmodul, das als Einzelstück ausgeführt wurde, verwaltet. 
+Agentengruppen aktualisieren eine gemeinsame Karte mit im Simulationsverlauf erhaltenen Umgebungsinformationen. Die Karten werden zusammen mit dem Modul zur Wegfindung von einem zentralem, threadsicheren Navigationsmodul, das als Einzelstück ausgeführt wurde, verwaltet. 
 
 
 \subsection{Wissensverwaltung}\label{wissensverwaltung}
 Jeder Agent hat Zugriff auf eine individuelle Wissensbasis (Beliefs), die von der Simulation bereitgestellte Informationen auswertet und speichert. \\
-Die enthaltenen Umgebungsdaten, beschränken sich auf das aktuelle Sichtfeld des Agenten. Es ist weder die Größe des Simulationsgebiets, noch die absolute Position des Agenten in diesem bekannt. 
+Die enthaltenen Umgebungsdaten beschränken sich auf das aktuelle Sichtfeld des Agenten. Es ist weder die Größe des Simulationsgebiets, noch die absolute Position des Agenten bekannt. 
 Um aus den partiellen Umgebungsinformationen eine globale Sicht zu erhalten, werden diese an das Navigationsmodul weitergeleitet und in einer chronologisch fortgeschriebenen Karte zusammengeführt.
 
-Beim Simulationsstart erhält jeder Agent, eine Karte mit festgelegter Initialgröße (Abb. \ref{Karte} Punkt 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Punkt 2). Treffen sich zwei Agenten aus unterschiedlichen Gruppen, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen gemeldet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden deren Karten überlagert und schließlich zusammengeführt (Abb. \ref{Karte} Punkt 3). Die entstandene Karte ermöglicht nun im weiteren Simulationsverlauf die aktuelle Position aller Agenten einer Gruppe untereinander zu bestimmen. Aus dieser Information kann nun durch jeweils zwei Agenten, die sich in entgegengesetzte Richtungen bewegen und sich durch das kontinuierliche Simulationsgebiet zwangsläufig wieder treffen, die Kartengröße ermittelt werden. Ist dies erfolgt, wird die Karte beschnitten, wobei die Informationen abgeschnittener Bereiche auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen (Abb. \ref{Karte} Punkt 4).
+Beim Simulationsstart erhält jeder Agent eine Karte mit festgelegter Initialgröße (Abb. \ref{Karte} Punkt 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Punkt 2). Treffen sich zwei Agenten aus unterschiedlichen Gruppen, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen gemeldet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden deren Karten überlagert und schließlich zusammengeführt (Abb. \ref{Karte} Punkt 3). Die entstandene Karte ermöglicht nun im weiteren Simulationsverlauf die aktuelle Position aller Agenten einer Gruppe untereinander zu bestimmen. Aus dieser Information kann nun durch jeweils zwei Agenten, die sich in entgegengesetzte Richtungen bewegen und sich durch das kontinuierliche Simulationsgebiet zwangsläufig wieder treffen, die Kartengröße ermittelt werden. Anschließend wird die Karte beschnitten, wobei die Informationen abgeschnittener Bereiche auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen (Abb. \ref{Karte} Punkt 4).
 \begin{figure}[h]
 \includegraphics{./Referenzen/Kartenmerge.pdf}
 \caption{Erweiterung und Zusammenführung einzelner Karten}
@@ -108,12 +108,31 @@ Beim Simulationsstart erhält jeder Agent, eine Karte mit festgelegter Initialgr
 \end{figure}
 
 \subsection{Wegfindung}\label{wegfindung}
+Unter dem Begriff Wegfindung verstehen wir das Lösen folgender zweier Teilprobleme:
+\begin{enumerate}
+\item Finde den Abstand zweier Punkte im Simulationsgebiet unter Berücksichtigung von Hindernissen.
+\item Finde einen idealen, kürzesten Weg zwischen zwei Punkten im Simulationsgebiet unter Berücksichtigung von Hindernissen.
+\end{enumerate}
+Das Lösen des Teilproblems 1 befähigt den Agenten seine Ziel- und Absichtsfindung auf Grundlage von korrekten Entfernungsdaten, anstelle von approximative Annahmen z.B. über die Manhattan-Distanz $d(A, B) = | A_{x} - B_{x} | + | A_{y} - B_{y} |$, durchzuführen.
+Wurde ein Ziel priorisiert, muss zu diesem ein ideal kurzer Weg gefunden werden.
 
+Der Autor hat sich bereits zum Projektbeginn als Ziel gesetzt beide Probleme, bezogen auf die Anforderungen der Simulation, zu lösen. Dabei wurden klassische Suchalgorithmen wie z.B. A* \cite{Hart1968} als auch dynamische Echtzeitalgorithmen \cite[182-191]{Weiss2000} untersucht. Da dynamische Algorithmen lediglich zum Lösen von Teilproblem 2 einsetzbar sind, wurde sich für den A* Algorithmus mit Heuristik Manhattan-Distanz entschieden.
+
+Mit der Zellmenge $V$ besitzt der Algorithmus eine Laufzeitkomplexität von $O(|V|^{2})$. Kombiniert mit geschätzten 50-100 Berechnungen pro Agent und Simulationsschritt schied eine Standard CPU-basierte Lösung aufgrund Zeitbeschränkungen in der Absichtsfindung aus.
+
+Es erfolgte die Implementierung des Suchalgorithmus in der Form eines Computeshaders in OpenGL mittels GLSL (Verweis einführen). Mit dieser Technologie konnte der Algorithmus auf mindestens $>1000$ gleichzeitige Berechnungen parallelisiert werden. Es werden hierbei nicht Teile des Algorithmus parallelisiert sondern jeder Berechnungskern führt einen vollständigen Suchlauf zwischen 2 Punkten durch.  
+
+PROBLEM SPEICHER UND SEINE LÖSUNG
 \begin{wrapfigure}{r}{0.2\linewidth}
 \includegraphics{./Referenzen/Pathfinding.pdf}
 \caption{Datenstruktur Wegfindung}
-\label{g3:architecture}
+\label{g3:pathfinding}
 \end{wrapfigure}
+
+- Karte ermöglicht Wegfindung
+- Wie werden Ziele gewählt Grundproblem muss Distanzen kennen um Entscheidung zu treffen
+- Agenten können Blöcke clearen interessanter aspect
+- über Eck
 Die 
 Pathfinding, 2 Stufiges System
 
