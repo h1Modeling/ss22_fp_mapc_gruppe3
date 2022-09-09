@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
@@ -173,14 +174,14 @@ public class Belief {
                             roleSpeedArray[i] = roleSpeedList.get(i);
                         }
                         double change = toNumber(p, 4, Double.class);
-                        int maxDistance = toNumber(p, 1, Integer.class);					
+                        int maxDistance = toNumber(p, 1, Integer.class);                    
                         Role r = new Role(roleName, roleVision, roleActions, roleSpeedArray, change, maxDistance);
-                        roles.put(roleName, r);		
+                        roles.put(roleName, r);     
                     } 
                     // Step percept
                     else {
                         role = toStr(p, 0);
-                    }				
+                    }               
                     break;
                 case "violation":
                     violations.add(toStr(p, 0));
@@ -263,7 +264,7 @@ public class Belief {
                 }
             }
         updateOwnAttachedPoints();
-        updatePosition();
+        //updatePosition();
         updateNewTasks();
         updateAttachedThings();
     }
@@ -1017,6 +1018,21 @@ public class Belief {
 
         return d.size() > 0 ? new Point(d.get(0).x, d.get(0).y) : null;
     }
+    
+    /**
+     * Gets all dispenser in vision.
+     * 
+     * @return the nearest point next to a dispenser with the provided type
+     */
+    public List<Thing> getDispenser() {
+        List<Thing> d = new ArrayList<>(things);
+        // Filter
+        d.removeIf(r -> !r.type.equals(Thing.TYPE_DISPENSER));
+        // Sort
+        //d.sort((a, b) -> Math.abs(a.x) + Math.abs(a.y) - Math.abs(b.x) - Math.abs(b.y));
+
+        return d.size() > 0 ? d : null;
+    }
 
     /**
      * Gets the position of an abandoned block in vision.
@@ -1528,40 +1544,70 @@ public class Belief {
     }
     
     /**
-     * Updates the position of a agent (used from the outside).
+     * Sets the map size if known.
+     * 
+     * @param mapSize - size in point
+     */
+    public void setMapSize(Point mapSize) {
+        this.mapSize = mapSize;
+    }
+    
+    /**
+     * Updates the position of an agent (used from the outside).
      * 
      */
     public void updatePositionFromExternal() {
+        setMapSize(AgentCooperations.mapSize);
         String dir = null;
+        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
+                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Success: " +  lastActionParams);
+                
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
                     move(dir);
                     moveNonModuloPosition(dir);
+                    moveMapSizePosition(dir);
                 }
             }
 
-            // Partial Success (Only really OK for max speed two ?!? Maybe compare changed vision for better results ?)
+            // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
+                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Partial: " +  lastActionParams);
                 move(lastActionParams.get(0));
                 moveNonModuloPosition(lastActionParams.get(0));
+                moveMapSizePosition(lastActionParams.get(0));
             }
         }
         
+        position = calcPositionModulo(position);
+        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Nachher: " +  getPosition());
+    }
+    
+    /**
+     * recalculates the position of an agent using modulo with map size.
+     * 
+     * @param position - non modulo position
+     * @return modulo position
+     */
+    public Point calcPositionModulo(Point position) {
+        setMapSize(AgentCooperations.mapSize);
         position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
         position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
+        return position;
     }
         
     private Point nonModuloPosition = new Point(0, 0);
+    private Point exploreMapSizePosition = new Point(0, 0);
     
     /**
      * Gets the non modulo position of an agent as point.
      * 
      * @return the non modulo position of an agent as point
      */
-    public Point getNonModuloPosition() {
+    public Point getNonModPosition() {
         return nonModuloPosition;
     }
 
@@ -1573,6 +1619,15 @@ public class Belief {
      */
     public void setTopLeft(Point topLeft) {
         this.mapTopLeft = topLeft; 
+    }
+    
+    /**
+     * Sets the non modulo position of an agent as point.
+     * 
+     * @param pos - the non modulo position of an agent as point
+     */
+    public void setNonModPosition(Point pos) {
+        nonModuloPosition = new Point(pos);
     }
     
     private void moveNonModuloPosition(String dir) {
@@ -1588,6 +1643,41 @@ public class Belief {
                 break;
             case "w":
                 nonModuloPosition.x -= 1;
+                break;
+        }
+    }
+    
+    /**
+     * Gets the exploreMapSizePosition position of an agent as point.
+     * 
+     * @return the exploreMapSizePosition of an agent as point
+     */
+    public Point getMapSizePosition() {
+        return exploreMapSizePosition;
+    }
+    
+    /**
+     * Sets the exploreMapSizePosition of an agent as point.
+     * 
+     * @param pos - the new exploreMapSizePosition of an agent as point
+     */
+    public void setMapSizePosition(Point pos) {
+        exploreMapSizePosition = new Point(pos);
+    }
+    
+    private void moveMapSizePosition(String dir) {
+        switch (dir) {
+            case "n":
+                exploreMapSizePosition.y -= 1;
+                break;
+            case "e":
+                exploreMapSizePosition.x += 1;
+                break;
+            case "s":
+                exploreMapSizePosition.y += 1;
+                break;
+            case "w":
+                exploreMapSizePosition.x -= 1;
                 break;
         }
     }
@@ -1662,6 +1752,50 @@ public class Belief {
         }
         
         return reachableRoleZonesX;
+    }
+    
+    /**
+     * Sets the reachableGoalZones without pathfinding.
+     * 
+     * @param inSet - Set of goal zone points
+     */
+    public void updateRgz(Set<Point> inSet) {
+        List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
+        
+        for (Point inPos : inSet) {
+            Point pos = inPos;
+            Point agentPos = getPosition();     
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableGoalZone rdnew = new ReachableGoalZone(pos, distance, direction);
+            reachableGoalZonesX.add(rdnew);
+        }
+   
+        reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
+        this.reachableGoalZones = reachableGoalZonesX;
+    }
+    
+    /**
+     * Sets the reachableDispensers without pathfinding.
+     * 
+     * @param inSet - Set of dispensers
+     */
+    public void updateDisp(Set<Thing> inSet) {
+        List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
+        
+        for (Thing inThing : inSet) {
+            Point pos = new Point(inThing.x, inThing.y);
+            Point agentPos = getPosition();     
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableDispenser rdnew = new ReachableDispenser(pos,  CellType.valueOf(inThing.details), distance, direction, "x");
+            reachableDispensersX.add(rdnew);
+        }
+   
+        reachableDispensersX.sort((a, b) -> a.distance() - b.distance());
+        this.reachableDispensers = reachableDispensersX;
     }
 
     /**

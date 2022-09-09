@@ -1,12 +1,7 @@
 package de.feu.massim22.group3.agents.supervisor;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.Map.Entry;
 
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
@@ -17,6 +12,7 @@ import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
+import de.feu.massim22.group3.agents.BdiAgent;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -190,6 +186,15 @@ public class Supervisor implements ISupervisor {
      */
     public void setAgents(List<String> agents) {
         this.agents = agents;
+    }
+    
+    /**
+     * Gets the parent (agent) of the supervisor.
+     * 
+     * @return 
+     */
+    public BdiAgent getParent() {
+        return (BdiAgent) parent;
     }
 
     /**

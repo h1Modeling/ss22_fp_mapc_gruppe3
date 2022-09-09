@@ -480,8 +480,6 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
     /**
      * Gets the information (requirements, deadline, name etc) of a task .
      * 
-     * @param task the task of which the information is needed
-     * 
      * @return the information
      */
     public TaskInfo getTask() {

@@ -16,11 +16,13 @@ import massim.protocol.data.TaskInfo;
  */
 public class AgentCooperations {
     public static List<Cooperation> cooperations = new ArrayList<Cooperation>();
-    private static int maxMaster = 2;
-    private static int max2BMaster = 1;
+    private static int maxMaster = 3;
+    private static int max2BMaster = 2;
     private static int max3BMaster = 1;
-    private static int maxTypes = 2;
+    private static int maxTypes = 3;
     public static int[] scores = {0, 0, 0, 0};
+    public static Point initialMapSize = new Point(500, 500);
+    public static Point mapSize = new Point(500, 500);
     
     /**
      * A cooperation is being set.
@@ -279,6 +281,15 @@ public class AgentCooperations {
     }
     
     /**
+     * Updates the mapsize field.
+     * 
+     * @param mapSize -  new mapSize to set
+     */
+    public static void setMapSize(Point mapSize) {
+        AgentCooperations.mapSize = mapSize;
+    }
+    
+    /**
      * Checks if a cooperation exists .
      * 
      * @param cooperation the cooperation we want to check on
@@ -407,7 +418,7 @@ public class AgentCooperations {
      * @param helper the helper from the cooperation
      * @param helper2 the second helper from the cooperation
      * 
-     * @param the status of the master
+     * @return the status of the master
      */
     public static synchronized Status getStatusMaster(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {  
         AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
@@ -433,7 +444,7 @@ public class AgentCooperations {
      * @param helper the helper himself
      * @param helper2 the second helper from the cooperation
      * 
-     * @param the status of the helper
+     * @return the status of the helper
      */
     public static synchronized Status getStatusHelper(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {    
         AgentLogger.info(Thread.currentThread().getName() + " getStatusHelper - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
@@ -452,13 +463,13 @@ public class AgentCooperations {
     /**
      * Record with all the important data of a cooperation.
      * 
-     * @param task the task which is being worked by a cooperation
-     * @param master the master of this cooperation
-     * @param statusMaster the status of the master
-     * @param helper the helper 
-     * @param statusHelper the status of the helper
-     * @param helper2 the second helper 
-     * @param stausHelper2 the status of the second helper
+     * @param task - the task which is being worked by a cooperation
+     * @param master - the master of this cooperation
+     * @param statusMaster - the status of the master
+     * @param helper - the helper 
+     * @param statusHelper - the status of the helper
+     * @param helper2 - the second helper 
+     * @param statusHelper2 - the status of the second helper
      */
     public record Cooperation(TaskInfo task, BdiAgentV2 master, Status statusMaster, BdiAgentV2 helper,
             Status statusHelper, BdiAgentV2 helper2, Status statusHelper2) {
