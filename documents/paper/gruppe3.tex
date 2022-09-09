@@ -92,7 +92,39 @@ Tests / Debugger
 \subsection{...}
 
 \section{Gruppenbeitrag Melinda Betz}
+\subsection{Agent V2 - Architektur}
+Der AgentV2 arbeitet mit der Step-Methode. 
+Er arbeitet auf eigenen Desires (V2desires) und benutzt nicht die Desires des AgentenV1 mit. Außerdem verwendet der Agent nicht das komplette Pathfinding des V1, da dieses OpenGL benutzt, was auf manchen AMD Rechnern nicht, zumindest nicht performant (mehrere Sekunden pro Agent), funktioniert. Meine beiden Rechner sind da keine Ausnahme. Der Agent stellt seine eigenen Berechnungen an. 
+ 
 
+\subsection{Task Bearbeitung und Strategie}
+Die Desires welche ein Agent ausführen kann, werden unterschieden in Desires die keine Task benötigen, wie z. B. die Bestimmung der Mapgröße und Desires zur Bearbeitung einer Task, wie z. B. Submitten.\\
+
+Jeder Agent holt sich zuerst eine Rolle in einer Role Zone, da in der Default Rolle keine Blöcke geholt oder submittet werden können. Die Rolle Worker wird für alle Agenten verwendet. Diese Rolle alles kann, manches zwar nicht ganz optimal, aber gut genug.\\
+
+Alle Worker holen selbständig einen, zu einer aktiven Task passenden, Block. Dabei darf die maximale Anzahl der vorhandenen Blöcke eines bestimmten Blocktyps nicht überschritten werden. Mit diesem Block bewegen sie sich in Richtung Goal Zone.
+Jeder Agent in einer Goal Zone, der gerade nicht an einer Mehr-Block-Task arbeitet (AgentCooperations), prüft, in jedem Step, für alle aktiven Tasks, ob er den innersten Block dieser Task besitzt. Eine Ein-Block-Task kann so direkt bearbeitet werden (Block in Position bringen und submitten). \\
+
+Für eine Mehr-Block-Task benötigt der Agent noch mindestens einen Helper, um eine neue AgentCooperation mit sich als Master (dieser submittet die zusammengebaute Mehr-Block-Task) bilden zu können. 
+Ein Agent kann sich selbst zum Master machen und die Helper bestimmen welche ihm die Blöcke beschaffen und in der richtigen Reihenfolge zusammensetzen sollen.  
+Die Kommunikation wer wann was macht erfolgt über ein Klasse AgentCooperations sowie Statusabfragen zum Stand der Abarbeitung. Es gibt einstellbare Regeln, wie z.B., dass nicht mehr als drei Agenten gleichzeitig Master sein dürfen. Das soll vor Klumpenbildung in der Goal Zone schützen, da so nur eine begrenzte und kontrollierbare Anzahl an Agenten in und um die Goal Zone beschäftigt ist.\\
+
+\subsection{Umgebungsfindung und Synchronisation}
+Ein Agent des AgentV2 kennt alles (vor allem Dispenser und GoalZones), was schon einmal in seinem Sichtfeld oder dem eines Agenten seiner Gruppe war. Entfernung und Richtung zu diesen Punkten kann er selbst ermitteln.\\
+
+Bei der Synchronisation der Zusammenarbeit von Agenten  geht es neben der beschriebenen Bearbeitung von Mehr-Block-Tasks um die Bestimmung der Mapgröße. Dabei wird für die Ermittlung von Höhe und Breite jeweils aus den ersten beiden Treffen zweier Agenten eine AgentCooperation gebildet. Der Master läuft einmal um die Map herum.Der Helper wartet bis dieser wieder zurück ist. Aus der Position des Masters relativ zum Helper vor und nach dem Umlauf, sowie seinem zurückgelegten Weg auf der zu ermittelnden Koordinate, kann nun die genaue Größe der Map berechnet werden. 
+
+\subsection{Schwierigkeiten und Lösungsstrategien}
+Einige der Schwierigkeiten waren, dass die Größe des Spielfeldes nicht bekannt war und, dass es schwer ist genau zu wissen wer was attached hat, da diese Information im Percept vom Server nicht detailliert enthalten ist. Außerdem hat man Schwierigkeiten, wenn ein Agent mit einer Geschwindigkeit größer zwei läuft, dessen genau Position festzustellen sollte der Agent in einem Schritt abbrechen. Es ist dann nicht möglich herauszufinden in welchem Schritt der Agent abgebrochen ist oder noch viel wichtiger wie viele Schritte dieser bis zum Abbruch gegangen ist. Was zu Problemen bei der Ermittlung der neuen Position des Agenten führt.\\
+
+Das Mapgrößen Problem wurde zunächst dadurch entschärft, dass die Größe der Karte einfach bei den Turnieren bekannt war. Später hatten die Agenten das oben beschriebene Desire zum Bestimmen der Mapgröße.
+Das Attachment-Problem konnte man dadurch lösen, dass man sich in einer Variable merkt, welcher Agent was genau attached hat. Diese muss natürlich ständig aktuell sein und mit Einführung der Clear – Events war dies nicht mehr 100 Prozent möglich. Des Weiteren läuft kein Agent schneller als zwei um die Position auch bei Partial – Success noch genau zu haben. Ein Grund für die Eignung der Rolle Worker.\\
+
+Wichtig ist die Größe des Spielfeldes vor allem für die genaue Bestimmung der Position der Agenten. Um einen aus dem Spielfeld laufenden Agenten wieder im Spielfeld zu positionieren braucht man eine Modulo Rechnung und die aktuelle Position mit der Spielfeldgröße. Hier war das Problem, für dessen Erkenntnis ich einige Zeit benötigte, dass Java keine Funktion für Modulo besitzt. Normalerweise nutzt man dafür das \% – Zeichen. Aber eigentlich ist das nur der Rest einer ganzzahligen Division, was bei positiven Zahlen Modulo entspricht. Läuft man aber links aus dem Spielfeld in den negativen Bereich, dann braucht man Modulo mit negativen Zahlen.  Als Modulo mit negativen zahlen benutzte ich schließlich: 
+Modulo X = ((( X \% MapBreite) + MapBreite) \% MapBreite). 
+
+\subsection{Tätigkeiten Gruppenlead}
+In der Leadsgruppe haben wir uns regelmäßig getroffen und die Turnierkonfigurationen zusammengestellt sowie allgemeine Punkte besprochen. Diese Treffen waren auch der Ort, um Fragen unserer Teammitglieder anzusprechen und zu klären. 
 \section{Gruppenbeitrag Phil Heger}
 \subsection{Logging}
 \subsection{Strategien zum Stören gegnerischer Agenten}
@@ -102,18 +134,81 @@ Tests / Debugger
 \section{Gruppenbeitrag Björn Wladasch}
 
 \section{Turniere}
+Bei den Turnieren sind immer beide Agenten zum Einsatz gekommen. (Ausnahme Turnier 6)\\
+Die Probleme des AgentV2 waren über den Verlauf aller Turniere mehr oder weniger dieselben.  Die Agenten haben sich öfters zu Klumpen zusammengefunden und dabei gegenseitig behindert. Sie haben teilweise ihr Wissen über ihre Umwelt, insbesondere die Lage der Goal Zones, verloren. 
+
 \subsubsection{Turnier 2}
 \subsubsection{Turnier 3}
 \subsubsection{Turnier 4}
 \subsubsection{Turnier 5}
-\subsubsection{Turnier 6}
+\subsubsection{Turnier 6\\}
+Bei Turnier 6 ist der AgentV2 nicht zum Einsatz gekommen, da er Probleme mit dem Erkennen und Finden der sich wechselnden Goal Zones hatte und so weniger Tasks wie bisher bearbeiten konnte. Im Nachhinein war dies jedoch nicht so schlimm und der Agent hätte trotzdem zum Einsatz kommen können. 
 
 \section{Rekapitulation und Ausblick}
 Vor- und Nachteile der Entscheidung von zwei Architekturen
 Was sollte noch verbessert werden
-Wie sind wir zufrieden
+Wie sind wir zufrieden\\
 
+Es gibt eigentlich keine nennenswerten Probleme, wenn man zwei Architekturen hat, beide Agenten erfüllen ihre Anforderungen. 
 
+Im Großen und Ganz bin ich mit meinem AgentenV2 zufrieden. Wo ich noch Verbesserungspotential sehe, sind, wie oben erwähnt, das Problem der „Verklumpung“ und die Einschränkung der Raumwahrnehmung der Agenten. Leider konnte ich diese Probleme in der vorgegebenen Zeit nicht lösen, da der Agent auch immer weiterentwickelt werde musste und so nicht viel Zeit zur Behebung dieser „grundsätzlichen“ Probleme blieb.
+
+\section{FAQ}
+\subsection{Teilnehmer*innen und ihr Hintergrund}
+\subsubsection{Was war die Motivation an dem Praktikum teilzunehmen?\\}
+M: Die Motivation waren Interesse am Thema Künstliche Intelligenz und schon vorhandene Java Kenntnisse.
+\subsection{Statistiken}
+\subsubsection{Wurden die Agents von Grund auf neu implementiert oder auf einer bestehenden Lösung aufgebaut?\\}
+AgentV2: Der Agent wurde von Grund auf neu implementiert (er basiert nur auf dem BasicAgent)
+\subsubsection{Wie viel Zeit wurde in die Entwicklung und Organisation des Praktikums gesteckt?\\}
+M: Jeden Tag 3- 4 Stunden, mal mehr mal weniger
+\subsubsection{Wie war die reingesteckte Zeit im Verlauf des Praktikums verteilt?\\}
+M: Die meiste Zeit wurde für die Entwicklung des Agenten ( Coden ) verwendet, und etwas Zeit davor und währenddessen für die theoretischen Überlegungen was der Agent tun soll. Und Richtung Ende des Praktikums (und währenddessen in Form von Notizen) Zeit für die Doku. 
+\subsubsection{Wie viele Zeilen Code wurden ungefähr geschrieben?\\}
+M: ca 6704
+\subsubsection{Welche Programmiersprache und Entwicklungsumgebung wurde verwendet?\\}
+M: Programmiersprache Java und Entwicklungsumgebung Eclipse
+\subsubsection{Wurden externe Werkzeuge/Bibliotheken verwendet?\\}
+AgentV2: keine
+\subsection{Agenten-System Details}
+\subsubsection{Wie entscheiden die Agenten, was sie machen sollen?\\}
+AgentV2: Ein Agent läuft durch alle Desires und merkt sich alle, in seinem momentanen Zustand ( Belief) ausführbaren. Es werden Prioritäten vergeben und das Desire mit der höchsten Prio wird zur Intention und diese wird dann vom Agent ausgeführt.
+\subsubsection{Wie entscheiden die Agenten, wie sie machen sollen?\\}
+AgentV2: Die Agenten arbeiten so, wie es vorher programmiert wurde (Actions). 
+\subsubsection{Wie arbeiten die Agenten zusammen und wie dezentralisiert ist der Ansatz?\\}
+AgentV2: Sehr dezentralisiert, die Agenten (der Master) suchen sich selbst ihre Hilfen beim Zusammenbauen der Tasks. In der Klasse AgentsCooperations wird festgehalten welcher Agent gerade mit welcher Task beschäftigt ist (und in welchem Status).
+\subsubsection{Kann ein Agent das generelle Verhalten zur Laufzeit ändern?\\}
+AgentV2: Nein, ein Agent erfüllt immer Tasks während der Laufzeit des Programms (außer es existieren gerade keine mit denen er etwas anfangen kann, dann wird gewartet)
+\subsubsection{Wurden Änderungen (z.B kritische Fehler) während eines Turniers vorgenommen?\\}
+AgentV2: Es wurden keine Änderungen während eines Turniers vorgenommen.
+\subsubsection{Wurde Zeit investiert um die Agenten fehlertoleranter zu machen? Wenn ja, wie genau?\\}
+AgentV2: Ja, es wurden viele Testläufe gemacht und immer wenn ein Fehler auftrat wurde dieser so behoben, dass er nicht mehr auftritt (und wenn nur mit einem Skip Befehl).
+\subsection{Szenario und Strategie}
+\subsubsection{Was ist die Hauptstrategie der Agenten?\\}
+AgentV2: Sie holen sich zuerst einmal die Rolle Worker und dann holen sie sich einen Block und laufen mit ihm zur Goal Zone.
+\subsubsection{Haben die Agenten selbstständig eine Strategie entwickelt oder wurde diese bereits in die Implementierung eingebaut?\\}
+AgentV2: Nein, die Strategie wurde in die Implementierung eingebaut.
+\subsubsection{Wurde eine Strategie implementiert, die Agenten anderer Teams mit einbezieht?\\}
+AgentV2: Nein.
+\subsubsection{Wie entscheiden Agenten, welche Aufgabe sie als nächstes übernehmen?\\}
+AgentV2: Die Agenten entscheiden es selbst.
+\subsubsection{Wie koordinieren die Agenten die Arbeit für eine Aufgabe untereinander?\\}
+AgentV2: Die Agenten koordinieren indem sie durch Statusabfragen miteinander kommunizieren, wer wann fertig ist und wann weitergemacht werden kann. 
+\subsubsection{Welche Aspekte des Szenarios waren am Herausforderndsten?\\}
+AgentV2: Wenn man nicht weiß wie groß die Karte ist.
+\subsection{Und die Moral von der Geschichte}
+\subsubsection{Was wurde durch das Praktikum vermittelt?\\}
+M: Selbstständig als Gruppe ein Projekt erarbeiten mit nur wenig vorgaben.
+\subsubsection{Welchen Ratschlag wäre für zukünftige Gruppen sinnvoll?\\}
+M: Nicht mit zu vielen Erwartungen starten, es ist nicht alles so einfach wie man es sich vorstellt
+\subsubsection{Was waren Stärken und Schwächen der Gruppe?\\}
+\subsubsection{Was waren Vorteile und Nachteile der gewählten Programmiersprache und weiterer Werkzeuge?\\}
+Vorteile: die vorgegebenen Schnittstellen waren alle in Java programmiert\\
+Nachteile: keine
+\subsubsection{Welche weiteren Probleme und Herausforderungen kamen im Laufe des Praktikums auf?\\}
+\subsubsection{Was könnte beim nächsten Praktikum verbessert werden?\\}
+\subsubsection{Welcher Aspekt der Gruppenarbeit hat am meisten Zeit in Anspruch genommen?\\}
+M: Koordinieren welches Gruppenmitglied welche Aufgabe übernimmt.
 %
 % ---- Bibliography ----
 %
