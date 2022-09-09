@@ -40,8 +40,6 @@ public class GoGoalZoneDesire extends BeliefDesire {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoGoalZoneDesire, Step: " + belief.getStep());
         this.agent = agent;
-        posDefaultGoalZone1 = this.agent.desireProcessing.posDefaultGoalZone1;
-        posDefaultGoalZone2 = this.agent.desireProcessing.posDefaultGoalZone2;
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire"
         + " , GZ1: " + posDefaultGoalZone1 +
         " , GZ2: " + posDefaultGoalZone2);

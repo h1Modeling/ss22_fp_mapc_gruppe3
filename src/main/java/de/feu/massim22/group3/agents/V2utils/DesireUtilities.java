@@ -27,15 +27,9 @@ import massim.protocol.messages.scenario.Actions;
  * The class <code>DesireUtilities</code> contains all the methods that are necessary for the correct sequence of the desires .
  * 
  * @author Melinda Betz
+ * @author Heinz Stadler (minor contribution)
  */
 public class DesireUtilities {
-    public Point posDefaultGoalZone1 = null;
-    public Point posDefaultGoalZone2 = null;
-    //public Point posDefaultGoalZone1 = new Point(28, 54);
-    //public Point posDefaultGoalZone2 = new Point(9, 1);
-    //public Point posDefaultGoalZone1 = new Point(18, 14);
-    //public Point posDefaultGoalZone2 = new Point(18, 14);
-    
     public StepUtilities stepUtilities;
     public TaskInfo task;
     public int maxTaskBlocks = 3;
