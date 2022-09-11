@@ -11,11 +11,26 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;
 
 
+/**
+ * The Class <code>GuardDispenserDesire</code> was designed to test a strategy where a
+ * dispenser is blocked by an agent so that the enemy agents cannot get blocks from it anymore.
+ * 
+ * @author Phil Heger
+ *
+ */
 public class GuardDispenserDesire extends BeliefDesire {
 
     private String blockDetail;
     CellType dispenserCellType;
 
+    
+    /**
+     * Instantiates a new GuardDispenserDesire.
+     * 
+     * @param belief the belief of the agent
+     * @param blockDetail block type of the dispenser type that the agent is supposed to block
+     * @param supervisor the supervisor of the agent group
+     */
     public GuardDispenserDesire(Belief belief, String blockDetail, String supervisor) {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GuardDispenserDesire");
@@ -24,14 +39,15 @@ public class GuardDispenserDesire extends BeliefDesire {
         String[] neededActions = {"clear"};
         precondition.add(new ActionDesire(belief, neededActions));
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public ActionInfo getNextActionInfo() {
         ActionInfo a = fulfillPreconditions();
         if (a != null) {
             return a;
         }
-
-        // If 
 
         // If on dispenser
         Point p = belief.getNearestRelativeManhattanDispenser(blockDetail);
@@ -75,26 +91,41 @@ public class GuardDispenserDesire extends BeliefDesire {
         return closestEnemy;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Guard Dispenser " + blockDetail; 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isGroupDesire() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPriority() {
         return 1100;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getBlockDetail() {
         return blockDetail;
     }

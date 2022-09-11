@@ -51,7 +51,7 @@ public class Supervisor implements ISupervisor {
     // Agents for GuardGoalZoneDesire
     private String agentGroupForGGZD = "31";
     // Number of designated GuardGoalZone agents (only 0, 1 or 2 implemented)
-    private int numOfGgzdAgents = 1;
+    private int numOfGgzdAgents = 2;
 
     /**
      * Instantiates a new Supervisor.

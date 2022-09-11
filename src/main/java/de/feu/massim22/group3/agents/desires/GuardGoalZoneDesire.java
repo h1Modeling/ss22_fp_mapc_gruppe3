@@ -18,7 +18,8 @@ import massim.protocol.messages.scenario.ActionResults;
 
 
 /**
- * Desire to get the best clearing role and then wait in a goal zone for enemies with 
+ * The Class <code>GuardGoalZoneDesire</code> models the desire to get
+ * the best clearing role and then wait in a goal zone for enemies with 
  * blocks, then use clear action on them until they are deactivated and then use 
  * clear action on the blocks they were carrying.
  * 
@@ -543,7 +544,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
      * multiple enemy agents move close together. However, this case does not influence the overall
      * performance noticeable.
      * 
-     * @param oldPosition position of agent that is to be tracked in the previous step
+     * @param oldEnemyPosition position of agent that is to be tracked in the previous step
      * @return Presumed new position of the agent
      */
     Point getNewPositionOfTargetEnemy(Point oldEnemyPosition) {
@@ -666,7 +667,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
     /**
      * Calculates all adjacent things to the specified point
      * 
-     * @param p
+     * @param p point which adjacent things are to be determined
      * @return AdjacentThings object with all adjacent friendly and enemy agents as well as blocks
      */
     AdjacentThings getAllAdjacentThings(Point p) {
