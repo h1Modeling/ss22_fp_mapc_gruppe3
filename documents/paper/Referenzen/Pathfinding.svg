@@ -26,11 +26,11 @@
      showgrid="true"
      inkscape:showpageshadow="2"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.1233"
-     inkscape:cx="-91.248998"
-     inkscape:cy="60.090804"
-     inkscape:window-width="1500"
-     inkscape:window-height="972"
+     inkscape:zoom="3.1771722"
+     inkscape:cx="103.07908"
+     inkscape:cy="25.336996"
+     inkscape:window-width="1920"
+     inkscape:window-height="1052"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -1490,4 +1490,7 @@
        id="path8234" /><path
        style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 23.923994,5.4700971 37.447056,13.115803 37.225365,26.459018"
-       id="path8236" /></g></svg>
+       id="path8236" /><path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 23.908008,5.3877077 V 12.49136"
+       id="path6926" /></g></svg>
