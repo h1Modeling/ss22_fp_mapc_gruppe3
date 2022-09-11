@@ -1,17 +1,16 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.8.28) (preloaded format=pdflatex 2022.9.8)  9 SEP 2022 17:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.7) (preloaded format=pdflatex 2022.8.27)  11 SEP 2022 11:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **./gruppe3.tex
 (gruppe3.tex
 LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-08-30>
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/llncs\llncs.cls
-Document Class: llncs 2022/09/05 v2.22 
+L3 programming layer <2022-07-04> (llncs.cls
+Document Class: llncs 2022/01/12 v2.21 
  LaTeX document class for Lecture Notes in Computer Science
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+(D:\Program Files\MiKTeX\tex/latex/base\article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
+(D:\Program Files\MiKTeX\tex/latex/base\size10.clo
 File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
@@ -26,7 +25,7 @@ File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/tools\multicol.sty
+(D:\Program Files\MiKTeX\tex/latex/tools\multicol.sty
 Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \c@tracingmulticols=\count193
 \mult@box=\box51
@@ -95,7 +94,7 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \colbreak@box=\box95
 \mc@col@check@num=\count268
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/oberdiek\aliascnt.sty
+(D:\Program Files\MiKTeX\tex/latex/oberdiek\aliascnt.sty
 Package: aliascnt 2018/09/07 v1.5 Alias counters (HO)
 )
 \c@chapter=\count269
@@ -110,7 +109,6 @@ LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 369.
 LaTeX Font Info:    Redeclaring math symbol \Phi on input line 370.
 LaTeX Font Info:    Redeclaring math symbol \Psi on input line 371.
 LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
-LaTeX Info: Redefining \vec on input line 377.
 \tocchpnum=\dimen148
 \tocsecnum=\dimen149
 \tocsectotal=\dimen150
@@ -149,66 +147,65 @@ LaTeX Info: Redefining \vec on input line 377.
 \c@solution=\count287
 \c@remark=\count288
 \headlineindent=\dimen160
-) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+)
+(D:\Program Files\MiKTeX\tex/latex/base\fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(D:\Program Files\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+
+(D:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks20
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(D:\Program Files\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+
+(D:\Program Files\MiKTeX\tex/latex/graphics\trig.sty
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics
-.cfg
+(D:\Program Files\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.d
-ef
+(D:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen161
 \Gin@req@width=\dimen162
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
-Package: babel 2022/08/29 3.79 The Babel package
+(D:\Program Files\MiKTeX\tex/generic/babel\babel.sty
+Package: babel 2022/06/26 3.77 The Babel package
 \babel@savecnt=\count289
 \U@D=\dimen163
 \l@unhyphenated=\language79
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
+(D:\Program Files\MiKTeX\tex/generic/babel\txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count290
+
 *************************************
 * Local config file bblopts.cfg used
 *
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
+(D:\Program Files\MiKTeX\tex/latex/arabi\bblopts.cfg
 File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
  babel
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngerman.
-ldf
+(D:\Program Files\MiKTeX\tex/latex/babel-german\ngerman.ldf
 Language: ngerman 2021/02/27 v2.13 German support for babel (post-1996 orthogra
 phy)
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngermanb
-.ldf
+(D:\Program Files\MiKTeX\tex/latex/babel-german\ngermanb.ldf
 Language: ngermanb 2021/02/27 v2.13 German support for babel (post-1996 orthogr
 aphy)
 Package babel Info: Making " an active character on input line 122.
 )))
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/de\bab
-el-ngerman.tex
+(D:\Program Files\MiKTeX\tex/generic/babel/locale/de\babel-ngerman.tex
 Package babel Info: Importing font and identification data for ngerman
 (babel)             from babel-de.ini. Reported on input line 11.
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/wrapfig\wrapfig.sty
+(D:\Program Files\MiKTeX\tex/latex/wrapfig\wrapfig.sty
 \wrapoverhang=\dimen164
 \WF@size=\dimen165
 \c@WF@wrappedlines=\count291
@@ -216,9 +213,8 @@ Package babel Info: Importing font and identification data for ngerman
 \WF@everypar=\toks21
 Package: wrapfig 2003/01/31  v 3.6
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
-dftex.def
-File: l3backend-pdftex.def 2022-08-30 L3 backend support: PDF output (pdfTeX)
+(D:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-07-01 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count292
 \l__pdf_internal_box=\box99
 ) (gruppe3.aux)
@@ -238,9 +234,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
-
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
-mkii
+ (D:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count293
 \scratchdimen=\dimen166
@@ -253,15 +247,12 @@ mkii
 \MPnumerator=\count297
 \makeMPintoPDFobject=\count298
 \everyMPtoPDFconversion=\toks23
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf
--base.sty
+) (D:\Program Files\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys
-.cfg
+(D:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -270,119 +261,94 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 44.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
 4.
- (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
+
+(D:\Program Files\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-)
-Underfull \hbox (badness 10000) in paragraph at lines 48--49
+) [1
+
+{C:/Users/philh/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 57--58
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 53--54
-
- []
-
-
-Overfull \hbox (8.47385pt too wide) in paragraph at lines 55--56
-[]\T1/cmr/m/n/10 Die Quelltext-Verwaltung er-folg-te über das Ver-si-ons-ver-wa
-l-tungs-sys-tem Github,
- []
-
-[1
-
-{C:/Users/Melinda/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 58--59
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 60--61
-
- []
-
-
-Overfull \hbox (12.5423pt too wide) in paragraph at lines 62--63
+Overfull \hbox (12.5423pt too wide) in paragraph at lines 59--60
 []\T1/cmr/m/n/10 Das in die-ser Ar-beit ent-wi-ckel-te Agen-ten-sys-tem ba-sier
 t auf der BDI-Architektur.
  []
 
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 69--70
 
- []
-
-
-Overfull \hbox (0.97568pt too wide) in paragraph at lines 71--72
+Overfull \hbox (0.97568pt too wide) in paragraph at lines 70--71
 []\T1/cmr/m/n/10 Auf der Grund-la-ge der BDI-Architektur er-ar-bei-te-ten wir a
 n-hand von Klassen-
  []
 
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 100--101
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 102--103
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--110
+
+ []
+
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 101--102
+Underfull \hbox (badness 10000) in paragraph at lines 112--113
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 103--104
+Underfull \hbox (badness 10000) in paragraph at lines 117--118
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 105--107
+Underfull \hbox (badness 10000) in paragraph at lines 119--121
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 108--111
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 113--114
+[4] [5] [6] [7]
+Underfull \hbox (badness 10000) in paragraph at lines 182--185
 
  []
 
-[4]
-Underfull \hbox (badness 10000) in paragraph at lines 118--119
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 120--122
-
- []
-
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 148--151
-
- []
-
-[6] [7] [8] [9]
-Underfull \hbox (badness 10000) in paragraph at lines 223--224
+[8] [9] [10]
+Underfull \hbox (badness 10000) in paragraph at lines 257--258
 \T1/cmr/m/n/9 https://github.com/agentcontest/massim_2022/blob/main/docs/eismas
 sim.md,
  []
 
-[10] (gruppe3.aux) ) 
+[11] (gruppe3.aux) ) 
 Here is how much of TeX's memory you used:
- 3146 strings out of 475389
- 51529 string characters out of 2776057
- 417326 words of memory out of 3000000
- 24516 multiletter control sequences out of 15000+600000
+ 3142 strings out of 478338
+ 50491 string characters out of 2846515
+ 373787 words of memory out of 3000000
+ 21567 multiletter control sequences out of 15000+600000
  474959 words of font info for 36 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,7n,62p,1074b,326s stack positions out of 10000i,1000n,20000p,200000b,80000s
- <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
-appen/ec/dpi600\ecbx1000.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/lj
-four/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fon
-ts/pk/ljfour/jknappen/ec/dpi600\ectt0900.pk> <C:\Users\Melinda\AppData\Local\Mi
-KTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0900.pk> <C:\Users\Melinda\AppData\
-Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\Melinda\
-AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk><C:/Users/M
-elinda/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb>
-Output written on gruppe3.pdf (10 pages, 129089 bytes).
+ 55i,6n,62p,873b,324s stack positions out of 10000i,1000n,20000p,200000b,80000s
+ <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
+pen/ec/dpi600\ecbx1000.pk> <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/ljfour
+/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/
+ljfour/jknappen/ec/dpi600\ectt0900.pk> <C:\Users\philh\AppData\Local\MiKTeX\fon
+ts/pk/ljfour/jknappen/ec/dpi600\ecrm0900.pk> <C:\Users\philh\AppData\Local\MiKT
+eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\philh\AppData\Loca
+l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk><D:/Program Files/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmr7.pfb>
+Output written on gruppe3.pdf (11 pages, 132993 bytes).
 PDF statistics:
- 358 PDF objects out of 1000 (max. 8388607)
+ 359 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
