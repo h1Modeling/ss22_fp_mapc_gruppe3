@@ -21,11 +21,14 @@ public enum Status {
     ReadyToDetach("rtd"),
     Detached("det"),
     ReadyToSubmit("rts"),
-    Submitted("sub");
+    Submitted("sub"),
+    Explore("exp"),
+    Wait("wai"),
+    Finished("wai");
 
-    private String type;
+    // private String type;
 
     private Status(String type) {
-        this.type = type;
+        // this.type = type;
     }
 }

@@ -75,7 +75,6 @@ public class ConnectBlockToAgentDesire extends BeliefDesire {
 
         // Move closer to avoid breaking pre condition
         if (getDistance(pos, agentPos) == belief.getVision()) {
-
             String dir = getDirectionFromPoint(new Point(agentPos.x - pos.x, agentPos.y - pos.y));
             return getActionForMove(dir, getName());
         }
@@ -118,14 +117,6 @@ public class ConnectBlockToAgentDesire extends BeliefDesire {
 
         // Move to adjacent Position
         if (Math.abs(block.y) == 2) {
-            // Problem if obstancle is in the way
-            // Rotate
-
-/*             if (!horizontalAttached) {
-                return isWestFromAgent && nAttached 
-                    ? getActionForCWRotation(getName()) 
-                    : getActionForCCWRotation(getName());
-            } */
             // Move
             return isWestFromAgent && eAttached
                 ? getActionForMove(new Point(goal.x - 1, goal.y), getName())

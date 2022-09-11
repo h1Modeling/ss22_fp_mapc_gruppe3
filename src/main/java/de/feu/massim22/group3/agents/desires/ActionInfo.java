@@ -116,11 +116,11 @@ public record ActionInfo(Action value, String info) {
      * Creates an ActionInfo instance for the massim Action submit.
      * 
      * @param task the name of the task which should be submitted
-     * @param info additional information about the reasoning which provided the action
+     * @param info additional information about the reasoning which provided the action (V2: Number of blocks for task)
      * @return the submit ActionInfo
      */
     public static ActionInfo SUBMIT(String task, String info) {
-        Action a = new Action(Actions.SUBMIT, new Identifier(task));
+        Action a = new Action(Actions.SUBMIT, new Identifier(task), new Identifier(info));
         return new ActionInfo(a, info);
     }
 
@@ -177,7 +177,6 @@ public record ActionInfo(Action value, String info) {
     /**
      * Creates an ActionInfo instance for the massim Action disconnect.
      * 
-     * @param agent the name of the agent to which a block should be connected
      * @param p1 the position relative to the agent on which a block should be disconnected
      * @param p2 the position relative to the agent on which a second block should be disconnected
      * @param info additional information about the reasoning which provided the action
@@ -185,6 +184,18 @@ public record ActionInfo(Action value, String info) {
      */
     public static ActionInfo DISCONNECT(Point p1, Point p2, String info) {
         Action a = new Action(Actions.DISCONNECT, new Numeral(p1.x), new Numeral(p1.y), new Numeral(p2.x), new Numeral(p2.y));
+        return new ActionInfo(a, info);
+    }
+
+    /**
+     * Creates an ActionInfo instance for the massim Action survey for surveying agents.
+     * 
+     * @param t the agent
+     * @param info additional information about the reasoning which provided the action
+     * @return the survey ActionInfo
+     */
+    public static ActionInfo SURVEY(Thing t, String info) {
+        Action a = new Action(Actions.SURVEY, new Numeral(t.x), new Numeral(t.y));
         return new ActionInfo(a, info);
     }
 }

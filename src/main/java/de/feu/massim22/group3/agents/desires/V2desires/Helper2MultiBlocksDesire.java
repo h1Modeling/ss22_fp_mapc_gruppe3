@@ -210,8 +210,10 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                 }
             }
         } else {
-            AgentLogger.info(Thread.currentThread().getName() + " vor getStatusHelper - para: " + info.name + " , "
+            AgentLogger.info(Thread.currentThread().getName() + " not on target - para: " + info.name + " , "
                     + nearestMeeting.toString());
+            AgentLogger.info(Thread.currentThread().getName() + " not on target - dist: " + distanceNearestTarget + " , target: "
+                    + nearestTarget);
 
             if (distanceNearestTarget <= 3 || agent.alwaysToTarget) {
                 // go to target position for connect
@@ -288,7 +290,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
         
         return result;
     }
-    
+    /*
     private boolean existsCommonEdge4D(Point p2) {
         for (java.awt.Point p1 : DirectionUtil.getCellsIn4Directions()) {
             if ((Math.abs(p2.x - p1.x) == 0 && Math.abs(p2.y - p1.y) == 1)
@@ -299,6 +301,6 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
         }
 
         return false;
-    }
+    } */
 }
 

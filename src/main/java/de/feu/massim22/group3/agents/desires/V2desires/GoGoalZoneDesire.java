@@ -26,8 +26,8 @@ public class GoGoalZoneDesire extends BeliefDesire {
     BdiAgentV2 goalZoneAgent = null;
     Point nearestGoalZone;
     boolean defaultGoalZone = false;
-    Point posDefaultGoalZone1 = new Point(28, 54);
-    Point posDefaultGoalZone2 = new Point(9, 1);
+    Point posDefaultGoalZone1;
+    Point posDefaultGoalZone2;
 
     /**
      * Instantiates a new GoGoalZoneDesire.
@@ -40,6 +40,9 @@ public class GoGoalZoneDesire extends BeliefDesire {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoGoalZoneDesire, Step: " + belief.getStep());
         this.agent = agent;
+        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire"
+        + " , GZ1: " + posDefaultGoalZone1 +
+        " , GZ2: " + posDefaultGoalZone2);
     }
 
     /**
@@ -70,7 +73,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
 
         if (belief.getRole().actions().contains(Actions.DETACH)
                 && belief.getRole().actions().contains(Actions.ATTACH)) {
-            result = belief.getReachableGoalZonesX().size() > 0 || belief.getGoalZones().size() > 0;
+            result = belief.getReachableGoalZones().size() > 0 || belief.getGoalZones().size() > 0;
             AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 2");
 
             if (!result) {
@@ -90,15 +93,25 @@ public class GoGoalZoneDesire extends BeliefDesire {
                     }
                 }
             }
-            
-           /* defaultGoalZone = true;
-            result = true;
+         
+           /* if (posDefaultGoalZone1 != null || posDefaultGoalZone2 != null) {
+                defaultGoalZone = true;
+                result = true;
 
-            if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone1) 
-                    < Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone2)) 
-                nearestGoalZone = posDefaultGoalZone1;
-            else
-                nearestGoalZone = posDefaultGoalZone2;   */            
+                if (posDefaultGoalZone1 != null && posDefaultGoalZone2 == null) {
+                    nearestGoalZone = posDefaultGoalZone1;
+                } else {
+                    if (posDefaultGoalZone1 == null && posDefaultGoalZone2 != null) {
+                        nearestGoalZone = posDefaultGoalZone2;
+                    } else {
+                        if (Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone1) 
+                                < Point.distance(Point.castToPoint(agent.getBelief().getPosition()), posDefaultGoalZone2))
+                            nearestGoalZone = posDefaultGoalZone1;
+                        else
+                            nearestGoalZone = posDefaultGoalZone2;
+                    }
+                }
+            }*/
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 7");
@@ -115,13 +128,13 @@ public class GoGoalZoneDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        if (goalZoneAgent == null && !defaultGoalZone) {
+        if (goalZoneAgent == null && nearestGoalZone == null) {
             AgentLogger.info(Thread.currentThread().getName()
                     + " runSupervisorDecisions - GoGoalZoneDesire.getNextActionInfo, Step: " + belief.getStep());
             AgentLogger.info(
                     Thread.currentThread().getName() + " GoGoalZoneDesire - AgentPosition: " + belief.getPosition());
             //AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - reachableGoalZones: "
-               //     + belief.getReachableGoalZonesX());
+               //     + belief.getReachableGoalZones());
             //AgentLogger
                //     .info(Thread.currentThread().getName() + " GoGoalZoneDesire - GoalZones: " + belief.getGoalZones());
 
@@ -157,9 +170,13 @@ public class GoGoalZoneDesire extends BeliefDesire {
             }
 
             // Data from Pathfinding
-            //ReachableGoalZone zone = belief.getNearestGoalZone();
-            ReachableGoalZone zone = belief.getReachableGoalZonesX().get(0);
-            String direction = DirectionUtil.intToString(zone.direction());
+            String direction = "";
+            ReachableGoalZone zone = null;
+              
+            if (belief.getReachableGoalZones().size() > 0) {
+                zone = belief.getReachableGoalZones().get(0);
+                direction = DirectionUtil.intToString(zone.direction());       
+            }
 
             if (direction.length() > 0) {
                 AgentLogger.info(Thread.currentThread().getName()
@@ -177,7 +194,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
                     + goalZoneAgent.getName() + " , " + goalZoneAgent.getBelief().getPosition());
             else
              // default GoalZone 
-                AgentLogger.info(Thread.currentThread().getName() + "GoGoalZoneDesire - GoalZone from strange agent: "
+                AgentLogger.info(Thread.currentThread().getName() + " GoGoalZoneDesire - default GoalZone agent: "
                         + agent.getName() + " , " + agent.getBelief().getPosition());
                        
             String direction = DirectionUtil.getDirection(agent.getBelief().getPosition(), nearestGoalZone);
@@ -215,12 +232,12 @@ public class GoGoalZoneDesire extends BeliefDesire {
         int distance = 1000;
         
         for (Meeting meeting : AgentMeetings.find(inAgent)) {
-            ArrayList<ReachableGoalZone> rgz = new ArrayList<ReachableGoalZone>(meeting.agent2().getBelief().getReachableGoalZonesX());
+            ArrayList<ReachableGoalZone> rgz = new ArrayList<ReachableGoalZone>(meeting.agent2().getBelief().getReachableGoalZones());
             AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 4 - agent: " + rgz);
             
             if (!rgz.isEmpty()) {               
-                goalZone = Point.castToPoint(meeting.agent2().getBelief().getReachableGoalZonesX().get(0).position()).translate2To1(meeting);
-                AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 5: " + meeting.agent2().getBelief().getReachableGoalZonesX().get(0) + " , dist: " + Point.distance(Point.castToPoint(inAgent.getBelief().getPosition()), goalZone) + " , min: " + distance);
+                goalZone = Point.castToPoint(meeting.agent2().getBelief().getReachableGoalZones().get(0).position()).translate2To1(meeting);
+                AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 5: " + meeting.agent2().getBelief().getReachableGoalZones().get(0) + " , dist: " + Point.distance(Point.castToPoint(inAgent.getBelief().getPosition()), goalZone) + " , min: " + distance);
                 
                 if (Point.distance(Point.castToPoint(inAgent.getBelief().getPosition()), goalZone) < distance) {
                     AgentLogger.info(Thread.currentThread().getName() + " Test.GoalZone 6");  

@@ -1,7 +1,9 @@
 package de.feu.massim22.group3.agents.desires.V2desires;
 
 import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.V2utils.Point;
 import de.feu.massim22.group3.agents.belief.Belief;
+import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -14,7 +16,6 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 public class LocalExploreDesire extends BeliefDesire {
 
     private BdiAgentV2 agent;
-    private String supervisor;
 
     /**
      * Instantiates a new LocalExploreDesire.
@@ -28,7 +29,6 @@ public class LocalExploreDesire extends BeliefDesire {
         super(belief);
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start LocalExploreDesire");
         this.agent = agent;
-        this.supervisor = supervisor;
     }
 
     /**
@@ -64,23 +64,19 @@ public class LocalExploreDesire extends BeliefDesire {
         /*if (agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())) {
             return ActionInfo.SKIP("0001 with block in goalzone; where should I go?");
         } else {*/
+        if (!agent.blockAttached || belief.getReachableGoalZones().size() == 0) {
             agent.exploreDirection = DirectionUtil
-                    .stringToInt(agent.desireProcessing.walkCircles(agent, 10).toString());
+                    .stringToInt(agent.desireProcessing.walkCircles(agent, 10).getValue());
             agent.exploreDirection2 = (agent.exploreDirection2 + 5) % 4;
-        //}
+        } else {
+            // Data from Pathfinding
+            ReachableGoalZone zone = belief.getReachableGoalZones().get(0);
+            agent.exploreDirection = zone.direction();  
+            agent.exploreDirection2 = agent.exploreDirection;
+        }
 
         return agent.desireProcessing.getActionForMove(agent, DirectionUtil.intToString(agent.exploreDirection),
                 DirectionUtil.intToString(agent.exploreDirection2), getName());
-    }
-
-    /**
-     * Updates the supervisor .
-     * 
-     * @param the new supervisor
-     */
-    @Override
-    public void update(String supervisor) {
-        this.supervisor = supervisor;
     }
 
     /**

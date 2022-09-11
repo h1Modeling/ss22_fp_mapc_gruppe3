@@ -40,13 +40,17 @@ class PathFinder {
     private int gComputeProgram = -1;
     private long windowHandler;
     private static String shader;
+    private boolean debug;
     
     /**
-     * Instantiates a new PathFinder
+     * Instantiates a new PathFinder.
+     * 
      * @param windowHandler the handler to the openGl context
+     * @param debug true if the PathFinder should write images of the path finding result to the log/map folder.
      */
-    PathFinder(long windowHandler) {
+    PathFinder(long windowHandler, boolean debug) {
         this.windowHandler = windowHandler;
+        this.debug = debug;
     }
 
     /**
@@ -60,7 +64,7 @@ class PathFinder {
         }
         // Load Shader Code
         try {
-            shader = getResourceFileAsString("shader2.glsl");
+            shader = getResourceFileAsString("shader3.glsl");
         } catch (IOException e) {
             AgentLogger.severe("Failed to load PathFinding Shader - " + e.getLocalizedMessage());
         }
@@ -73,9 +77,8 @@ class PathFinder {
      */
     static void close(long context) {
         // Free Resources
-        glfwMakeContextCurrent(context);
-        glfwTerminate();
-        glfwMakeContextCurrent(0);
+        glfwDestroyWindow(context);
+        //glfwTerminate(); // Destroys all windows
     }
 
     /**
@@ -285,8 +288,7 @@ class PathFinder {
             AgentLogger.info("Path Finding Duration: " + diff);
 
             // Image logging
-            // TODO add logging parameter
-            if (true) {
+            if (debug) {
                 logMap(mapSize, result, supervisor, step);
             }
             

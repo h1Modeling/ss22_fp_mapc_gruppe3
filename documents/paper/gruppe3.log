@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.7) (preloaded format=pdflatex 2022.8.27)  11 SEP 2022 11:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.7) (preloaded format=pdflatex 2022.8.27)  11 SEP 2022 11:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -283,13 +283,53 @@ Overfull \hbox (0.97568pt too wide) in paragraph at lines 70--71
 n-hand von Klassen-
  []
 
-[2] [3] [4] [5]
-Underfull \hbox (badness 10000) in paragraph at lines 165--166
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 100--101
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 102--103
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--110
+
+ []
+
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 112--113
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--118
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 119--121
+
+ []
+
+[4] [5] [6] [7]
+Underfull \hbox (badness 10000) in paragraph at lines 182--185
+
+ []
+
+[8] [9] [10]
+Underfull \hbox (badness 10000) in paragraph at lines 257--258
 \T1/cmr/m/n/9 https://github.com/agentcontest/massim_2022/blob/main/docs/eismas
 sim.md,
  []
 
-[6] (gruppe3.aux) ) 
+[11] (gruppe3.aux) ) 
 Here is how much of TeX's memory you used:
  3142 strings out of 478338
  50491 string characters out of 2846515
@@ -298,17 +338,17 @@ Here is how much of TeX's memory you used:
  474959 words of font info for 36 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,6n,62p,873b,324s stack positions out of 10000i,1000n,20000p,200000b,80000s
- <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/ljfour/jknapp
-en/ec/dpi600\ecbx1000.pk> <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/ljfour/
-jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/l
-jfour/jknappen/ec/dpi600\ectt0900.pk> <C:\Users\philh\AppData\Local\MiKTeX\font
-s/pk/ljfour/jknappen/ec/dpi600\ecrm0900.pk> <C:\Users\philh\AppData\Local\MiKTe
-X\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\philh\AppData\Local
-\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk><D:/Program Files/MiKTeX
-/fonts/type1/public/amsfonts/cm/cmr7.pfb>
-Output written on gruppe3.pdf (6 pages, 109843 bytes).
+ <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
+pen/ec/dpi600\ecbx1000.pk> <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/ljfour
+/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\philh\AppData\Local\MiKTeX\fonts/pk/
+ljfour/jknappen/ec/dpi600\ectt0900.pk> <C:\Users\philh\AppData\Local\MiKTeX\fon
+ts/pk/ljfour/jknappen/ec/dpi600\ecrm0900.pk> <C:\Users\philh\AppData\Local\MiKT
+eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\philh\AppData\Loca
+l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk><D:/Program Files/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmr7.pfb>
+Output written on gruppe3.pdf (11 pages, 132993 bytes).
 PDF statistics:
- 309 PDF objects out of 1000 (max. 8388607)
+ 359 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

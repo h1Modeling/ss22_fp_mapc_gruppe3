@@ -13,12 +13,9 @@ import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
  * @author Heinz Stadler
  * @author Phil Heger (minor contribution)
  */
-/**
- * @author philh
- *
- */
 public class DirectionUtil {
-    public static Point mapSize = new Point(64, 92);
+
+    private static Point mapSize = null;
 
     /**
      * Translates a direction code from pathfinding into a string containing the direction chars.
@@ -163,11 +160,28 @@ public class DirectionUtil {
     public static String getDirection(Point from, Point to) {
         String result = " ";
         Point pointTarget = new Point(to.x - from.x, to.y - from.y);
-        Point pointTargetAround = new Point(to.x - from.x - mapSize.x, to.y - from.y - mapSize.y);
 
-        /*AgentLogger.info(Thread.currentThread().getName() + " getDirection - from/to: " + from.toString() + " , "
-                + to.toString() + " , pointTarget/pointTargetAround: " + pointTarget.toString() + " , "
-                + pointTargetAround.toString());*/
+        // Map Size not discovered yet
+        if (DirectionUtil.mapSize == null) {
+            if (pointTarget.x == 0) {
+                return pointTarget.y < 0 ? "n" : "s";
+            }
+    
+            if (pointTarget.y == 0) {
+                return pointTarget.x < 0 ? "w" : "e";
+            }
+    
+            if (pointTarget.x != 0 && pointTarget.y != 0) {
+                if (Math.abs(pointTarget.x) > Math.abs(pointTarget.y)) {
+                    return pointTarget.x < 0 ? "w" : "e";
+                }
+                return pointTarget.y < 0 ? "n" : "s";
+            }
+            return " ";
+        }
+
+        // Map Size discovered
+        Point pointTargetAround = new Point(to.x - from.x - mapSize.x, to.y - from.y - mapSize.y);
 
         if (pointTarget.x == 0) {
             if ((pointTarget.y < 0 && Math.abs(pointTargetAround.y) >= Math.abs(pointTarget.y))
@@ -279,12 +293,12 @@ public class DirectionUtil {
         return outDirection;
     }
     
-    // TODO add Method description 
     /**
+     * try not to move in the opposite direction of the agents last wish
      * 
-     * @param inDirection the direction to test
-     * @param agent the agent
-     * @return
+     * @param inDirection - the direction to test
+     * @param agent - the agent
+     * @return new direction 
      */
     public static String proofDirection(String inDirection, BdiAgentV2 agent) {
         String outDirection = inDirection;
@@ -350,5 +364,14 @@ public class DirectionUtil {
                 return true;
             }
             return false;
+    }
+
+    /**
+     * Sets the map size.
+     * @param x the with of the map
+     * @param y the height of the map
+     */
+    public static void setMapSize(int x, int y) {
+        DirectionUtil.mapSize = new Point(x, y);
     }
 }
