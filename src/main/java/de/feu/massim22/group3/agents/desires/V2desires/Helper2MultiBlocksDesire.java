@@ -210,8 +210,10 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                 }
             }
         } else {
-            AgentLogger.info(Thread.currentThread().getName() + " vor getStatusHelper - para: " + info.name + " , "
+            AgentLogger.info(Thread.currentThread().getName() + " not on target - para: " + info.name + " , "
                     + nearestMeeting.toString());
+            AgentLogger.info(Thread.currentThread().getName() + " not on target - dist: " + distanceNearestTarget + " , target: "
+                    + nearestTarget);
 
             if (distanceNearestTarget <= 3 || agent.alwaysToTarget) {
                 // go to target position for connect

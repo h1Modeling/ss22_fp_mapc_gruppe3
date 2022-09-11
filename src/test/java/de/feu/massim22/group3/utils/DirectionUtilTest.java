@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
  * Symbols:
  * A: Agent
  * E: Enemy
- * ○: Attached Block
- * ●: Unattached Block
- * ■: Obstacle
+ * _: Attached Block
+ * _: Unattached Block
+ * _: Obstacle
  * 
  * @author Phil Heger
  */

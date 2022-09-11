@@ -1,22 +1,23 @@
 package de.feu.massim22.group3.agents;
 
 import eis.iilang.*;
+
+//import java.awt.Point;
+import java.util.*;
+
 import de.feu.massim22.group3.agents.V2utils.*;
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
+import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.IDesire;
 import de.feu.massim22.group3.agents.desires.V2desires.DisconnectMultiBlocksDesire;
+import de.feu.massim22.group3.agents.belief.reachable.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.communication.MailService;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
-
-//import java.awt.Point;
-import java.util.List;
-import java.util.ArrayList;
-
 import de.feu.massim22.group3.map.INaviAgentV2;
 import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -31,7 +32,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
-    //public boolean absolutePositions = false;
+    private boolean absolutePositions = false;
 
     public DesireUtilities desireProcessing = new DesireUtilities();
     public boolean decisionsDone;
@@ -54,6 +55,9 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public int index;
     public Point startPosition = new Point(Point.zero());
     public Meeting[] firstMeeting = new Meeting[11];
+    
+    public Set<java.awt.Point> rgz = new HashSet<>();
+    public Set<Thing> disp = new HashSet<>();
 
     /**
      * Initializes a new Instance of BdiAgentV2.
@@ -186,6 +190,39 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                             ? Point.castToPoint(belief.getAbsolutePosition())
                             : ""));
         }
+        
+        if (belief.getStep() == 0) {
+            if (absolutePositions) {
+                if (Point.castToPoint(belief.getAbsolutePosition()) != null) {
+                    startPosition = Point.castToPoint(belief.getAbsolutePosition());
+                    belief.setPosition(startPosition);
+                    
+                    AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - getAbsolutePosition() true, dyn - startPosition: " 
+                            + startPosition);
+                }         
+            } else {
+                AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - getAbsolutePosition() false - startPosition: " 
+                        + startPosition + " , absolute startPosition: " 
+                        + ((Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : ""));
+            }
+        }
+   
+        
+        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, this)
+                || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, this)) {
+            Cooperation coop = AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, this);
+
+            if (coop == null) {
+                coop = AgentCooperations.get(StepUtilities.exploreVerticalMapSize, this);
+            }
+
+            if ((coop.master().equals(this) || coop.helper().equals(this))
+                    && coop.statusMaster().equals(Status.Finished)) {
+                AgentCooperations.remove(coop);
+                isBusy = false;
+            }
+        }
+        
         //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {
             if (belief.getLastAction().equals(Actions.ROTATE)
@@ -305,7 +342,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " isBusy: " + isBusy 
                 + " , Agent: " + this.getName()+ " , Step: " + belief.getStep() + " , attBlocks: " + StepUtilities.getAttachedBlocks());
               
-        for (Percept percept : percepts) {
+     /*   for (Percept percept : percepts) {
             if (percept.getName() == "attached"){
             AgentLogger.info(this.getName(),
                     "Percept - attached: " +
@@ -317,7 +354,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                     "Percept: " + String.format("%s - %s", percept.getName(), percept.getParameters()) 
                     + " , absolutePosition: " + belief.getAbsolutePosition() + " , beliefPosition: " + belief.getPosition());
             }
-        }
+        }*/
         //AgentLogger.info(belief.toString());
     }
 

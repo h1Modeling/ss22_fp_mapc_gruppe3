@@ -10,6 +10,16 @@ import java.nio.file.Paths;
 import java.nio.file.FileAlreadyExistsException;
 import java.io.IOException;
 
+
+/**
+ * Class that extends the functionality of the java.util.logging module to enable that specific
+ * log-files can be generated depending on a given string (e. g. one for each agent
+ * and/or desire).
+ * 
+ * @author Phil Heger
+ *
+ */
+
 // Loglevels: SEVERE, WARNING, INFO, CONFIG, FINE
 // not implemented: FINER, FINEST
 
@@ -20,9 +30,9 @@ public class AgentLogger {
     // Level for console output and main log file
     // To print all messages: Level.ALL
     // Also sets max. Level for the separate files!
-    private static Level MAIN_LOG_LEVEL = Level.OFF;
+    private static Level MAIN_LOG_LEVEL = Level.ALL;
     // Level for separate (filtered) log files
-    private static Level FILES_LOG_LEVEL = Level.OFF;
+    private static Level FILES_LOG_LEVEL = Level.ALL;
 
     private static Logger logger = null;
     // tags given with logging statements to specify file name of log file
@@ -82,6 +92,12 @@ public class AgentLogger {
         }
     }
 
+    /**
+     * Generate logging output of log level <code>fine</code> and write it to a designated log-file
+     * 
+     * @param tag name of the log-file into which the output is to be written
+     * @param logMessage Message to be written to log-output
+     */
     static public void fine(String tag, String logMessage) {
         logger.fine("[" + tag + "] " + logMessage);
         if (WRITE_SEPARATE_FILES && !tags.contains(tag)) {
@@ -89,10 +105,21 @@ public class AgentLogger {
         }
     }
 
+    /**
+     * Generate logging output of log level <code>fine</code>
+     * 
+     * @param logMessage Message to be written to log-output
+     */
     static public void fine(String logMessage) {
         logger.fine(logMessage);
     }
 
+    /**
+     * Generate logging output of log level <code>config</code> and write it to a designated log-file
+     * 
+     * @param tag name of the log-file into which the output is to be written
+     * @param logMessage Message to be written to log-output
+     */
     static public void config(String tag, String logMessage) {
         logger.config("[" + tag + "] " + logMessage);
         if (WRITE_SEPARATE_FILES && !tags.contains(tag)) {
@@ -100,10 +127,21 @@ public class AgentLogger {
         }
     }
 
+    /**
+     * Generate logging output of log <code>config</code> fine
+     * 
+     * @param logMessage Message to be written to log-output
+     */
     static public void config(String logMessage) {
         logger.config(logMessage);
     }
 
+    /**
+     * Generate logging output of log level <code>info</code> and write it to a designated log-file
+     * 
+     * @param tag name of the log-file into which the output is to be written
+     * @param logMessage Message to be written to log-output
+     */
     static public void info(String tag, String logMessage) {
         logger.info("[" + tag + "] " + logMessage);
         if (WRITE_SEPARATE_FILES && !tags.contains(tag)) {
@@ -111,10 +149,21 @@ public class AgentLogger {
         }
     }
 
+    /**
+     * Generate logging output of log level <code>info</code>
+     * 
+     * @param logMessage Message to be written to log-output
+     */
     static public void info(String logMessage) {
         logger.info(logMessage);
     }
 
+    /**
+     * Generate logging output of log level <code>warning</code> and write it to a designated log-file
+     * 
+     * @param tag name of the log-file into which the output is to be written
+     * @param logMessage Message to be written to log-output
+     */
     static public void warning(String tag, String logMessage) {
         logger.warning("[" + tag + "] " + logMessage);
         if (WRITE_SEPARATE_FILES && !tags.contains(tag)) {
@@ -122,10 +171,21 @@ public class AgentLogger {
         }
     }
 
+    /**
+     * Generate logging output of log level <code>warning
+     * 
+     * @param logMessage Message to be written to log-output
+     */
     static public void warning(String logMessage) {
         logger.warning(logMessage);
     }
 
+    /**
+     * Generate logging output of log level <code>severe</code> and write it to a designated log-file
+     * 
+     * @param tag name of the log-file into which the output is to be written
+     * @param logMessage Message to be written to log-output
+     */
     static public void severe(String tag, String logMessage) {
         logger.severe("[" + tag + "] " + logMessage);
         if (WRITE_SEPARATE_FILES && !tags.contains(tag)) {
@@ -133,6 +193,11 @@ public class AgentLogger {
         }
     }
 
+    /**
+     * Generate logging output of log level <code>severe</code>
+     * 
+     * @param logMessage Message to be written to log-output
+     */
     static public void severe(String logMessage) {
         logger.severe(logMessage);
     }

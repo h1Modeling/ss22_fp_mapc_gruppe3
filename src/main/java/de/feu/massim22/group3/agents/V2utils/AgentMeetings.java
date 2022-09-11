@@ -33,7 +33,7 @@ public class AgentMeetings {
      * 
      * @param meeting the meeting to be proved
      * 
-     * @result if the meeting is already existing or not
+     * @return if the meeting is already existing or not
      */
     public static boolean exists(Meeting meeting) {
         boolean result = false;
@@ -158,17 +158,41 @@ public class AgentMeetings {
     }
     
     private static void evaluateMapSize(Meeting meeting) {
-        Meeting fm = newMeeting(meeting.agent1.firstMeeting[meeting.agent2().index]);
-        Meeting m = newMeeting(meeting);
-        
-        AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings.evaluateMapSize - firstMeeting: " 
-        + fm.toString() + " , meeting: " + m.toString());
-        
-        int height = (m.nmpAgent2.y - fm.nmpAgent2.y) - (m.nmpAgent1.y - fm.nmpAgent1.y) - (m.relAgent2.y - fm.relAgent2.y);
-        int width = (m.nmpAgent2.x - fm.nmpAgent2.x) - (m.nmpAgent1.x - fm.nmpAgent1.x) - (m.relAgent2.x - fm.relAgent2.x);
-        
-        AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings - height: " 
-        + height + " , width: " + width);
+        if ((AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent1, 1)
+                && AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent2, 2))
+                || (AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent1, 1)
+                        && AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent2, 2))) {
+
+            Meeting fm = newMeeting(meeting.agent1.firstMeeting[meeting.agent2().index]);
+            Meeting m = newMeeting(meeting);
+
+            AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings.evaluateMapSize - firstMeeting: "
+                    + fm.toString() + " , meeting: " + m.toString());
+
+            if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent1, 1)
+                    && AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent2, 2)) {
+                int width = Math.abs(m.nmpAgent1.x - fm.nmpAgent1.x) + (m.relAgent2.x - fm.relAgent2.x);
+                AgentLogger.info(
+                        Thread.currentThread().getName() + " AgentMeetings - width: " + width);
+                
+                if (width > 20 && width != AgentCooperations.mapSize.x) {
+                    AgentCooperations.setMapSize(new Point(width, AgentCooperations.mapSize.y));
+                    StepUtilities.exploreHorizontalMapSizeFinished = true;
+                }
+            }
+
+            if (AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent1, 1)
+                    && AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent2, 2)) {
+                int height = Math.abs(m.nmpAgent1.y - fm.nmpAgent1.y) + (m.relAgent2.y - fm.relAgent2.y);
+                AgentLogger.info(
+                        Thread.currentThread().getName() + " AgentMeetings - height: " + height);
+                
+                if (height > 20 && height != AgentCooperations.mapSize.y) {
+                    AgentCooperations.setMapSize(new Point(AgentCooperations.mapSize.x, height));
+                    StepUtilities.exploreVerticalMapSizeFinished = true;
+                }
+            }
+        }
     }
     
     private static Meeting newMeeting(Meeting meeting) {
