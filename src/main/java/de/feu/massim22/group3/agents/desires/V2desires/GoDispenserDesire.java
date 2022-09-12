@@ -25,10 +25,7 @@ public class GoDispenserDesire extends BeliefDesire {
     private List<ReachableDispenser> typeDispensers = new ArrayList<ReachableDispenser>();
     private BdiAgentV2 agent;
     private String block;
-//    private CellType dispenser;
     private int distance;
-    //private boolean strangeAgent = false;
-    //private StepUtilities stepUtilities;
 
     /**
      * Instantiates a new GoDispenserDesire.
@@ -39,13 +36,11 @@ public class GoDispenserDesire extends BeliefDesire {
      * @param agent the agent who wants to go to a dispenser
      * 
      */
-    public GoDispenserDesire(Belief belief, String block, String supervisor, BdiAgentV2 agent) {
-        super(belief);
+    public GoDispenserDesire(String block, String supervisor, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start GoDispenserDesire, Step: " + belief.getStep());
         this.agent = agent;
         this.block = block;
-//        this.dispenser = Convert.blockNameToDispenser(block);
-        //this.stepUtilities = stepUtilities;
     }
 
     /**

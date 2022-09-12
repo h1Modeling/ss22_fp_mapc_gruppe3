@@ -25,8 +25,8 @@ public class LocalExploreDesire extends BeliefDesire {
      * @param agent the agent who wants to go to a goal zone
      * 
      */
-    public LocalExploreDesire(Belief belief, String supervisor, BdiAgentV2 agent) {
-        super(belief);
+    public LocalExploreDesire(String supervisor, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start LocalExploreDesire");
         this.agent = agent;
     }
@@ -84,8 +84,8 @@ public class LocalExploreDesire extends BeliefDesire {
      * 
      * @return the priority
      */
-    @Override
+    /*@Override
     public int getPriority() {
         return 100;
-    }
+    }*/
 }

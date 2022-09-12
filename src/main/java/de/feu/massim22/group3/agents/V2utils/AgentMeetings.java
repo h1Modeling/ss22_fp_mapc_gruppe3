@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Melinda Betz
  */
 public class AgentMeetings {
-    public static List<Meeting> meetings = new ArrayList<Meeting>();
+    private static List<Meeting> meetings = new ArrayList<Meeting>();
     
     /**
      * A meeting is being added.

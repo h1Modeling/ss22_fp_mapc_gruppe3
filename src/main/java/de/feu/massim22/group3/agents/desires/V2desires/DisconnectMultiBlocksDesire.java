@@ -27,8 +27,8 @@ public class DisconnectMultiBlocksDesire extends BeliefDesire {
      * @param info the info of the task
      * @param agent the agent who has submitted the task
      */
-    public DisconnectMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public DisconnectMultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger
                 .info(Thread.currentThread().getName() + " runSupervisorDecisions - Start DisconnectMultiBlocksDesire");
         this.info = info;

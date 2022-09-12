@@ -3,7 +3,7 @@ package de.feu.massim22.group3.agents.V2utils;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 
 /**
- * The class <code>BdiAgentV2</code> contains all the important methods for point processing in BdiAgentV2.
+ * The class <code>BdiAgentV2</code> contains some important methods for point processing in BdiAgentV2.
  * 
  * @author Melinda Betz
  */
@@ -77,9 +77,9 @@ public class Point extends java.awt.Point {
      * 
      * @return the smaller point
      */
-    public static Point min(Point point1, Point point2) {
+    /*public static Point min(Point point1, Point point2) {
         return new Point(Math.min(point1.x, point2.x), Math.min(point1.y, point2.y));
-    }
+    }*/
 
     /**
      * Calculates the maximum of two points.
@@ -89,9 +89,9 @@ public class Point extends java.awt.Point {
      * 
      * @return the bigger point
      */
-    public static Point max(Point point1, Point point2) {
+    /*public static Point max(Point point1, Point point2) {
         return new Point(Math.max(point1.x, point2.x), Math.max(point1.y, point2.y));
-    }
+    }*/
 
     /**
      * Proves if a vector of type Point is positive.
@@ -100,18 +100,18 @@ public class Point extends java.awt.Point {
      * 
      * @return if the vector is positive or not
      */
-    public static boolean isPositive(Point vector) {
+    /*public static boolean isPositive(Point vector) {
         return vector.x >= 0 && vector.y >= 0;
-    }
+    }*/
 
     /**
      * Returns the corner point.
      * 
      * @return the point of the map corner
      */
-    public static Point unitY() {
+    /*public static Point unitY() {
         return new Point(0, 1);
-    }
+    }*/
 
     /**
      * Adds a point.
@@ -170,9 +170,9 @@ public class Point extends java.awt.Point {
      *
      * @param point the one to translate
      */
-    public void translate(Point point) {
+    /*public void translate(Point point) {
         this.add(point);
-    }
+    }*/
     
     /**
      * Translates a point from a agents meeting point from the agent2 coordinates is translated into a point from the agent1 coordinates.
@@ -208,9 +208,9 @@ public class Point extends java.awt.Point {
      * @param diffTo target
      * @return vector
      */
-    public Point diff(Point diffTo) {
+    /*public Point diff(Point diffTo) {
         return new Point(this.x - diffTo.x, this.y - diffTo.y);
-    }
+    }*/
 
     /**
      * new sum vector
@@ -218,7 +218,7 @@ public class Point extends java.awt.Point {
      * @param point target
      * @return vector
      */
-    public Point sum(Point point) {
+    /*public Point sum(Point point) {
         return new Point(this.x + point.x, this.y + point.y);
-    }
+    }*/
 }

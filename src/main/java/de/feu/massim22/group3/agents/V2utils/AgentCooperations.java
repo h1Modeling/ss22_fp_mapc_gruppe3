@@ -10,19 +10,37 @@ import massim.protocol.data.TaskInfo;
 
 /**
  * The class <code>AgentCooperations</code> contains all the important methods for a agents cooperation. 
- * Agents that are in a cooperation together are working on the same multi-block-task together.
+ * Agents that are in a cooperation are working together on the same multi-block-task.
+ * ExploreMapSizeDesire is also done with the help of an AgentCooperation.
  * 
  * @author Melinda Betz
  */
 public class AgentCooperations {
-    public static List<Cooperation> cooperations = new ArrayList<Cooperation>();
+    private static List<Cooperation> cooperations = new ArrayList<Cooperation>();
     private static int maxMaster = 3;
     private static int max2BMaster = 2;
     private static int max3BMaster = 1;
     private static int maxTypes = 3;
-    public static int[] scores = {0, 0, 0, 0};
-    public static Point initialMapSize = new Point(500, 500);
+    private static int[] scores = {0, 0, 0, 0};
     public static Point mapSize = new Point(500, 500);
+    
+    /**
+     * A score is set.
+     * 
+     * @param int[] new score 
+     */
+    public static  void setScore(int index) {
+       scores[index]++;
+    }
+    
+    /**
+     * A score is returned.
+     * 
+     * @return score
+     */
+    public static int getScore(int index) {
+       return scores[index];
+    }
     
     /**
      * A cooperation is being set.

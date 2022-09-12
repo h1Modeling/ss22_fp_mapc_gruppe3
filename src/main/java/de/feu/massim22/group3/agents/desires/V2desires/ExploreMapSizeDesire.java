@@ -22,8 +22,8 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      * @param agent the agent who wants to go to a goal zone
      * 
      */
-    public ExploreMapSizeDesire(Belief belief, BdiAgentV2 agent) {
-        super(belief);
+    public ExploreMapSizeDesire(BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start ExploreMapSizeDesire");
         this.agent = agent;
     }
@@ -102,8 +102,8 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      * 
      * @return the priority
      */
-    @Override
+    /*@Override
     public int getPriority() {
         return 100;
-    }
+    }*/
 }

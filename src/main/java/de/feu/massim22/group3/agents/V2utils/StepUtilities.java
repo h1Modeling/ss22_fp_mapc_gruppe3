@@ -4,9 +4,9 @@ import java.util.*;
 
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
+//import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.agents.belief.reachable.*;
+//import de.feu.massim22.group3.agents.belief.reachable.*;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -20,13 +20,18 @@ import massim.protocol.data.*;
  * @author Melinda Betz
  */
 public class StepUtilities {
-    DesireUtilities desireProcessing;
-    INaviAgentV2 navi;
-    public static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
-    public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
+    private DesireUtilities desireProcessing;
+    private INaviAgentV2 navi;
+    private boolean mergeGroups = true;
+    private boolean alwaysAgentMeetings = true;
     private static int countAgent = 0;
     private static int countAgent2 = 0;
+    
+    public static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
+    public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
     public static boolean DecisionsDone;
+ // array to write all attached blocks into
+    public static String[] attachedBlock = new String[11];
     
     public static boolean exploreHorizontalMapSizeStarted = false;
     public static boolean exploreVerticalMapSizeStarted = false;
@@ -34,9 +39,6 @@ public class StepUtilities {
     public static boolean exploreVerticalMapSizeFinished = false;
     public static TaskInfo exploreHorizontalMapSize = new TaskInfo("exploreHorizontalMapSize", 1000, 0, new HashSet<Thing>());
     public static TaskInfo exploreVerticalMapSize = new TaskInfo("exploreVerticalMapSize", 1000, 0, new HashSet<Thing>());
-    
-    boolean mergeGroups = true;
-    boolean alwaysAgentMeetings = true;
     
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
@@ -367,15 +369,9 @@ public class StepUtilities {
     
     private int countMeetings(ArrayList<AgentMeeting> foundAgent, Point reverseFound) {
         int counter = 0;
-        
-        /*AgentLogger.info(
-                Thread.currentThread().getName() + " countMeetings() - Position: " + reverseFound);*/
 
         for (int x = 0; x < foundAgent.size(); x++) {
             if (foundAgent.get(x).position.equals(reverseFound)) {
-                /*AgentLogger.info(
-                        Thread.currentThread().getName() + " countMeetings() - Agent: "
-                                + foundAgent.get(x).agent.getName() + " , Position: " + foundAgent.get(x).position);*/
                 counter++;
             }
         }
@@ -593,8 +589,6 @@ public class StepUtilities {
         return new Percept("PATHFINDER_RESULT", data);
     }
 
-   // public record DispenserFlag(Point position, Boolean attachMade) {}
-
     /**
      * Gets all the agents with a certain name.
      * 
@@ -615,9 +609,6 @@ public static BdiAgentV2 getAgent(String inAgent) {
 
     return result;
 }
-
-// array to write all attached blocks into
-public static String[] attachedBlock = new String[11];
 
 /**
  * Gets all the attached blocks.
@@ -677,5 +668,3 @@ class AgentMeeting {
 
 //record for pathfinding result with distance and direction
 record PathFindingResult(int distance, String direction) {}
-
-//record CalcResult(String agent, Percept percepts) {}

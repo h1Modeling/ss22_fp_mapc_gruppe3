@@ -32,8 +32,8 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
      * @param info the info of the task
      * @param agent the agent who wants to connect the blocks
      */
-    public ConnectMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public ConnectMultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ConnectMultiBlocksDesire");
         this.info = info;
         this.agent = agent;

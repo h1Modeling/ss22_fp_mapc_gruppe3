@@ -44,8 +44,8 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
      * @param info the info of the task
      * @param agent the agent who is the first helper
      */
-    public HelperMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public HelperMultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start HelperMultiBlocksDesire");
         this.info = info;
         this.agent = agent;
@@ -282,17 +282,5 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
         
         return result;
     }
-    /*
-    private boolean existsCommonEdge(Point p2) {
-        for (java.awt.Point p1 : DirectionUtil.getCellsIn4Directions()) {
-            if ((Math.abs(p2.x - p1.x) == 0 && Math.abs(p2.y - p1.y) == 1)
-                    ||
-                    (Math.abs(p2.y - p1.y) == 0 && Math.abs(p2.x - p1.x) == 1)) {
-                    return true;     
-                }  
-        }
-
-        return false;
-    } */
 }
 

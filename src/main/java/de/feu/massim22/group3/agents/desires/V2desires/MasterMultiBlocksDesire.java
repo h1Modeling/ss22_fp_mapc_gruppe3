@@ -28,12 +28,12 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
     private BdiAgentV2 possibleHelper2;
     private Cooperation coop;
     private TreeMap<Integer, Meeting> foundMeetings = new TreeMap<>();
-    Point block1;
-    Point block2;
-    Point block3;
-    Thing block1Thing;
-    Thing block2Thing;
-    Thing block3Thing;
+    private Point block1;
+    private Point block2;
+    private Point block3;
+    private Thing block1Thing;
+    private Thing block2Thing;
+    private Thing block3Thing;
 
     /**
      * Initializes a new MasterMultiBlocksDesire.
@@ -42,8 +42,8 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
      * @param info the info of the task
      * @param agent the agent who wants to become a master
      */
-    public MasterMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public MasterMultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start MasterMultiBlocksDesire");
         this.info = info;
         this.agent = agent;
@@ -235,10 +235,10 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         BooleanInfo result = new BooleanInfo(false, "");
         boolean found = false;
 
-        AgentLogger.info(Thread.currentThread().getName()
+        /*AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - findHelper - agent.isBusy: " + agent.isBusy + " , " + task.name);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - findHelper - coops: "
-                + AgentCooperations.toString(AgentCooperations.cooperations));
+                + AgentCooperations.toString(AgentCooperations.cooperations));*/
         
         List<Thing> list = agent.desireProcessing.getTaskReqsOrdered(task);
         block1 = new Point(list.get(0).x, list.get(0).y);
@@ -365,10 +365,10 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         boolean found = false;
         foundMeetings = new TreeMap<>();
 
-        AgentLogger.info(Thread.currentThread().getName()
+        /*AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - findHelper2 - agent.isBusy: " + agent.isBusy + " , " + task.name);
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - findHelper2 - coops: "
-                + AgentCooperations.toString(AgentCooperations.cooperations));
+                + AgentCooperations.toString(AgentCooperations.cooperations));*/
         
         if (task.requirements.size() > 2) {
             //the task is a 3-blocks-task

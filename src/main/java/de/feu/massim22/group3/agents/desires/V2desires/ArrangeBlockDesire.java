@@ -29,8 +29,8 @@ public class ArrangeBlockDesire extends BeliefDesire {
      * @param info the info of the task
      * @param agent the agent who wants to arrange a block
      */
-    public ArrangeBlockDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public ArrangeBlockDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlockDesire");
         this.info = info;
         this.agent = agent;

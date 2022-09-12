@@ -31,8 +31,8 @@ public class SubmitDesire extends BeliefDesire {
      * @param agent the agent who wants to submit
      * 
      */
-    public SubmitDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public SubmitDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
         this.info = info;
         this.agent = agent;
