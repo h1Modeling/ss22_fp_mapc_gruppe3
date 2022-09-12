@@ -4,7 +4,6 @@ import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings;
 import de.feu.massim22.group3.agents.V2utils.Point;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
-import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
@@ -48,6 +47,12 @@ public class GoGoalZoneDesire extends BeliefDesire {
     public BooleanInfo isFulfilled() {
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - GoGoalZoneDesire.isFulfilled, Step: " + belief. getStep());
         boolean result = belief.getGoalZones().contains(Point.zero());
+     
+        //Cell is no more in a goal zone (maybe goal zone has moved)
+        if (!result && ((BdiAgentV2) agent.supervisor.getParent()).rgz.contains(agent.getBelief().getPosition())) {
+           // ((BdiAgentV2) agent.supervisor.getParent()).rgz.remove(agent.getBelief().getPosition());
+        }
+        
         String info = result ? "" : "not on goal zone";
         return new BooleanInfo(result, info);
     }

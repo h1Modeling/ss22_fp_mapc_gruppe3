@@ -34,22 +34,19 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     private boolean absolutePositions = false;
     private Point startPosition = new Point(Point.zero());
-
-    public DesireUtilities desireProcessing = new DesireUtilities();
+    private List<Thing> attachedThings = new ArrayList<Thing>();
     
+    public DesireUtilities desireProcessing = new DesireUtilities();    
     public boolean beliefsDone;
     public boolean decisionsDone;
     public boolean requestMade = false;
-    //public Point lastUsedDispenser;
     public boolean isBusy = false;
     public boolean alwaysToTarget = false;
     
     public boolean blockAttached = false;
-    private List<Thing> attachedThings = new ArrayList<Thing>();
     public List<Point> attachedPoints = new ArrayList<Point>();
     public int lastStepDetach = 0;
-    
-    //public int exploreCount = 0;    
+      
     public int exploreDirection = this.index % 4;
     public int exploreDirection2 = exploreDirection + 1;
     

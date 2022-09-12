@@ -22,6 +22,10 @@ public class AgentCooperations {
     private static int max3BMaster = 1;
     private static int maxTypes = 3;
     private static int[] scores = {0, 0, 0, 0};
+    
+    /**
+     * After exploring the map size, the resulting size is set here.
+     */
     public static Point mapSize = new Point(500, 500);
     
     /**

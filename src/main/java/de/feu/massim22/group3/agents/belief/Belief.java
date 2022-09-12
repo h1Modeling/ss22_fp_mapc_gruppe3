@@ -1547,20 +1547,11 @@ public class Belief {
     }
     
     /**
-     * Sets the map size if known.
-     * 
-     * @param mapSize - size in point
-     */
-    public void setMapSize(Point mapSize) {
-        this.mapSize = mapSize;
-    }
-    
-    /**
      * Updates the position of an agent (used from the outside).
      * 
      */
     public void updatePositionFromExternal() {
-        setMapSize(AgentCooperations.mapSize);
+        setMapSize(AgentCooperations.mapSize.x, AgentCooperations.mapSize.y);
         String dir = null;
         AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
@@ -1570,7 +1561,7 @@ public class Belief {
                 
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
-                    move(dir);
+                    moveOld(dir);
                     moveNonModuloPosition(dir);
                     moveMapSizePosition(dir);
                 }
@@ -1579,7 +1570,7 @@ public class Belief {
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
                 AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Partial: " +  lastActionParams);
-                move(lastActionParams.get(0));
+                moveOld(lastActionParams.get(0));
                 moveNonModuloPosition(lastActionParams.get(0));
                 moveMapSizePosition(lastActionParams.get(0));
             }
@@ -1596,7 +1587,7 @@ public class Belief {
      * @return modulo position
      */
     public Point calcPositionModulo(Point position) {
-        setMapSize(AgentCooperations.mapSize);
+        setMapSize(AgentCooperations.mapSize.x, AgentCooperations.mapSize.y);
         position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
         position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
         return position;
@@ -1646,6 +1637,23 @@ public class Belief {
                 break;
             case "w":
                 nonModuloPosition.x -= 1;
+                break;
+        }
+    }
+    
+    private void moveOld(String dir) {
+        switch (dir) {
+            case "n":
+                position.y -= 1;
+                break;
+            case "e":
+                position.x += 1;
+                break;
+            case "s":
+                position.y += 1;
+                break;
+            case "w":
+                position.x -= 1;
                 break;
         }
     }
@@ -1793,7 +1801,7 @@ public class Belief {
             int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
                     + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
             int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
-            ReachableDispenser rdnew = new ReachableDispenser(pos,  CellType.valueOf(inThing.details), distance, direction, "x");
+            ReachableDispenser rdnew = new ReachableDispenser(pos,  Convert.dispenserToCellType(inThing.details), distance, direction, "x");
             reachableDispensersX.add(rdnew);
         }
    

@@ -6,8 +6,6 @@ import java.util.*;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
-import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
-import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
@@ -47,19 +45,6 @@ public class DesireUtilities {
     public boolean tryLastWanted = true; 
     public List<Thing> attachedThings = new ArrayList<Thing>();
     public String lastWishDirection = null;
-    
-    /*public List<Thing> goodBlocks = new ArrayList<Thing>();
-    public List<Thing> badBlocks = new ArrayList<Thing>();
-    public List<Thing> goodPositionBlocks = new ArrayList<Thing>();
-    public List<Thing> badPositionBlocks = new ArrayList<Thing>();
-    public List<Thing> missingBlocks = new ArrayList<Thing>();*/
-    //public boolean typeOk = false;
-    //public boolean analysisDone = false;
-    //public boolean dontArrange = false;
-    //public String nextTry = "ccw";
-    //public int nextTryDir = 1;
-    //public int failedPath = 0;
-    //public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
     
     /**
      * The method runs all task independent decisions.
@@ -494,58 +479,14 @@ public class DesireUtilities {
         int priority = 0;
         
         for (IDesire desire : agent.getDesires()) {
-            /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + getPriority(desire));*/
             if (getPriority(desire, agent) > priority) {
                 result = desire;
                 priority = getPriority(desire, agent);
             }
         }
-
-        /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() End - Agent: " + agent.getName()
-                + " , Intention: " + result.getName() + " , Action: " + result.getOutputAction());*/
+        
         return result;
     }
-
-    /**
-     * Gets the nearest goal zone from the list of reachableGoalZones.
-     *
-     * @param inZoneList a list of all goal zones in reach
-     * 
-     * @return the nearest goal zone
-     */
-    /*public ReachableGoalZone getNearestGoalZone(List<ReachableGoalZone> inZoneList) {
-        int distance = 1000;
-        ReachableGoalZone result = null;
-
-        for (ReachableGoalZone zone : (List<ReachableGoalZone>) inZoneList) {
-            if (zone.distance() < distance) {
-                distance = zone.distance();
-                result = zone;
-            }
-        }
-        return result;
-    }*/
-    
-    /**
-     * Gets the nearest role zone from the list of reachableRoleZones.
-     *
-     * @param inZoneList a list of all role zones in reach
-     * 
-     * @return the nearest role zone
-     */
-    /*private  ReachableRoleZone getNearestRoleZone(List<ReachableRoleZone> inZoneList) {
-        int distance = 1000;
-        ReachableRoleZone result = null;
-        
-        for (ReachableRoleZone zone : (List<ReachableRoleZone>) inZoneList) {
-            if (zone.distance() < distance) {
-                distance = zone.distance();
-                result = zone;
-            }
-        }
-        return result;
-    }*/
 
     /**
      * Gets the nearest dispenser from the list of reachableDispensers.
@@ -577,29 +518,11 @@ public class DesireUtilities {
      */
     public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
         String startDirection = DirectionUtil.intToString(agent.exploreDirection);
-        /*float random = new Random().nextFloat();
-        if (random < 0.25) {
-            startDirection = "n";
-        } else if (random < 0.5) {
-            startDirection = "e";
-        } else if (random < 0.75) {
-            startDirection = "w";
-        } else {
-            startDirection = "s";
-        }*/
         Identifier resultDirection = new Identifier(startDirection);
 
         if (agent.getBelief().getLastAction() != null && agent.getBelief().getLastAction().equals(Actions.MOVE)) {
             directionCounter++;
             resultDirection = new Identifier(agent.getBelief().getLastActionParams().get(0));
-            
-           /* if (agent.getBelief().getLastActionResult().equals(ActionResults.FAILED_PATH)) {
-                if (directionCircle.equals("cw")) {
-                    directionCircle = "ccw";
-                } else {
-                    directionCircle = "cw";
-                }
-            }*/
 
             if (directionCircle.equals("cw")) {
                 if (agent.getBelief().getLastAction().equals("move") && directionCounter >= circleSize) {
@@ -629,139 +552,7 @@ public class DesireUtilities {
         }
         return resultDirection;
     }
-    
-    /**
-     *Converts a block ( that has been converted into a thing) into a task requirement.
-     *
-     *@param toThingBlock block that is being converted
-     * 
-     * @return the converted block
-     */
-    /*private  Thing toTaskBlock(Thing toThingBlock) {           
-        return new Thing(toThingBlock.x, toThingBlock.y, toThingBlock.details, "");
-    }*/
-    
-    /**
-     *Converts a block into a thing.
-     *
-     *@param toTaskBlock - block that is being converted
-     * 
-     * @return the converted block
-     */
-    /*private  Thing toThingBlock(Thing toTaskBlock) {           
-        return new Thing(toTaskBlock.x, toTaskBlock.y, Thing.TYPE_BLOCK, toTaskBlock.type);
-    }*/
-    
-    /**
-     *Checks if a block is part of a task.
-     *
-     *@param inTaskReqs - the requirements of the task
-     *@param inBlock - the block that is being checked
-     * 
-     * @return it is part of the task or not
-     */
-    /*private  boolean blockInTask(List<Thing> inTaskReqs, Thing inBlock) { 
-        for (Thing req : inTaskReqs) {
-            if (req.x == inBlock.x && req.y == inBlock.y && req.type.equals(inBlock.details)) {              
-                return true;
-            }
-        }
-        
-        return false;
-    }*/
-    
-    /**
-     *Checks if a task requirement is already in the list.
-     *
-     *@param inList all task requirements active at the moment
-     * @param inTaskReq the requirement that is being checked
-     * 
-     * @return it is in the list or not
-     */
-    /*private  boolean taskReqInList(List<Thing> inList, Thing inTaskReq) {     
-        for (Thing block : inList) {
-            if (block.x == inTaskReq.x && block.y == inTaskReq.y && block.details.equals(inTaskReq.type)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }*/
-    
-    /**
-     * Counts all the blocks from one block type over all the used blocks.
-     *
-     *@param inList all block types being used at the moment
-     * @param inType the type to be counted
-     * 
-     * @return the number of blocks from that one block type
-     */
-    /*private int countBlockType(List<Thing> inList, String inType) {  
-        int count = 0;
-        
-        for (Thing block : inList) {
-            if (block.details.equals(inType) || block.type.equals(inType)) {
-                count++;
-            }
-        }
-
-        return count;
-    }*/
-    
-    /**
-     * Gets the content in a certain direction ( obstacle or not or what is there).
-     *
-     *@param agent the current agent
-     * @param direction where should be examined?
-     * 
-     * @return the content in that direction
-     */
-    /*public Thing getContentInDirection(BdiAgentV2 agent, String direction) {
-        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(direction));
-
-        return getContent(agent, cell);
-    }*/
-    
-    /**
-     * Gets the content in a certain direction from a certain point on ( obstacle or not or what is there).
-     *
-     *@param agent the current agent
-     * @param from where the agent is right now
-     * @param direction where should be examined?
-     * 
-     * @return the content in that direction
-     */
-    /*private Thing getContentInDirection(BdiAgentV2 agent, Point from, String direction) {
-        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(from, direction));
-
-        return getContent(agent, cell);
-    }*/
-    
-    /**
-     * Gets the content in a certain cell ( obstacle or not or what is there).
-     *
-     *@param agent the current agent
-     * @param cell the cell which is being examined
-     * 
-     * @return the content which is in the cell
-     */
-    private Thing getContent(BdiAgentV2 agent, Point cell) {      
-        //AgentLogger.info(Thread.currentThread().getName() + " getContent() - Position: " + cell);
-        
-        for (Thing thing : agent.getBelief().getThings()) {           
-            if (thing.type.equals(Thing.TYPE_OBSTACLE) || thing.type.equals(Thing.TYPE_ENTITY) || thing.type.equals(Thing.TYPE_BLOCK)) {
-                // at this point there is a obstacle
-                
-                if (cell.equals(new Point(thing.x, thing.y))) {
-                    //AgentLogger.info(Thread.currentThread().getName() + " getConten() - Vision: " + thing);
-                    // agent is standing in front of a obstacle in the direction direction
-                    return thing;
-                } 
-            }
-        }
-
-        return null;
-    }
+       
     /**
      * Has the task reached its deadline?
      *
@@ -1191,22 +982,6 @@ public class DesireUtilities {
             default: return "s";
         }
     }
-
-    /*private String getDirectionFromPoint(Point p) {
-        if (p.x == 0) {
-            return p.y < 0 ? "n" : "s";
-        }
-        return p.x < 0 ? "w" : "e";
-    }
-
-    private Point getPointFromDirection(String dir) {
-        switch (dir) {
-            case "n": return new Point(0, -1);
-            case "e": return new Point(1, 0);
-            case "s": return new Point(0, 1);
-            default: return new Point(-1, 0);
-        }
-    }*/
     
     private boolean existsCommonEdge(Point p2) {
         for (java.awt.Point p1 : DirectionUtil.getCellsIn4Directions()) {
@@ -1218,12 +993,4 @@ public class DesireUtilities {
 
         return false;
     }
-
-    /**
-     * Is an attach made at this dispenser.
-     *
-     * @param position - dispenser position
-     * @param attachMade - attach already made
-     */
-    //public record DispenserFlag(Point position, Boolean attachMade) {}
 }
