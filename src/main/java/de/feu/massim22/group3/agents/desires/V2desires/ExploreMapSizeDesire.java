@@ -18,12 +18,10 @@ public class ExploreMapSizeDesire extends BeliefDesire {
     /**
      * Instantiates a new ExploreMapSizeDesire.
      * 
-     * @param belief the belief of the agent
-     * @param agent the agent who wants to go to a goal zone
-     * 
+     * @param agent - the agent who wants to explore the map
      */
-    public ExploreMapSizeDesire(Belief belief, BdiAgentV2 agent) {
-        super(belief);
+    public ExploreMapSizeDesire(BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start ExploreMapSizeDesire");
         this.agent = agent;
     }
@@ -85,25 +83,5 @@ public class ExploreMapSizeDesire extends BeliefDesire {
         }
 
         return ActionInfo.SKIP("0010 should not happen");
-    }
-
-    /**
-     * Updates the supervisor .
-     * 
-     * @param the new supervisor
-     */
-   /* @Override
-    public void update(String supervisor) {
-        this.supervisor = supervisor;
-    }*/
-
-    /**
-     * Gets the priority.
-     * 
-     * @return the priority
-     */
-    @Override
-    public int getPriority() {
-        return 100;
     }
 }

@@ -993,7 +993,8 @@ public class Belief {
     /**
      * Gets the nearest point next to a dispenser with the provided type.
      * 
-     * @param t the type of the dispenser
+     * @param t - the type of the dispenser
+     * 
      * @return the nearest point next to a dispenser with the provided type
      */
     public ReachableDispenser getNearestDispenser(CellType t) {
@@ -1009,7 +1010,8 @@ public class Belief {
     /**
      * Gets the nearest point next to a dispenser with the provided type measured in Manhattan distance.
      * 
-     * @param type the type of the dispenser
+     * @param type - the type of the dispenser
+     * 
      * @return the nearest point next to a dispenser with the provided type
      */
     public Point getNearestRelativeManhattanDispenser(String type) {
@@ -1040,7 +1042,8 @@ public class Belief {
     /**
      * Gets the position of an abandoned block in vision.
      *  
-     * @param detail the type of block
+     * @param detail - the type of block
+     * 
      * @return the position of the block if there is one, otherwise null
      */
     public Point getAbandonedBlockPosition(String detail) {
@@ -1062,7 +1065,8 @@ public class Belief {
     /**
      * Gets the Thing at the relative position.
      * 
-     * @param p the relative position
+     * @param p - the relative position
+     * 
      * @return the thing at the position or null if the cell is empty
      */
     public Thing getThingAt(Point p) {
@@ -1077,7 +1081,8 @@ public class Belief {
     /**
      * Gets the thing which is connected to the agent at the provided position.
      * 
-     * @param p the relative point
+     * @param p - the relative point
+     * 
      * @return the connected thing at the position or null if there is no connected thing at the position
      */
     public Thing getConnectedThingAt(Point p) {
@@ -1106,7 +1111,8 @@ public class Belief {
     /**
      * Gets the Thing which is at the position of a clock wise rotated point.
      * 
-     * @param p the point which get rotated
+     * @param p - the point which get rotated
+     * 
      * @return the thing at the position or null if the cell is empty
      */
     public Thing getThingCRotatedAt(Point p) {
@@ -1117,7 +1123,7 @@ public class Belief {
     /**
      * Gets the Thing which is at the position of a counter clock wise rotated point.
      * 
-     * @param p the point which get rotated
+     * @param p - the point which get rotated
      * @return the thing at the position or null if the cell is empty
      */
     public Thing getThingCCRotatedAt(Point p) {
@@ -1128,7 +1134,8 @@ public class Belief {
     /**
      * Gets the Thing which is at the provided direction.
      * 
-     * @param d the direction
+     * @param d - the direction
+     * 
      * @return the thing at the direction or null if the cell is empty
      */
     public Thing getThingAt(String d) {
@@ -1139,8 +1146,9 @@ public class Belief {
     /**
      * Gets a Thing of a type at the provided direction.
      * 
-     * @param d the direction
-     * @param type the type of the thing
+     * @param d - the direction
+     * @param type - the type of the thing
+     * 
      * @return the thing or null if there is no thing with the provided type at the position
      */
     public Thing getThingWithTypeAt(String d, String type) {
@@ -1156,8 +1164,9 @@ public class Belief {
     /**
      * Gets a Thing of a type at the provided position.
      * 
-     * @param p the position
-     * @param type the type of the thing
+     * @param p - the position
+     * @param type - the type of the thing
+     * 
      * @return the thing or null if there is no thing with the provided type at the position
      */
     public Thing getThingWithTypeAt(Point p, String type) {
@@ -1172,9 +1181,10 @@ public class Belief {
     /**
      * Gets a Thing of a type and with a certain detail at the provided direction.
      * 
-     * @param d the direction
-     * @param type the type of the thing
-     * @param detail the detail of the thing
+     * @param d - the direction
+     * @param type - the type of the thing
+     * @param detail - the detail of the thing
+     * 
      * @return the thing or null if there is no thing with the provided type and detail at the position
      */    
     public Thing getThingWithTypeAndDetailAt(String d, String type, String detail) {
@@ -1190,7 +1200,8 @@ public class Belief {
     /**
      * Tests if a certain position is marked at forbidden.
      * 
-     * @param p the point to test
+     * @param p - the point to test
+     * 
      * @return true if the position is marked as forbidden
      */
     public boolean isForbidden(Point p) {
@@ -1205,8 +1216,8 @@ public class Belief {
     /**
      * Marks a position as forbidden for a certain period of time.
      * 
-     * @param p the position to mark
-     * @param duration the duration of the limitation
+     * @param p - the position to mark
+     * @param duration - the duration of the limitation
      */
     public void addForbiddenThing(Point p, int duration) {
         ForbiddenThing t = new ForbiddenThing(p, this.step, duration);
@@ -1216,7 +1227,7 @@ public class Belief {
     /**
      * Sets the position of the agent.
      * 
-     * @param position the position of the agent
+     * @param position - the position of the agent
      */
     public void setPosition(Point position) {
         this.position = position;
@@ -1346,7 +1357,8 @@ public class Belief {
     /**
      * Gets the task with the provided name.
      * 
-     * @param name the name of the task
+     * @param name - the name of the task
+     * 
      * @return the task with the provided name or null if there doesn't exist a task with the name
      */
     public TaskInfo getTask(String name) {
@@ -1547,20 +1559,11 @@ public class Belief {
     }
     
     /**
-     * Sets the map size if known.
-     * 
-     * @param mapSize - size in point
-     */
-    public void setMapSize(Point mapSize) {
-        this.mapSize = mapSize;
-    }
-    
-    /**
      * Updates the position of an agent (used from the outside).
      * 
      */
     public void updatePositionFromExternal() {
-        setMapSize(AgentCooperations.mapSize);
+        setMapSize(AgentCooperations.mapSize.x, AgentCooperations.mapSize.y);
         String dir = null;
         AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
@@ -1570,7 +1573,7 @@ public class Belief {
                 
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
-                    move(dir);
+                    moveOld(dir);
                     moveNonModuloPosition(dir);
                     moveMapSizePosition(dir);
                 }
@@ -1579,7 +1582,7 @@ public class Belief {
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
                 AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Partial: " +  lastActionParams);
-                move(lastActionParams.get(0));
+                moveOld(lastActionParams.get(0));
                 moveNonModuloPosition(lastActionParams.get(0));
                 moveMapSizePosition(lastActionParams.get(0));
             }
@@ -1593,10 +1596,11 @@ public class Belief {
      * recalculates the position of an agent using modulo with map size.
      * 
      * @param position - non modulo position
+     * 
      * @return modulo position
      */
     public Point calcPositionModulo(Point position) {
-        setMapSize(AgentCooperations.mapSize);
+        setMapSize(AgentCooperations.mapSize.x, AgentCooperations.mapSize.y);
         position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
         position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
         return position;
@@ -1618,7 +1622,7 @@ public class Belief {
      * Sets the top left position of the map.
      * This is only used if the map size is already discovered.
      * 
-     * @param topLeft the position of the top left cell in the game map
+     * @param topLeft - the position of the top left cell in the game map
      */
     public void setTopLeft(Point topLeft) {
         this.mapTopLeft = topLeft; 
@@ -1646,6 +1650,23 @@ public class Belief {
                 break;
             case "w":
                 nonModuloPosition.x -= 1;
+                break;
+        }
+    }
+    
+    private void moveOld(String dir) {
+        switch (dir) {
+            case "n":
+                position.y -= 1;
+                break;
+            case "e":
+                position.x += 1;
+                break;
+            case "s":
+                position.y += 1;
+                break;
+            case "w":
+                position.x -= 1;
                 break;
         }
     }
@@ -1793,7 +1814,7 @@ public class Belief {
             int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
                     + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
             int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
-            ReachableDispenser rdnew = new ReachableDispenser(pos,  CellType.valueOf(inThing.details), distance, direction, "x");
+            ReachableDispenser rdnew = new ReachableDispenser(pos,  Convert.dispenserToCellType(inThing.details), distance, direction, "x");
             reachableDispensersX.add(rdnew);
         }
    
@@ -1804,8 +1825,8 @@ public class Belief {
     /**
      * Sets the map size.
      * 
-     * @param x the width of the map
-     * @param y the height of the map
+     * @param x - the width of the map
+     * @param y - the height of the map
      */
     public void setMapSize(int x, int y) {
         mapSize = new Point(x, y);

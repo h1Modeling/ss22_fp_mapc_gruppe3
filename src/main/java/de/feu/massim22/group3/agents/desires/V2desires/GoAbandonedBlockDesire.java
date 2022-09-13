@@ -29,8 +29,8 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
     /**
      * Instantiates a new GoAbandonedBlockDesire.
      * 
-     * @param agent the agent who wants to go to a abandoned block
-     * @param block the abandoned block to pick up
+     * @param agent - the agent who wants to go to a abandoned block
+     * @param block - the abandoned block to pick up
      */
     public GoAbandonedBlockDesire(BdiAgentV2 agent, String block) {
         super(agent.getBelief());

@@ -26,13 +26,11 @@ public class SubmitDesire extends BeliefDesire {
     /**
      * Instantiates a new SubmitDesire.
      * 
-     * @param belief the belief of the agent
-     * @param info the task the agent is currently working on ( wants to submit)
-     * @param agent the agent who wants to submit
-     * 
+     * @param info - the task the agent is currently working on ( wants to submit)
+     * @param agent - the agent who wants to submit
      */
-    public SubmitDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public SubmitDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
         this.info = info;
         this.agent = agent;
@@ -104,7 +102,12 @@ public class SubmitDesire extends BeliefDesire {
     public BooleanInfo isFulfilled() {
         return new BooleanInfo(false, "");
     }
-    
+ 
+    /**
+     * Gets the active task.
+     * 
+     * @return the task
+     */
     public TaskInfo getTask() {
         return info;
     }

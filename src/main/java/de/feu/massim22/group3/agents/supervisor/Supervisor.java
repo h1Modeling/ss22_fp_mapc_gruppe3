@@ -191,7 +191,7 @@ public class Supervisor implements ISupervisor {
     /**
      * Gets the parent (agent) of the supervisor.
      * 
-     * @return 
+     * @return  the parent (agent) of the supervisor
      */
     public BdiAgent getParent() {
         return (BdiAgent) parent;

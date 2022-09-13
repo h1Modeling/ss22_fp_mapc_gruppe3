@@ -40,12 +40,11 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
     /**
      * Initializes a new HelperMultiBlocksDesire.
      * 
-     * @param belief the belief of the agent
-     * @param info the info of the task
-     * @param agent the agent who is the first helper
+     * @param info - the info of the task
+     * @param agent - the agent who is the first helper
      */
-    public HelperMultiBlocksDesire(Belief belief, TaskInfo info, BdiAgentV2 agent) {
-        super(belief);
+    public HelperMultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start HelperMultiBlocksDesire");
         this.info = info;
         this.agent = agent;
@@ -109,9 +108,7 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
                             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - HelperMultiBlocksDesire.isExecutable - block2: " 
                                     + block2.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + t + " , " 
                                     + AgentMeetings.getPositionAgent2(nearestMeeting).toString());
-                            
-                            //target = AgentMeetings.getPositionAgent2(nearestMeeting).add(block2).add(Point.castToPoint(dirs.get(i)));
-                            //target = Point.castToPoint(coop.master().getBelief().getPosition()).translate2To1(nearestMeeting);  
+                              
                             target = Point.castToPoint(coop.master().getBelief().getPosition()); 
                             target = target.add(block2);
                             target = target.add(Point.castToPoint(dirs.get(i)));
@@ -282,17 +279,5 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
         
         return result;
     }
-    /*
-    private boolean existsCommonEdge(Point p2) {
-        for (java.awt.Point p1 : DirectionUtil.getCellsIn4Directions()) {
-            if ((Math.abs(p2.x - p1.x) == 0 && Math.abs(p2.y - p1.y) == 1)
-                    ||
-                    (Math.abs(p2.y - p1.y) == 0 && Math.abs(p2.x - p1.x) == 1)) {
-                    return true;     
-                }  
-        }
-
-        return false;
-    } */
 }
 

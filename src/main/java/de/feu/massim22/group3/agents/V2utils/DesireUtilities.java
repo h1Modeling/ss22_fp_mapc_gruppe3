@@ -6,8 +6,6 @@ import java.util.*;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
-import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
-import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
@@ -24,41 +22,36 @@ import massim.protocol.messages.scenario.ActionResults;
 import massim.protocol.messages.scenario.Actions;
 
 /**
- * The class <code>DesireUtilities</code> contains all the methods that are necessary for the correct sequence of the desires .
+ * The class <code>DesireUtilities</code> contains all the methods that are necessary for working the desires .
  * 
  * @author Melinda Betz
  * @author Heinz Stadler (minor contribution)
  */
 public class DesireUtilities {
-    public StepUtilities stepUtilities;
-    public TaskInfo task;
-    public int maxTaskBlocks = 3;
+    //private StepUtilities stepUtilities;
+    private TaskInfo task;
+    private int maxTaskBlocks = 3;
     private int maxTypes = AgentCooperations.getMaxTypes();
-    public String directionCircle = "cw";
-    public int directionCounter = 0;
-    public int circleSize = 30;
+    private String directionCircle = "cw";
+    private int directionCounter = 0;
+    private int circleSize = 30;
     private String dir2;
     private boolean dir2Used = false;
-    public int moveIteration = 0;
     private boolean inDirection = true;
     private int count = 0;
     private String lastWish = null;
-    public boolean tryLastWanted = true;
- 
+    
+    /**How many steps an agent wants to move forward.*/
+    public int moveIteration = 0;
+    
+    /**The agent tried to move in its last wanted direction.*/
+    public boolean tryLastWanted = true; 
+    
+    /**All the things that one agent has attached.*/
     public List<Thing> attachedThings = new ArrayList<Thing>();
-    public List<Thing> goodBlocks = new ArrayList<Thing>();
-    public List<Thing> badBlocks = new ArrayList<Thing>();
-    public List<Thing> goodPositionBlocks = new ArrayList<Thing>();
-    public List<Thing> badPositionBlocks = new ArrayList<Thing>();
-    public List<Thing> missingBlocks = new ArrayList<Thing>();
-    public boolean typeOk = false;
-    public boolean analysisDone = false;
-    public boolean dontArrange = false;
-    public String nextTry = "ccw";
-    public int nextTryDir = 1;
-    public int failedPath = 0;
+    
+    /** The last wish direction of the agent.*/
     public String lastWishDirection = null;
-    public List< DispenserFlag> dFlags = new ArrayList<DispenserFlag>();
     
     /**
      * The method runs all task independent decisions.
@@ -91,7 +84,7 @@ public class DesireUtilities {
             AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
             + " , FreedomDesire");
         
-        if (doDecision(agent, new LocalExploreDesire(agent.getBelief(), agent.supervisor.getName(), agent))) {
+        if (doDecision(agent, new LocalExploreDesire(agent.supervisor.getName(), agent))) {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
             + " , LocalExploreDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
             + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -111,7 +104,7 @@ public class DesireUtilities {
                         + " , LooseWeightDesire");
         
             if (agent.getBelief().getRole().name().equals("default")
-                    && doDecision(agent, new GoAdoptRoleDesire(agent.getBelief(), agent, "worker"))) {
+                    && doDecision(agent, new GoAdoptRoleDesire(agent, "worker"))) {
                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                         + " , GoAdoptRoleDesire , Action: "
                         + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName()
@@ -124,7 +117,7 @@ public class DesireUtilities {
 
             if ((StepUtilities.exploreHorizontalMapSizeStarted || StepUtilities.exploreVerticalMapSizeStarted)
                     && !(StepUtilities.exploreHorizontalMapSizeFinished && StepUtilities.exploreVerticalMapSizeFinished)
-                    && doDecision(agent, new ExploreMapSizeDesire(agent.getBelief(), agent))) {
+                    && doDecision(agent, new ExploreMapSizeDesire(agent))) {
                 AgentLogger
                         .info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                                 + " , ExploreMapSizeDesire , Action: "
@@ -142,10 +135,10 @@ public class DesireUtilities {
  
 
     /**
-     * Proves if a decision (desire) can actually be done.
+     * Checks if a decision (desire) can actually be done.
      *
-     * @param agent the agent himself
-     * @param inDesire the desire that is being proved
+     * @param agent - the agent himself
+     * @param inDesire - the desire that is being checked
      * 
      * @return if the decision can be done or not
      */
@@ -174,7 +167,7 @@ public class DesireUtilities {
      * @return the decisions are done
      */
     public synchronized boolean runSupervisorDecisions(int step, Supervisor supervisor, StepUtilities stepUtilities) {
-        this.stepUtilities = stepUtilities;
+        //this.stepUtilities = stepUtilities;
         boolean result = false;
         AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Start - Step: " + step
                 + " , Supervisor: " + supervisor.getName() + " , Agents: " + supervisor.getAgents());
@@ -249,7 +242,7 @@ public class DesireUtilities {
                 //String bType = (StepUtilities.getNumberAttachedBlocks(getTaskBlock(agent, task).type) < 4 ? getTaskBlock(agent, task).type : "b2");
                 
                 if (!agent.blockAttached 
-                    && doDecision(agent, new GoDispenserDesire(agent.getBelief(), getTaskBlockC(agent, task).type, supervisor.getName(), agent))) {
+                    && doDecision(agent, new GoDispenserDesire(getTaskBlockC(agent, task).type, supervisor.getName(), agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoDispenserDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -259,7 +252,7 @@ public class DesireUtilities {
                             + " , GoDispenserDesire");
                 
                 if (maxTaskBlocks > 1 && agent.blockAttached && task.requirements.size() > 1
-                        && doDecision(agent, new HelperMultiBlocksDesire(agent.getBelief(), task, agent))) {
+                        && doDecision(agent, new HelperMultiBlocksDesire(task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , HelperMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -269,7 +262,7 @@ public class DesireUtilities {
                                 + " , HelperMultiBlocksDesire");
                 
                 if (maxTaskBlocks > 2 && agent.blockAttached && task.requirements.size() > 2
-                        && doDecision(agent, new Helper2MultiBlocksDesire(agent.getBelief(), task, agent))) {
+                        && doDecision(agent, new Helper2MultiBlocksDesire(task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , Helper2MultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -279,7 +272,7 @@ public class DesireUtilities {
                         + " , Helper2MultiBlocksDesire");
 
                 if (agent.blockAttached && !agent.getBelief().getGoalZones().contains(Point.zero()) 
-                    && doDecision(agent, new GoGoalZoneDesire(agent.getBelief(), agent))) {
+                    && doDecision(agent, new GoGoalZoneDesire(agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , GoGoalZoneDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -289,7 +282,7 @@ public class DesireUtilities {
                             + " , GoGoalZoneDesire");
 
                 if (agent.blockAttached && task.requirements.size() == 1 && agent.getBelief().getGoalZones().contains(Point.zero())
-                    && doDecision(agent, new ArrangeBlockDesire(agent.getBelief(), task, agent))) {
+                    && doDecision(agent, new ArrangeBlockDesire(task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , ArrangeBlockDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -299,7 +292,7 @@ public class DesireUtilities {
                             + " , ArrangeBlockDesire");
                                 
                 if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())
-                        && doDecision(agent, new MasterMultiBlocksDesire(agent.getBelief(), task, agent))) {
+                        && doDecision(agent, new MasterMultiBlocksDesire(task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , MasterMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -309,7 +302,7 @@ public class DesireUtilities {
                                 + " , MasterMultiBlocksDesire");
                 
                 if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached 
-                        && doDecision(agent, new ConnectMultiBlocksDesire(agent.getBelief(), task, agent))) {
+                        && doDecision(agent, new ConnectMultiBlocksDesire(task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , ConnectMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -319,7 +312,7 @@ public class DesireUtilities {
                                 + " , ConnectMultiBlocksDesire");
 
                 if (agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())
-                    && doDecision(agent, new SubmitDesire(agent.getBelief(), task, agent))) {
+                    && doDecision(agent, new SubmitDesire(task, agent))) {
                     AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
                     + " , SubmitDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
@@ -339,22 +332,6 @@ public class DesireUtilities {
         return result;
     }
     
-
-    /**
-     * Proves if a agent is a possible master.
-     *
-     * @param inAgent the agent to prove
-     * 
-     * @return if the agent is a possible master or not
-     */
-    public boolean anotherMasterIsPossible(BdiAgentV2 inAgent) {
-        // variant 1: only agents with even numbers are allowed to be master
-        if (inAgent.index % 2 == 0)     
-            return true;
-        
-        return false;
-    }
-
     /**
      * The method has a certain priority for every desire.
      *
@@ -484,7 +461,7 @@ public class DesireUtilities {
     /**
      * The method determines the Intention for a certain agent .
      *
-     * @param agent the agent that needs a intention
+     * @param agent - the agent that needs a intention
      * 
      * @return the intention
      */
@@ -493,63 +470,19 @@ public class DesireUtilities {
         int priority = 0;
         
         for (IDesire desire : agent.getDesires()) {
-            /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() - Agent: " + agent.getName()
-                    + " , Desire: " + desire.getName() + " , Action: " + desire.getOutputAction() + " , Prio: " + getPriority(desire));*/
             if (getPriority(desire, agent) > priority) {
                 result = desire;
                 priority = getPriority(desire, agent);
             }
         }
-
-        /*AgentLogger.info(Thread.currentThread().getName() + " determineIntention() End - Agent: " + agent.getName()
-                + " , Intention: " + result.getName() + " , Action: " + result.getOutputAction());*/
-        return result;
-    }
-
-    /**
-     * Gets the nearest goal zone from the list of reachableGoalZones.
-     *
-     * @param inZoneList a list of all goal zones in reach
-     * 
-     * @return the nearest goal zone
-     */
-    public ReachableGoalZone getNearestGoalZone(List<ReachableGoalZone> inZoneList) {
-        int distance = 1000;
-        ReachableGoalZone result = null;
-
-        for (ReachableGoalZone zone : (List<ReachableGoalZone>) inZoneList) {
-            if (zone.distance() < distance) {
-                distance = zone.distance();
-                result = zone;
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * Gets the nearest role zone from the list of reachableRoleZones.
-     *
-     * @param inZoneList a list of all role zones in reach
-     * 
-     * @return the nearest role zone
-     */
-    public ReachableRoleZone getNearestRoleZone(List<ReachableRoleZone> inZoneList) {
-        int distance = 1000;
-        ReachableRoleZone result = null;
         
-        for (ReachableRoleZone zone : (List<ReachableRoleZone>) inZoneList) {
-            if (zone.distance() < distance) {
-                distance = zone.distance();
-                result = zone;
-            }
-        }
         return result;
     }
 
     /**
      * Gets the nearest dispenser from the list of reachableDispensers.
      *
-     * @param inZoneList a list of all dispensers in reach
+     * @param inZoneList - a list of all dispensers in reach
      * 
      * @return the nearest dispenser
      */
@@ -569,36 +502,18 @@ public class DesireUtilities {
     /**
      * Determines the direction in which the agent should walk circles while exploring.
      *
-     * @param agent the agent that wants to walk the circles
-     * @param stepWidth how big every step of the agent is
+     * @param agent - the agent that wants to walk the circles
+     * @param stepWidth - how big every step of the agent is
      * 
      * @return the direction for the next circle
      */
     public Identifier walkCircles(BdiAgentV2 agent, int stepWidth) {
         String startDirection = DirectionUtil.intToString(agent.exploreDirection);
-        /*float random = new Random().nextFloat();
-        if (random < 0.25) {
-            startDirection = "n";
-        } else if (random < 0.5) {
-            startDirection = "e";
-        } else if (random < 0.75) {
-            startDirection = "w";
-        } else {
-            startDirection = "s";
-        }*/
         Identifier resultDirection = new Identifier(startDirection);
 
         if (agent.getBelief().getLastAction() != null && agent.getBelief().getLastAction().equals(Actions.MOVE)) {
             directionCounter++;
             resultDirection = new Identifier(agent.getBelief().getLastActionParams().get(0));
-            
-           /* if (agent.getBelief().getLastActionResult().equals(ActionResults.FAILED_PATH)) {
-                if (directionCircle.equals("cw")) {
-                    directionCircle = "ccw";
-                } else {
-                    directionCircle = "cw";
-                }
-            }*/
 
             if (directionCircle.equals("cw")) {
                 if (agent.getBelief().getLastAction().equals("move") && directionCounter >= circleSize) {
@@ -628,144 +543,12 @@ public class DesireUtilities {
         }
         return resultDirection;
     }
-    
-    /**
-     *Converts a block ( that has been converted into a thing) into a task requirement.
-     *
-     *@param toThingBlock block that is being converted
-     * 
-     * @return the converted block
-     */
-    public Thing toTaskBlock(Thing toThingBlock) {           
-        return new Thing(toThingBlock.x, toThingBlock.y, toThingBlock.details, "");
-    }
-    
-    /**
-     *Converts a block into a thing.
-     *
-     *@param toTaskBlock - block that is being converted
-     * 
-     * @return the converted block
-     */
-    public Thing toThingBlock(Thing toTaskBlock) {           
-        return new Thing(toTaskBlock.x, toTaskBlock.y, Thing.TYPE_BLOCK, toTaskBlock.type);
-    }
-    
-    /**
-     *Checks if a block is part of a task.
-     *
-     *@param inTaskReqs - the requirements of the task
-     *@param inBlock - the block that is being checked
-     * 
-     * @return it is part of the task or not
-     */
-    public boolean blockInTask(List<Thing> inTaskReqs, Thing inBlock) { 
-        for (Thing req : inTaskReqs) {
-            if (req.x == inBlock.x && req.y == inBlock.y && req.type.equals(inBlock.details)) {              
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     *Checks if a task requirement is already in the list.
-     *
-     *@param inList all task requirements active at the moment
-     * @param inTaskReq the requirement that is being checked
-     * 
-     * @return it is in the list or not
-     */
-    public boolean taskReqInList(List<Thing> inList, Thing inTaskReq) {     
-        for (Thing block : inList) {
-            if (block.x == inTaskReq.x && block.y == inTaskReq.y && block.details.equals(inTaskReq.type)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * Counts all the blocks from one block type over all the used blocks.
-     *
-     *@param inList all block types being used at the moment
-     * @param inType the type to be counted
-     * 
-     * @return the number of blocks from that one block type
-     */
-    public int countBlockType(List<Thing> inList, String inType) {  
-        int count = 0;
-        
-        for (Thing block : inList) {
-            if (block.details.equals(inType) || block.type.equals(inType)) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-    
-    /**
-     * Gets the content in a certain direction ( obstacle or not or what is there).
-     *
-     *@param agent the current agent
-     * @param direction where should be examined?
-     * 
-     * @return the content in that direction
-     */
-    public Thing getContentInDirection(BdiAgentV2 agent, String direction) {
-        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(direction));
-
-        return getContent(agent, cell);
-    }
-    
-    /**
-     * Gets the content in a certain direction from a certain point on ( obstacle or not or what is there).
-     *
-     *@param agent the current agent
-     * @param from where the agent is right now
-     * @param direction where should be examined?
-     * 
-     * @return the content in that direction
-     */
-    public Thing getContentInDirection(BdiAgentV2 agent, Point from, String direction) {
-        Point cell = Point.castToPoint(DirectionUtil.getCellInDirection(from, direction));
-
-        return getContent(agent, cell);
-    }
-    
-    /**
-     * Gets the content in a certain cell ( obstacle or not or what is there).
-     *
-     *@param agent the current agent
-     * @param cell the cell which is being examined
-     * 
-     * @return the content which is in the cell
-     */
-    public Thing getContent(BdiAgentV2 agent, Point cell) {      
-        //AgentLogger.info(Thread.currentThread().getName() + " getContent() - Position: " + cell);
-        
-        for (Thing thing : agent.getBelief().getThings()) {           
-            if (thing.type.equals(Thing.TYPE_OBSTACLE) || thing.type.equals(Thing.TYPE_ENTITY) || thing.type.equals(Thing.TYPE_BLOCK)) {
-                // at this point there is a obstacle
-                
-                if (cell.equals(new Point(thing.x, thing.y))) {
-                    //AgentLogger.info(Thread.currentThread().getName() + " getContentInDirection() - Vision: " + thing);
-                    // agent is standing in front of a obstacle in the direction direction
-                    return thing;
-                } 
-            }
-        }
-
-        return null;
-    }
+       
     /**
      * Has the task reached its deadline?
      *
-     *@param agent the agent that wants to do the task
-     * @param task the task that is being examined
+     *@param agent - the agent that wants to do the task
+     * @param task - the task that is being examined
      * 
      * @return it has expired or not
      */   
@@ -781,12 +564,12 @@ public class DesireUtilities {
     /**
      * Gets the first block for a certain task.
      *
-     *@param agent the agent that wants to get the block
-     * @param task the task that is being done
+     *@param agent - the agent that wants to get the block
+     * @param task - the task that is being done
      * 
      * @return the required block
      */
-    public Thing getTaskBlockA(BdiAgentV2 agent, TaskInfo task) {
+    private Thing getTaskBlockA(BdiAgentV2 agent, TaskInfo task) {
         List<Thing> reqs = getTaskReqsOrdered(task);
         // get block1 by default
         Thing result = reqs.get(0);
@@ -811,12 +594,12 @@ public class DesireUtilities {
     /**
      * Decides which block for a certain task should be fetched.
      *
-     *@param agent the agent that wants to get the block
-     * @param task the task that is being done
+     *@param agent - the agent that wants to get the block
+     * @param task - the task that is being done
      * 
      * @return the required block
      */
-    public Thing getTaskBlockC(BdiAgentV2 agent, TaskInfo task) {
+    private Thing getTaskBlockC(BdiAgentV2 agent, TaskInfo task) {
         List<Thing> reqs = getTaskReqsOrdered(task);
         // get block1 by default
         Thing result = reqs.get(0);
@@ -856,7 +639,7 @@ public class DesireUtilities {
      * 
      * @return a block with an allowed block type
      */
- Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
+    private Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
         Thing result = inBlock;
         AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type 
                 + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type) 
@@ -865,7 +648,7 @@ public class DesireUtilities {
         count++;
         
         if (count <= 3) {
-            // soll verhindern, dass es bei 3-Block-Tasks mit 3 gleichen Blöcken und niedrigem maxTypes hängen bleibt
+            // should prevent that 3-block-tasks with three blocks of the same block type and a low maxTypes het stuck
             if (StepUtilities.getNumberAttachedBlocks(inBlock.type) >= maxTypes) {
                 if (inBlock.equals(inReqs.get(0))) {
                     if (inReqs.size() > 1)
@@ -891,7 +674,7 @@ public class DesireUtilities {
     /**
      * Gets task requirements and orders them.
      *
-     * @param task the requirements of the task that are to be ordered
+     * @param task - the requirements of the task that are to be ordered
      * 
      * @return the ordered requirements
      */
@@ -940,10 +723,10 @@ public class DesireUtilities {
     /**
      * Determines what a agent should do if it has the action move and it has got a alternate direction.
      *
-     * @param agent the agent that wants to do a move
-     * @param dir the direction in which the agent wants to move first
-     * @param dirAlt the alternate direction 
-     * @param desire the desire which the agent wants to do
+     * @param agent - the agent that wants to do a move
+     * @param dir - the direction in which the agent wants to move first
+     * @param dirAlt - the alternate direction 
+     * @param desire - the desire which the agent wants to do
      * 
      * @return the action to do
      */
@@ -969,10 +752,10 @@ public class DesireUtilities {
     /**
      * Determines what a agent should do if it has the action move and wants to move two steps.
      *
-     * @param agent the agent that wants to do a move
-     * @param dir the direction in which the agent wants to move first
-     * @param dir2 the direction in which the agent wants to move second
-     * @param desire the desire which the agent wants to do
+     * @param agent - the agent that wants to do a move
+     * @param dir - the direction in which the agent wants to move first
+     * @param dir2 - the direction in which the agent wants to move second
+     * @param desire - the desire which the agent wants to do
      * 
      * @return the action to do
      */
@@ -987,9 +770,9 @@ public class DesireUtilities {
     /**
      * Determines what a agent should do if it has the action move.
      *
-     * @param agent the agent that wants to do a move
-     * @param dir the direction in which the agent wants to move
-     * @param desire the desire which the agent wants to do
+     * @param agent - the agent that wants to do a move
+     * @param dir - the direction in which the agent wants to move
+     * @param desire - the desire which the agent wants to do
      * 
      * @return the action to do
      */
@@ -1139,30 +922,41 @@ public class DesireUtilities {
         }
     }
     
-    protected boolean isFree(Thing t) {
+    private boolean isFree(Thing t) {
         return t == null || t.type.equals(Thing.TYPE_DISPENSER);
     }
 
-    protected boolean isClearable(Thing t) {
+    private boolean isClearable(Thing t) {
         return t != null && (t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_OBSTACLE));
     }
     
-    protected boolean isSaveClearable(Thing t) {
+    private boolean isSaveClearable(Thing t) {
         return t != null && (t.type.equals(Thing.TYPE_OBSTACLE));
     }
 
     /**
      * Rotates a certain point clockwise.
      *
-     * @param p the point that is going to be rotated
+     * @param p - the point that is going to be rotated
      * 
      * @return the rotated point
      */
     public Point getCRotatedPoint(Point p) {
         return new Point(-p.y, p.x);
     }
+    
+    /**
+     * Rotates a certain point counter clockwise.
+     *
+     * @param p - the point that is going to be rotated
+     * 
+     * @return the rotated point
+     */
+    public Point getCCRotatedPoint(Point p) {
+        return new Point(p.y, -p.x);
+    }
 
-    protected String getCRotatedDirection(String dir) {
+    private String getCRotatedDirection(String dir) {
         switch (dir) {
             case "n": return "e";
             case "e": return "s";
@@ -1171,40 +965,13 @@ public class DesireUtilities {
         }
     }
 
-    protected String getCCRotatedDirection(String dir) {
+    private String getCCRotatedDirection(String dir) {
         switch (dir) {
             case "n": return "w";
             case "e": return "n";
             case "s": return "e";
             default: return "s";
         }
-    }
-
-    protected String getDirectionFromPoint(Point p) {
-        if (p.x == 0) {
-            return p.y < 0 ? "n" : "s";
-        }
-        return p.x < 0 ? "w" : "e";
-    }
-
-    protected Point getPointFromDirection(String dir) {
-        switch (dir) {
-            case "n": return new Point(0, -1);
-            case "e": return new Point(1, 0);
-            case "s": return new Point(0, 1);
-            default: return new Point(-1, 0);
-        }
-    }
-
-    /**
-     * Rotates a certain point counter clockwise.
-     *
-     * @param p the point that is going to be rotated
-     * 
-     * @return the rotated point
-     */
-    public Point getCCRotatedPoint(Point p) {
-        return new Point(p.y, -p.x);
     }
     
     private boolean existsCommonEdge(Point p2) {
@@ -1217,12 +984,4 @@ public class DesireUtilities {
 
         return false;
     }
-
-    /**
-     * Is an attach made at this dispenser.
-     *
-     * @param position - dispenser position
-     * @param attachMade - attach already made
-     */
-    public record DispenserFlag(Point position, Boolean attachMade) {}
 }

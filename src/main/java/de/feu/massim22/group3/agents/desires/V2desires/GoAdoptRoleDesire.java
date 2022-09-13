@@ -6,7 +6,6 @@ import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings;
 import de.feu.massim22.group3.agents.V2utils.Point;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
-import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
@@ -20,26 +19,18 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @author Melinda Betz
  */
 public class GoAdoptRoleDesire extends BeliefDesire {
-    BdiAgentV2 agent;
-    String role;
-    
-    BdiAgentV2 roleZoneAgent = null;
-    Point posAgentOld;
-    Point nearestRoleZoneRoleZoneAgentNew;    
-    Point posRoleZoneAgentOld;
-    Point realtiveRoleZoneAgentOld;
-    Point nearestRoleZone;
+    private BdiAgentV2 agent;
+    private String role;
+    private Point nearestRoleZone; 
 
     /**
      * Instantiates a new GoAdoptRoleDesire.
      * 
-     * @param belief - the agents belief (not really necessary)
      * @param agent - the agent who wants to adopt a role
      * @param role - the role which the agent wants to adopt
-     * 
      */
-    public GoAdoptRoleDesire(Belief belief, BdiAgentV2 agent, String role) {
-        super(belief);
+    public GoAdoptRoleDesire(BdiAgentV2 agent, String role) {
+        super(agent.getBelief());
         AgentLogger.info(Thread.currentThread().getName() + " manageAgentRoles - Start GoAdoptRoleDesire, Step: " + belief.getStep());
         this.agent = agent;
         this.role = role;
@@ -193,7 +184,7 @@ private Point getNearestRoleZoneFromMeeting(BdiAgentV2 inAgent) {
             
             if (Point.distance(Point.castToPoint(inAgent.getBelief().getPosition()), roleZone) < distance) {
                 AgentLogger.info(Thread.currentThread().getName() + " Test.RoleZone 6");  
-                roleZoneAgent = meeting.agent2();
+                //roleZoneAgent = meeting.agent2();
                 distance = Point.distance(Point.castToPoint(inAgent.getBelief().getPosition()), roleZone);
             }
         } 

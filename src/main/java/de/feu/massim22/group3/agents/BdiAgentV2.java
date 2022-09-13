@@ -8,10 +8,10 @@ import java.util.*;
 import de.feu.massim22.group3.agents.V2utils.*;
 import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
-import de.feu.massim22.group3.agents.desires.ActionInfo;
+//import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.IDesire;
 import de.feu.massim22.group3.agents.desires.V2desires.DisconnectMultiBlocksDesire;
-import de.feu.massim22.group3.agents.belief.reachable.*;
+//import de.feu.massim22.group3.agents.belief.reachable.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
 import de.feu.massim22.group3.communication.MailService;
@@ -28,43 +28,70 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * Please be aware, that <code>BdiAgentV2</code> is no successor of <code>BdiAgentV1</code>. Both implementations
  * define a separate approach and are not connected to each other.
  * 
- *@see BdiAgentV1
+ * @see BdiAgentV1
  * @author Melinda Betz
  */
 public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     private boolean absolutePositions = false;
-
-    public DesireUtilities desireProcessing = new DesireUtilities();
-    public boolean decisionsDone;
-    public boolean requestMade = false;
-    public boolean blockAttached = false;
-    public boolean isBusy = false;
-    public boolean alwaysToTarget = false;
+    private Point startPosition = new Point(Point.zero());
+    private List<Thing> attachedThings = new ArrayList<Thing>();
+    
+    /**The DesireUtilities */
+    public DesireUtilities desireProcessing = new DesireUtilities();    
+    
+    /** If all the beliefs of a agent are updated.*/
     public boolean beliefsDone;
     
-    public Point lastUsedDispenser;
-    public List<Thing> attachedThings = new ArrayList<Thing>();
+    /** If all the decisions are done (task dependent /task independent).*/
+    public boolean decisionsDone;
+    
+    /** If there ever was a request ( to attach / get a block) made by a certain agent.*/
+    public boolean requestMade = false;
+    
+    /** If a agent is busy with a task.*/
+    public boolean isBusy = false;
+    
+    /**The agent walks right to his target.*/
+    public boolean alwaysToTarget = false;
+    
+    /** If a agent has a block attached.*/
+    public boolean blockAttached = false;
+    
+    /** List of all the attached points.*/
     public List<Point> attachedPoints = new ArrayList<Point>();
+    
+    /** The number of the step where the agent has last detached a block.*/
     public int lastStepDetach = 0;
     
-    public int exploreCount = 0;    
+      
+    /** The direction transformed into the right coordinates via modulo.*/
     public int exploreDirection = this.index % 4;
+    
+    /** The second direction transformed into the right coordinates via modulo.*/
     public int exploreDirection2 = exploreDirection + 1;
     
+    
+    /** The supervisor.*/
     public Supervisor supervisor;
+    
+    /** The index.*/
     public int index;
-    public Point startPosition = new Point(Point.zero());
+    /** Array of all firstM meetings from agents.*/
     public Meeting[] firstMeeting = new Meeting[11];
     
+    
+    /**A set of all reachable goal zones.*/
     public Set<java.awt.Point> rgz = new HashSet<>();
+    
+    /** A set of all reachable dispensers.*/
     public Set<Thing> disp = new HashSet<>();
 
     /**
      * Initializes a new Instance of BdiAgentV2.
      * 
-     * @param name the name of the agent
-     * @param mailbox the mail service of the agent
-     * @param index the index of the agent in the agent team
+     * @param name - the name of the agent
+     * @param mailbox - the mail service of the agent
+     * @param index - the index of the agent in the agent team
      */
     public BdiAgentV2(String name, MailService mailbox, int index) {
         super(name, mailbox);
@@ -138,7 +165,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                             AgentLogger.info(Thread.currentThread().getName() + " step() task reached deadline ");
 
                             if (coop.statusMaster().equals(Status.Connected) 
-                                    && desireProcessing.doDecision(this, new DisconnectMultiBlocksDesire(this.belief, coop.task(), this))) {
+                                    && desireProcessing.doDecision(this, new DisconnectMultiBlocksDesire(coop.task(), this))) {
                                 AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: "
                                         + this.getName() + " , DisconnectMultiBlocksDesire , Action: "
                                         + this.getDesires().get(this.getDesires().size() - 1).getOutputAction().getName()
@@ -157,8 +184,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 
                 // Delete expired Desires
                 desires.removeIf(d -> d.isUnfulfillable().value());
-                // Sort Desires
-                //desires.sort((a, b) -> a.getPriority() - b.getPriority());
+
                 // Intention ermitteln (Desire mit höchster Priorität)
                 intention = desireProcessing.determineIntention(this);
                 break;
@@ -208,7 +234,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
    
         
-        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, this)
+        /*if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, this)
                 || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, this)) {
             Cooperation coop = AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, this);
 
@@ -221,7 +247,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 AgentCooperations.remove(coop);
                 isBusy = false;
             }
-        }
+        }*/
         
         //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {
@@ -300,11 +326,11 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 }
                 
                 if (belief.getLastActionParams().size() == 2) {
-                    AgentCooperations.scores[Integer.parseInt(belief.getLastActionParams().get(1))]++;
+                    AgentCooperations.setScore(Integer.parseInt(belief.getLastActionParams().get(1)));
                     AgentLogger.info(Thread.currentThread().getName() + " Step: " + belief.getStep()
-                    + " , Scores: " + AgentCooperations.scores[1]
-                            + " , " + AgentCooperations.scores[2]
-                                    + " , " + AgentCooperations.scores[3]); 
+                    + " , Scores: " + AgentCooperations.getScore(1)
+                            + " , " + AgentCooperations.getScore(2)
+                                    + " , " + AgentCooperations.getScore(3)); 
                 }
             }
 
@@ -340,22 +366,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         
         
         AgentLogger.info(Thread.currentThread().getName() + " step() updateBeliefs - blockAttached: " + blockAttached  + " isBusy: " + isBusy 
-                + " , Agent: " + this.getName()+ " , Step: " + belief.getStep() + " , attBlocks: " + StepUtilities.getAttachedBlocks());
-              
-     /*   for (Percept percept : percepts) {
-            if (percept.getName() == "attached"){
-            AgentLogger.info(this.getName(),
-                    "Percept - attached: " +
-                    String.format("%s - %s", percept.getName(), percept.getParameters()));
-            }
-            
-            if (percept.getName() == "position"){
-            AgentLogger.info(this.getName(),
-                    "Percept: " + String.format("%s - %s", percept.getName(), percept.getParameters()) 
-                    + " , absolutePosition: " + belief.getAbsolutePosition() + " , beliefPosition: " + belief.getPosition());
-            }
-        }*/
-        //AgentLogger.info(belief.toString());
+                + " , Agent: " + this.getName()+ " , Step: " + belief.getStep() + " , attBlocks: " + StepUtilities.getAttachedBlocks());    
     }
 
     /**
@@ -387,16 +398,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     public List<Point> getAttachedPoints() {     
         return attachedPoints;
     }
-    
-    /**
-     * Removes a certain attached thing.
-     * 
-     * @param t the attached thing that is supposed to be removed
-     */
-    public void removeAttached(Thing t) {     
-  
-    }
-    
+        
     /**
      * Refreshes all attached things and points.
      * 
