@@ -75,11 +75,11 @@ Auf der Grundlage der BDI-Architektur erarbeiteten wir anhand von Klassen-UML-Di
 Aus der Konzeptionsphase resultierten zwei unterschiedliche Ansätze, die in der Folge auch weitestgehend unabhängig umgesetzt und ausprobiert wurden. Dadurch sollten die Vor- und Nachteile der unterschiedlichen Ansätze untersucht werden.
 
 
-\section{Gruppenbeitrag Heinz Stadler}
+\section{Agentensystem V1 - Gruppenbeitrag Heinz Stadler}
 Nach einer ausführlichen Einarbeitung in die Thematik der Multiagentensysteme, erfolgte die Analyse der Ergebnisse des 15. Multi-Agent Programming Contest \cite{Ahlbrecht2021}. Daraus ging hervor, dass nicht nur die Entscheidungsfindung der Agenten eine Herausforderung darstellt, sondern ebenso der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{Ahlbrecht2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}). \\
 Als Folge dessen entschied sich der Autor mit dem Aufbau der Wissensverwaltung (siehe \ref{wissensverwaltung}) zu beginnen. Diese umfasst eine Datenstruktur zur Speicherung der von der Simulation übermittelten Informationen, sowie eine Lösung zum Aufbau einer globalen Karte des Simulationsgebiets. Nach Fertigstellung der Karte und deren funktionalen Verifikation, wurde parallel an der Konzeptionierung des Agentensystem V1 (siehe \ref{agentV1}) und dessen Ziel- und Absichtsfindung, sowie der Implementierung einer intelligenten Wegführung (siehe \ref{wegfindung}) gearbeitet. Um die Ergebnisse der Wegführung und das Entscheidungsverhalten der Agenten effektiv verifizieren zu können, folgte die Erstellung eines graphischen Analysewerkzeugs (siehe \ref{verifikation}).
  
-\subsection{Agent V1 - Architektur}\label{agentV1}
+\subsection{Architektur}\label{agentV1}
 Das Agentensystem V1 wurde vom Autor konzipiert, in der Gruppe abgestimmt und implementiert. Es erweitert das BDI-Konzept \cite{Bratman1987} um zusätzliche Daten-, Berechnungs- und Entscheidungsebenen, die in Abbildung \ref{g3:architecture} illustriert sind. \\
 Das System kombiniert den Aufbau eines BDI-Agenten \cite[S. 58]{Weiss2000} mit einer bidirektionalen vertikalen Schichtarchitektur \cite[S. 61-62]{Weiss2000}, auf die in Abschnitt
 \ref{absichtsfindung} näher eingegangen wird.
@@ -99,7 +99,7 @@ Agentengruppen aktualisieren eine gemeinsame Karte mit im Simulationsverlauf erh
 
 
 \subsection{Wissensverwaltung}\label{wissensverwaltung}
-Jeder Agent hat Zugriff auf eine individuelle Wissensbasis (Beliefs), die von der Simulation bereitgestellte Informationen auswertet und speichert. \\
+Jeder Agent hat Zugriff auf eine individuelle Wissensbasis (\textit{Beliefs}), die von der Simulation bereitgestellte Informationen auswertet und speichert. \\
 Die enthaltenen Umgebungsdaten beschränken sich auf das aktuelle Sichtfeld des Agenten.
 Um aus den partiellen Umgebungsinformationen eine globale Sicht des Simulationsgebiets zu erhalten, werden die lokalen Daten an das Navigationsmodul weitergeleitet und in einer chronologisch fortgeschriebenen Karte zusammengeführt.
 
@@ -123,7 +123,7 @@ Der Autor hat bereits zum Projektbeginn die Absicht gefasst beide Probleme, bezo
 
 Mit der Zellmenge $V$ besitzt der Algorithmus in seiner Grundform eine Laufzeitkomplexität von $O(|V|^{2})$. Kombiniert mit geschätzten 50-100 Berechnungen pro Agent und Simulationsschritt schied eine CPU-basierte Lösung aufgrund Zeitbeschränkungen in der Absichtsfindung aus.
 
-Es erfolgte die Implementierung des Suchalgorithmus in der Form eines Computeshaders in OpenGL mittels GLSL \cite{GLSL}. Mit dieser Technologie konnte die Wegfindung auf über 1000 Berechnungen pro Simulationsschritt parallelisiert werden.
+Es erfolgte die Implementierung des Suchalgorithmus in der Form eines Computeshaders in der GLSL (\textit{OpenGL Shading Language}) \cite{GLSL}. Mit dieser Technologie konnte die Wegfindung auf über 1000 Berechnungen pro Simulationsschritt parallelisiert werden.
 
 Aus der hohen Parallelisierung und der Implementierung in GLSL ergaben sich zwei Herausforderungen:
 \begin{enumerate}
@@ -287,30 +287,32 @@ Für die Unittests wurde das Mocking Framework "`mockito"' eingesetzt, das es er
 
 \section{Gruppenbeitrag Björn Wladasch}
 
-\section{Turniere}
-Die Gruppe nahm an den Turnieren 2-6 teil, wobei das Agentensystem V1 den Großteil der Spiele bestritt. Das System V2 übernahm jeweils ein Spiel in den Turnieren 2-5. 
+\section{Turniere}\label{Turniere}
+Die Gruppe nahm an den Turnieren 2-6 teil. Den Großteil der Spiele bestritt das Agentensystem V1. Das System V2 übernahm jeweils ein Spiel in den Turnieren 2-5. 
 
 \subsection{Agent V1}
+Das Agentensystem zeigte sich über alle teilgenommenen Turniere hinweg wettbewerbsfähig. Probleme in einzelnen Begegnungen wurden detailliert dokumentiert und im weiteren Entwicklungsverlauf behoben oder zumindest entschärft. Die Folgenden Absätze geben ein Überblick über die Leistung und Probleme in den einzelnen Turnieren.
+
 \subsubsection{Turnier 2}
 Es war erfreulich, dass 10 Agenten in der Lage waren bis zu 370 Punkte über Einblock-Aufgaben zu erringen. Trotzdem zeigte sich noch großes Verbesserungspotential bei der Befreiung von Agenten aus festgefahrenen Situationen und dem generellen Ausweichen von Agenten untereinander.
+
 \subsubsection{Turnier 3}
+Die erreichte Punktzahl über Einblock-Aufgaben konnte in diesem Turnier auf bis zu 720 gesteigert werden. Dies resultierte hauptsächlich aus besseren Strategien um sich aus festgefahrenen Situationen zu befreien. Trotzdem waren weiterhin teilweise übermäßige Gruppenbildung und daraus resultierende gegenseitige Behinderung zu beobachten.
 
-Die erreichte Punktzahl über Einblock-Aufgaben konnte in diesem Turnier nochmals stark auf bis zu 720 Punkte gesteigert werden. Dies resultierte hauptsächlich aus besseren Strategien um sich aus festgefahrenen Situationen zu befreien. Trotzdem waren weiterhin teilweise übermäßige Gruppenbildung und daraus resultierende gegenseitige Behinderung zu beobachten.
 \subsubsection{Turnier 4}
+Die Agenten waren erstmals in der Lage Mehrblock-Aufgaben zu bearbeiten. Das Zusammenspiel der Agenten war leider noch nicht zufriedenstellend, wodurch sich ein Rückgang der erreichten Maximalpunkte auf 680 ergab. Positiv war zu beobachten, dass die Gruppenbildung und die gegenseitige Behinderung im Vergleich zum Vorturnier abgenommen hat.
 
-In diesem Turnier waren die Agenten erstmals in der Lage Mehrblock-Aufgaben zu bearbeiten. Die Zusammenarbeit zwischen den Agenten funktionierte aber noch schlecht, was in einen Rückgang der erreichten Maximalpunkte auf 680 resultierte. Positiv war zu beobachten, dass die Gruppenbildung und die gegenseitige Behinderung im Vergleich zum Vorturnier abgenommen hat.
 \subsubsection{Turnier 5}
-
-Im Vergleich zum Turnier 4 erfolgte nur eine minimale Weiterentwicklung der Agenten. Es wurde jedoch ein massiver Fehler in der Agentenzuweisung behoben. Dies führte zu stark verbesserter Leistungsfähigkeit und sicherte der Gruppe den Turniersieg mit maximal 1300 erreichten Punkten. Ebenfalls wurden in diesem Turnier in einzelnen Begegnungen erstmalig aggressive Strategien gegen die gegnerischen Agenten eingesetzt.
+Im Gegensatz zu den vorhergegangenen Turnieren erfolgte nur eine geringe Weiterentwicklung der Agenten. Es wurde jedoch ein massiver Fehler in der Zuweisung von Agenten zu Gruppenaufgaben behoben. Dies führte zu stark verbesserter Leistungsfähigkeit und sicherte der Gruppe den Turniersieg mit maximal 1300 erreichten Punkten. In diesem Turnier wurde erstmalig in einzelnen Begegnungen aggressive Strategien gegen die gegnerischen Agenten eingesetzt.
 
 \subsubsection{Turnier 6}
-Das Turnier 6 bot neue Herausforderungen, da erstmalig die Kartengröße nicht bekannt war, die Zielzonen sich bewegten und Meteoriteneinschläge auf der Karte ergänzt wurden. Die Agenten bewältigten die neuen Herausforderungen zufriedenstellend und konnten auch dieses mal den Turniersieg mit einer Maximalpunktzahl von 910 sichern. Die Schwierigkeitserhöhung war deutlich in der Durchschnittspunktzahl sichtbar. Trotzdem konnten die Agenten in einzelnen Spielen die erhöhte Schwierigkeit durch die Abgabe von Dreiblock-Aufgaben kompensieren.
+Das Turnier 6 bot neue Herausforderungen, da die Kartengröße nicht bekannt war, die Zielzonen sich bewegten und Meteoriteneinschläge auf der Karte ergänzt wurden. Die Agenten bewältigten die neuen Herausforderungen zufriedenstellend und konnten auch dieses mal den Turniersieg mit einer Maximalpunktzahl von 910 sichern. Die Schwierigkeitserhöhung war deutlich in der Durchschnittspunktzahl sichtbar. Trotzdem konnten die Agenten in einzelnen Spielen die erhöhte Schwierigkeit durch die Abgabe von Dreiblock-Aufgaben kompensieren.
 
 Interessant war weiter zu beobachten, dass speziell die Gruppe 1 sehr aggressiv gegen die Agenten vorging und dadurch eine spannende Begegnung entstand. Das Abwehren solchen Verhaltens wäre eine potentielle Verbesserungsmöglichkeit für das Agentensystem. 
 
 \subsubsection{Bonusspiel - Jeder gegen Jeden}
-Zum Abschluss wurde ein Spiel mit 6 x 25 Agenten durchgeführt. Die Gruppe konnte überrascht beobachten, dass trotz der Vielzahl an gegnerischen und auch eigenen Agenten die vorhanden Strategien erfolgreich waren. Es war zwar eine erhöhte Gruppenbildung und gegenseitige Störung in der Zielzone beobachtbar, trotzdem wurden 1370 Punkte erreicht und das Spiel mit deutlichem Abstand gewonnen.
-Positiv war zu beobachten, dass die 25 Agenten weiterhin performant arbeiteten und in sämtlichen Schritten alle Agenten eine Aktion an den Simulationsserver gesendet haben.  
+Zum Abschluss wurde ein Spiel mit 6 x 25 Agenten durchgeführt. Trotz der Vielzahl an gegnerischen und eigenen Entitäten zeigten sich die implementierten Strategien erfolgreich. Es wurden 1370 Punkte erreicht und das Spiel trotz erhöhter Gruppenbildung und gegenseitiger Störung mit deutlichem Abstand gewonnen.
+Positiv war zu beobachten, dass die 25 Agenten weiterhin performant arbeiteten und in sämtlichen Schritten alle Instanzen eine Aktion an den Simulationsserver übermittelten.  
 
 
 
@@ -322,9 +324,10 @@ Die Probleme des AgentV2 waren über den Verlauf aller Turniere mehr oder wenige
 Bei Turnier 6 ist der AgentV2 nicht zum Einsatz gekommen, da er Probleme mit dem Erkennen und Finden der sich wechselnden Goal Zones hatte und so weniger Tasks wie bisher bearbeiten konnte. Im Nachhinein war dies jedoch nicht so schlimm und der Agent hätte trotzdem zum Einsatz kommen können. 
 
 \section{Rekapitulation und Ausblick}
-Vor- und Nachteile der Entscheidung von zwei Architekturen
-Was sollte noch verbessert werden
-Wie sind wir zufrieden\\
+Die Gruppe konnte einen tiefen Einblick in die theoretischen Grundlagen der Multiagentensysteme erhalten. Die Umsetzung des erarbeiteten Wissens in die jeweiligen Agentensysteme lieferte Lösungen, die speziell in den letzten beiden Turnieren sehr erfolgreich waren (siehe Kapitel \ref{Turniere}). \\
+Die Entscheidung zwei Architekturansätze zu verfolgen muss kritisch bewertet werden. Beide Ansätze behinderten sich zwar nicht, es stellten sich aber leider kaum Synergieeffekt ein. Die entwickelten Ziele des Agentensystem V2 wurden auf dessen internen Aufbau optimiert und waren daher nicht für das Agentensystem V1 verwendbar. Daher blieb der erhoffte Austausch verschiedener Lösungen für das gleiche Problem unter den Systemen aus. \\
+Die Gruppe ist mit der erreichten Funktionalität und deren Qualität zufrieden. Dennoch besteht vielfältiges Verbesserungspotential in der Entscheidungs- und Strategiefindung der Agenten.
+Eine Weiterentwicklung des Systems durch einzelne Gruppenteilnehmer und eine Teilnahme an einem zukünftigen \textit{Multi-Agent Programming Contest} wird nicht ausgeschlossen.
 
 Es gibt eigentlich keine nennenswerten Probleme, wenn man zwei Architekturen hat, beide Agenten erfüllen ihre Anforderungen. 
 
@@ -333,58 +336,128 @@ Im Großen und Ganz bin ich mit meinem AgentenV2 zufrieden. Wo ich noch Verbesse
 \section{FAQ}
 \subsection{Teilnehmer*innen und ihr Hintergrund}
 \subsubsection{Was war die Motivation an dem Praktikum teilzunehmen?\\}
+Der spannende Bereich Künstliche Intelligenz gepaart mit dem kompetitiven spielerischen Thema. \\
+
 M: Die Motivation waren Interesse am Thema Künstliche Intelligenz und schon vorhandene Java Kenntnisse.
 \subsection{Statistiken}
-\subsubsection{Wurden die Agents von Grund auf neu implementiert oder auf einer bestehenden Lösung aufgebaut?\\}
+\subsubsection{Wurden die Agenten von Grund auf neu implementiert oder auf einer bestehenden Lösung aufgebaut?\\}
+Beide Agentensysteme wurden auf Basis des \textit{javaagents} Gerüst der MASSim (\textit{Multi-Agent Systems Simulation Platform}) aufgebaut. \\
 AgentV2: Der Agent wurde von Grund auf neu implementiert (er basiert nur auf dem BasicAgent)
 \subsubsection{Wie viel Zeit wurde in die Entwicklung und Organisation des Praktikums gesteckt?\\}
+H: Durchschnittlich über das Semester verteilt ein bis zwei Stunden am Tag. \\
 M: Jeden Tag 3- 4 Stunden, mal mehr mal weniger
-\subsubsection{Wie war die reingesteckte Zeit im Verlauf des Praktikums verteilt?\\}
+\subsubsection{Wie war die investierte Zeit im Verlauf des Praktikums verteilt?\\}
+H: Der Großteil der Zeit wurde in der ersten Hälfte des Semesters für die Konzeption und Entwicklung der verschiedenen Architekturbestandteile investiert. Dies ermöglichte in der zweiten Hälfte die effiziente Implementierung der benötigen Funktionalitäten.\\  
 M: Die meiste Zeit wurde für die Entwicklung des Agenten ( Coden ) verwendet, und etwas Zeit davor und währenddessen für die theoretischen Überlegungen was der Agent tun soll. Und Richtung Ende des Praktikums (und währenddessen in Form von Notizen) Zeit für die Doku. 
 \subsubsection{Wie viele Zeilen Code wurden ungefähr geschrieben?\\}
-M: ca 6704
+Die Gesamtlösung umfasst ca. 25.000 Zeilen inklusive Kommentaren. \\
+M: ca. 6704
 \subsubsection{Welche Programmiersprache und Entwicklungsumgebung wurde verwendet?\\}
+Es wurde die Programmiersprache Java in der Version 17 mit den Entwicklungsumgebungen Eclipse und Visual Studio Code verwendet. \\
 M: Programmiersprache Java und Entwicklungsumgebung Eclipse
 \subsubsection{Wurden externe Werkzeuge/Bibliotheken verwendet?\\}
+Ja, eine Auflistung kann der Projektwebseite \cite{Site} entnommen werden. \\
 AgentV2: keine
 \subsection{Agenten-System Details}
-\subsubsection{Wie entscheiden die Agenten, was sie machen sollen?\\}
-AgentV2: Ein Agent läuft durch alle Desires und merkt sich alle, in seinem momentanen Zustand ( Belief) ausführbaren. Es werden Prioritäten vergeben und das Desire mit der höchsten Prio wird zur Intention und diese wird dann vom Agent ausgeführt.
-\subsubsection{Wie entscheiden die Agenten, wie sie machen sollen?\\}
-AgentV2: Die Agenten arbeiten so, wie es vorher programmiert wurde (Actions). 
-\subsubsection{Wie arbeiten die Agenten zusammen und wie dezentralisiert ist der Ansatz?\\}
-AgentV2: Sehr dezentralisiert, die Agenten (der Master) suchen sich selbst ihre Hilfen beim Zusammenbauen der Tasks. In der Klasse AgentsCooperations wird festgehalten welcher Agent gerade mit welcher Task beschäftigt ist (und in welchem Status).
-\subsubsection{Kann ein Agent das generelle Verhalten zur Laufzeit ändern?\\}
-AgentV2: Nein, ein Agent erfüllt immer Tasks während der Laufzeit des Programms (außer es existieren gerade keine mit denen er etwas anfangen kann, dann wird gewartet)
-\subsubsection{Wurden Änderungen (z.B kritische Fehler) während eines Turniers vorgenommen?\\}
-AgentV2: Es wurden keine Änderungen während eines Turniers vorgenommen.
-\subsubsection{Wurde Zeit investiert um die Agenten fehlertoleranter zu machen? Wenn ja, wie genau?\\}
-AgentV2: Ja, es wurden viele Testläufe gemacht und immer wenn ein Fehler auftrat wurde dieser so behoben, dass er nicht mehr auftritt (und wenn nur mit einem Skip Befehl).
+\subsubsection{Wie entscheiden die Agenten, was sie machen sollen?}
+\begin{itemize}
+\item Agent V1: Die Ziel- und Absichtsfindung wurde detailliert in Kapitel \ref{absichtsfindung} beschrieben. \\
+\item Agent V2: Ein Agent läuft durch alle Desires und merkt sich alle, in seinem momentanen Zustand ( Belief) ausführbaren. Es werden Prioritäten vergeben und das Desire mit der höchsten Prio wird zur Intention und diese wird dann vom Agent ausgeführt.
+\end{itemize}
+
+
+\subsubsection{Wie entscheiden die Agenten, wie sie es machen sollen?}
+\begin{itemize}
+\item Agent V1: Es wurden sowohl deterministische Algorithmen als auch stochastische Faktoren integriert.
+\item Agent V2: Die Agenten arbeiten so, wie es vorher programmiert wurde (Actions).
+\end{itemize}
+
+\subsubsection{Wie arbeiten die Agenten zusammen und wie dezentralisiert ist der Ansatz?}
+\begin{itemize}
+\item Agent V1: Die gewählte Schichtenarchitektur ermöglicht dem Agentensystem sowohl dezentrale als auch zentrale Entscheidungen zu treffen.
+\item Agent V2: Sehr dezentralisiert, die Agenten (der Master) suchen sich selbst ihre Hilfen beim Zusammenbauen der Tasks. In der Klasse AgentsCooperations wird festgehalten welcher Agent gerade mit welcher Task beschäftigt ist (und in welchem Status).
+\end{itemize}
+
+\subsubsection{Kann ein Agent das generelle Verhalten zur Laufzeit ändern?}
+\begin{itemize}
+\item Agent V1: Die Agenten besitzen keine festen Rollen. Das Verhalten wird dynamisch an das Simulationsgeschehen angepasst.
+\item Agent V2: Nein, ein Agent erfüllt immer Tasks während der Laufzeit des Programms (außer es existieren gerade keine mit denen er etwas anfangen kann, dann wird gewartet)
+\end{itemize}
+
+\subsubsection{Wurden Änderungen (z.B kritische Fehler) während eines Turniers vorgenommen?}
+\begin{itemize}
+\item Agent V1: In den beiden letzten Turnieren wurde die Aggressivität der Agenten auf die Fähigkeiten der gegnerischen Teams individuell angepasst.
+\item Agent V2: Es wurden keine Änderungen während eines Turniers vorgenommen.
+\end{itemize}
+
+\subsubsection{Wurde Zeit investiert um die Agenten fehlertoleranter zu machen? Wenn ja, wie genau?}
+\begin{itemize}
+\item Agent V1: Die Verifikation und Problemfindung war ein essentieller Entwicklungsteil. Eine detailliert Beschreibung kann Abschnitt \ref{debugger} entnommen werden.
+\item Agent V2: Ja, es wurden viele Testläufe gemacht und immer wenn ein Fehler auftrat wurde dieser so behoben, dass er nicht mehr auftritt (und wenn nur mit einem Skip Befehl).
+\end{itemize}
+
 \subsection{Szenario und Strategie}
-\subsubsection{Was ist die Hauptstrategie der Agenten?\\}
-AgentV2: Sie holen sich zuerst einmal die Rolle Worker und dann holen sie sich einen Block und laufen mit ihm zur Goal Zone.
-\subsubsection{Haben die Agenten selbstständig eine Strategie entwickelt oder wurde diese bereits in die Implementierung eingebaut?\\}
-AgentV2: Nein, die Strategie wurde in die Implementierung eingebaut.
-\subsubsection{Wurde eine Strategie implementiert, die Agenten anderer Teams mit einbezieht?\\}
-AgentV2: Nein.
-\subsubsection{Wie entscheiden Agenten, welche Aufgabe sie als nächstes übernehmen?\\}
-AgentV2: Die Agenten entscheiden es selbst.
-\subsubsection{Wie koordinieren die Agenten die Arbeit für eine Aufgabe untereinander?\\}
-AgentV2: Die Agenten koordinieren indem sie durch Statusabfragen miteinander kommunizieren, wer wann fertig ist und wann weitergemacht werden kann. 
-\subsubsection{Welche Aspekte des Szenarios waren am Herausforderndsten?\\}
-AgentV2: Wenn man nicht weiß wie groß die Karte ist.
+\subsubsection{Was ist die Hauptstrategie der Agenten?}
+\begin{itemize}
+\item Agent V1: Möglichst umfangreiche Informationen über das Simulationsgebiet zu erhalten und anschließend die Bearbeitung von Ein-, Zwei-, und Dreiblock-Aufgaben.
+\item Agent V2: Sie holen sich zuerst einmal die Rolle Worker und dann holen sie sich einen Block und laufen mit ihm zur Goal Zone.
+\end{itemize}
+
+\subsubsection{Haben die Agenten selbstständig eine Strategie entwickelt oder wurde diese bereits in die Implementierung eingebaut?}
+\begin{itemize}
+\item Die Ziel- und Absichtsfindung erfolgt über klassische Algorithmen.
+\end{itemize}
+
+\subsubsection{Wurde eine Strategie implementiert, die Agenten anderer Teams mit einbezieht?}
+\begin{itemize}
+\item Agent V1: Ja, gegnerische Agenten werden in der Zielzone angegriffen.
+\item Agent V2: Nein
+\end{itemize}
+
+\subsubsection{Wie entscheiden Agenten, welche Aufgabe sie als nächstes übernehmen?}
+\begin{itemize}
+\item Agent V1: Die Ziel- und Absichtsfindung wurde detailliert in Kapitel \ref{absichtsfindung} beschrieben.
+\item Agent V2: Die Agenten entscheiden es selbst.
+\end{itemize}
+
+\subsubsection{Wie koordinieren die Agenten die Arbeit für eine Aufgabe untereinander?}
+\begin{itemize}
+\item Agent V1: Die Agenten bearbeiten Teilaufgaben, die für komplexere Ziele benötigt werden selbständig und ohne Gruppenzuordnung. Die Gruppenfindung erfolgt erst nach erfolgreicher Bearbeitung der Unterziele. Durch dies konnte die notwendige Koordination, die über den Versand von Nachrichten erfolgt, stark beschränkt werden.
+\item Agent V2: Die Agenten koordinieren indem sie durch Statusabfragen miteinander kommunizieren, wer wann fertig ist und wann weitergemacht werden kann.
+\end{itemize}
+
+\subsubsection{Welche Aspekte des Szenarios waren am herausforderndsten?}
+\begin{itemize}
+\item Agent V1: Die fragmentierten und stark beschränkten Umgebungsinformationen. 
+\item Agent V2: Wenn man nicht weiß wie groß die Karte ist.
+\end{itemize}
+
 \subsection{Und die Moral von der Geschichte}
 \subsubsection{Was wurde durch das Praktikum vermittelt?\\}
+Es wurden die theoretischen Grundlagen zu Multiagentensystemen und deren praktische Anwendung erlernt. \\
+\\
 M: Selbstständig als Gruppe ein Projekt erarbeiten mit nur wenig vorgaben.
-\subsubsection{Welchen Ratschlag wäre für zukünftige Gruppen sinnvoll?\\}
+\subsubsection{Welcher Ratschlag wäre für zukünftige Gruppen sinnvoll?\\}
+Die Verifikation und Problemfindung ist ein grundlegender und wichtiger Bestandteil der Aufgabe. Es sollen frühzeitig Konzepte und Herangehensweisen zu diesem Thema entwickelt werden. \\ 
+\\
 M: Nicht mit zu vielen Erwartungen starten, es ist nicht alles so einfach wie man es sich vorstellt
+
 \subsubsection{Was waren Stärken und Schwächen der Gruppe?\\}
+Die Gruppe war in der Lage zielgerichtet erfolgreiche Lösungen zu entwickeln. Die fachliche Diskussion über konzeptionelle Entscheidungen und deren Implementierung könnte zukünftig noch verbessert werden.   
+
 \subsubsection{Was waren Vorteile und Nachteile der gewählten Programmiersprache und weiterer Werkzeuge?\\}
+Die Implementierung in Java ermöglichte flexible, individuelle Lösungen. Es konnten zusätzliche Bibliotheken z.B. zur Verwendung von OpenGL eingebunden werden. Im Vergleich zu auf den Anwendungsfall spezialisierten Sprachen, wie z.B. GOAL \cite{Goal}, fiel der Implementierungsaufwand deutlich höher aus.
+\\ 
+\\
 Vorteile: die vorgegebenen Schnittstellen waren alle in Java programmiert\\
 Nachteile: keine
 \subsubsection{Welche weiteren Probleme und Herausforderungen kamen im Laufe des Praktikums auf?\\}
+Es gab keine nennenswerten Probleme die herausstachen. Es wurde konsequent an der Verbesserung der Einzelsysteme gearbeitet. 
 \subsubsection{Was könnte beim nächsten Praktikum verbessert werden?\\}
+Die Schwierigkeitssteigerung zwischen den Turnieren wurde von der Turnierleitung sehr moderat gewählt. Fordernde Konfigurationen hätten die Turniere interessanter gemacht.
 \subsubsection{Welcher Aspekt der Gruppenarbeit hat am meisten Zeit in Anspruch genommen?\\}
+Die Quellcoderezensionen, die vor der Integration in die Hauptstamm der Quellcodeverwaltung durchgeführt wurden. 
+\\
 M: Koordinieren welches Gruppenmitglied welche Aufgabe übernimmt.
 
 %
@@ -404,19 +477,21 @@ M: Koordinieren welches Gruppenmitglied welche Aufgabe übernimmt.
 	\bibitem{Weiss2000}
 	Weiss, G.: Multiagent Systems, 2. Auflage, The MIT Press, Cambridge, 2000
 	\bibitem{EISMASSim}
-	github.com/agentcontest/massim\_2022, agentcontest/massim\_2022, \\ https://github.com/agentcontest/massim\_2022/blob/main/docs/eismassim.md, EISMASSim Documentation, 21.08.2022
+	github.com/agentcontest/massim\_2022, agentcontest/massim\_2022, \\ https://github.com/agentcontest/massim\_2022/blob/main/docs/eismassim.md, EISMASSim Documentation, abgerufe am 21.08.2022
 	\bibitem{Bratman1987}
 	Bratman, M.: Intention, plans, and practical reason, Harvard University Press, Cambridge, 1987
 	\bibitem{GLSL}
 	Kessenich, J., Baldwin, D., Rost, R.: The OpenGL® Shading Language, Version 4.60.7, https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.4.60.pdf, abgerufen am 10.09.2022
 	\bibitem{JUnit}
-	JUnit 5, https://junit.org/junit5/
+	JUnit 5, https://junit.org/junit5, abgerufen am 11.09.2022
 	\bibitem{Github}
-	h1Modeling/ss22\_fp\_mapc\_gruppe3, https://github.com/h1Modeling/ss22\_fp\_mapc\_gruppe3
+	Projekt-Quellcodeverwaltung, https://github.com/h1Modeling/ss22\_fp\_mapc\_gruppe3, abgerufen am 11.09.2022
 	\bibitem{Site}
-	h1Modeling/ss22\_fp\_mapc\_gruppe3, \\ https://github.com/h1Modeling/ss22\_fp\_mapc\_gruppe3/tree/master/site/index.html
+	Projekt-Webseite: https://github.com/h1Modeling/ss22\_fp\_mapc\_gruppe3/tree/ master/site/index.html, abgerufen am 13.09.2022
 	\bibitem{Bug}
-	Server manual mode is broken, https://github.com/agentcontest/massim\_2022/issues/7
+	Massim 2022 - Issue 7: https://github.com/agentcontest/massim\_2022/issues/7, abgerufen am 11.09.2022
+	\bibitem{Goal}
+	GOAL: https://goalapl.atlassian.net/wiki/spaces/GOAL/overview, abgerufen am 13.09.2022
 	
 \end{thebibliography}
 \end{document}
