@@ -30,10 +30,10 @@ public class GoDispenserDesire extends BeliefDesire {
     /**
      * Instantiates a new GoDispenserDesire.
      * 
-     * @param belief the belief of the agent
-     * @param block the block the agent wants to attach
-     * @param supervisor the supervisor of the group
-     * @param agent the agent who wants to go to a dispenser
+     * @param belief - the belief of the agent
+     * @param block - the block the agent wants to attach
+     * @param supervisor - the supervisor of the group
+     * @param agent - the agent who wants to go to a dispenser
      * 
      */
     public GoDispenserDesire(String block, String supervisor, BdiAgentV2 agent) {
@@ -92,30 +92,7 @@ public class GoDispenserDesire extends BeliefDesire {
                 if (typeDispensers.size() > 0) {
                     // a dispenser from the sought-after type has been found
                     return new BooleanInfo(true, "");
-                } /*else {
-                    if (agent.absolutePositions) {
-                        for (Supervisor a : StepUtilities.allSupervisors) {
-                            if (!a.equals(agent.supervisor)) {
-                                reachableDispensers = a.getParent().getBelief().getReachableDispensersX();
-
-                                for (ReachableDispenser reachableDispenser : reachableDispensers) {
-                                    // all dispensers from the sought-after type
-                                    String typeDispenser = "b" + reachableDispenser.type().toString().substring(10);
-
-                                    if (typeDispenser.equals(block)) {
-                                        typeDispensers.add(reachableDispenser);
-                                    }
-                                }
-
-                                if (typeDispensers.size() > 0) {
-                                    // a dispenser from the sought-after type has been found
-                                    strangeAgent = true;
-                                    return new BooleanInfo(true, "");
-                                }
-                            }
-                        }
-                    }
-                }*/
+                } 
             }
         }
         return new BooleanInfo(false, "");

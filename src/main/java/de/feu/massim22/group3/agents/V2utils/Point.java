@@ -12,8 +12,8 @@ public class Point extends java.awt.Point {
 	 /**
      * Initializes a new Instance of Point with two integers.
      *
-     * @param x coordinate of the point
-     * @param y coordinate of the point
+     * @param x - coordinate of the point
+     * @param y - coordinate of the point
      */
     public Point(int x, int y) {
         super(x, y);
@@ -22,7 +22,7 @@ public class Point extends java.awt.Point {
     /**
      * Initializes a new Instance of Point with one Point vector.
      *
-     * @param vector the given Point vector
+     * @param vector - the given Point vector
      */
     public Point(Point vector) {
         super(vector.x, vector.y);
@@ -40,7 +40,7 @@ public class Point extends java.awt.Point {
     /**
      * Converts a certain Point into a String .
      *
-     * @param point the point that is going to be converted
+     * @param point - the point that is going to be converted
      * 
      * @return the converted point
      */
@@ -70,53 +70,9 @@ public class Point extends java.awt.Point {
     }
 
     /**
-     * Calculates the minimum of two points  .
-     *
-     * @param point1 the first point
-     * @param point2 the second point 
-     * 
-     * @return the smaller point
-     */
-    /*public static Point min(Point point1, Point point2) {
-        return new Point(Math.min(point1.x, point2.x), Math.min(point1.y, point2.y));
-    }*/
-
-    /**
-     * Calculates the maximum of two points.
-     *
-     * @param point1 the first point
-     * @param point2 the second point 
-     * 
-     * @return the bigger point
-     */
-    /*public static Point max(Point point1, Point point2) {
-        return new Point(Math.max(point1.x, point2.x), Math.max(point1.y, point2.y));
-    }*/
-
-    /**
-     * Proves if a vector of type Point is positive.
-     *
-     * @param vector the vector that is going to be proved
-     * 
-     * @return if the vector is positive or not
-     */
-    /*public static boolean isPositive(Point vector) {
-        return vector.x >= 0 && vector.y >= 0;
-    }*/
-
-    /**
-     * Returns the corner point.
-     * 
-     * @return the point of the map corner
-     */
-    /*public static Point unitY() {
-        return new Point(0, 1);
-    }*/
-
-    /**
      * Adds a point.
      *
-     * @param point the one to add
+     * @param point - the one to add
      * 
      * @return the solution of the addition
      */
@@ -129,7 +85,7 @@ public class Point extends java.awt.Point {
     /**
      * Subtracts a point.
      *
-     * @param point the one to subtract
+     * @param point - the one to subtract
      * 
      * @return the solution of the subtraction
      */
@@ -142,7 +98,7 @@ public class Point extends java.awt.Point {
     /**
      * Manhattan distance
      *
-     * @param b point to the comparison distance
+     * @param b - point to the comparison distance
      * @return abs(a.x - b.x)+abs(a.y-b.y)
      */
     public int distance(Point b) {
@@ -155,7 +111,7 @@ public class Point extends java.awt.Point {
     /**
      * Manhattan distance
      *
-     * @param b point to the comparison distance
+     * @param b - point to the comparison distance
      * @return abs(a.x - b.x)+abs(a.y-b.y)
      */
     public static int distance(Point a, Point b) {
@@ -164,20 +120,11 @@ public class Point extends java.awt.Point {
         return (Math.min(Math.abs(a.x - b.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(a.x - b.x)) % mapSize.x)
                 + Math.min(Math.abs(a.y - b.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(a.y - b.y)) % mapSize.y)); // Manhattan   
     }
-
-    /**
-     * Translates a point from another group.
-     *
-     * @param point the one to translate
-     */
-    /*public void translate(Point point) {
-        this.add(point);
-    }*/
     
     /**
      * Translates a point from a agents meeting point from the agent2 coordinates is translated into a point from the agent1 coordinates.
      *
-     * @param meeting the agents meeting
+     * @param meeting - the agents meeting
      * 
      * @return the point translated
      */
@@ -191,7 +138,7 @@ public class Point extends java.awt.Point {
     /**
      * Translates a point from a agents meeting point from the agent1 coordinates is translated into a point from the agent2 coordinates.
      *
-     * @param meeting the agents meeting
+     * @param meeting - the agents meeting
      * 
      * @return the point translated
      */
@@ -201,24 +148,4 @@ public class Point extends java.awt.Point {
         Point p3 = new Point(meeting.relAgent1());
         return this.add(p1.add(p3.sub(p2)));
     }
-
-    /**
-     * new difference vector
-     *
-     * @param diffTo target
-     * @return vector
-     */
-    /*public Point diff(Point diffTo) {
-        return new Point(this.x - diffTo.x, this.y - diffTo.y);
-    }*/
-
-    /**
-     * new sum vector
-     *
-     * @param point target
-     * @return vector
-     */
-    /*public Point sum(Point point) {
-        return new Point(this.x + point.x, this.y + point.y);
-    }*/
 }

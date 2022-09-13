@@ -20,9 +20,9 @@ public class LocalExploreDesire extends BeliefDesire {
     /**
      * Instantiates a new LocalExploreDesire.
      * 
-     * @param belief the belief of the agent
-     * @param supervisor the supervisor of the group
-     * @param agent the agent who wants to go to a goal zone
+     * @param belief - the belief of the agent
+     * @param supervisor - the supervisor of the group
+     * @param agent - the agent who wants to go to a goal zone
      * 
      */
     public LocalExploreDesire(String supervisor, BdiAgentV2 agent) {
@@ -60,10 +60,7 @@ public class LocalExploreDesire extends BeliefDesire {
     public ActionInfo getNextActionInfo() {
         AgentLogger.info(
                 Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());
-
-        /*if (agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())) {
-            return ActionInfo.SKIP("0001 with block in goalzone; where should I go?");
-        } else {*/
+        
         if (!agent.blockAttached || belief.getReachableGoalZones().size() == 0) {
             agent.exploreDirection = DirectionUtil
                     .stringToInt(agent.desireProcessing.walkCircles(agent, 10).getValue());
@@ -78,14 +75,4 @@ public class LocalExploreDesire extends BeliefDesire {
         return agent.desireProcessing.getActionForMove(agent, DirectionUtil.intToString(agent.exploreDirection),
                 DirectionUtil.intToString(agent.exploreDirection2), getName());
     }
-
-    /**
-     * Gets the priority.
-     * 
-     * @return the priority
-     */
-    /*@Override
-    public int getPriority() {
-        return 100;
-    }*/
 }

@@ -36,33 +36,62 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
     private Point startPosition = new Point(Point.zero());
     private List<Thing> attachedThings = new ArrayList<Thing>();
     
+    /**The DesireUtilities */
     public DesireUtilities desireProcessing = new DesireUtilities();    
+    
+    /** If all the beliefs of a agent are updated.*/
     public boolean beliefsDone;
+    
+    /** If all the decisions are done (task dependent /task independent).*/
     public boolean decisionsDone;
+    
+    /** If there ever was a request ( to attach / get a block) made by a certain agent.*/
     public boolean requestMade = false;
+    
+    /** If a agent is busy with a task.*/
     public boolean isBusy = false;
+    
+    /**The agent walks right to his target.*/
     public boolean alwaysToTarget = false;
     
+    /** If a agent has a block attached.*/
     public boolean blockAttached = false;
+    
+    /** List of all the attached points.*/
     public List<Point> attachedPoints = new ArrayList<Point>();
+    
+    /** The number of the step where the agent has last detached a block.*/
     public int lastStepDetach = 0;
+    
       
+    /** The direction transformed into the right coordinates via modulo.*/
     public int exploreDirection = this.index % 4;
+    
+    /** The second direction transformed into the right coordinates via modulo.*/
     public int exploreDirection2 = exploreDirection + 1;
     
+    
+    /** The supervisor.*/
     public Supervisor supervisor;
+    
+    /** The index.*/
     public int index;
+    /** Array of all firstM meetings from agents.*/
     public Meeting[] firstMeeting = new Meeting[11];
     
+    
+    /**A set of all reachable goal zones.*/
     public Set<java.awt.Point> rgz = new HashSet<>();
+    
+    /** A set of all reachable dispensers.*/
     public Set<Thing> disp = new HashSet<>();
 
     /**
      * Initializes a new Instance of BdiAgentV2.
      * 
-     * @param name the name of the agent
-     * @param mailbox the mail service of the agent
-     * @param index the index of the agent in the agent team
+     * @param name - the name of the agent
+     * @param mailbox - the mail service of the agent
+     * @param index - the index of the agent in the agent team
      */
     public BdiAgentV2(String name, MailService mailbox, int index) {
         super(name, mailbox);

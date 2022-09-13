@@ -22,12 +22,6 @@ public class GoAdoptRoleDesire extends BeliefDesire {
     private BdiAgentV2 agent;
     private String role;
     private Point nearestRoleZone; 
-    
-    /*private BdiAgentV2 roleZoneAgent = null;
-    private Point posAgentOld;
-    private Point nearestRoleZoneRoleZoneAgentNew;    
-    private Point posRoleZoneAgentOld;
-    private Point realtiveRoleZoneAgentOld;*/
 
     /**
      * Instantiates a new GoAdoptRoleDesire.

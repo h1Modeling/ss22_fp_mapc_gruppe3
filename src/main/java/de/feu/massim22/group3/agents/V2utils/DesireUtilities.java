@@ -41,9 +41,16 @@ public class DesireUtilities {
     private int count = 0;
     private String lastWish = null;
     
+    /**How many steps an agent wants to move forward.*/
     public int moveIteration = 0;
+    
+    /**The agent tried to move in its last wanted direction.*/
     public boolean tryLastWanted = true; 
+    
+    /**All the things that one agent has attached.*/
     public List<Thing> attachedThings = new ArrayList<Thing>();
+    
+    /** The last wish direction of the agent.*/
     public String lastWishDirection = null;
     
     /**
@@ -128,10 +135,10 @@ public class DesireUtilities {
  
 
     /**
-     * Proves if a decision (desire) can actually be done.
+     * Checks if a decision (desire) can actually be done.
      *
-     * @param agent the agent himself
-     * @param inDesire the desire that is being proved
+     * @param agent - the agent himself
+     * @param inDesire - the desire that is being checked
      * 
      * @return if the decision can be done or not
      */
@@ -325,22 +332,6 @@ public class DesireUtilities {
         return result;
     }
     
-
-    /**
-     * Proves if a agent is a possible master.
-     *
-     * @param inAgent the agent to prove
-     * 
-     * @return if the agent is a possible master or not
-     */
-    /*private  boolean anotherMasterIsPossible(BdiAgentV2 inAgent) {
-        // variant 1: only agents with even numbers are allowed to be master
-        if (inAgent.index % 2 == 0)     
-            return true;
-        
-        return false;
-    }*/
-
     /**
      * The method has a certain priority for every desire.
      *
@@ -470,7 +461,7 @@ public class DesireUtilities {
     /**
      * The method determines the Intention for a certain agent .
      *
-     * @param agent the agent that needs a intention
+     * @param agent - the agent that needs a intention
      * 
      * @return the intention
      */
@@ -491,7 +482,7 @@ public class DesireUtilities {
     /**
      * Gets the nearest dispenser from the list of reachableDispensers.
      *
-     * @param inZoneList a list of all dispensers in reach
+     * @param inZoneList - a list of all dispensers in reach
      * 
      * @return the nearest dispenser
      */
@@ -511,8 +502,8 @@ public class DesireUtilities {
     /**
      * Determines the direction in which the agent should walk circles while exploring.
      *
-     * @param agent the agent that wants to walk the circles
-     * @param stepWidth how big every step of the agent is
+     * @param agent - the agent that wants to walk the circles
+     * @param stepWidth - how big every step of the agent is
      * 
      * @return the direction for the next circle
      */
@@ -556,8 +547,8 @@ public class DesireUtilities {
     /**
      * Has the task reached its deadline?
      *
-     *@param agent the agent that wants to do the task
-     * @param task the task that is being examined
+     *@param agent - the agent that wants to do the task
+     * @param task - the task that is being examined
      * 
      * @return it has expired or not
      */   
@@ -573,8 +564,8 @@ public class DesireUtilities {
     /**
      * Gets the first block for a certain task.
      *
-     *@param agent the agent that wants to get the block
-     * @param task the task that is being done
+     *@param agent - the agent that wants to get the block
+     * @param task - the task that is being done
      * 
      * @return the required block
      */
@@ -603,8 +594,8 @@ public class DesireUtilities {
     /**
      * Decides which block for a certain task should be fetched.
      *
-     *@param agent the agent that wants to get the block
-     * @param task the task that is being done
+     *@param agent - the agent that wants to get the block
+     * @param task - the task that is being done
      * 
      * @return the required block
      */
@@ -657,7 +648,7 @@ public class DesireUtilities {
         count++;
         
         if (count <= 3) {
-            // soll verhindern, dass es bei 3-Block-Tasks mit 3 gleichen Blöcken und niedrigem maxTypes hängen bleibt
+            // should prevent that 3-block-tasks with three blocks of the same block type and a low maxTypes het stuck
             if (StepUtilities.getNumberAttachedBlocks(inBlock.type) >= maxTypes) {
                 if (inBlock.equals(inReqs.get(0))) {
                     if (inReqs.size() > 1)
@@ -683,7 +674,7 @@ public class DesireUtilities {
     /**
      * Gets task requirements and orders them.
      *
-     * @param task the requirements of the task that are to be ordered
+     * @param task - the requirements of the task that are to be ordered
      * 
      * @return the ordered requirements
      */
@@ -732,10 +723,10 @@ public class DesireUtilities {
     /**
      * Determines what a agent should do if it has the action move and it has got a alternate direction.
      *
-     * @param agent the agent that wants to do a move
-     * @param dir the direction in which the agent wants to move first
-     * @param dirAlt the alternate direction 
-     * @param desire the desire which the agent wants to do
+     * @param agent - the agent that wants to do a move
+     * @param dir - the direction in which the agent wants to move first
+     * @param dirAlt - the alternate direction 
+     * @param desire - the desire which the agent wants to do
      * 
      * @return the action to do
      */
@@ -761,10 +752,10 @@ public class DesireUtilities {
     /**
      * Determines what a agent should do if it has the action move and wants to move two steps.
      *
-     * @param agent the agent that wants to do a move
-     * @param dir the direction in which the agent wants to move first
-     * @param dir2 the direction in which the agent wants to move second
-     * @param desire the desire which the agent wants to do
+     * @param agent - the agent that wants to do a move
+     * @param dir - the direction in which the agent wants to move first
+     * @param dir2 - the direction in which the agent wants to move second
+     * @param desire - the desire which the agent wants to do
      * 
      * @return the action to do
      */
@@ -779,9 +770,9 @@ public class DesireUtilities {
     /**
      * Determines what a agent should do if it has the action move.
      *
-     * @param agent the agent that wants to do a move
-     * @param dir the direction in which the agent wants to move
-     * @param desire the desire which the agent wants to do
+     * @param agent - the agent that wants to do a move
+     * @param dir - the direction in which the agent wants to move
+     * @param desire - the desire which the agent wants to do
      * 
      * @return the action to do
      */
@@ -946,7 +937,7 @@ public class DesireUtilities {
     /**
      * Rotates a certain point clockwise.
      *
-     * @param p the point that is going to be rotated
+     * @param p - the point that is going to be rotated
      * 
      * @return the rotated point
      */
@@ -957,7 +948,7 @@ public class DesireUtilities {
     /**
      * Rotates a certain point counter clockwise.
      *
-     * @param p the point that is going to be rotated
+     * @param p - the point that is going to be rotated
      * 
      * @return the rotated point
      */

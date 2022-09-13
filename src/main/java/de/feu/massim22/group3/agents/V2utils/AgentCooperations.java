@@ -31,7 +31,7 @@ public class AgentCooperations {
     /**
      * A score is set.
      * 
-     * @param int[] new score 
+     * @param index - int[] new score 
      */
     public static  void setScore(int index) {
        scores[index]++;
@@ -49,7 +49,7 @@ public class AgentCooperations {
     /**
      * A cooperation is being set.
      * 
-     * @param cooperation the cooperation that is being set 
+     * @param cooperation - the cooperation that is being set 
      */
     public static synchronized void setCooperation(Cooperation cooperation) {
         remove(cooperation);
@@ -59,9 +59,9 @@ public class AgentCooperations {
     /**
      * Sets the status of the master.
      * 
-     * @param task the task which is to be done
-     * @param agent the agent which is the master
-     * @param status the status which is being set 
+     * @param task - the task which is to be done
+     * @param agent - the agent which is the master
+     * @param status - the status which is being set 
      */
     public static synchronized void setStatusMaster(TaskInfo task, BdiAgentV2 agent, Status status) {
         for (int i = 0; i < cooperations.size(); i++) {
@@ -78,9 +78,9 @@ public class AgentCooperations {
     /**
      * Sets the status of the helper.
      * 
-     * @param task the task which is to be done
-     * @param agent the agent which is the helper
-     * @param status the status which is being set 
+     * @param task - the task which is to be done
+     * @param agent - the agent which is the helper
+     * @param status - the status which is being set 
      */
     public static synchronized void setStatusHelper(TaskInfo task, BdiAgentV2 agent, Status status) {
         for (int i = 0; i < cooperations.size(); i++) {
@@ -97,9 +97,9 @@ public class AgentCooperations {
     /**
      * Sets the status of the helper2.
      * 
-     * @param task the task which is to be done
-     * @param agent the agent which is the helper2
-     * @param status the status which is being set 
+     * @param task - the task which is to be done
+     * @param agent - the agent which is the helper2
+     * @param status - the status which is being set 
      */
     public static synchronized void setStatusHelper2(TaskInfo task, BdiAgentV2 agent, Status status) {
         for (int i = 0; i < cooperations.size(); i++) {
@@ -116,7 +116,7 @@ public class AgentCooperations {
     /**
      * Gets the number of active masters for a certain task.
      * 
-     * @param taskSize the certain task
+     * @param taskSize - the size of a certain task
      * 
      *  @return the number of active masters
      */
@@ -134,7 +134,7 @@ public class AgentCooperations {
     /**
      * Gets the maximum count  of active masters for a certain task.
      * 
-     * @param taskSize the certain task
+     * @param taskSize - the size of a certain task
      * 
      *  @return the max of active masters
      */
@@ -175,9 +175,9 @@ public class AgentCooperations {
     /**
      * Checks if a cooperation exists for a certain task.
      * 
-     * @param task the info from the task which the cooperation is working on
-     * @param agent the agent himself
-     * @param sel the agent has to be either master or helper or helper2 that the result is true 
+     * @param task - the info from the task which the cooperation is working on
+     * @param agent - the agent himself
+     * @param sel - the agent has to be either master or helper or helper2 that the result is true 
      * 
      *  @return if it exists or not
      */
@@ -200,8 +200,8 @@ public class AgentCooperations {
     /**
      * Checks if a cooperation exists for a certain task.
      * 
-     * @param task the info from the task which the cooperation is working on
-     * @param agent the agent himself
+     * @param task - the info from the task which the cooperation is working on
+     * @param agent - the agent himself
      * 
      *  @return if it exists or not
      */
@@ -224,7 +224,7 @@ public class AgentCooperations {
     /**
      * Checks if a certain agent is part of a cooperation.
      * 
-     * @param agent the agent himself
+     * @param agent - the agent himself
      * 
      *  @return if he is a part or not
      */
@@ -246,7 +246,7 @@ public class AgentCooperations {
     /**
      * Detaches  a certain agent form his cooperation.
      * 
-     * @param agent the agent that is to be detached
+     * @param agent - the agent that is to be detached
      * 
      *  @return if the detaching was successful or not
      */
@@ -268,7 +268,7 @@ public class AgentCooperations {
     /**
      * Converts the data of a cooperation into Strings.
      * 
-     * @param cooperation the cooperation whose data we want to print out
+     * @param cooperation - the cooperation whose data we want to print out
      * 
      *  @return the data to print out
      */
@@ -289,7 +289,7 @@ public class AgentCooperations {
     /**
      * Converts the data of all cooperation into Strings.
      * 
-     * @param cooperations all the cooperation whose data we want to print out
+     * @param cooperations - all the cooperation whose data we want to print out
      * 
      *  @return the data to print out
      */
@@ -314,7 +314,7 @@ public class AgentCooperations {
     /**
      * Checks if a cooperation exists .
      * 
-     * @param cooperation the cooperation we want to check on
+     * @param cooperation - the cooperation we want to check on
      * 
      *  @return if it exists or not
      */
@@ -337,9 +337,9 @@ public class AgentCooperations {
     /**
      * Gets a certain cooperation.
      * 
-     * @param task the info from the task which the cooperation is working on
-     * @param agent the agent himself
-     * @param sel the agent has to be either master , helper or helper2
+     * @param task - the info from the task which the cooperation is working on
+     * @param agent - the agent himself
+     * @param sel - the agent has to be either master , helper or helper2
      * 
      *  @return the cooperation we wanted
      */
@@ -359,8 +359,8 @@ public class AgentCooperations {
     /**
      * Gets a certain cooperation.
      * 
-     * @param task the info from the task which the cooperation is working on
-     * @param agent the agent himself
+     * @param task - the info from the task which the cooperation is working on
+     * @param agent - the agent himself
      * 
      *  @return the cooperation we wanted
      */
@@ -380,7 +380,7 @@ public class AgentCooperations {
     /**
      * Gets a certain cooperation.
      * 
-     * @param agent the agent himself
+     * @param agent - the agent himself
      * 
      *  @return the cooperation we wanted
      */
@@ -399,7 +399,7 @@ public class AgentCooperations {
     /**
      * Gets all detached cooperation.
      * 
-     * @param agent the agent himself
+     * @param agent - the agent himself
      * 
      *  @return the cooperations we wanted
      */
@@ -418,7 +418,7 @@ public class AgentCooperations {
     /**
      * Removes a certain cooperation.
      * 
-     * @param cooperation the cooperation we want to remove
+     * @param cooperation - the cooperation we want to remove
      */
     public static synchronized void remove(Cooperation cooperation) {       
         for (int i = 0; i < cooperations.size(); i++) {
@@ -435,10 +435,10 @@ public class AgentCooperations {
     /**
      * Gets the status of the master.
      * 
-     * @param task the task which is being worked on by the master
-     * @param master the master himself
-     * @param helper the helper from the cooperation
-     * @param helper2 the second helper from the cooperation
+     * @param task - the task which is being worked on by the master
+     * @param master - the master himself
+     * @param helper - the helper from the cooperation
+     * @param helper2 - the second helper from the cooperation
      * 
      * @return the status of the master
      */
@@ -461,10 +461,10 @@ public class AgentCooperations {
     /**
      * Gets the status of the helper.
      * 
-     * @param task the task which is being worked on by the helper
-     * @param master the master of this helper
-     * @param helper the helper himself
-     * @param helper2 the second helper from the cooperation
+     * @param task - the task which is being worked on by the helper
+     * @param master - the master of this helper
+     * @param helper - the helper himself
+     * @param helper2 - the second helper from the cooperation
      * 
      * @return the status of the helper
      */
@@ -508,7 +508,7 @@ public class AgentCooperations {
         /**
          * Sets a new Cooperation with a certain master status.
          * 
-         * @param status the master status we want to use for this new cooperation
+         * @param status - the master status we want to use for this new cooperation
          * 
          * @return a new cooperation
          */
@@ -519,7 +519,7 @@ public class AgentCooperations {
         /**
          * Sets a new Cooperation with a certain helper status.
          * 
-         * @param status the helper status we want to use for this new cooperation
+         * @param status - the helper status we want to use for this new cooperation
          * 
          * @return a new cooperation
          */
@@ -530,7 +530,7 @@ public class AgentCooperations {
         /**
          * Sets a new Cooperation with a certain helper2 status.
          * 
-         * @param status the helper2 status we want to use for this new cooperation
+         * @param status - the helper2 status we want to use for this new cooperation
          * 
          * @return a new cooperation
          */

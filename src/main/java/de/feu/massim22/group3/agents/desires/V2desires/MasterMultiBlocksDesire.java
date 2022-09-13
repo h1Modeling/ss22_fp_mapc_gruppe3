@@ -38,9 +38,9 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
     /**
      * Initializes a new MasterMultiBlocksDesire.
      * 
-     * @param belief the belief of the agent
-     * @param info the info of the task
-     * @param agent the agent who wants to become a master
+     * @param belief - the belief of the agent
+     * @param info - the info of the task
+     * @param agent - the agent who wants to become a master
      */
     public MasterMultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
         super(agent.getBelief());

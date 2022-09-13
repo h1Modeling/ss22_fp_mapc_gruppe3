@@ -25,9 +25,9 @@ public class ArrangeBlockDesire extends BeliefDesire {
     /**
      * Instantiates a new ArrangeBlockDesire.
      * 
-     * @param belief the belief of the agent
-     * @param info the info of the task
-     * @param agent the agent who wants to arrange a block
+     * @param belief - the belief of the agent
+     * @param info - the info of the task
+     * @param agent - the agent who wants to arrange a block
      */
     public ArrangeBlockDesire(TaskInfo info, BdiAgentV2 agent) {
         super(agent.getBelief());

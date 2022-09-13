@@ -40,9 +40,9 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
     /**
      * Initializes a new Helper2MultiBlocksDesire.
      * 
-     * @param belief the belief of the agent
-     * @param info the info of the task
-     * @param agent the agent who is the second helper
+     * @param belief - the belief of the agent
+     * @param info - the info of the task
+     * @param agent - the agent who is the second helper
      */
     public Helper2MultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
         super(agent.getBelief());
@@ -109,9 +109,7 @@ public class Helper2MultiBlocksDesire extends BeliefDesire {
                             AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Helper2MultiBlocksDesire.isExecutable - block3: " 
                                     + block3.toString() + " , " + Point.castToPoint(dirs.get(i)).toString() + " , " + t + " , " 
                                     + AgentMeetings.getPositionAgent2(nearestMeeting).toString());
-                            
-                            //target = AgentMeetings.getPositionAgent2(nearestMeeting).add(block3).add(Point.castToPoint(dirs.get(i)));
-                            //target = Point.castToPoint(coop.master().getBelief().getPosition()).translate2To1(nearestMeeting);  
+                              
                             target = Point.castToPoint(coop.master().getBelief().getPosition()); 
                             target = target.add(block3);
                             target = target.add(Point.castToPoint(dirs.get(i)));

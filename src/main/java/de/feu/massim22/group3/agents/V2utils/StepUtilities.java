@@ -25,17 +25,34 @@ public class StepUtilities {
     private static int countAgent = 0;
     private static int countAgent2 = 0;
     
+    /** A list of all the active agents from type the BdiAgentV2.*/
     public static ArrayList<BdiAgentV2> allAgents = new ArrayList<BdiAgentV2>();
+    
+    /** A list of all the active supervisors.*/
     public static ArrayList<Supervisor> allSupervisors = new ArrayList<Supervisor>();
+    
+    /** If all the decisions are done (task dependent /task independent).*/
     public static boolean DecisionsDone;
- // array to write all attached blocks into
+
+    /** A array to write all attached blocks into.*/
     public static String[] attachedBlock = new String[11];
     
+    /** The exploring of the horizontal map size has started.*/
     public static boolean exploreHorizontalMapSizeStarted = false;
+    
+    /** The exploring of the vertical map size has started.*/
     public static boolean exploreVerticalMapSizeStarted = false;
+    
+    /** The exploring of the horizontal map size is finished.*/
     public static boolean exploreHorizontalMapSizeFinished = false;
+    
+    /** The exploring of the vertical map size is finished.*/
     public static boolean exploreVerticalMapSizeFinished = false;
+    
+    /** Default value for exploreHorizontalMapSize.*/
     public static TaskInfo exploreHorizontalMapSize = new TaskInfo("exploreHorizontalMapSize", 1000, 0, new HashSet<Thing>());
+    
+    /** Default value for exploreVerticalMapSize.*/
     public static TaskInfo exploreVerticalMapSize = new TaskInfo("exploreVerticalMapSize", 1000, 0, new HashSet<Thing>());
     
     public StepUtilities(DesireUtilities desireProcessing) {
@@ -47,9 +64,9 @@ public class StepUtilities {
     /**
      * The agent has initiated his map update.
      * 
-     * @param agent the agent which has updated the map
-     * @param step the step in which the program is at the moment
-     * @param teamSize the size of the team of which the agent is part of
+     * @param agent - the agent which has updated the map
+     * @param step - the step in which the program is at the moment
+     * @param teamSize - the size of the team of which the agent is part of
      * 
      * @return the agent is done updating the map
      */
@@ -68,9 +85,9 @@ public class StepUtilities {
     /**
      * The agent has initiated the decisions done.
      * 
-     * @param agent  the agent which has done the decisions
-     * @param step the step in which the program is at the moment
-     * @param teamSize the size of the team of which the agent is part of
+     * @param agent - the agent which has done the decisions
+     * @param step - the step in which the program is at the moment
+     * @param teamSize - the size of the team of which the agent is part of
      */
     public static synchronized void reportDecisionsDone(BdiAgentV2 agent, int step, int teamSize) {
         countAgent2++;
@@ -85,7 +102,7 @@ public class StepUtilities {
      * All the things that have to be done to merge two groups together, update the
      * maps for the resulting groups and do some group/supervisor decisions.
      *
-     * @param step the step in which the program is at the moment
+     * @param step - the step in which the program is at the moment
      */
     public void doGroupProcessing(int step) {
         BdiAgentV2 agent1;
@@ -382,7 +399,7 @@ public class StepUtilities {
     /**
      * Update the map.
      * 
-     * @param agent the agent that wants to update the map
+     * @param agent - the agent that wants to update the map
      *
      */
     public void updateMap(BdiAgentV2 agent) {
@@ -396,9 +413,9 @@ public class StepUtilities {
     /**
      * The method merges two groups together
      *
-     * @param supervisorGroup the supervisor of the group that the other group
+     * @param supervisorGroup - the supervisor of the group that the other group
      *                          is going to be merged into
-     * @param supervisorToMerge the supervisor of the group that is going to be
+     * @param supervisorToMerge - the supervisor of the group that is going to be
      *                          merged into the other group
      * 
      */
@@ -508,7 +525,7 @@ public class StepUtilities {
     /**
      * Calculates the interesting points on the map for a certain supervisor.
      *
-     * @param supervisor the supervisor of the group
+     * @param supervisor - the supervisor of the group
      * 
      * @return the result of the calculation in a list
      */
@@ -623,7 +640,7 @@ public static String getAttachedBlocks() {
 /**
  * Gets the amount of attached blocks from one block type.
  * 
- * @param type the block type that we want to know the amount off attached blocks of
+ * @param type - the block type that we want to know the amount off attached blocks of
  *
  *@return number off attached blocks
  */
@@ -651,8 +668,8 @@ class AgentMeeting {
     /**
      * Initializes a new Instance of AgentMeeting.
      * 
-     * @param agent the name of the agent
-     * @param position the mail service of the agent
+     * @param agent - the name of the agent
+     * @param position - the mail service of the agent
      */
     AgentMeeting(BdiAgentV2 agent, Point position) {
         this.agent = agent;
@@ -660,5 +677,10 @@ class AgentMeeting {
     }
 }
 
-//record for pathfinding result with distance and direction
+/**
+ * Record with the Pathfindig result.
+ *
+ * @param distance - the distance of the path
+ * @param direction - the direction of the path
+ */
 record PathFindingResult(int distance, String direction) {}
