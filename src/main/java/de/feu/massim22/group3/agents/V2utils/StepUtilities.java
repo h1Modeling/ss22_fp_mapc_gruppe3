@@ -54,7 +54,12 @@ public class StepUtilities {
     
     /** Default value for exploreVerticalMapSize.*/
     public static TaskInfo exploreVerticalMapSize = new TaskInfo("exploreVerticalMapSize", 1000, 0, new HashSet<Thing>());
-    
+  
+    /**
+     * The constructor.
+     * 
+     * @param desireProcessing - the DesireUtilities of the active agent
+     */
     public StepUtilities(DesireUtilities desireProcessing) {
         this.desireProcessing = desireProcessing;
         //AgentLogger.info(Thread.currentThread().getName() + " StepUtilities() Constructor ");
@@ -417,7 +422,11 @@ public class StepUtilities {
      *                          is going to be merged into
      * @param supervisorToMerge - the supervisor of the group that is going to be
      *                          merged into the other group
-     * 
+     * @param baseAgent - the agent of the group that the other group
+     *                          is going to be merged into
+     * @param agentFound - the agent of the group that is going to be
+     *                          merged into the other group 
+     * @param foundPosition - the position of the agent found
      */
     public void mergeGroups(Supervisor supervisorGroup, Supervisor supervisorToMerge, BdiAgentV2 baseAgent, BdiAgentV2 agentFound, Point foundPosition) {
         AgentLogger.info(
@@ -433,13 +442,6 @@ public class StepUtilities {
         Point newNonModPosAgent = null;
                
         GameMap newMap = navi.getMaps().get(supervisorGroup.getName());
-        // GameMap oldMap = navi.getMaps().get(supervisorToMerge.getName());
-
-        // Point refPoint = newPosAgentFound;
-        // Point foreignRefPoint = Point.castToPoint(agentFound.getBelief().getPosition());
-        
-        // Merge Map
-        // Point offset = Point.castToPoint(newMap.mergeIntoMap(oldMap, foreignRefPoint, refPoint));
         navi.getMaps().put(supervisorGroup.getName(), newMap);
          
         List<String> agentsSupervisorGroup = supervisorGroup.getAgents();        
@@ -662,8 +664,11 @@ public static int getNumberAttachedBlocks(String type) {
  * @author Melinda Betz
  */
 class AgentMeeting {
-    BdiAgentV2 agent;
-    Point position;
+    /** The agent.*/
+    protected BdiAgentV2 agent;
+    
+    /** The position of the agent.*/
+    protected Point position;
     
     /**
      * Initializes a new Instance of AgentMeeting.

@@ -28,7 +28,6 @@ public class GoAdoptRoleDesire extends BeliefDesire {
      * 
      * @param agent - the agent who wants to adopt a role
      * @param role - the role which the agent wants to adopt
-     * 
      */
     public GoAdoptRoleDesire(BdiAgentV2 agent, String role) {
         super(agent.getBelief());

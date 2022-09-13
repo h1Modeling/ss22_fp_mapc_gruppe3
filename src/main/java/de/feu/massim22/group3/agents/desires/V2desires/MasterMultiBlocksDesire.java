@@ -38,7 +38,6 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
     /**
      * Initializes a new MasterMultiBlocksDesire.
      * 
-     * @param belief - the belief of the agent
      * @param info - the info of the task
      * @param agent - the agent who wants to become a master
      */

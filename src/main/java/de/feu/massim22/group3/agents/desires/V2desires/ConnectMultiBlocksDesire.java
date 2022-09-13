@@ -28,7 +28,6 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
     /**
      * Initializes a new ConnectMultiBlocksDesire.
      * 
-     * @param belief - the belief of the agent
      * @param info - the info of the task
      * @param agent - the agent who wants to connect the blocks
      */

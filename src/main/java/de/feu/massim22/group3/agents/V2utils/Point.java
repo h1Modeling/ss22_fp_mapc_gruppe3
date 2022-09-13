@@ -111,6 +111,7 @@ public class Point extends java.awt.Point {
     /**
      * Manhattan distance
      *
+     * @param a - point from the comparison distance
      * @param b - point to the comparison distance
      * @return abs(a.x - b.x)+abs(a.y-b.y)
      */

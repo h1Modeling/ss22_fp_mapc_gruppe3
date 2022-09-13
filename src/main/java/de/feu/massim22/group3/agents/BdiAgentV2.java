@@ -234,7 +234,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
         }
    
         
-        if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, this)
+        /*if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, this)
                 || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, this)) {
             Cooperation coop = AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, this);
 
@@ -247,7 +247,7 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 AgentCooperations.remove(coop);
                 isBusy = false;
             }
-        }
+        }*/
         
         //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {

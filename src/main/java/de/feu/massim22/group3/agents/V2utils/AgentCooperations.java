@@ -39,7 +39,8 @@ public class AgentCooperations {
     
     /**
      * A score is returned.
-     * 
+     *
+     * @param index - tasks with index amount of blocks
      * @return score
      */
     public static int getScore(int index) {

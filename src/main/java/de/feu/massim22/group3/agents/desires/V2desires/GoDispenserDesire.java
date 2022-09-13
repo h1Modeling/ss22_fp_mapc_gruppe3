@@ -30,11 +30,9 @@ public class GoDispenserDesire extends BeliefDesire {
     /**
      * Instantiates a new GoDispenserDesire.
      * 
-     * @param belief - the belief of the agent
      * @param block - the block the agent wants to attach
      * @param supervisor - the supervisor of the group
      * @param agent - the agent who wants to go to a dispenser
-     * 
      */
     public GoDispenserDesire(String block, String supervisor, BdiAgentV2 agent) {
         super(agent.getBelief());

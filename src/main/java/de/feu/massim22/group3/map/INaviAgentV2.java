@@ -89,6 +89,9 @@ public interface INaviAgentV2 extends INavi {
      */
     FloatBuffer getMapBuffer(String supervisor);
 
-    Point getPosition(String agent, String supervisor);  
+    /**
+     * Get the maps of all supervisors
+     * @return the maps
+     */
     Map<String, GameMap> getMaps();
 }

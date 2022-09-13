@@ -20,10 +20,8 @@ public class LocalExploreDesire extends BeliefDesire {
     /**
      * Instantiates a new LocalExploreDesire.
      * 
-     * @param belief - the belief of the agent
      * @param supervisor - the supervisor of the group
      * @param agent - the agent who wants to go to a goal zone
-     * 
      */
     public LocalExploreDesire(String supervisor, BdiAgentV2 agent) {
         super(agent.getBelief());

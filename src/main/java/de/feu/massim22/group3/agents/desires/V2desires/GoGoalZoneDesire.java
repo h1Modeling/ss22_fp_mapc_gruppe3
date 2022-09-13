@@ -28,9 +28,7 @@ public class GoGoalZoneDesire extends BeliefDesire {
     /**
      * Instantiates a new GoGoalZoneDesire.
      * 
-     * @param belief - the belief of the agent
      * @param agent - the agent who wants to go to a goal zone
-     * 
      */
     public GoGoalZoneDesire(BdiAgentV2 agent) {
         super(agent.getBelief());

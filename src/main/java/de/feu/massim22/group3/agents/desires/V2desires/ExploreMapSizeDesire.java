@@ -18,9 +18,7 @@ public class ExploreMapSizeDesire extends BeliefDesire {
     /**
      * Instantiates a new ExploreMapSizeDesire.
      * 
-     * @param belief - the belief of the agent
      * @param agent - the agent who wants to explore the map
-     * 
      */
     public ExploreMapSizeDesire(BdiAgentV2 agent) {
         super(agent.getBelief());

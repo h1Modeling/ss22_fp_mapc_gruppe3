@@ -23,7 +23,6 @@ public class DisconnectMultiBlocksDesire extends BeliefDesire {
     /**
      * Initializes a new DisconnectMultiBlocksDesire.
      * 
-     * @param belief - the belief of the agent
      * @param info - the info of the task
      * @param agent - the agent who has submitted the task
      */
