@@ -57,7 +57,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
     private IGraphicalDebugger debugger;
     private Map<String, Map<String, MergeReply>> mergeKeys = new HashMap<>();
     private boolean busy = false;
-    private static boolean debug = true;
+    private static boolean debug = false;
     private final int defaultMapSize = 30;
     private Integer horizontalMapSize = null;
     private Integer verticalMapSize = null;
@@ -678,8 +678,10 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
         
         if (numberGoals > 0) {
             // Start Path Finding
+            long start = System.currentTimeMillis();
             PathFindingResult[][] result = finder.start(mapTextureBuffer, dataTextureBuffer, interestingPoints, mapSize, dataSize, agentSize, numberGoals, mapDiscovered, supervisor, step);
-
+            long end = System.currentTimeMillis();
+            System.out.println("Full Pathfinding Duration: " + (end - start));
             // Update Debugger
             CellType[][] cells = map.getDebugCells();
             Point topLeft = map.getTopLeft();
