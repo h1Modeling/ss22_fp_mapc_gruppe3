@@ -92,6 +92,8 @@ public class ReportList
 
     /**
      * Gets the most recent report in the list.
+     * 
+     * @return gets the most recent <code>MapCellReport</code>
      */
     MapCellReport getRecent() {
         if (list.isEmpty()) return MapCellReport.createEmpty();

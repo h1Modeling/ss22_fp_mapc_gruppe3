@@ -17,6 +17,11 @@ import java.io.*;
  */
 public class Main {
 
+    /**
+     * The main Method of the program.
+     * 
+     * @param args the start arguments
+     */
     public static void main( String[] args ) {
 
         String configDir = "";
@@ -79,11 +84,8 @@ public class Main {
 
         AgentLogger.info("PHASE 4: RUNNING");
 
-        // int step = 0;
         while ((ei.getState() == EnvironmentState.RUNNING)) {
-            // AgentLogger.fine("SCHEDULER STEP " + step);
             scheduler.step();
-            // step++;
         }
     }
 }
