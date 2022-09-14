@@ -3,7 +3,6 @@ package de.feu.massim22.group3.agents.desires.V2desires;
 import java.awt.Point;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;

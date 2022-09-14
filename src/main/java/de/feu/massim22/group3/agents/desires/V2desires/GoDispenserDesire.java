@@ -4,7 +4,6 @@ package de.feu.massim22.group3.agents.desires.V2desires;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.V2utils.AgentMeetings;

@@ -172,7 +172,7 @@ public class AgentLogger {
     }
 
     /**
-     * Generate logging output of log level <code>warning
+     * Generate logging output of log level <code>warning</code>
      * 
      * @param logMessage Message to be written to log-output
      */

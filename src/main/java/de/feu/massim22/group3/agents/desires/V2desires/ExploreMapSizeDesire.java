@@ -2,7 +2,6 @@ package de.feu.massim22.group3.agents.desires.V2desires;
 
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.V2utils.*;
-import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 
