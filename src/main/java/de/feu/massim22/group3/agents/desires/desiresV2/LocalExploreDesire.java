@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.desires.V2desires;
+package de.feu.massim22.group3.agents.desires.desiresV2;
 
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;

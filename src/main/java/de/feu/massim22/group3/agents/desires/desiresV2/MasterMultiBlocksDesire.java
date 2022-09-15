@@ -1,13 +1,13 @@
-package de.feu.massim22.group3.agents.desires.V2desires;
+package de.feu.massim22.group3.agents.desires.desiresV2;
 
 //import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.*;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.agents.utilsV2.*;
+import de.feu.massim22.group3.agents.utilsV2.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.agents.utilsV2.AgentMeetings.Meeting;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
@@ -30,8 +30,6 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
     private Point block1;
     private Point block2;
     private Point block3;
-    private Thing block1Thing;
-    private Thing block2Thing;
     private Thing block3Thing;
 
     /**
@@ -240,11 +238,9 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
         
         List<Thing> list = agent.desireProcessing.getTaskReqsOrdered(task);
         block1 = new Point(list.get(0).x, list.get(0).y);
-        block1Thing = list.get(0);
         
         if (list.size() > 1) {
-            block2 = new Point(list.get(1).x, list.get(1).y);
-            block2Thing = (task.requirements.size() >= 2 ? list.get(1) : null);           
+            block2 = new Point(list.get(1).x, list.get(1).y);       
         }
         
         if (list.size() > 2) {

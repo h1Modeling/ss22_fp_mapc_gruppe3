@@ -5,15 +5,13 @@ import eis.iilang.*;
 //import java.awt.Point;
 import java.util.*;
 
-import de.feu.massim22.group3.agents.V2utils.*;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
-//import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.IDesire;
-import de.feu.massim22.group3.agents.desires.V2desires.DisconnectMultiBlocksDesire;
-//import de.feu.massim22.group3.agents.belief.reachable.*;
+import de.feu.massim22.group3.agents.desires.desiresV2.DisconnectMultiBlocksDesire;
 import de.feu.massim22.group3.agents.supervisor.Supervisable;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
+import de.feu.massim22.group3.agents.utilsV2.*;
+import de.feu.massim22.group3.agents.utilsV2.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.agents.utilsV2.AgentMeetings.Meeting;
 import de.feu.massim22.group3.communication.MailService;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;
@@ -31,7 +29,8 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @see BdiAgentV1
  * @author Melinda Betz
  */
-public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
+
+public class BdiAgentV2 extends BdiAgent implements Supervisable {
     private boolean absolutePositions = false;
     private Point startPosition = new Point(Point.zero());
     private List<Thing> attachedThings = new ArrayList<Thing>();
@@ -232,22 +231,6 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                         + ((Point.castToPoint(belief.getAbsolutePosition()) != null) ? Point.castToPoint(belief.getAbsolutePosition()) : ""));
             }
         }
-   
-        
-        /*if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, this)
-                || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, this)) {
-            Cooperation coop = AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, this);
-
-            if (coop == null) {
-                coop = AgentCooperations.get(StepUtilities.exploreVerticalMapSize, this);
-            }
-
-            if ((coop.master().equals(this) || coop.helper().equals(this))
-                    && coop.statusMaster().equals(Status.Finished)) {
-                AgentCooperations.remove(coop);
-                isBusy = false;
-            }
-        }*/
         
         //AgentLogger.info(Thread.currentThread().getName() + " updateBeliefs() AA , Agent: " + this.getName());   
         if (belief.getLastAction() != null) {

@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.desires.V2desires;
+package de.feu.massim22.group3.agents.desires.desiresV2;
 
 import java.awt.Point;
 
@@ -141,16 +141,16 @@ public class ArrangeBlockDesire extends BeliefDesire {
             return ActionInfo.SKIP("0011 problem arranging blocks");
         }
     }
-    
-    private boolean existsTask(Thing block) {
+ 
+    private boolean existsTask(Thing inBlock) {
         for (TaskInfo task : belief.getTaskInfo()) {
             if (!agent.desireProcessing.taskReachedDeadline(agent, info) &&
-                 ((task.requirements.size() == 1 && (block.details.equals(task.requirements.get(0).type)))
-                    || (task.requirements.size() == 2 && (block.details.equals(task.requirements.get(0).type)
-                            || block.details.equals(task.requirements.get(1).type)))
-                    || (task.requirements.size() == 3 && (block.details.equals(task.requirements.get(0).type)
-                            || block.details.equals(task.requirements.get(1).type)
-                            || block.details.equals(task.requirements.get(2).type))))) {
+                 ((task.requirements.size() == 1 && (inBlock.details.equals(task.requirements.get(0).type)))
+                    || (task.requirements.size() == 2 && (inBlock.details.equals(task.requirements.get(0).type)
+                            || inBlock.details.equals(task.requirements.get(1).type)))
+                    || (task.requirements.size() == 3 && (inBlock.details.equals(task.requirements.get(0).type)
+                            || inBlock.details.equals(task.requirements.get(1).type)
+                            || inBlock.details.equals(task.requirements.get(2).type))))) {
                 return true;
             }
         }
