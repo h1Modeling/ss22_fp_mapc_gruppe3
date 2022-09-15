@@ -1,18 +1,18 @@
-package de.feu.massim22.group3.agents.V2utils;
+package de.feu.massim22.group3.agents.v2utils;
 
 //import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
 import de.feu.massim22.group3.agents.desires.IDesire;
 import de.feu.massim22.group3.agents.desires.LooseWeightDesire;
-import de.feu.massim22.group3.agents.desires.V2desires.*;
+import de.feu.massim22.group3.agents.desires.v2desires.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
+import de.feu.massim22.group3.agents.v2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
@@ -27,6 +27,7 @@ import massim.protocol.messages.scenario.Actions;
  * @author Melinda Betz
  * @author Heinz Stadler (minor contribution)
  */
+//@SuppressWarnings("hiding")
 public class DesireUtilities {
     //private StepUtilities stepUtilities;
     private TaskInfo task;
@@ -552,9 +553,9 @@ public class DesireUtilities {
      * 
      * @return it has expired or not
      */   
-    public boolean taskReachedDeadline (BdiAgentV2 agent,TaskInfo task) {
+    public boolean taskReachedDeadline (BdiAgentV2 agent,TaskInfo inTask) {
         boolean result = false;
-        if (agent.getBelief().getStep() > task.deadline) {
+        if (agent.getBelief().getStep() > inTask.deadline) {
             //task has expired
             result = true;
         }
@@ -569,12 +570,12 @@ public class DesireUtilities {
      * 
      * @return the required block
      */
-    private Thing getTaskBlockA(BdiAgentV2 agent, TaskInfo task) {
-        List<Thing> reqs = getTaskReqsOrdered(task);
+    private Thing getTaskBlockA(BdiAgentV2 agent, TaskInfo inTask) {
+        List<Thing> reqs = getTaskReqsOrdered(inTask);
         // get block1 by default
         Thing result = reqs.get(0);
         
-        if (task.requirements.size() > 1) {
+        if (inTask.requirements.size() > 1) {
             // Multi Block Tasks
             for (Meeting meeting : AgentMeetings.find(agent)) {
                 if (!meeting.agent2().getAttachedThings().isEmpty()) {
@@ -599,12 +600,12 @@ public class DesireUtilities {
      * 
      * @return the required block
      */
-    private Thing getTaskBlockC(BdiAgentV2 agent, TaskInfo task) {
-        List<Thing> reqs = getTaskReqsOrdered(task);
+    private Thing getTaskBlockC(BdiAgentV2 agent, TaskInfo inTask) {
+        List<Thing> reqs = getTaskReqsOrdered(inTask);
         // get block1 by default
         Thing result = reqs.get(0);
 
-        if (task.requirements.size() > 1) {
+        if (inTask.requirements.size() > 1) {
             // Multi Block Tasks
             for (Meeting meeting : AgentMeetings.find(agent)) {               
                 if (!meeting.agent2().getAttachedThings().isEmpty()) {                    
@@ -614,7 +615,7 @@ public class DesireUtilities {
                                 result = reqs.get(1);                                
                                 break;   
                                 // Do I know a agent with block type of block2, get block3
-                        } else if (task.requirements.size() == 3 && attachedThing.details.equals(reqs.get(1).type)) {
+                        } else if (inTask.requirements.size() == 3 && attachedThing.details.equals(reqs.get(1).type)) {
                             result = reqs.get(2);
                         } 
                     }
@@ -624,9 +625,9 @@ public class DesireUtilities {
 
         result = proofBlockType(result, reqs);
                 
-        AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - agent: " + agent.getName() + " , task: " + task.name 
-                + " , block1: " + reqs.get(0).toString() + " , block2: " + (task.requirements.size() >= 2 ? reqs.get(1).toString() : "") 
-                + " , block3: " + (task.requirements.size() >= 3 ? reqs.get(2).toString() : "") + " , result: " + result.toString());        
+        AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - agent: " + agent.getName() + " , task: " + inTask.name 
+                + " , block1: " + reqs.get(0).toString() + " , block2: " + (inTask.requirements.size() >= 2 ? reqs.get(1).toString() : "") 
+                + " , block3: " + (inTask.requirements.size() >= 3 ? reqs.get(2).toString() : "") + " , result: " + result.toString());        
 
         return result;
     }
@@ -678,30 +679,30 @@ public class DesireUtilities {
      * 
      * @return the ordered requirements
      */
-    public List<Thing> getTaskReqsOrdered(TaskInfo task) {
+    public List<Thing> getTaskReqsOrdered(TaskInfo inTask) {
         List<Thing> result = new ArrayList<Thing>();
         Thing block1 = null;
         Thing block2 = null;
         Thing block3 = null;
 
-        for (int i = 0; i < task.requirements.size(); i++) {
+        for (int i = 0; i < inTask.requirements.size(); i++) {
             if (DirectionUtil.getCellsIn4Directions()
-                    .contains(new java.awt.Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
-                block1 = task.requirements.get(i);
+                    .contains(new java.awt.Point(inTask.requirements.get(i).x, inTask.requirements.get(i).y))) {
+                block1 = inTask.requirements.get(i);
             } else if (block2 == null && !DirectionUtil.getCellsIn4Directions()
-                    .contains(new java.awt.Point(task.requirements.get(i).x, task.requirements.get(i).y))
-                    && existsCommonEdge(new Point(task.requirements.get(i).x, task.requirements.get(i).y))) {
-                block2 = task.requirements.get(i);
+                    .contains(new java.awt.Point(inTask.requirements.get(i).x, inTask.requirements.get(i).y))
+                    && existsCommonEdge(new Point(inTask.requirements.get(i).x, inTask.requirements.get(i).y))) {
+                block2 = inTask.requirements.get(i);
             } else
-                block3 = task.requirements.get(i);
+                block3 = inTask.requirements.get(i);
         }
         
         result.add(block1);
         
-        if (task.requirements.size() > 1) 
+        if (inTask.requirements.size() > 1) 
             result.add(block2);
         
-        if (task.requirements.size() > 2) 
+        if (inTask.requirements.size() > 2) 
             result.add(block3);
         
         return result;
@@ -716,7 +717,6 @@ public class DesireUtilities {
         }
 
         AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - getIteratedActionForMove - stuck");
-        // TODO AGENT is STuck
         return ActionInfo.SKIP("Agent is Stuck in iterated");
     }
     
@@ -735,17 +735,17 @@ public class DesireUtilities {
         String lastRotation = agent.getBelief().getLastActionParams().size() > 0 ? agent.getBelief().getLastActionParams().get(0) : "";
        
         if ((firstTry.value().getName().equals(Actions.MOVE) 
-                && !firstTry.value().getParameters().get(0).toString().equals(dir)  
-                && !firstTry.value().getParameters().get(0).toString().equals(dirAlt))
+                && !((Identifier) firstTry.value().getParameters().get(0)).toProlog().equals(dir)  
+                && !((Identifier) firstTry.value().getParameters().get(0)).toProlog().equals(dirAlt))
                 || (firstTry.value().getName().equals(Actions.ROTATE) 
-                && firstTry.value().getParameters().get(0).toString().equals("cw")
+                && ((Identifier) firstTry.value().getParameters().get(0)).toProlog().equals("cw")
                 && lastRotation.equals("ccw")) 
                 || (firstTry.value().getName().equals(Actions.ROTATE)  
-                && firstTry.value().getParameters().get(0).toString().equals("ccw")
+                && ((Identifier) firstTry.value().getParameters().get(0)).toProlog().equals("ccw")
                 && lastRotation.equals("cw"))) {
             return getActionForMove(agent, dirAlt, desire);
         } 
-        
+       
         return firstTry;
     }
 
@@ -759,8 +759,8 @@ public class DesireUtilities {
      * 
      * @return the action to do
      */
-    public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String dir2, String desire) {
-        this.dir2 = dir2;
+    public ActionInfo getActionForMove(BdiAgentV2 agent, String dir, String inDir2, String desire) {
+        this.dir2 = inDir2;
         dir2Used = true;
         ActionInfo out = getActionForMove(agent, dir, desire);
         dir2Used = false;
@@ -885,13 +885,13 @@ public class DesireUtilities {
             // Try to move around agent
             inDirection = inDirection ? false : true;
             String dir1 = inDirection ? getCRotatedDirection(dir) : getCCRotatedDirection(dir);
-            String dir2 = inDirection ? getCCRotatedDirection(dir) : getCRotatedDirection(dir);
+            String lDir2 = inDirection ? getCCRotatedDirection(dir) : getCRotatedDirection(dir);
             Thing tDir1 = agent.getBelief().getThingAt(dir1);
-            Thing tDir2 = agent.getBelief().getThingAt(dir2);
+            Thing tDir2 = agent.getBelief().getThingAt(lDir2);
             Thing tDir1next = agent.getBelief().getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), dir1));
-            Thing tDir2next = agent.getBelief().getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), dir2));
+            Thing tDir2next = agent.getBelief().getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), lDir2));
             
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove: " + dir1 + " , " + dir2 + " , " + tDir1 + " , " + tDir2 + " , " + tDir1next + " , " + tDir2next);
+            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove: " + dir1 + " , " + lDir2 + " , " + tDir1 + " , " + tDir2 + " , " + tDir1next + " , " + tDir2next);
 
             if ((isFree(tDir1) || attached.contains(new Point(tDir1.x, tDir1.y)) || isSaveClearable(tDir1)) 
                     && (isFree(tDir1next) || isSaveClearable(tDir1next))) {
@@ -900,7 +900,7 @@ public class DesireUtilities {
 
             if ((isFree(tDir2) || attached.contains(new Point(tDir2.x, tDir2.y)) || isSaveClearable(tDir2)) 
                     && (isFree(tDir2next) || isSaveClearable(tDir2next))) {
-                return getIteratedActionForMove(agent, dir2, desire);
+                return getIteratedActionForMove(agent, lDir2, desire);
             }
             
             if (isFree(tDir1) || attached.contains(new Point(tDir1.x, tDir1.y)) || isSaveClearable(tDir1)) {
@@ -908,7 +908,7 @@ public class DesireUtilities {
             }
 
             if (isFree(tDir2) || attached.contains(new Point(tDir2.x, tDir2.y)) || isSaveClearable(tDir2)) {
-                return getIteratedActionForMove(agent, dir2, desire);
+                return getIteratedActionForMove(agent, lDir2, desire);
             }
             
             AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if5");
@@ -925,11 +925,7 @@ public class DesireUtilities {
     private boolean isFree(Thing t) {
         return t == null || t.type.equals(Thing.TYPE_DISPENSER);
     }
-
-    private boolean isClearable(Thing t) {
-        return t != null && (t.type.equals(Thing.TYPE_BLOCK) || t.type.equals(Thing.TYPE_OBSTACLE));
-    }
-    
+   
     private boolean isSaveClearable(Thing t) {
         return t != null && (t.type.equals(Thing.TYPE_OBSTACLE));
     }

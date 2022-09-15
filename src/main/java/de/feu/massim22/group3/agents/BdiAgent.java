@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.feu.massim22.group3.agents.belief.Belief;
+import de.feu.massim22.group3.agents.desires.IDesire;
 import de.feu.massim22.group3.agents.intention.IIntention;
 import de.feu.massim22.group3.communication.MailService;
 
@@ -13,7 +14,7 @@ import de.feu.massim22.group3.communication.MailService;
  * @param <T> defines the type of the desires the agent handles.
  * @author Heinz Stadler
  */
-public abstract class BdiAgent<T> extends Agent {
+public abstract class BdiAgent extends Agent {
     
     /**
      * The Belief of the agent.
@@ -23,7 +24,7 @@ public abstract class BdiAgent<T> extends Agent {
     /**
      * A List containing the current Desires of the agent.
      */
-    protected List<T> desires = new ArrayList<T>();
+    protected List<IDesire> desires = new ArrayList<IDesire>();
 
     /**
      * The current Intention of the agent.
@@ -55,7 +56,7 @@ public abstract class BdiAgent<T> extends Agent {
      * 
      * @return the desires of the agent
      */
-    public List<T> getDesires() {
+    public List<IDesire> getDesires() {
         return desires;
     }
     
@@ -82,7 +83,7 @@ public abstract class BdiAgent<T> extends Agent {
      * 
      * @param desire the desire
      */
-    public void addDesire(T desire) {
+    public void addDesire(IDesire desire) {
         desires.add(desire);
     }
 }

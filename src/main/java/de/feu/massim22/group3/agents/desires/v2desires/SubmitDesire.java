@@ -1,11 +1,10 @@
-package de.feu.massim22.group3.agents.desires.V2desires;
+package de.feu.massim22.group3.agents.desires.v2desires;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
-import de.feu.massim22.group3.agents.V2utils.Status;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.agents.v2utils.AgentCooperations;
+import de.feu.massim22.group3.agents.v2utils.Status;
+import de.feu.massim22.group3.agents.v2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
@@ -41,14 +40,15 @@ public class SubmitDesire extends BeliefDesire {
      * 
      * @return if it is executable or not
      */
+    //@SuppressWarnings("hiding")
 	@Override
     public BooleanInfo isExecutable() {
         boolean result = false;
-        String info = "";
+        String text = "";
 
         if (belief.getRole().actions().contains(Actions.SUBMIT)) {
             result = belief.getGoalZones().size() > 0 && belief.getGoalZones().contains(new Point(0, 0));
-            info = result ? "" : "not in goal zone";
+            text = result ? "" : "not in goal zone";
 
             if (result == true) {
                 for (Thing t : this.info.requirements) {
@@ -80,7 +80,7 @@ public class SubmitDesire extends BeliefDesire {
             }
         }
 
-        return new BooleanInfo(result, info);
+        return new BooleanInfo(result, text);
     }
  
 	 /**

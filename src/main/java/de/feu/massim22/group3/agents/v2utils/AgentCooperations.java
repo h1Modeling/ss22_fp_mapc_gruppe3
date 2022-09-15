@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.V2utils;
+package de.feu.massim22.group3.agents.v2utils;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
@@ -294,10 +294,10 @@ public class AgentCooperations {
      * 
      *  @return the data to print out
      */
-    public static String toString(List<Cooperation> cooperations) {
+    public static String toString(List<Cooperation> inCooperations) {
         String result = "";
 
-        for (Cooperation coop : cooperations)
+        for (Cooperation coop : inCooperations)
        result = result + " ### " + toString(coop);
         
         return result;

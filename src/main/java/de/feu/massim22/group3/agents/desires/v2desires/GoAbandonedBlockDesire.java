@@ -1,14 +1,14 @@
-package de.feu.massim22.group3.agents.desires.V2desires;
+package de.feu.massim22.group3.agents.desires.v2desires;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
-import de.feu.massim22.group3.agents.V2utils.Status;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.agents.v2utils.AgentCooperations;
+import de.feu.massim22.group3.agents.v2utils.Status;
+import de.feu.massim22.group3.agents.v2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
@@ -150,16 +150,16 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
         String dir = getDirectionToRelativePoint(new Point(nearest.x, nearest.y));
         return getActionForMove(dir, getName());
     }
-        
-    private boolean existsTask(Thing block) {
+ 
+    private boolean existsTask(Thing inBlock) {
         for (TaskInfo task : belief.getTaskInfo()) {
             if ((task.requirements.size() == 1 
-                    && (block.details.equals(task.requirements.get(0).type)))
+                    && (inBlock.details.equals(task.requirements.get(0).type)))
                     || (task.requirements.size() == 2 
-                    && (block.details.equals(task.requirements.get(0).type) || block.details.equals(task.requirements.get(1).type)))
+                    && (inBlock.details.equals(task.requirements.get(0).type) || inBlock.details.equals(task.requirements.get(1).type)))
                 || (task.requirements.size() == 3 
-                && (block.details.equals(task.requirements.get(0).type) || block.details.equals(task.requirements.get(1).type)
-                    || block.details.equals(task.requirements.get(2).type)))) {
+                && (inBlock.details.equals(task.requirements.get(0).type) || inBlock.details.equals(task.requirements.get(1).type)
+                    || inBlock.details.equals(task.requirements.get(2).type)))) {
                 return true;
             }
         }

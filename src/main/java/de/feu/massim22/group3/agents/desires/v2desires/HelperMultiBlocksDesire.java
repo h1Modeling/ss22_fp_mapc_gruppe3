@@ -1,14 +1,13 @@
-package de.feu.massim22.group3.agents.desires.V2desires;
+package de.feu.massim22.group3.agents.desires.v2desires;
 
 //import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.*;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.agents.belief.Belief;
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.agents.v2utils.*;
+import de.feu.massim22.group3.agents.v2utils.AgentCooperations.Cooperation;
+import de.feu.massim22.group3.agents.v2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
@@ -192,8 +191,8 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
                             return ActionInfo.ROTATE_CW(getName());
                         } else {
                             if (cw.type.equals(Thing.TYPE_OBSTACLE)) {
-                                Point target = Point.castToPoint(DirectionUtil.rotateCW(agentBlock));
-                                return ActionInfo.CLEAR(target, getName());
+                                Point t = Point.castToPoint(DirectionUtil.rotateCW(agentBlock));
+                                return ActionInfo.CLEAR(t, getName());
                             }
                         }
                     }
@@ -202,8 +201,8 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
                             return ActionInfo.ROTATE_CCW(getName());
                         } else {
                             if (ccw.type.equals(Thing.TYPE_OBSTACLE)) {
-                                Point target = Point.castToPoint(DirectionUtil.rotateCCW(agentBlock));
-                                return ActionInfo.CLEAR(target, getName());
+                                Point t = Point.castToPoint(DirectionUtil.rotateCCW(agentBlock));
+                                return ActionInfo.CLEAR(t, getName());
                             }
                         }
                     }

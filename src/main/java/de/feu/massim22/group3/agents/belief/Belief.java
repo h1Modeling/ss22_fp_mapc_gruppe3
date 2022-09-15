@@ -8,14 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
-import de.feu.massim22.group3.agents.V2utils.StepUtilities;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.supervisor.AgentReport;
+import de.feu.massim22.group3.agents.v2utils.AgentCooperations;
+import de.feu.massim22.group3.agents.v2utils.StepUtilities;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
@@ -1599,11 +1599,11 @@ public class Belief {
      * 
      * @return modulo position
      */
-    public Point calcPositionModulo(Point position) {
+    public Point calcPositionModulo(Point inPosition) {
         setMapSize(AgentCooperations.mapSize.x, AgentCooperations.mapSize.y);
-        position.x = (((position.x % mapSize.x) + mapSize.x) % mapSize.x);
-        position.y = (((position.y % mapSize.y) + mapSize.y) % mapSize.y);
-        return position;
+        inPosition.x = (((inPosition.x % mapSize.x) + mapSize.x) % mapSize.x);
+        inPosition.y = (((inPosition.y % mapSize.y) + mapSize.y) % mapSize.y);
+        return inPosition;
     }
         
     private Point nonModuloPosition = new Point(0, 0);
@@ -1712,10 +1712,10 @@ public class Belief {
      * @return list of all reachable dispensers
      */
     public synchronized List<ReachableDispenser> getReachableDispensersX() {
-        List<ReachableDispenser> reachableDispensers = new ArrayList<>(this.reachableDispensers);
+        List<ReachableDispenser> reachableDisp = new ArrayList<>(this.reachableDispensers);
         List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
         
-        for (ReachableDispenser rd : reachableDispensers) {
+        for (ReachableDispenser rd : reachableDisp) {
             if (rd.data().equals("x")) {
                 Point agentPos = getPosition();
                 Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
@@ -1732,39 +1732,15 @@ public class Belief {
     }
     
     /**
-     * Gets a list of all reachable goal zones.
-     * 
-     * @return list of all reachable goal zones
-     */
-    public List<ReachableGoalZone> getReachableGoalZonesX() {
-        List<ReachableGoalZone> reachableGoalZones = new ArrayList<>(this.reachableGoalZones);
-        List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
-        
-        for (ReachableGoalZone rd : reachableGoalZones) {
-            Point agentPos = getPosition();
-            Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
-                    (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
-            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
-                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);     
-            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
-            ReachableGoalZone rdnew = new ReachableGoalZone(pos, distance, direction);
-            reachableGoalZonesX.add(rdnew);
-        }
- 
-        reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
-        return reachableGoalZonesX;
-    }
-    
-    /**
      * Gets a list of all reachable role zones.
      * 
      * @return list of all reachable role zones
      */
     public List<ReachableRoleZone> getReachableRoleZonesX() {
-        List<ReachableRoleZone> reachableRoleZones = new ArrayList<>(this.reachableRoleZones);
+        List<ReachableRoleZone> reachableRoleZ = new ArrayList<>(this.reachableRoleZones);
         List<ReachableRoleZone> reachableRoleZonesX = new ArrayList<>();
         
-        for (ReachableRoleZone rd : reachableRoleZones) {
+        for (ReachableRoleZone rd : reachableRoleZ) {
             Point agentPos = getPosition();
             Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
                     (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
