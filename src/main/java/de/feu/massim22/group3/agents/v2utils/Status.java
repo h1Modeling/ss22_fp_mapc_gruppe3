@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.V2utils;
+package de.feu.massim22.group3.agents.v2utils;
 
 /**
  * The enum <code>Status</code> is a important part of the communication of BdiAgentV2.

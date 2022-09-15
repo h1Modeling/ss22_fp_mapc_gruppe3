@@ -8,14 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import java.awt.Point;
 
-import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
-import de.feu.massim22.group3.agents.V2utils.StepUtilities;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableRoleZone;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableTeammate;
 import de.feu.massim22.group3.agents.desires.GroupDesireTypes;
 import de.feu.massim22.group3.agents.supervisor.AgentReport;
+import de.feu.massim22.group3.agents.v2utils.AgentCooperations;
+import de.feu.massim22.group3.agents.v2utils.StepUtilities;
 import de.feu.massim22.group3.map.CellType;
 import de.feu.massim22.group3.map.INaviAgentV1;
 import de.feu.massim22.group3.map.Navi;
