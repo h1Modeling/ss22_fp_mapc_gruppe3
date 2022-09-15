@@ -36,6 +36,7 @@ public interface INaviAgentV1 extends INavi {
      * @param normsInfo the current active norms
      * @param taskInfo the current active tasks
      * @param attachedPoints the attached points of the agent
+     * @param marker the marker which are currently in vision
      * @return a two dimensional Array of type <code>PathFindingResult</code> which contains information
      * about distance and direction of certain interesting points.
      */

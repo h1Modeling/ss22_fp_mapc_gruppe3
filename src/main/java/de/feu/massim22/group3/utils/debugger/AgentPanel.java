@@ -131,6 +131,11 @@ class AgentPanel extends JPanel {
         }
     }
 
+    /**
+     * Sets the agent debug data in the property panel.
+     * 
+     * @param data the data to set
+     */
     void setAgentData(AgentDebugData data) {
         if (data != null) {
             name.setText(data.name());
@@ -196,6 +201,11 @@ class AgentPanel extends JPanel {
     * @author Heinz Stadler
     */
     static class HeaderLabel extends JLabel {
+        /**
+         * Instantiates a new <code>HeaderLabel</code>.
+         * 
+         * @param title the title of the header
+         */
         HeaderLabel(String title) {
             super(title);
             setFont(getFont().deriveFont(0, 16));
