@@ -1,10 +1,10 @@
-package de.feu.massim22.group3.agents.v2utils;
+package de.feu.massim22.group3.agents.V2utils;
 
 import java.util.*;
 
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
-import de.feu.massim22.group3.agents.v2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.BdiAgentV2;
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.map.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;

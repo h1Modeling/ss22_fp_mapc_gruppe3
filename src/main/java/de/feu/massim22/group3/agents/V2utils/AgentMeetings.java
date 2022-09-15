@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.v2utils;
+package de.feu.massim22.group3.agents.V2utils;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.utils.logging.AgentLogger;

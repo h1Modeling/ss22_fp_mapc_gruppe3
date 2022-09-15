@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.desires.v2desires;
+package de.feu.massim22.group3.agents.desires.V2desires;
 
 import java.awt.Point;
 

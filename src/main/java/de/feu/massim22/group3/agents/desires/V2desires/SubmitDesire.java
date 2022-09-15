@@ -1,10 +1,10 @@
-package de.feu.massim22.group3.agents.desires.v2desires;
+package de.feu.massim22.group3.agents.desires.V2desires;
 
 import de.feu.massim22.group3.agents.*;
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations;
+import de.feu.massim22.group3.agents.V2utils.Status;
+import de.feu.massim22.group3.agents.V2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.agents.desires.*;
-import de.feu.massim22.group3.agents.v2utils.AgentCooperations;
-import de.feu.massim22.group3.agents.v2utils.Status;
-import de.feu.massim22.group3.agents.v2utils.AgentCooperations.Cooperation;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
