@@ -60,7 +60,7 @@ import massim.protocol.messages.scenario.Actions;
  * @see BdiAgentV2
  * @author Heinz Stadler
  */
-public class BdiAgentV1 extends BdiAgent implements Runnable, Supervisable {
+public class BdiAgentV1 extends BdiAgent<IDesire> implements Runnable, Supervisable {
     
     private Queue<BdiAgentV1.PerceptMessage> queue = new ConcurrentLinkedQueue<>();
     private EisSender eisSender;
