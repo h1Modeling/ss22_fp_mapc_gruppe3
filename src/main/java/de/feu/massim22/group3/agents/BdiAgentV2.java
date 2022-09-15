@@ -29,6 +29,7 @@ import de.feu.massim22.group3.utils.logging.AgentLogger;
  * @see BdiAgentV1
  * @author Melinda Betz
  */
+
 public class BdiAgentV2 extends BdiAgent implements Supervisable {
     private boolean absolutePositions = false;
     private Point startPosition = new Point(Point.zero());
