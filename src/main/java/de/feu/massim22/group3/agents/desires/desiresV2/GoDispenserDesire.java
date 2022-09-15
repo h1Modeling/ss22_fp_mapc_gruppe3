@@ -1,4 +1,4 @@
-package de.feu.massim22.group3.agents.desires.V2desires;
+package de.feu.massim22.group3.agents.desires.desiresV2;
 
 //import java.awt.Point;
 import java.util.ArrayList;
@@ -6,10 +6,10 @@ import java.util.List;
 
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings;
-import de.feu.massim22.group3.agents.V2utils.Point;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.desires.*;
+import de.feu.massim22.group3.agents.utilsV2.AgentMeetings;
+import de.feu.massim22.group3.agents.utilsV2.Point;
+import de.feu.massim22.group3.agents.utilsV2.AgentMeetings.Meeting;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.Thing;

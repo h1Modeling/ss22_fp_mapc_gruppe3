@@ -1,18 +1,18 @@
-package de.feu.massim22.group3.agents.V2utils;
+package de.feu.massim22.group3.agents.utilsV2;
 
 //import java.awt.Point;
 import java.util.*;
 
 import de.feu.massim22.group3.agents.*;
-import de.feu.massim22.group3.agents.V2utils.AgentMeetings.Meeting;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableDispenser;
 import de.feu.massim22.group3.agents.desires.ActionInfo;
 import de.feu.massim22.group3.agents.desires.DigFreeDesire;
 import de.feu.massim22.group3.agents.desires.FreedomDesire;
 import de.feu.massim22.group3.agents.desires.IDesire;
 import de.feu.massim22.group3.agents.desires.LooseWeightDesire;
-import de.feu.massim22.group3.agents.desires.V2desires.*;
+import de.feu.massim22.group3.agents.desires.desiresV2.*;
 import de.feu.massim22.group3.agents.supervisor.Supervisor;
+import de.feu.massim22.group3.agents.utilsV2.AgentMeetings.Meeting;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
 import eis.iilang.Identifier;
