@@ -12,7 +12,7 @@ import de.feu.massim22.group3.map.Navi;
 import de.feu.massim22.group3.utils.DirectionUtil;
 import de.feu.massim22.group3.utils.PerceptUtil;
 import de.feu.massim22.group3.utils.logging.AgentLogger;
-import de.feu.massim22.group3.agents.BdiAgent;
+import de.feu.massim22.group3.agents.BdiAgentV2;
 import eis.iilang.Function;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
@@ -191,10 +191,14 @@ public class Supervisor implements ISupervisor {
     /**
      * Gets the parent (agent) of the supervisor.
      * 
+     * @throws IllegalAccessError if the supervisor is not of the type <code>BdiAgentV2</code>
      * @return  the parent (agent) of the supervisor
      */
-    public BdiAgent getParent() {
-        return (BdiAgent) parent;
+    public BdiAgentV2 getParent() {
+        if (!(parent instanceof BdiAgentV2)) {
+            throw new IllegalAccessError("This method is only allowed to be called in the context of a BdiAgentV2.");
+        }
+        return (BdiAgentV2) parent;
     }
 
     /**

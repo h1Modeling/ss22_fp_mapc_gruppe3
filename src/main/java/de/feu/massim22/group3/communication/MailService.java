@@ -11,11 +11,8 @@ import de.feu.massim22.group3.agents.Agent;
 
 /**
  * A simple register for agents that forwards messages.
-<<<<<<< HEAD
  * 
  * @author massim team
-=======
->>>>>>> refs/heads/BdiAgentV2i
  */
 public class MailService {
 
