@@ -25,23 +25,23 @@
 \RestyleAlgo{ruled}
 \begin{document}
 %
-\title{Gruppe 3: Catchphrase?}
+\title{Gruppe 3}
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{...\inst{1}\and
-...\inst{1}\and
-...\inst{1}\and
-...\inst{1}}
+\author{Heinz Stadler\and
+Melinda Betz\and
+Phil Heger\and
+Björn Wladasch}
 %
-\authorrunning{F. Author et al.}
+\authorrunning{H. Stadler et al.}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
 \institute{FernUniversität in Hagen, Universitätsstraße 47, 58097 Hagen, Deutschland
-\email{\{...\}@studium.fernuni-hagen.de}\\
+\email{\{vorname.nachname\}@studium.fernuni-hagen.de}\\
 \url{https://www.fernuni-hagen.de}}
 %
 \maketitle              % typeset the header of the contribution
@@ -55,29 +55,19 @@ Die gruppeninterne Kommunikation erfolgte über den für das Fachpraktikum einge
 Die Quelltext-Verwaltung erfolgte über das Versionsverwaltungssystem Github, dessen Issue-Management wir ebenfalls verwendeten. Hier wurden alle Aufgaben zusammengetragen und jeweils ein Bearbeiter zugeordnet. Aus dem jeweiligen Issue wurde jeweils ein Feature-Branch erstellt, in dem die Bearbeitung der Aufgabe erfolgte. Abschließend wurden die Änderungen des Feature-Branches mittels eines Pull Requests auf den Master-Branch angewendet. Das Repositorium wurde so konfiguriert, dass ein Pull Request erst freigegeben wird, wenn er durch mindestens ein anderes Gruppenmitglied überprüft wurde. Dadurch sollte die Qualität des Quelltextes erhöht und das gemeinsame Verständnis des Quelltextes gefördert werden.
 
 \section{Technische Rahmenbedingungen und Softwarebasisarchitektur}
-Für die programmiertechnische Umsetzung entschieden wir uns für die Programmiersprache Java, da alle Gruppenmitglieder mindestens über Grundkenntnisse dieser Programmiersprache verfügten. Außerdem bietet Java als stark typisierte Programmiersprache die Möglichkeit bestimmte Programmierfehler schon vor der Ausführung des Programms zu entdecken. Dadurch wird die Wahrscheinlichkeit von Laufzeitfehlern reduziert. Ein weiteres Argument für die Nutzung von Java ist das von den Entwicklern des Szenarios mitgelieferte Grundsystem des Agentenprogrammes, in dem die Kommunikation mit dem Server schon implementiert ist. Der durch die Nutzung dieses Grundsystems entfallene Aufwand konnte für die Programmierung der eigentlichen Agentenfunktionalität genutzt werden.
+Zu Beginn des Praktikums wurden die Vor- und Nachteile der Verwendung einer auf die Aufgabenstellung optimierte Programmiersprachen diskutiert. Ein intuitives Programmiergerüst basierend auf allgemein anerkannten Notationen zur Implementierung logischen Denkens (vergl. \cite{Goal}) schien reizvoll. Die Aussage von T. Albrecht, dass für viele Teilnehmer am MAPC \textit{Multi-Agent Programming Contest} die Fehlerfindung eine schwierige und zeitintensive Aufgabe darstellt \cite[S. 17]{Ahlbrecht2021}, bewegte die Gruppe dazu sich für eine Programmiersprache mit umfangreichen Test-Bibliotheken zu entscheiden. Da von der MASSim (\textit{Multi-Agent Systems Simulation Platform}) ein Basisgerüst für die Teilnahme am MAPC in der Sprache Java bereitgestellt wird und mit JUnit \cite{JUnit} ein sehr umfangreiches Test-Rahmenwerk für die Sprache verfügbar ist, fiel die Entscheidung auf Java. 
 
-In der Dokumentation des vergangenen Multi-Agent Programming Contests berichtete das Team MLFC, dass das Debugging aufgrund der Verwendung einer Vielzahl von zusätzlichen Frameworks und Tools erschwert wurde \cite{Ahlbrecht2021}. Deshalb entschieden wir uns gegen den Einsatz solcher externen Tools.\\
 
-Das in dieser Arbeit entwickelte Agentensystem basiert auf der BDI-Architektur. Diese Architektur ist eine Abstraktion des menschlichen Denkens bzw. Schlussfolgerns. Das heißt sie versucht zu beschreiben, wie Menschen sich für ihre nächste Handlung entscheiden, um dadurch übergeordnete Ziele zu erreichen. Die Komponenten der BDI-Architektur sind:
-\begin{itemize}
-\item{{\bf Beliefs:} Informationen, die der Agent über seine Umwelt besitzt}
-\item{{\bf Desires:} Handlungsoptionen bzw. mögliche Ziele des Agenten}
-\item{{\bf Intentions:} Ziele, für die sich der Agent entschieden hat und an deren Realisierung gerade gearbeitet wird}
-\end{itemize}
+Das in dieser Arbeit entwickelte Agentensystem basiert auf der BDI-Architektur \cite{Bratman1987}, die das menschliche Denken und Schlussfolgerns abstrahiert bzw. nachbildet. Diese Architektur schien ein für die Gruppe zugänglicher Einstieg in das Thema der Multi-Agentensysteme. Zusätzlich verwendeten alle Teilnehmer am MAPC 2021 entweder eine BDI-Platform oder zumindest einen an die BDI-Architektur angelehnten Programmierstiel \cite[S. 10]{Ahlbrecht2021}.
 
-Die besondere Herausforderung dieses Ansatzes besteht in der Frage, wie die Intentions ausgewählt und wie lange sie verfolgt werden. Werden Intentions zu lange verfolgt, sind die Grundbedingungen für deren erfolgreichen Abschluss ggf. nicht mehr gegeben. Werden sie zu schnell gewechselt, wird u.\,U. nie eine Intention erfolgreich abgeschlossen \cite{Weiss2000}.
+Auf Grundlage der gewählten Basisarchitektur wurde anhand von Klassen-UML-Diagrammen konkrete Systemarchitekturen erarbeitet. Die UML-Diagramme stellen aufgrund der übersichtlichen, visuellen Darstellung des komplexen Systems eine gute Diskussionsgrundlage dar.
 
-Der Vorteil der BDI-Architektur ist, dass eine funktionale Zerlegung des Agenten in die oben genannten Subsysteme vorgegeben ist. Die Komponenten erscheinen dabei intuitiv, da die BDI-Architektur auf dem menschlichen Denkmodell basiert\,\cite{Weiss2000}. Aufgrund der Ähnlichkeiten zum menschlichen Denkmodell ist diese Architektur gut verständlich und bietet einen einfachen Einstieg die Umsetzung, weshalb wir uns für die Verwendung dieses Ansatzes entschieden.
-
-Auf der Grundlage der BDI-Architektur erarbeiteten wir anhand von Klassen-UML-Diagrammen konkrete Systemarchitekturen. Die UML-Diagramme stellen aufgrund der übersichtlichen, visuellen Darstellung des komplexen Systems eine gute Diskussionsgrundlage dar.
-
-Aus der Konzeptionsphase resultierten zwei unterschiedliche Ansätze, die in der Folge auch weitestgehend unabhängig umgesetzt und ausprobiert wurden. Dadurch sollten die Vor- und Nachteile der unterschiedlichen Ansätze untersucht werden.
+Aus der Konzeptionsphase resultierten zwei unterschiedliche Ansätze, die in der Folge auch weitestgehend unabhängig umgesetzt und getestet wurden. Die Gruppe erhoffte sich durch das Verfolgen verschiedener Varianten differenzierte Lösungen von Teilproblem, deren Vor- und Nachteile gegenseitig abgewogen werden sollten. Beide Ansätze basieren auf einer geteilten Basisarchitektur. Dies ermöglicht die gemeinsame Nutzung einzelner Architekturbausteine sowie den Austausch von Modulen. Zusätzlich standen durch die zwei Varianten gegenseitige Sparringspartner zur Verfügung, die in diversen Testmatches gegeneinander antraten.
 
 
 \section{Agentensystem V1 - Gruppenbeitrag Heinz Stadler}
-Nach einer ausführlichen Einarbeitung in die Thematik der Multiagentensysteme, erfolgte die Analyse der Ergebnisse des 15. Multi-Agent Programming Contest \cite{Ahlbrecht2021}. Daraus ging hervor, dass nicht nur die Entscheidungsfindung der Agenten eine Herausforderung darstellt, sondern ebenso der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{Ahlbrecht2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}). \\
-Als Folge dessen entschied sich der Autor mit dem Aufbau der Wissensverwaltung (siehe \ref{wissensverwaltung}) zu beginnen. Diese umfasst eine Datenstruktur zur Speicherung der von der Simulation übermittelten Informationen, sowie eine Lösung zum Aufbau einer globalen Karte des Simulationsgebiets. Nach Fertigstellung der Karte und deren funktionalen Verifikation, wurde parallel an der Konzeptionierung des Agentensystem V1 (siehe \ref{agentV1}) und dessen Ziel- und Absichtsfindung, sowie der Implementierung einer intelligenten Wegführung (siehe \ref{wegfindung}) gearbeitet. Um die Ergebnisse der Wegführung und das Entscheidungsverhalten der Agenten effektiv verifizieren zu können, folgte die Erstellung eines graphischen Analysewerkzeugs (siehe \ref{verifikation}).
+Nach einer ausführlichen Einarbeitung in die Thematik der Multiagentensysteme erfolgte die Analyse der Ergebnisse des \textit{15. Multi-Agent Programming Contest} \cite{Ahlbrecht2021}. Daraus ging hervor, dass nicht nur die Entscheidungsfindung der Agenten eine Herausforderung darstellt, sondern ebenso der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{Ahlbrecht2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}). \\
+Als Folge dessen entschied sich der Autor mit dem Aufbau der Wissensverwaltung (siehe \ref{wissensverwaltung}) zu beginnen. Diese umfasst eine Datenstruktur zur Speicherung der Simulationsinformationen, sowie eine Lösung zum Aufbau einer globalen Karte des Simulationsgebiets. Nach Fertigstellung der Karte und deren funktionalen Verifikation, wurde parallel an der Konzeptionierung des Agentensystem V1 (siehe \ref{agentV1}) und dessen Ziel- und Absichtsfindung, sowie der Implementierung einer intelligenten Wegfindung (siehe \ref{wegfindung}) gearbeitet. Um die Ergebnisse effektiv verifizieren zu können, folgte die Erstellung eines grafischen Analysewerkzeugs (siehe \ref{verifikation}).
  
 \subsection{Architektur}\label{agentV1}
 Das Agentensystem V1 wurde vom Autor konzipiert, in der Gruppe abgestimmt und implementiert. Es erweitert das BDI-Konzept \cite{Bratman1987} um zusätzliche Daten-, Berechnungs- und Entscheidungsebenen, die in Abbildung \ref{g3:architecture} illustriert sind. \\
@@ -91,7 +81,7 @@ Das System kombiniert den Aufbau eines BDI-Agenten \cite[S. 58]{Weiss2000} mit e
 \label{g3:architecture}
 \end{figure}
 
-Jeder Agent wurde mit einer Vorgesetzteninstanz, die eine zusätzliche Entscheidungsebene bildet, kombiniert und in einem Thread parallelisiert. Werden Agenten zu einer Gruppe zusammengeführt, bleibt eine Vorgesetzeninstanz aktiv. Die sonstigen Instanzen der Gruppe werden passiv und übernehmen im Weiteren nur noch die Weiterleitung von Nachrichten an die aktive Entität.
+Jeder Agent wurde mit einer Vorgesetzteninstanz, die eine zusätzliche Entscheidungsebene bildet, kombiniert und in einem Thread parallelisiert. Werden Agenten zu einer Gruppe zusammengeführt, bleibt eine Vorgesetzteninstanz aktiv. Die sonstigen Instanzen der Gruppe werden passiv und übernehmen im Weiteren nur noch die Weiterleitung von Nachrichten an die aktive Entität.
 
 Die Kommunikation zwischen Instanzen in verschiedenen Threads erfolgt über Nachrichten, die in einer threadsicheren Warteschlange zwischengespeichert werden. Die Verständigung des Agenten mit seinem direkten Vorgesetzten wird mittels Methodenaufrufen realisiert.
 
@@ -103,7 +93,7 @@ Jeder Agent hat Zugriff auf eine individuelle Wissensbasis (\textit{Beliefs}), d
 Die enthaltenen Umgebungsdaten beschränken sich auf das aktuelle Sichtfeld des Agenten.
 Um aus den partiellen Umgebungsinformationen eine globale Sicht des Simulationsgebiets zu erhalten, werden die lokalen Daten an das Navigationsmodul weitergeleitet und in einer chronologisch fortgeschriebenen Karte zusammengeführt.
 
-Beim Simulationsstart erhält jeder Agent eine Karte mit festgelegter Initialgröße (Abb. \ref{Karte} Abschn. 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Abschn. 2). Treffen sich zwei Agenten aus unterschiedlichen Gruppen, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen gemeldet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden deren Karten überlagert (Abb. \ref{Karte} Abschn. 3) und schließlich zusammengeführt (Abb. \ref{Karte} Abschn. 4). Die entstandene Karte ermöglicht nun im weiteren Simulationsverlauf die aktuelle Position aller Agenten einer Gruppe untereinander zu bestimmen. Aus dieser Information kann nun durch jeweils zwei Agenten, die sich in entgegengesetzte Richtungen bewegen und sich durch das kontinuierliche Simulationsgebiet zwangsläufig wieder treffen, die Kartengröße ermittelt werden. Nach erfolgreicher Ermittlung wird die Karte beschnitten, wobei die Informationen abgeschnittener Bereiche auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen (Abb. \ref{Karte} Abschn. 5).
+Beim Simulationsstart erhält jeder Agent eine Karte mit festgelegter Initialgröße (Abb. \ref{Karte} Abschn. 1), die beim Erkunden der Umgebung erweitert wird (Abb. \ref{Karte} Abschn. 2). Treffen sich zwei Agenten aus unterschiedlichen Gruppen, wird dies vom Navigationsmodul erkannt und an die aktiven Vorgesetzten beiden Gruppen gemeldet. Stimmen beide Vorgesetzte einer Vereinigung zu, werden deren Karten überlagert (Abb. \ref{Karte} Abschn. 3) und schließlich zusammengeführt (Abb. \ref{Karte} Abschn. 4). Die entstandene Karte ermöglicht nun im weiteren Simulationsverlauf die aktuelle Position aller Agenten einer Gruppe untereinander zu bestimmen. Aus dieser Information kann durch jeweils zwei Agenten, die sich in entgegengesetzte Richtungen bewegen und sich durch die periodische Randbedingung \cite{Bungartz2013} des Simulationsgebiets zwangsläufig wieder treffen, die Kartengröße ermittelt werden. Nach erfolgreicher Ermittlung wird die Karte beschnitten, wobei die Informationen abgeschnittener Bereiche auf der gegenüberliegenden Seite eingefügt werden und somit nicht verloren gehen (Abb. \ref{Karte} Abschn. 5).
 \begin{figure}[h]
 \includegraphics[scale=0.8]{./Referenzen/Kartenmerge.pdf}
 \caption{Die Karte im Simulationsverlauf}
@@ -116,14 +106,14 @@ Unter dem Begriff Wegfindung verstehen wir das Lösen folgender zwei Teilproblem
 \item Finde den Abstand zweier Punkte im Simulationsgebiet unter Berücksichtigung von Hindernissen.
 \item Finde einen idealen, kürzesten Weg zwischen zwei Punkten im Simulationsgebiet unter Berücksichtigung von Hindernissen.
 \end{enumerate}
-Das Lösen des ersten Teilproblems befähigt den Agenten seine Ziel- und Absichtsfindung auf Grundlage von korrekten Entfernungsdaten, anstelle von approximative Annahmen durchzuführen.
-Wurde ein Ziel priorisiert, erfolgt in der Regel anschließend die Bearbeitung des zweiten Teilproblems um einen ideal kurzer Weg von der aktuellen Position zum Zielpunkt zu finden.
+Das Lösen des ersten Teilproblems befähigt den Agenten seine Ziel- und Absichtsfindung auf Grundlage von korrekten Entfernungsdaten, anstelle von approximativen Annahmen durchzuführen.
+Wurde ein Ziel priorisiert, wird ein ideal kurzer Weg von der aktuellen Position zum Zielpunkt gesucht. Dies entspricht der Bearbeitung des zweiten Teilproblems.
 
 Der Autor hat bereits zum Projektbeginn die Absicht gefasst beide Probleme, bezogen auf die Anforderungen der Simulation, zu lösen. Dabei wurden klassische Suchalgorithmen wie z.B. A* \cite{Hart1968} als auch dynamische Echtzeitalgorithmen \cite[182-191]{Weiss2000} untersucht. Da dynamische Algorithmen lediglich zum Lösen von Teilproblem 2 einsetzbar sind, wurde sich für den A* Algorithmus mit Heuristik Manhattan-Distanz $d(A, B) = | A_{x} - B_{x} | + | A_{y} - B_{y} |$ entschieden.
 
 Mit der Zellmenge $V$ besitzt der Algorithmus in seiner Grundform eine Laufzeitkomplexität von $O(|V|^{2})$. Kombiniert mit geschätzten 50-100 Berechnungen pro Agent und Simulationsschritt schied eine CPU-basierte Lösung aufgrund Zeitbeschränkungen in der Absichtsfindung aus.
 
-Es erfolgte die Implementierung des Suchalgorithmus in der Form eines Computeshaders in der GLSL (\textit{OpenGL Shading Language}) \cite{GLSL}. Mit dieser Technologie konnte die Wegfindung auf über 1000 Berechnungen pro Simulationsschritt parallelisiert werden.
+Es erfolgte die Implementierung des Suchalgorithmus in der Form eines \textit{Computeshaders} in der GLSL (\textit{OpenGL Shading Language}) \cite{GLSL}. Mit dieser Technologie konnte die Wegfindung auf über 1000 Berechnungen pro Simulationsschritt parallelisiert werden.
 
 Aus der hohen Parallelisierung und der Implementierung in GLSL ergaben sich zwei Herausforderungen:
 \begin{enumerate}
@@ -138,11 +128,11 @@ Objektreferenzen konnten durch die Implementierung einer Vorrangwarteschlange in
 \caption{Datenstruktur Wegfindung (aus realer Simulation)}
 \label{pathfinding}
 \end{wrapfigure}
-Als Ein- und Ausgabedatenstruktur wurde eine 3D-Textur mit zwei Farbkanälen (siehe Abb. \ref{pathfinding}) gewählt, die zusätzlich als visuelle Hilfestellung bei der Problemfindung diente. In der ersten Ebene der Textur wird die Eingabekarte der Agentengruppe binär nach Zelltyp "`Hindernis"' codiert. Jede weitere Ebenen dient als gemeinsam genutzte Datenstruktur für alle Berechnungen eines Agenten. Entfernungs- und Richtungsinformationen werden dabei getrennt in den Farbkanälen gespeichert.
+Als Ein- und Ausgabedatenstruktur wurde eine 3D-Textur mit zwei Farbkanälen (siehe Abb. \ref{pathfinding}) gewählt, die zusätzlich als visuelle Hilfestellung bei der Problemfindung diente. Die erste Ebene der Textur codiert die Eingabekarte der Agentengruppe binär nach Zelltyp "`Hindernis"'. Jede weitere Ebene dient als gemeinsam genutzte Datenstruktur für alle Berechnungen eines Agenten. Entfernungs- und Richtungsinformationen werden dabei getrennt in den Farbkanälen gespeichert.
 
-Bei der Berechnung der Wege wir das Überqueren von mit Hindernissen belegten Zellen mit zusätzlichen Kosten bewertet. Die Agenten erhalten somit einen kürzesten Weg, der sowohl Wege durch Hindernisse als auch Wege um diese herum enthalten kann.
+Bei der Wegberechnung wird das Überqueren von mit Hindernissen belegten Zellen mit zusätzlichen Kosten bewertet. Die Agenten erhalten somit einen kürzesten Weg, der sowohl Wege durch Hindernisse, als auch Wege um diese herum enthalten kann.
 
-Die Ermittlung des kürzesten Wegs wird ohne an den Agenten angehängte Blöcke durchgeführt. Die Agenten besitzen zusätzliche Logik um einen angehängten Block so zu rotieren und gegebenenfalls Hindernisse zu entfernen, um die ermittelten Bewegungen der Wegfindung kollisionsfrei durchzuführen zu können.
+Die Ermittlung des kürzesten Wegs wird ohne an den Agenten angehängte Blöcke durchgeführt. Die Agenten besitzen zusätzliche Logik zur Rotation eines angehängten Blocks sowie zum Entfernen von Hindernissen, um die ermittelten Bewegungen der Wegfindung kollisionsfrei durchführen zu können.
 
 \subsection{Ziel- und Absichtsfindung}\label{absichtsfindung}
 \begin{figure}[t]
@@ -151,10 +141,10 @@ Die Ermittlung des kürzesten Wegs wird ohne an den Agenten angehängte Blöcke 
 \caption{Diagramm Ziel- und Absichtsfindung Agent V1}
 \label{desires}
 \end{figure}
-Wie bereits in Abschnitt \ref{agentV1} beschrieben, erfolgt die Ziel- und Absichtsfindung über zwei Ebenen in einer vertikalen bidirektionalen Schichtarchitektur aus einem BDI-Agenten und dessen Vorgesetzteninstanz. Der Agent ist in der Lage für sich als Individuum sinnvolle Ziele zu entwickeln. Die Vorgesetzteninstanz kümmert sich um die Koordinierung von Agenten zur Bewältigung von Gruppenzielen. Die Kommunikation erfolgt sowohl vom Agenten zur Vorgesetzeninstanz als auch in entgegengesetzter Richtung. Der Ablauf der Ziel- und Absichtsfindung wird nachfolgend beschrieben und ist zusätzlich in Abbildung \ref{absichtsfindung} dargestellt.
+Wie bereits in Abschnitt \ref{agentV1} beschrieben, erfolgt die Ziel- und Absichtsfindung über zwei Ebenen in einer vertikalen bidirektionalen Schichtarchitektur aus einem BDI-Agenten und dessen Vorgesetzteninstanz. Der Agent ist in der Lage für sich als Individuum sinnvolle Ziele zu entwickeln. Die Vorgesetzteninstanz kümmert sich um die Koordinierung von Agenten zur Bewältigung von Gruppenzielen. Die Kommunikation erfolgt sowohl vom Agenten zur Vorgesetzeninstanz als auch in entgegengesetzter Richtung. Nachfolgend erfolgt die Beschreibung der Ziel- und Absichtsfindung, die zusätzlich in Abbildung \ref{absichtsfindung} dargestellt ist.
 
 
-Zu Beginn jedes Simulationsschritts werden die aktuellen Simulationsdaten ausgewertet und die Wissensbasis der Agenten aktualisiert. Umgebungsinformationen werden an das Navigationsmodul weitergeleitet, das diese speichert und Zielpunkte für die Wegführung generiert. Zeitgleich sendet der Agent einen Ausschnitt seines aktuellen Zustands an seine Vorgesetzteninstanz. Diese versucht aus allen Agenten in der Gruppe effektive Kombinationen zu bilden um Mehrblockaufgaben zu konstruieren, die Kartengröße zu erkunden oder die Bewachung einer Zielzone zu koordinieren.
+Zu Beginn jedes Simulationsschritts werden die aktuellen Simulationsdaten ausgewertet und die Wissensbasis der Agenten aktualisiert. Umgebungsinformationen werden an das Navigationsmodul weitergeleitet, das diese speichert und Zielpunkte für die Wegführung generiert. Zeitgleich sendet der Agent einen Ausschnitt seines aktuellen Zustands an seine Vorgesetzteninstanz. Diese versucht aus allen Agenten in der Gruppe effektive Kombinationen zu bilden, um Mehrblockaufgaben zu konstruieren, die Kartengröße zu erkunden oder die Bewachung einer Zielzone zu koordinieren.
 
 Nachdem die Wegfindung abgeschlossen wurde, wird die Wissensbasis der Agenten aktualisiert. Im Folgenden ergänzt der Agent seine Ziele durch Optionen, die durch neue Einblock-Aufgaben entstanden sind, sowie durch Optionen die von seiner aktiven Vorgesetzteninstanz übermittelt wurden. Nicht mehr erfüllbare Optionen oder bereits erfüllte Gruppenoptionen werden anschließend aus den Zielen gelöscht.
 
@@ -191,10 +181,10 @@ Die Ziele des Agenten werden nun nach Priorität sortiert und die Absicht mit Al
 
 \subsection{Verifikation und Problemfindung}\label{verifikation}
 Die Validierung verschiedener Strategien erfolgte über die erreichte Punktzahl in Testspielen und lieferte zufriedenstellende Ergebnisse. Die Methoden zur Verwaltung der Karte wurden mittels JUnit Tests \cite{JUnit} verifiziert. Im Gegensatz dazu konnte das Verhalten der Agenten nicht effizient durch Einzeltests verifiziert werden, da der Entscheidungsprozess in großer Abhängigkeit mit der dynamischen Wissensbasis der Agenten steht.
-Als Teststrategie wurde statt dessen das genaue Beobachten der Agenten, analog eines Trainers einer Sportmannschaft, gewählt. Wurden Probleme mitverfolgt, erfolgten gezielte Einzeltests um diese zu beheben.
+Als Teststrategie wurde stattdessen das genaue Beobachten der Agenten, analog eines Trainers einer Sportmannschaft, gewählt. Wurden Probleme mitverfolgt, erfolgten gezielte Einzeltests um diese zu beheben.
 
-Dieser Ansatz erforderte zusätzliche visuelle Information, die der Monitor über den die Simulation beobachtet werden kann, nicht liefert. Aus diesem Grund wurde ein graphisches Analysewerkzeug (siehe Abbildung \ref{debugger}) implementiert das einen detaillierten Einblick über den aktuellen Entscheidungsprozess und die Wissensbasis der Agenten liefert. Neben allgemeiner Informationen über den selektierten Agenten, werden Information über Gruppen- und Individualziele angezeigt. Zusätzlich, werden die Agenten anhand ihrer aktuellen Gruppenziele farblich markiert und innerhalb der Gruppenkarte angezeigt.
-Vervollständigt wird die Anzeige u.a. mit Simulationsinformationen wie aktuellem Punktestand oder einer graphischen Darstellung der aktuell möglichen Aufgaben.
+Dieser Ansatz erforderte zusätzliche visuelle Information, die der Monitor, über den die Simulation beobachtet werden kann, nicht liefert. Aus diesem Grund wurde ein grafisches Analysewerkzeug (siehe Abbildung \ref{debugger}), das einen detaillierten Einblick über den aktuellen Entscheidungsprozess und die Wissensbasis der Agenten liefert, implementiert. Neben allgemeiner Informationen über den selektierten Agenten werden Information über Gruppen- und Individualziele angezeigt. Zusätzlich erfolgt die farbliche Markierung der Agenten anhand ihrer aktuellen Gruppenziele.
+Vervollständigt wird die Anzeige u.a. mit Simulationsinformationen wie aktuellem Punktestand oder einer grafischen Darstellung der aktuell möglichen Aufgaben.
 
 
 \begin{figure}
@@ -337,18 +327,18 @@ Das Agentensystem zeigte sich über alle teilgenommenen Turniere hinweg wettbewe
 Es war erfreulich, dass 10 Agenten in der Lage waren bis zu 370 Punkte über Einblock-Aufgaben zu erringen. Trotzdem zeigte sich noch großes Verbesserungspotential bei der Befreiung von Agenten aus festgefahrenen Situationen und dem generellen Ausweichen von Agenten untereinander.
 
 \subsubsection{Turnier 3}
-Die erreichte Punktzahl über Einblock-Aufgaben konnte in diesem Turnier auf bis zu 720 gesteigert werden. Dies resultierte hauptsächlich aus besseren Strategien um sich aus festgefahrenen Situationen zu befreien. Trotzdem waren weiterhin teilweise übermäßige Gruppenbildung und daraus resultierende gegenseitige Behinderung zu beobachten.
+Die erreichte Punktzahl über Einblock-Aufgaben konnte in diesem Turnier auf bis zu 720 gesteigert werden. Dies resultierte hauptsächlich aus besseren Strategien zur Befreiung aus festgefahrenen Situationen. Trotzdem waren weiterhin teilweise übermäßige Gruppenbildung und daraus resultierende gegenseitige Behinderung zu beobachten.
 
 \subsubsection{Turnier 4}
-Die Agenten waren erstmals in der Lage Mehrblock-Aufgaben zu bearbeiten. Das Zusammenspiel der Agenten war leider noch nicht zufriedenstellend, wodurch sich ein Rückgang der erreichten Maximalpunkte auf 680 ergab. Positiv war zu beobachten, dass die Gruppenbildung und die gegenseitige Behinderung im Vergleich zum Vorturnier abgenommen hat.
+Die Agenten waren erstmals in der Lage Mehrblock-Aufgaben zu bearbeiten. Das Zusammenspiel der Agenten war leider noch nicht zufriedenstellend, wodurch sich ein Rückgang der erreichten Maximalpunkte auf 680 ergab. Positiv war zu beobachten, dass die Gruppenbildung und daraus resultierender gegenseitiger Behinderung im Vergleich zum Vorturnier abgenommen hat.
 
 \subsubsection{Turnier 5}
 Im Gegensatz zu den vorhergegangenen Turnieren erfolgte nur eine geringe Weiterentwicklung der Agenten. Es wurde jedoch ein massiver Fehler in der Zuweisung von Agenten zu Gruppenaufgaben behoben. Dies führte zu stark verbesserter Leistungsfähigkeit und sicherte der Gruppe den Turniersieg mit maximal 1300 erreichten Punkten. In diesem Turnier wurde erstmalig in einzelnen Begegnungen aggressive Strategien gegen die gegnerischen Agenten eingesetzt.
 
 \subsubsection{Turnier 6}
-Das Turnier 6 bot neue Herausforderungen, da die Kartengröße nicht bekannt war, die Zielzonen sich bewegten und Meteoriteneinschläge auf der Karte ergänzt wurden. Die Agenten bewältigten die neuen Herausforderungen zufriedenstellend und konnten auch dieses mal den Turniersieg mit einer Maximalpunktzahl von 910 sichern. Die Schwierigkeitserhöhung war deutlich in der Durchschnittspunktzahl sichtbar. Trotzdem konnten die Agenten in einzelnen Spielen die erhöhte Schwierigkeit durch die Abgabe von Dreiblock-Aufgaben kompensieren.
+Das Turnier 6 bot neue Herausforderungen, da die Kartengröße nicht bekannt war, die Zielzonen sich bewegten und Meteoriteneinschläge auf der Karte ergänzt wurden. Die Agenten bewältigten die neuen Herausforderungen zufriedenstellend und konnten auch dieses Mal den Turniersieg mit einer Maximalpunktzahl von 910 sichern. Die Schwierigkeitserhöhung war deutlich in der Durchschnittspunktzahl sichtbar. Trotzdem konnten die Agenten in einzelnen Spielen die erhöhte Schwierigkeit durch die Abgabe von Dreiblock-Aufgaben kompensieren.
 
-Interessant war weiter zu beobachten, dass speziell die Gruppe 1 sehr aggressiv gegen die Agenten vorging und dadurch eine spannende Begegnung entstand. Das Abwehren solchen Verhaltens wäre eine potentielle Verbesserungsmöglichkeit für das Agentensystem. 
+Interessant war weiter zu beobachten, dass speziell die Gruppe 1 sehr aggressiv gegen die Agenten vorging und dadurch eine spannende Begegnung entstand. Das Abwehren solchen Verhaltens wäre eine potenzielle Verbesserungsmöglichkeit für das Agentensystem. 
 
 \subsubsection{Bonusspiel - Jeder gegen Jeden}
 Zum Abschluss wurde ein Spiel mit 6 x 25 Agenten durchgeführt. Trotz der Vielzahl an gegnerischen und eigenen Entitäten zeigten sich die implementierten Strategien erfolgreich. Es wurden 1370 Punkte erreicht und das Spiel trotz erhöhter Gruppenbildung und gegenseitiger Störung mit deutlichem Abstand gewonnen.
@@ -369,43 +359,30 @@ Die Entscheidung zwei Architekturansätze zu verfolgen muss kritisch bewertet we
 Die Gruppe ist mit der erreichten Funktionalität und deren Qualität zufrieden. Dennoch besteht vielfältiges Verbesserungspotential in der Entscheidungs- und Strategiefindung der Agenten.
 Eine Weiterentwicklung des Systems durch einzelne Gruppenteilnehmer und eine Teilnahme an einem zukünftigen \textit{Multi-Agent Programming Contest} wird nicht ausgeschlossen.
 
-Es gibt eigentlich keine nennenswerten Probleme, wenn man zwei Architekturen hat, beide Agenten erfüllen ihre Anforderungen. 
-
-Im Großen und Ganz bin ich mit meinem AgentenV2 zufrieden. Wo ich noch Verbesserungspotential sehe, sind, wie oben erwähnt, das Problem der „Verklumpung“ und die Einschränkung der Raumwahrnehmung der Agenten. Leider konnte ich diese Probleme in der vorgegebenen Zeit nicht lösen, da der Agent auch immer weiterentwickelt werde musste und so nicht viel Zeit zur Behebung dieser „grundsätzlichen“ Probleme blieb.
-
 \section{FAQ}
 \subsection{Teilnehmer*innen und ihr Hintergrund}
 \subsubsection{Was war die Motivation an dem Praktikum teilzunehmen?\\}
-Der spannende Bereich Künstliche Intelligenz gepaart mit dem kompetitiven spielerischen Thema. \\
-
-M: Die Motivation waren Interesse am Thema Künstliche Intelligenz und schon vorhandene Java Kenntnisse.
+Der spannende Bereich Künstliche Intelligenz gepaart mit dem kompetitiven spielerischen Thema.
 
 \subsection{Statistiken}
 \subsubsection{Wurden die Agenten von Grund auf neu implementiert oder auf einer bestehenden Lösung aufgebaut?\\}
-Beide Agentensysteme wurden auf Basis des \textit{javaagents} Gerüst der MASSim (\textit{Multi-Agent Systems Simulation Platform}) aufgebaut. \\
-AgentV2: Der Agent wurde von Grund auf neu implementiert (er basiert nur auf dem BasicAgent)
+Beide Agentensysteme wurden auf Basis des \textit{javaagents} Gerüst der MASSim (\textit{Multi-Agent Systems Simulation Platform}) aufgebaut.
 \subsubsection{Wie viel Zeit wurde in die Entwicklung und Organisation des Praktikums gesteckt?\\}
-H: Durchschnittlich über das Semester verteilt ein bis zwei Stunden am Tag. \\
-M: Jeden Tag 3- 4 Stunden, mal mehr mal weniger
+Die investierte Zeit variierte stark innerhalb der Gruppe. Im Mittel wurden ein bis zwei Stunden pro Tag für die Bearbeitung der Aufgabe aufgewendet.
 \subsubsection{Wie war die investierte Zeit im Verlauf des Praktikums verteilt?\\}
-H: Der Großteil der Zeit wurde in der ersten Hälfte des Semesters für die Konzeption und Entwicklung der verschiedenen Architekturbestandteile investiert. Dies ermöglichte in der zweiten Hälfte die effiziente Implementierung der benötigen Funktionalitäten.\\  
-M: Die meiste Zeit wurde für die Entwicklung des Agenten ( Coden ) verwendet, und etwas Zeit davor und währenddessen für die theoretischen Überlegungen was der Agent tun soll. Und Richtung Ende des Praktikums (und währenddessen in Form von Notizen) Zeit für die Doku. 
+Die Gruppenmitglieder ergänzten sie in diesem Punkt wodurch eine gleichmäßige Verteilung entstand.
 \subsubsection{Wie viele Zeilen Code wurden ungefähr geschrieben?\\}
-Die Gesamtlösung umfasst ca. 25.000 Zeilen inklusive Kommentaren. \\
-M: ca. 6704
+Die Gesamtlösung umfasst ca. 25.000 Zeilen inklusive Kommentaren.
 \subsubsection{Welche Programmiersprache und Entwicklungsumgebung wurde verwendet?\\}
-Es wurde die Programmiersprache Java in der Version 17 mit den Entwicklungsumgebungen Eclipse und Visual Studio Code verwendet. \\
-M: Programmiersprache Java und Entwicklungsumgebung Eclipse
+Es wurde die Programmiersprache Java in der Version 17 mit den Entwicklungsumgebungen Eclipse, IntelliJ IDEA und Visual Studio Code verwendet.
 \subsubsection{Wurden externe Werkzeuge/Bibliotheken verwendet?\\}
-Ja, eine Auflistung kann der Projektwebseite \cite{Site} entnommen werden. \\
-AgentV2: keine
+Ja, eine Auflistung kann der Projektwebseite \cite{Site} entnommen werden.
 \subsection{Agenten-System Details}
 \subsubsection{Wie entscheiden die Agenten, was sie machen sollen?}
 \begin{itemize}
 \item Agent V1: Die Ziel- und Absichtsfindung wurde detailliert in Kapitel \ref{absichtsfindung} beschrieben. \\
 \item Agent V2: Ein Agent läuft durch alle Desires und merkt sich alle, in seinem momentanen Zustand ( Belief) ausführbaren. Es werden Prioritäten vergeben und das Desire mit der höchsten Prio wird zur Intention und diese wird dann vom Agent ausgeführt.
 \end{itemize}
-
 
 \subsubsection{Wie entscheiden die Agenten, wie sie es machen sollen?}
 \begin{itemize}
@@ -433,14 +410,14 @@ AgentV2: keine
 
 \subsubsection{Wurde Zeit investiert um die Agenten fehlertoleranter zu machen? Wenn ja, wie genau?}
 \begin{itemize}
-\item Agent V1: Die Verifikation und Problemfindung war ein essentieller Entwicklungsteil. Eine detailliert Beschreibung kann Abschnitt \ref{debugger} entnommen werden.
+\item Agent V1: Die Verifikation und Problemfindung war ein essenzieller Entwicklungsteil. Eine detaillierte Beschreibung kann Abschnitt \ref{debugger} entnommen werden.
 \item Agent V2: Ja, es wurden viele Testläufe gemacht und immer wenn ein Fehler auftrat wurde dieser so behoben, dass er nicht mehr auftritt (und wenn nur mit einem Skip Befehl).
 \end{itemize}
 
 \subsection{Szenario und Strategie}
 \subsubsection{Was ist die Hauptstrategie der Agenten?}
 \begin{itemize}
-\item Agent V1: Möglichst umfangreiche Informationen über das Simulationsgebiet zu erhalten und anschließend die Bearbeitung von Ein-, Zwei-, und Dreiblock-Aufgaben.
+\item Agent V1: Möglichst umfangreiche Informationen über das Simulationsgebiet zu erhalten und anschließend die Bearbeitung von Ein-, Zwei- und Dreiblock-Aufgaben.
 \item Agent V2: Sie holen sich zuerst einmal die Rolle Worker und dann holen sie sich einen Block und laufen mit ihm zur Goal Zone.
 \end{itemize}
 
@@ -463,7 +440,7 @@ AgentV2: keine
 
 \subsubsection{Wie koordinieren die Agenten die Arbeit für eine Aufgabe untereinander?}
 \begin{itemize}
-\item Agent V1: Die Agenten bearbeiten Teilaufgaben, die für komplexere Ziele benötigt werden selbständig und ohne Gruppenzuordnung. Die Gruppenfindung erfolgt erst nach erfolgreicher Bearbeitung der Unterziele. Durch dies konnte die notwendige Koordination, die über den Versand von Nachrichten erfolgt, stark beschränkt werden.
+\item Agent V1: Die Koordination erfolgte hauptsächlich über die in Abschnitt \ref{absichtsfindung} beschriebene Schichtenarchitektur. Zusätzlich kommunizieren Agenten über den Austausch von Nachrichten.
 \item Agent V2: Die Agenten koordinieren indem sie durch Statusabfragen miteinander kommunizieren, wer wann fertig ist und wann weitergemacht werden kann.
 \end{itemize}
 
@@ -475,31 +452,23 @@ AgentV2: keine
 
 \subsection{Und die Moral von der Geschichte}
 \subsubsection{Was wurde durch das Praktikum vermittelt?\\}
-Es wurden die theoretischen Grundlagen zu Multiagentensystemen und deren praktische Anwendung erlernt. \\
-\\
-M: Selbstständig als Gruppe ein Projekt erarbeiten mit nur wenig vorgaben.
+Es wurden die theoretischen Grundlagen zu Multiagentensystemen und deren praktische Anwendung erlernt.
 \subsubsection{Welcher Ratschlag wäre für zukünftige Gruppen sinnvoll?\\}
-Die Verifikation und Problemfindung ist ein grundlegender und wichtiger Bestandteil der Aufgabe. Es sollen frühzeitig Konzepte und Herangehensweisen zu diesem Thema entwickelt werden. \\ 
-\\
-M: Nicht mit zu vielen Erwartungen starten, es ist nicht alles so einfach wie man es sich vorstellt
+Die Verifikation und Problemfindung ist ein grundlegender und wichtiger Bestandteil der Aufgabe. Es sollten frühzeitig Konzepte und Herangehensweisen zu diesem Thema entwickelt werden.
 
 \subsubsection{Was waren Stärken und Schwächen der Gruppe?\\}
 Die Gruppe war in der Lage zielgerichtet erfolgreiche Lösungen zu entwickeln. Die fachliche Diskussion über konzeptionelle Entscheidungen und deren Implementierung könnte zukünftig noch verbessert werden.   
 
 \subsubsection{Was waren Vorteile und Nachteile der gewählten Programmiersprache und weiterer Werkzeuge?\\}
 Die Implementierung in Java ermöglichte flexible, individuelle Lösungen. Es konnten zusätzliche Bibliotheken z.B. zur Verwendung von OpenGL eingebunden werden. Im Vergleich zu auf den Anwendungsfall spezialisierten Sprachen, wie z.B. GOAL \cite{Goal}, fiel der Implementierungsaufwand deutlich höher aus.
-\\ 
-\\
-Vorteile: die vorgegebenen Schnittstellen waren alle in Java programmiert\\
-Nachteile: keine
+
 \subsubsection{Welche weiteren Probleme und Herausforderungen kamen im Laufe des Praktikums auf?\\}
 Es gab keine nennenswerten Probleme die herausstachen. Es wurde konsequent an der Verbesserung der Einzelsysteme gearbeitet. 
 \subsubsection{Was könnte beim nächsten Praktikum verbessert werden?\\}
 Die Schwierigkeitssteigerung zwischen den Turnieren wurde von der Turnierleitung sehr moderat gewählt. Fordernde Konfigurationen hätten die Turniere interessanter gemacht.
 \subsubsection{Welcher Aspekt der Gruppenarbeit hat am meisten Zeit in Anspruch genommen?\\}
-Die Quellcoderezensionen, die vor der Integration in die Hauptstamm der Quellcodeverwaltung durchgeführt wurden. 
-\\
-M: Koordinieren welches Gruppenmitglied welche Aufgabe übernimmt.
+Die Quellcoderezensionen, die vor der Integration in den Hauptstamm der Quellcodeverwaltung durchgeführt wurden. 
+
 
 %
 % ---- Bibliography ----
@@ -533,8 +502,10 @@ M: Koordinieren welches Gruppenmitglied welche Aufgabe übernimmt.
 	Massim 2022 - Issue 7: https://github.com/agentcontest/massim\_2022/issues/7, abgerufen am 11.09.2022
 	\bibitem{Goal}
 	GOAL: https://goalapl.atlassian.net/wiki/spaces/GOAL/overview, abgerufen am 13.09.2022
-	\bibitem(MAPC2021)
+	\bibitem{MAPC2021}
 	Ahlbrecht,T. , Dix, J. , Fiekas, N. ,Krausburg T. (Eds.): JaCaMo Builders: Team Description for the Multi-agent Programming Contest 2020/21  in The Multi-Agent Programming Contest 2021 One-and-a-Half Decades of Exploring Multi-Agent Systems, Springer Verlag, 2021, Seite 136
+	\bibitem{Bungartz2013}
+	Bungartz, H.J., Zimmer, S., Buchholz, M., Pflüger, D.: Modellbildung und Simulation Eine anwendungsorientierte Einführung, 2. Auflage, Springer Spektrum, Berlin Heidelberg, 2013
 	
 \end{thebibliography}
 \end{document}
