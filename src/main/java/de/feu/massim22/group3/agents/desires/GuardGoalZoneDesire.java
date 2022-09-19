@@ -671,8 +671,7 @@ public class GuardGoalZoneDesire extends BeliefDesire {
      * @return AdjacentThings object with all adjacent friendly and enemy agents as well as blocks
      */
     AdjacentThings getAllAdjacentThings(Point p) {
-        AdjacentThings adjThings = new AdjacentThings(new ArrayList<Point>(),
-                new ArrayList<Point>(), new ArrayList<Point>());
+        AdjacentThings adjThings = new AdjacentThings();
         adjThings = getAdjacentThings(p, adjThings);
         return adjThings;
     }
@@ -749,34 +748,36 @@ public class GuardGoalZoneDesire extends BeliefDesire {
         return 5000;
     }
 
+    /**
+     * The Class <code>AdjacentThings</code> is a data class that contains information about
+     * the blocks, friendly agents and enemy agents that are adjacent to a given
+     * position.
+     * 
+     * @author philh
+     *
+     */
     class AdjacentThings {
         
         private List<Point> blocksList;
         private List<Point> friendlyAgentsList;
         private List<Point> enemyAgentsList;
         
-        public AdjacentThings(List<Point> blocksList, List<Point> friendlyAgentsList,
-                List<Point> enemyAgentsList) {
-            this.blocksList = blocksList;
-            this.friendlyAgentsList = friendlyAgentsList;
-            this.enemyAgentsList = enemyAgentsList;
+        /**
+         * Instantiates a new AdjacentThings object
+         * 
+         */
+        public AdjacentThings() {
+            this.blocksList = new ArrayList<Point>();
+            this.friendlyAgentsList = new ArrayList<Point>();
+            this.enemyAgentsList = new ArrayList<Point>();
         }
 
-        public boolean containsBlockAt(Point positon) {
-            if (blocksList.contains(positon)) {return true;}
-            return false;
-        }
-
-        public boolean containsFriendlyAgentAt(Point positon) {
-            if (friendlyAgentsList.contains(positon)) {return true;}
-            return false;
-        }
-
-        public boolean containsEnemyAgentAt(Point positon) {
-            if (enemyAgentsList.contains(positon)) {return true;}
-            return false;
-        }
-
+        /**
+         * Add a found block.
+         * 
+         * @param postion point where to add the block
+         * @return return true if the block did not exist before
+         */
         public boolean addBlock(Point postion) {
             if (!containsBlockAt(postion)){
                 blocksList.add(postion);
@@ -785,6 +786,12 @@ public class GuardGoalZoneDesire extends BeliefDesire {
             return false;
         }
 
+        /**
+         * Add a friendly agent.
+         * 
+         * @param postion point where to add the friendly agent
+         * @return return true if the friendly agent did not exist before
+         */
         public boolean addFriendlyAgent(Point postion) {
             if (!containsFriendlyAgentAt(postion)){
                 friendlyAgentsList.add(postion);
@@ -793,6 +800,12 @@ public class GuardGoalZoneDesire extends BeliefDesire {
             return false;
         }
 
+        /**
+         * Add a enemy agent.
+         * 
+         * @param postion point where to add the enemey agent
+         * @return return true if the enemy agent did not exist before
+         */
         public boolean addEnemyAgent(Point postion) {
             if (!containsEnemyAgentAt(postion)){
                 enemyAgentsList.add(postion);
@@ -801,28 +814,69 @@ public class GuardGoalZoneDesire extends BeliefDesire {
             return false;
         }
 
+        /**
+         *Get a list of all blocks
+         * 
+         * @return List of block positions
+         */
         public List<Point> getBlocks() {
             return blocksList;
         }
 
+        /**
+         * Get a list of all friendly agents
+         * 
+         * @return List of all friendly agents
+         */
         public List<Point> getFriendlyAgents() {
             return friendlyAgentsList;
         }
 
+        /**
+         * Get number of all adjacent blocks
+         * 
+         * @return number of all adjacent blocks
+         */
         public int numOfAdjBlocks() {
             return blocksList.size();
         }
 
+        /**
+         * Get number of all friendly agents
+         * 
+         * @return number of all friendly agents
+         */
         public int numOfAdjFriendlyAgents() {
             return friendlyAgentsList.size();
         }
 
+        /**
+         * Get number of all enemy agents
+         * 
+         * @return number of all enemy agents
+         */
         public int numOfAdjEnemyAgents() {
             return enemyAgentsList.size();
         }
 
         public String toString() {
             return "Blocks: " + blocksList.toString() + "  FriendlyAgents: " + friendlyAgentsList+ "  EnemyAgents: " + enemyAgentsList;
+        }
+
+
+        private boolean containsBlockAt(Point positon) {
+            if (blocksList.contains(positon)) {return true;}
+            return false;
+        }
+
+        private boolean containsFriendlyAgentAt(Point positon) {
+            if (friendlyAgentsList.contains(positon)) {return true;}
+            return false;
+        }
+
+        private boolean containsEnemyAgentAt(Point positon) {
+            if (enemyAgentsList.contains(positon)) {return true;}
+            return false;
         }
     }
 }
