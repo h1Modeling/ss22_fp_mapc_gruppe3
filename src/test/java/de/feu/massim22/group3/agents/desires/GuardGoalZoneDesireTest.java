@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import de.feu.massim22.group3.agents.belief.Belief;
@@ -33,6 +35,9 @@ import massim.protocol.messages.scenario.ActionResults;
 
 public class GuardGoalZoneDesireTest {
 
+    /**
+     * Test for the getPatrolCornerPoint()-Method
+     */
     @Test
     public void testGetCornerPoint() {
         List<Point> pointList = new ArrayList<>();
@@ -82,12 +87,40 @@ public class GuardGoalZoneDesireTest {
     }
 
     /**
+     *   E●●
+     *  A ●
+     */
+    @Test
+    public void testGetAllAdjacentThings2() {
+        
+        Belief b = mock(Belief.class);
+    
+        when(b.getThingAt(any(Point.class))).thenReturn(null);
+        when(b.getThingAt(eq(new Point(2, 0)))).thenReturn(new Thing(2, 0, "block", "b1"));
+        when(b.getThingAt(eq(new Point(2, -1)))).thenReturn(new Thing(2, -1, "block", "b0"));
+        when(b.getThingAt(eq(new Point(3, -1)))).thenReturn(new Thing(3, -1, "block", "b2"));
+        when(b.getThingAt(eq(new Point(1, -1)))).thenReturn(new Thing(1, -1, "entity", "2"));
+        when(b.getThingAt(eq(new Point(0, 0)))).thenReturn(new Thing(0, 0, "entity", "1"));
+        when(b.getTeam()).thenReturn("1");
+    
+        // Create and test Desire
+        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
+        AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
+        assertEquals(3, adjThings.numOfAdjBlocks());
+        assertEquals(0, adjThings.numOfAdjFriendlyAgents());
+        assertEquals(1, adjThings.numOfAdjEnemyAgents());
+        assertTrue(adjThings.getBlocks().contains(new Point(2, -1)));
+        assertTrue(adjThings.getBlocks().contains(new Point(2, 0)));
+        assertTrue(adjThings.getBlocks().contains(new Point(3, -1)));
+    }
+
+    /**
      *    E
      *   E●●A■
      *  A ●A
      */
     @Test
-    public void testGetAllAdjacentThings2() {
+    public void testGetAllAdjacentThings3() {
         
         Belief b = mock(Belief.class);
 
@@ -122,7 +155,7 @@ public class GuardGoalZoneDesireTest {
      *  A ●A
      */
     @Test
-    public void testGetAllAdjacentThings3() {
+    public void testGetAllAdjacentThings4() {
         
         Belief b = mock(Belief.class);
 

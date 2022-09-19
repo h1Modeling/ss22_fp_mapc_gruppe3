@@ -21,7 +21,7 @@ import massim.protocol.data.Thing;
 public class GuardDispenserDesire extends BeliefDesire {
 
     private String blockDetail;
-    CellType dispenserCellType;
+    private CellType dispenserCellType;
 
     
     /**
