@@ -66,34 +66,6 @@ public class GuardGoalZoneDesireTest {
     public void testGetAllAdjacentThings1() {
         
         Belief b = mock(Belief.class);
-
-        when(b.getThingAt(any(Point.class))).thenReturn(null);
-        when(b.getThingAt(eq(new Point(2, 0)))).thenReturn(new Thing(2, 0, "block", "b1"));
-        when(b.getThingAt(eq(new Point(2, -1)))).thenReturn(new Thing(2, -1, "block", "b0"));
-        when(b.getThingAt(eq(new Point(3, -1)))).thenReturn(new Thing(3, -1, "block", "b2"));
-        when(b.getThingAt(eq(new Point(1, -1)))).thenReturn(new Thing(1, -1, "entity", "2"));
-        when(b.getThingAt(eq(new Point(0, 0)))).thenReturn(new Thing(0, 0, "entity", "1"));
-        when(b.getTeam()).thenReturn("1");
-
-        // Create and test Desire
-        GuardGoalZoneDesire d = new GuardGoalZoneDesire(b, new Point (0, 0), "supervisor dummy");
-        AdjacentThings adjThings = d.getAllAdjacentThings(new Point(1, -1));
-        assertEquals(3, adjThings.numOfAdjBlocks());
-        assertEquals(0, adjThings.numOfAdjFriendlyAgents());
-        assertEquals(1, adjThings.numOfAdjEnemyAgents());
-        assertTrue(adjThings.getBlocks().contains(new Point(2, -1)));
-        assertTrue(adjThings.getBlocks().contains(new Point(2, 0)));
-        assertTrue(adjThings.getBlocks().contains(new Point(3, -1)));
-    }
-
-    /**
-     *   E●●
-     *  A ●
-     */
-    @Test
-    public void testGetAllAdjacentThings2() {
-        
-        Belief b = mock(Belief.class);
     
         when(b.getThingAt(any(Point.class))).thenReturn(null);
         when(b.getThingAt(eq(new Point(2, 0)))).thenReturn(new Thing(2, 0, "block", "b1"));
@@ -120,7 +92,7 @@ public class GuardGoalZoneDesireTest {
      *  A ●A
      */
     @Test
-    public void testGetAllAdjacentThings3() {
+    public void testGetAllAdjacentThings2() {
         
         Belief b = mock(Belief.class);
 
@@ -155,7 +127,7 @@ public class GuardGoalZoneDesireTest {
      *  A ●A
      */
     @Test
-    public void testGetAllAdjacentThings4() {
+    public void testGetAllAdjacentThings3() {
         
         Belief b = mock(Belief.class);
 
