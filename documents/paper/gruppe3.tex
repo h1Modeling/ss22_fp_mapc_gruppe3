@@ -153,40 +153,58 @@ Dieser Ansatz erforderte zusätzliche visuelle Information, die der Monitor, üb
 Das Analysewerkzeug hat sich als sehr wertvoll erwiesen und ermöglichte, durch die dynamischen Echtzeitinformationen, die effiziente Weiterentwicklung der Agenten.
 
 
-\section{Gruppenbeitrag Melinda Betz}\label{agentV2}
-\subsection{Agent V2 - Architektur}
-Der AgentV2 arbeitet mit der Step-Methode. 
-Er arbeitet auf eigenen Desires (V2desires) und benutzt nicht die Desires des AgentenV1 mit. Außerdem verwendet der Agent nicht das komplette Pathfinding des V1, da dieses OpenGL benutzt, was auf manchen AMD Rechnern nicht, zumindest nicht performant (mehrere Sekunden pro Agent), funktioniert. Meine beiden Rechner sind da keine Ausnahme. Der Agent stellt seine eigenen Berechnungen an. 
- 
+\section{Gruppenbeitrag Melinda Betz - Agent V2}\label{agentV2}
+Neben meiner Tätigkeit als Gruppenlead habe ich einen alternativen Agenten V2 entwickelt.
 
-\subsection{Task Bearbeitung und Strategie}
-Die Desires welche ein Agent ausführen kann, werden unterschieden in Desires die keine Task benötigen, wie z. B. die Bestimmung der Mapgröße und Desires zur Bearbeitung einer Task, wie z. B. Submitten.\\
+\subsection{ Architektur}
+Der Agent V2 arbeitet mit der Step-Methode, analog dem BasicAgent aus Massim. 
+Der Agent verwendet nicht das komplette Pathfinding des V1, da OpenGL auf meinen AMD Rechnern nicht, zumindest nicht performant, funktionierte. Der Agent stellt also seine eigenen Berechnungen an, um zu einem Ziel zu kommen. Außerdem nutzt er eigene Desires, nicht die des Agenten V1. Die Desires sind dabei aufteilbar in solche, die keine Task benötigen und Desires zur Bearbeitung einer Task. Bei Letzteren ist ein Teil nur für Mehr-Block-Tasks zuständig.
 
-Jeder Agent holt sich zuerst eine Rolle in einer Role Zone, da in der Default Rolle keine Blöcke geholt oder submittet werden können. Die Rolle Worker wird für alle Agenten verwendet. Diese Rolle alles kann, manches zwar nicht ganz optimal, aber gut genug.\\
+\begin{description}
+	\item[ohne Task]\hfill \\
+	LocalExploreDesire,
+	GoAdoptRoleDesire, 
+	ExploreMapSizeDesire
+\end{description}
 
-Alle Worker holen selbständig einen, zu einer aktiven Task passenden, Block. Dabei darf die maximale Anzahl der vorhandenen Blöcke eines bestimmten Blocktyps nicht überschritten werden. Mit diesem Block bewegen sie sich in Richtung Goal Zone. 
-Jeder Agent in einer Goal Zone, der gerade nicht an einer Mehr-Block-Task arbeitet (AgentCooperations), prüft, in jedem Step, für alle aktiven Tasks, ob er den innersten Block dieser Task besitzt. Eine Ein-Block-Task kann so direkt bearbeitet werden (Block in Position bringen und submitten). \\
+\begin{description}
+	\item[mit Task]\hfill \\
+	GoAbandonedBlockDesire,
+	GoDispenserDesire,
+	GoGoalZoneDesire,
+	SubmitDesire,
+\end{description}
 
-Für eine Mehr-Block-Task benötigt der Agent noch mindestens einen Helper, um eine neue AgentCooperation mit sich als Master (dieser submittet die zusammengebaute Mehr-Block-Task) bilden zu können. 
-Ein Agent kann sich selbst zum Master machen und die Helper bestimmen welche ihm die Blöcke beschaffen und in der richtigen Reihenfolge zusammensetzen sollen.  
-Die Kommunikation wer wann was macht erfolgt über ein Klasse AgentCooperations sowie Statusabfragen zum Stand der Abarbeitung. Es gibt einstellbare Regeln, wie z.B., dass nicht mehr als drei Agenten gleichzeitig Master sein dürfen. Das soll vor Klumpenbildung in der Goal Zone schützen, da so nur eine begrenzte und kontrollierbare Anzahl an Agenten in und um die Goal Zone beschäftigt ist.\\
+\begin{description}
+	\item[Mehr\-Block\-Task]\hfill \\
+	MasterMultiBlocksDesire,
+	HelperMultiBlocksDesire,
+	Helper2MultiBlocksDesire,
+	ConnectMultiBlocksDesire,
+	DisconnectMultiBlocksDesire
+\end{description}
+
+\subsection{Entscheidungsfindung}
+Ein Agent durchläuft in jedem Step alle Desires und prüft ob sie in seinem momentanen Zustand (Belief) möglich bzw. ausführbar sind. Für alle ausführbaren Desires wird dynamisch, abhängig auch vom Arbeitsstand des Desires, eine Priorität vergeben. Das Desire mit der höchsten Priorität wird dann zur Intention welche in diesem Step vom Agenten ausgeführt wird.
+
+\subsection{Strategie und Task Bearbeitung}
+Wenn zwei Agenten sich treffen, schließen sie sich zu Supervisor-Gruppen zusammen, um ihr Sichtfeld zu vergrößern. Die kleinere Gruppe wird dabei in die größere integriert. Jeder Agent holt sich zuerst die Rolle Worker. Diese Rolle kann alles, manches zwar nicht ganz optimal, aber gut genug.\\
+
+Alle Worker ohne Block besorgen sich selbständig einen Block. Um eine möglichst breite Auswahl an Blöcken zu erreichen, darf die maximale Anzahl eines Blocktyps (Setup Variable) nicht überschritten werden. Mit diesem Block bewegen sie sich in Richtung Goal Zone. Jeder Agent in einer Goal Zone, der gerade nicht an einer Mehr-Block-Task arbeitet (AgentCooperations), prüft in jedem Step für alle aktiven Tasks, ob er den innersten Block dieser Task besitzt. Eine Ein-Block-Task kann so direkt bearbeitet werden (Block in Position bringen und submitten). Für eine Mehr-Block-Task benötigt der Agent noch mindestens einen Helper, der einen weiteren passenden Block beisteuern kann, um eine neue Adhoc-Gruppe (AgentCooperation) mit sich als Master bilden zu können. In der Klasse AgentsCooperations wird festgehalten wer gerade in welcher Rolle (Master, Helper) mit welcher Task beschäftigt ist. Für alle Agenten ist dort auch der Stand der Taskabarbeitung aller anderen Beteiligten ersichtlich. Es existiert im Grunde keine zentrale Stelle zur Koordination der Agenten, jedoch gibt es einstellbare Regeln (Setup Variablen) wie viele Mehr-Block-Tasks gleichzeitig möglich sein sollen etc.. Das soll vor Klumpenbildung in der Goal Zone schützen und parallel weiterhin Ein-Block-Tasks ermöglichen.
 
 \subsection{Umgebungsfindung und Synchronisation}
-Ein Agent des AgentV2 kennt alles (vor allem Dispenser und GoalZones), was schon einmal in seinem Sichtfeld oder dem eines Agenten seiner Gruppe war. Entfernung und Richtung zu diesen Punkten kann er selbst ermitteln.\\
+Ein Agent V2 kennt alles (vor allem Dispenser und GoalZones), was schon einmal in seinem Sichtfeld oder dem eines Agenten seiner Supervisor-Gruppe war. Entfernung und Richtung zu diesen Punkten kann er selbst ermitteln.\\
 
-Bei der Synchronisation der Zusammenarbeit von Agenten  geht es neben der beschriebenen Bearbeitung von Mehr-Block-Tasks um die Bestimmung der Mapgröße. Dabei wird für die Ermittlung von Höhe und Breite jeweils aus den ersten beiden Treffen zweier Agenten eine AgentCooperation gebildet. Der Master läuft einmal um die Map herum.Der Helper wartet bis dieser wieder zurück ist. Aus der Position des Masters relativ zum Helper vor und nach dem Umlauf, sowie seinem zurückgelegten Weg auf der zu ermittelnden Koordinate, kann nun die genaue Größe der Map berechnet werden. 
+Die Synchronisation von Agenten ist, neben der beschriebenen Bearbeitung von Mehr-Block-Tasks, wichtig für die Bestimmung der Mapgröße. Dabei wird für die Ermittlung von Höhe und Breite der Map, jeweils aus den ersten beiden Treffen zweier Agenten, zentral abgewickelt über die Klasse AgentMeetings, eine AgentCooperation gebildet. Der Master läuft einmal um die Map herum. Der Helper wartet bis dieser wieder zurück ist. Aus der Position des Masters bei dem erneuten Treffen kann nun die genaue Größe (Höhe oder Breite) der Map berechnet werden. 
 
 \subsection{Schwierigkeiten und Lösungsstrategien}
-Einige der Schwierigkeiten waren, dass die Größe des Spielfeldes nicht bekannt war und, dass es schwer ist genau zu wissen wer was attached hat, da diese Information im Percept vom Server nicht detailliert enthalten ist. Außerdem hat man Schwierigkeiten, wenn ein Agent mit einer Geschwindigkeit größer zwei läuft, dessen genau Position festzustellen sollte der Agent in einem Schritt abbrechen. Es ist dann nicht möglich herauszufinden in welchem Schritt der Agent abgebrochen ist oder noch viel wichtiger wie viele Schritte dieser bis zum Abbruch gegangen ist. Was zu Problemen bei der Ermittlung der neuen Position des Agenten führt.\\
+Eine Hauptschwierigkeit war, nicht genau zu wissen, was ein Agent gerade attached hat, da diese Information im Percept des Servers nicht detailliert enthalten ist. Die Lösung, sich diese Information in Variablen zu merken, funktionierte zwar prinzipiell, stieß aber spätestens bei Einführung der Clear-Events an Grenzen. Außerdem hat man Schwierigkeiten, wenn ein Agent mit einer Geschwindigkeit größer zwei läuft und in einem Schritt abbricht (Returncode partial\_fail). Es ist dann nicht möglich herauszufinden, wie weit der Agent vor dem fail gekommen ist, wo er sich also gerade auf dem Spielfeld befindet. Hier ist die etwas unbefriedigende, aber stets erfolgreiche Lösung die: kein Agent läuft schneller als zwei (was durch die Rolle Worker automatisch gegeben ist). 
 
-Das Mapgrößen Problem wurde zunächst dadurch entschärft, dass die Größe der Karte einfach bei den Turnieren bekannt war. Später hatten die Agenten das oben beschriebene Desire zum Bestimmen der Mapgröße.
-Das Attachment-Problem konnte man dadurch lösen, dass man sich in einer Variable merkt, welcher Agent was genau attached hat. Diese muss natürlich ständig aktuell sein und mit Einführung der Clear – Events war dies nicht mehr 100 Prozent möglich. Des Weiteren läuft kein Agent schneller als zwei um die Position auch bei Partial – Success noch genau zu haben. Ein Grund für die Eignung der Rolle Worker.\\
+\subsection{Verbesserungspotential}
+Was ich noch deutlich verbessern müsste ist, wie oben schon erwähnt, zum einen die dynamischere Erkennung der Umgebung (Goal Zones, Dispenser etc.) sowie das Nachführen der Informationen über die aktuellen Attachements der Agenten. Beides ist durch meine Versuche, diese Neuerungen für Turnier 6 einzubauen, eigentlich nur schlimmer geworden und war in „älteren Agenten“ schon mal wesentlich besser.\\
 
-Wichtig ist die Größe des Spielfeldes vor allem für die genaue Bestimmung der Position der Agenten. Um einen aus dem Spielfeld laufenden Agenten wieder im Spielfeld zu positionieren braucht man eine Modulo Rechnung und die aktuelle Position mit der Spielfeldgröße. Hier war das Problem, für dessen Erkenntnis ich einige Zeit benötigte, dass Java keine Funktion für Modulo besitzt. Normalerweise nutzt man dafür das \% – Zeichen. Aber eigentlich ist das nur der Rest einer ganzzahligen Division, was bei positiven Zahlen Modulo entspricht. Läuft man aber links aus dem Spielfeld in den negativen Bereich, dann braucht man Modulo mit negativen Zahlen.  Als Modulo mit negativen zahlen benutzte ich schließlich: 
-Modulo X = ((( X \% MapBreite) + MapBreite) \% MapBreite). 
+Potential würde ich auch noch bei meinen oben beschriebenen AgentCooperations sehen. Diese sind derzeit, einmal angelegt, zu starr. Der Master wartet auf seine Helper geduldig bis zum Ende aller Tage, genau genommen bis zur Deadline der betroffenen Task. Eine dynamischere Variante, bei der der Master unterdessen neue Gelegenheiten mit anderen Agenten wahrnehmen kann, wäre wohl zu bevorzugen.  
 
-\subsection{Tätigkeiten Gruppenlead}
-In der Leadsgruppe haben wir uns regelmäßig getroffen und die Turnierkonfigurationen zusammengestellt sowie allgemeine Punkte besprochen. Diese Treffen waren auch der Ort, um Fragen unserer Teammitglieder anzusprechen und zu klären. 
 \section{Gruppenbeitrag Phil Heger}
 \subsection{Logging}
 Anfangs wurde ein Logging-Modul (AgentLogger.java) implementiert, in dem der Logging-Output konfiguriert wird. Dieses Modul ermöglicht es, den Logging-Output, der von einem Agenten in einem bestimmten Desire oder Modul ausgegeben wird, in eine eigene Datei zu schreiben. Dadurch sind die Entscheidungsfindung dieses Agenten und seine Zustandsänderungen besser nachvollziehbar, als wenn der gesamte Logging-Output aller Agenten in der gleichen Konsole bzw. Datei ausgegeben wird und nachträglich gefiltert werden muss. 
@@ -294,8 +312,7 @@ Zum Abschluss wurde ein Spiel mit 6 x 25 Agenten durchgeführt. Trotz der Vielza
 Positiv war zu beobachten, dass die 25 Agenten weiterhin performant arbeiteten und in sämtlichen Schritten alle Instanzen eine Aktion an den Simulationsserver übermittelten.
 
 \subsection{Agent V2}
-Die Probleme des AgentV2 waren über den Verlauf aller Turniere mehr oder weniger dieselben.  Die Agenten haben sich öfters zu Klumpen zusammengefunden und dabei gegenseitig behindert. Sie haben teilweise ihr Wissen über ihre Umwelt, insbesondere die Lage der Goal Zones, verloren.
-
+Bei den Turnieren, mit Ausnahme von Turnier 6, sind immer beide Agenten erfolgreich zum Einsatz gekommen. Bei Turnier 6 war der Agent V2 nicht dabei, da er sowohl Probleme mit dem Erkennen der wechselnden Goal Zones hatte, vor allem mit dem Wegfall von Goal Zones, als auch mit dem Erkennen des Verlustes eines Blocks durch einen Clear-Event und so weniger Tasks als bisher erfolgreich bearbeiten konnte. Im Nachhinein wäre diese Vorsicht jedoch nicht nötig gewesen, da der Leistungsabfall zwar gegenüber dem zu diesem Zeitpunkt genialen Agenten V1 deutlich zu erkennen war, aber die anderen Gruppen anscheinend ebenfalls und mindestens so stark mit diesen neu hinzugekommen Problemen zu kämpfen hatten.
 
 \section{Rekapitulation und Ausblick}
 Die Umsetzung des erarbeiteten Wissens lieferte Lösungen, die speziell in den letzten beiden Turnieren sehr erfolgreich waren (siehe Kapitel \ref{Turniere}).
