@@ -51,7 +51,7 @@ Björn Wladasch}
 %
 \section{Einleitung}
 Der MAPC \textit{Multi-Agent Programming Contest} 2021\cite{MAPC2021} bildet die thematische Grundlage für die in diesem Dokument beschrieben Agentensysteme. Es handelt sich um zwei Varianten, basierend auf der BDI-Architektur \cite{Bratman1987}, die das menschliche Denken und Schlussfolgern abstrahiert bzw. nachbildet. Beide Konzepte, nachfolgend als Agentensystem V1 (siehe Kap. \ref{agentV1}) bzw. V2 (siehe Kap. \ref{agentV2}) bezeichnet, unterscheiden sich konzeptionell durch unterschiedlich stark zentralisierte Entscheidungsprozesse.
-Die Gruppe erhoffte sich durch das Verfolgen verschiedener Ansätze differenzierte Lösungen von Teilproblem, deren Vor- und Nachteile gegenseitig abgewogen werden sollten.
+Die Gruppe erhoffte sich durch das Verfolgen verschiedener Ansätze differenzierte Lösungen von Teilproblemen, deren Vor- und Nachteile gegenseitig abgewogen werden sollten.
 
 
 Als Grundlage diente das \textit{javaagents} Gerüst der MASSim (\textit{Multi-Agent Systems Simulation Platform}) \cite{EISMASSim} in der Sprache Java. Die Entscheidung für eine universelle Programmiersprache basierte auf dem Wunsch nach umfangreichen Werkzeugen und Bibliotheken zur Verifikation und Problemfindung und wurde durch die Aussage von T. Albrecht, dass für viele Teilnehmer am MAPC \textit{Multi-Agent Programming Contest} die Fehlerfindung eine schwierige und zeitintensive Aufgabe darstellt \cite[S. 17]{Ahlbrecht2021}, untermauert.
@@ -206,24 +206,27 @@ Was ich noch deutlich verbessern müsste ist, wie oben schon erwähnt, zum einen
 
 Potential würde ich auch noch bei meinen oben beschriebenen AgentCooperations sehen. Diese sind derzeit, einmal angelegt, zu starr. Der Master wartet auf seine Helper geduldig bis zum Ende aller Tage, genau genommen bis zur Deadline der betroffenen Task. Eine dynamischere Variante, bei der der Master unterdessen neue Gelegenheiten mit anderen Agenten wahrnehmen kann, wäre wohl zu bevorzugen.  
 
-\section{Gruppenbeitrag Phil Heger}
+\section{Stören des Gegners - Gruppenbeitrag Phil Heger}
+Zu Beginn der Gruppenarbeit wurde neben einem eigenen Logging-Modul eine gemeinsam in der Gruppe anhand von UML-Diagrammen entwickelte Architektur für den Umgang mit den \textit{Desires} prototypisch umgesetzt. Die Umsetzung stellte sich jedoch als nicht praktikabel heraus und musste in der Folge überarbeitet werden. 
+
+Auf den Agenten-Architekturen aufbauend wurden anschließend Strategien zum Stören gegnerischer Agenten entwickelt.
+
 \subsection{Logging}
-Anfangs wurde ein Logging-Modul (AgentLogger.java) implementiert, in dem der Logging-Output konfiguriert wird. Dieses Modul ermöglicht es, den Logging-Output, der von einem Agenten in einem bestimmten Desire oder Modul ausgegeben wird, in eine eigene Datei zu schreiben. Dadurch sind die Entscheidungsfindung dieses Agenten und seine Zustandsänderungen besser nachvollziehbar, als wenn der gesamte Logging-Output aller Agenten in der gleichen Konsole bzw. Datei ausgegeben wird und nachträglich gefiltert werden muss. 
+Anfangs wurde ein Logging-Modul (\textit{AgentLogger.java}) implementiert, in dem der Logging-Output konfiguriert wird. Dieses Modul ermöglicht es, den Logging-Output, der von einem Agenten in einem bestimmten \textit{Desire} oder Modul ausgegeben wird, in eine eigene Datei zu schreiben. Dadurch sind die Entscheidungsfindung dieses Agenten und seine Zustandsänderungen besser nachvollziehbar, als wenn der gesamte Logging-Output aller Agenten in der gleichen Konsole bzw. Datei ausgegeben wird und nachträglich gefiltert werden muss. 
 
 \subsection{Strategien zum Stören gegnerischer Agenten}
-Durch eine gezielte clear-Aktion auf die Position des Gegners wird dessen Energielevel um einen definierten Betrag verringert. Beträgt sein Energielevel 0, dann wird der Agent für einige Runden deaktiviert und verliert die Verbindung zu allen mit ihm verbunden Blöcken. Dabei gibt es zwei Probleme, die die Wirksamkeit einer einfachen Strategie (z.\,B. Angreifen beliebiger Agenten an beliebigen Stellen der Karte) stark verringern:
+Durch eine gezielte \textit{clear}-Aktion auf die Position des Gegners wird dessen Energielevel um einen definierten Betrag verringert. Beträgt sein Energielevel 0, dann wird der Agent für einige Runden deaktiviert und verliert die Verbindung zu allen mit ihm verbunden Blöcken. Die Wirksamkeit einer einfachen Strategie (z.\,B. Angreifen beliebiger Agenten an beliebigen Stellen der Karte) wird durch folgende Aspekte stark verringert:
 \begin{itemize}
 \item{Bei der clear-Aktion muss das Feld angegeben werden, auf dem sich der gegnerische Agent am Ende der Runde befinden wird. Diese Position ist bei gegnerischen Agenten jedoch unbekannt, da er sich in alle Richtungen bewegen oder auch stehenbleiben kann. Die Wahrscheinlichkeit, den Gegner zu treffen, ist dadurch sehr gering.}
-\item{Der Schaden einer erfolgreichen clear-Aktion ist nicht sehr groß. So beträgt der max. mögliche Schaden, wenn sich der angegriffene Agent in einem angrenzenden Feld befindet, nur 16\,Punkte bei einer Gesamtenergie von 100\,Punkten. Der Schaden halbiert sich mit der Distanz zum gegnerischen Agenten. Hinzu kommt, dass die Erfolgswahrscheinlichkeit der clear-Aktion bei allen Rollen (außer der Rolle \textit{digger}) nur 30\,\% beträgt.}
+\item{Der Schaden einer erfolgreichen \textit{clear}-Aktion ist nicht sehr groß. So beträgt der max. mögliche Schaden, wenn sich der angegriffene Agent in einem angrenzenden Feld befindet, nur 16\,Punkte bei einer Gesamtenergie von 100\,Punkten. Der Schaden halbiert sich mit der Distanz zum gegnerischen Agenten. Hinzu kommt, dass die Erfolgswahrscheinlichkeit der \textit{clear}-Aktion bei allen Rollen (außer der Rolle \textit{digger}) nur 30\,\% beträgt.}
 \end{itemize}
 Für ein wirksames Stören der Gegner ist daher eine komplexere Strategie und das Annehmen der Rolle \textit{digger} erforderlich.
+
 \subsubsection{Dispenser blockieren}
-Die erste Idee besteht darin, das Sammeln von Blöcken für die gegnerischen Agenten zu erschweren, indem ein eigener Agent auf das gleiche Feld wie ein Dispenser geht und dort verbleibt. Dadurch ist es nicht mehr möglich an diesem Dispenser neue Blöcke zu erzeugen. Dabei werden Dispenser ausgewählt, die für die Bearbeitung der aktuellen Aufgaben am wichtigsten sind. Aufgrund der hohen Anzahl an Dispensern in den Tunier-Konfigurationen zeigte sich jedoch, dass dieser Ansatz nicht praktikabel ist, da eine große Anzahl an eigenen Agenten für das Blockieren der vielen Dispenser notwendig wäre. Um die eigenen Agenten nicht ebenfalls zu behindern, müssen diese über blockierte Dispenser informiert werden.
+Die erste Idee besteht darin, das Sammeln von Blöcken für die gegnerischen Agenten zu erschweren, indem ein eigener Agent auf das gleiche Feld wie ein \textit{Dispenser} geht und dort verbleibt. Dadurch ist es nicht mehr möglich an diesem \textit{Dispenser} neue Blöcke zu erzeugen. Dabei werden \textit{Dispenser} ausgewählt, die für die Bearbeitung der aktuellen Aufgaben am wichtigsten sind. Aufgrund der hohen Anzahl an \textit{Dispensern} in den Turnier-Konfigurationen zeigte sich jedoch, dass dieser Ansatz nicht praktikabel ist, da eine große Anzahl an eigenen Agenten für das Blockieren der vielen \textit{Dispenser} notwendig wäre. Um die eigenen Agenten nicht ebenfalls zu behindern, müssen diese über blockierte \textit{Dispenser} informiert werden.
 
 \subsubsection{Goal Zone verteidigen}
-Bei diesem Ansatz wurde der in der Einleitung dieses Unterkapitels erwähnte grundlegende Mechanismus (clear-Aktion auf Position des gegnerischen Agenten) umgesetzt, wobei der eigene Agent gegnerische Agenten nur in der Zielzone angreift, da die gegnerischen Agenten hier oft auf andere Agenten warten und sich in dieser Zeit nicht bewegen. Der eigene Agent kann sich dadurch nähern und mit dem größtmöglichen Schaden angreifen. Ist der gegnerische Agent deaktiviert, werden alle mit ihm verbundenen Blöcke gelöst. Diese können anschließend vom angreifenden Agenten mit clear-Aktionen entfernt werden. Neben dem Deaktivieren des Agenten für einige Runden war auch der Aufwand des Holens der Blöcke für umsonst. Hinzu kommt die Chance, den gegnerischen Algorithmus des Zusammenbauens von größeren Aufgaben zu stören.
-
-In der Umsetzung wurde jeder der zwei in den Turnier-Konfigurationen definierten Zielzonen ein Agent fest zugewiesen. Für eine ausreichend hohe Effektivität muss der ausgewählte Agent die Rolle \textit{digger} annehmen, damit die clear-Aktionen mit einer Wahrscheinlichkeit von 100\,\% ausgeführt werden.
+Bei diesem Ansatz wurde der in der Einleitung dieses Unterkapitels erwähnte grundlegende Mechanismus (\textit{clear}-Aktion auf Position des gegnerischen Agenten) umgesetzt, wobei der eigene Agent gegnerische Agenten nur in der Zielzone angreift, da die gegnerischen Agenten hier oft auf andere Agenten warten und sich in dieser Zeit nicht bewegen. Der eigene Agent kann sich dadurch nähern und mit dem größtmöglichen Schaden angreifen. Ist der gegnerische Agent deaktiviert, werden alle mit ihm verbundenen Blöcke gelöst. Diese können anschließend vom angreifenden Agenten mit \textit{clear}-Aktionen entfernt werden. Neben dem Deaktivieren des Agenten für einige Runden war auch der Aufwand des Holens der Blöcke für umsonst. Hinzu kommt die Chance, den gegnerischen Algorithmus des Zusammenbauens von größeren Aufgaben zu stören.
 
 Für die Umsetzung der Strategie wurden folgende Teilaufgaben gelöst:
 \begin{itemize}
@@ -237,11 +240,6 @@ Für die Umsetzung der Strategie wurden folgende Teilaufgaben gelöst:
 \end{itemize}
 
 Getestet wurde die Strategie, indem die eigenen Agenten auch als Gegnerteam eingesetzt wurden. Die Strategie ist nur wirksam, wenn sich gegnerische, Blöcke tragende Agenten ausreichend lange in der Zielzone nicht bewegen. Gegen 1-Block-Aufgaben ist die Strategie dadurch völlig wirkungslos, da die gegnerischen Agenten dabei in die Zielzone laufen und sofort die Aufgabe abgeben.
-
-\subsection{Sonstiges}
-Zu Beginn der Gruppenarbeit wurde eine mögliche Architektur für den Umgang mit den \textit{Desires} anhand von UML-Diagrammen entwickelt. In der Folge wurde prototypisch eine Architektur umgesetzt. Diese stellte sich jedoch als nicht praktikabel heraus, da die \textit{Desires} sehr kleinteilig aufgeteilt und in jedem Schritt die \textit{Desire}-Objekte neu erzeugt wurden und somit Zustände nicht gespeichert werden konnten. Das Konzept wurde deshalb überarbeitet.
-
-Zwischenzeitlich wurde außerdem ein \textit{Desire} entwickelt, bei dem ein Agent eigenständig alle Blöcke für beliebig komplexe Aufgaben sammelt und zusammenbaut. Dies wurde jedoch zugunsten von kooperierenden Agenten, die sich gegenseitig Blöcke holen, abgebrochen.
 
 \section{Gruppenbeitrag Björn Wladasch}
 \subsection{Kartengrösse bestimmen}
