@@ -580,7 +580,7 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
  \fi\par
  \penalty\@highpenalty \endgroup}
 
-\def\l@title#1#2{\addpenalty{-\@highpenalty}
+\def\l@#1#2{\addpenalty{-\@highpenalty}
  \addvspace{8pt plus 1pt}
  \@tempdima \z@
  \begingroup
@@ -945,7 +945,7 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
           \typeout{a shorter form with \string\titlerunning\space prior to
                    \string\maketitle}%
           \global\setbox\titrun=\hbox{\small\rm
-          Title Suppressed Due to Excessive Length}%
+          Gruppe 3}%
        \fi
        \xdef\@title{\copy\titrun}%
     \fi
