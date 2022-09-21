@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  20 SEP 2022 19:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  21 SEP 2022 07:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -12,22 +11,6 @@ Document Class: llncs 2022/01/12 v2.21
 (/usr/share/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
 (/usr/share/texmf-dist/tex/latex/base/size10.clo
-=======
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.8.28) (preloaded format=pdflatex 2022.9.8)  20 SEP 2022 15:13
-entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**./gruppe3.tex
-(gruppe3.tex
-LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-08-30>
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/llncs\llncs.cls
-Document Class: llncs 2022/09/05 v2.22 
- LaTeX document class for Lecture Notes in Computer Science
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
-Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
->>>>>>> master
 File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
@@ -42,11 +25,7 @@ File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
 )
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/latex/tools/multicol.sty
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/tools\multicol.sty
->>>>>>> master
 Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \c@tracingmulticols=\count193
 \mult@box=\box50
@@ -115,11 +94,7 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \colbreak@box=\box94
 \mc@col@check@num=\count268
 )
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/latex/oberdiek/aliascnt.sty
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/oberdiek\aliascnt.sty
->>>>>>> master
 Package: aliascnt 2018/09/07 v1.5 Alias counters (HO)
 )
 \c@chapter=\count269
@@ -134,7 +109,6 @@ LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 369.
 LaTeX Font Info:    Redeclaring math symbol \Phi on input line 370.
 LaTeX Font Info:    Redeclaring math symbol \Psi on input line 371.
 LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
-LaTeX Info: Redefining \vec on input line 377.
 \tocchpnum=\dimen148
 \tocsecnum=\dimen149
 \tocsectotal=\dimen150
@@ -173,7 +147,6 @@ LaTeX Info: Redefining \vec on input line 377.
 \c@solution=\count287
 \c@remark=\count288
 \headlineindent=\dimen160
-<<<<<<< HEAD
 )
 (/usr/share/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
@@ -192,51 +165,22 @@ Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
 (/usr/share/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-=======
-) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
-Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
-Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
-Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks20
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
-Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
-Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics
-.cfg
->>>>>>> master
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
 
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/latex/graphics-def/pdftex.def
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.d
-ef
->>>>>>> master
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen161
 \Gin@req@width=\dimen162
 )
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/generic/babel/babel.sty
 Package: babel 2022/02/26 3.73 The Babel package
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
-Package: babel 2022/08/29 3.79 The Babel package
->>>>>>> master
 \babel@savecnt=\count289
 \U@D=\dimen163
 \l@unhyphenated=\language87
 
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/generic/babel/txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count290
@@ -246,39 +190,11 @@ Language: ngerman 2021/02/27 v2.13 German support for babel (post-1996 orthogra
 phy)
 
 (/usr/share/texmf-dist/tex/generic/babel-german/ngermanb.ldf
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
-\bbl@readstream=\read2
-\bbl@dirlevel=\count290
-*************************************
-* Local config file bblopts.cfg used
-*
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
-File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
- babel
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngerman.
-ldf
-Language: ngerman 2021/02/27 v2.13 German support for babel (post-1996 orthogra
-phy)
-
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngermanb
-.ldf
->>>>>>> master
 Language: ngermanb 2021/02/27 v2.13 German support for babel (post-1996 orthogr
 aphy)
 Package babel Info: Making " an active character on input line 122.
 )))
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/latex/wrapfig/wrapfig.sty
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/de\bab
-el-ngerman.tex
-Package babel Info: Importing font and identification data for ngerman
-(babel)             from babel-de.ini. Reported on input line 11.
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/wrapfig\wrapfig.sty
->>>>>>> master
 \wrapoverhang=\dimen164
 \WF@size=\dimen165
 \c@WF@wrappedlines=\count291
@@ -286,7 +202,6 @@ Package babel Info: Importing font and identification data for ngerman
 \WF@everypar=\toks21
 Package: wrapfig 2003/01/31  v 3.6
 )
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
 Package: algorithm2e 2017/07/18 v5.2 algorithms environments
 \c@AlgoLine=\count292
@@ -304,25 +219,6 @@ Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
 )
 (/usr/share/texmf-dist/tex/latex/relsize/relsize.sty
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/algorithm2e\algorithm
-2e.sty
-Package: algorithm2e 2017/07/18 v5.2 algorithms environments
-\c@AlgoLine=\count292
-
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
-Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
-)
-\algocf@hangindent=\skip51
-
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifoddpage.s
-ty
-Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
-\c@checkoddpage=\count293
-) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty
-Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
-) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/relsize\relsize.sty
->>>>>>> master
 Package: relsize 2013/03/29 ver 4.1
 )
 \skiptotal=\skip52
@@ -361,7 +257,6 @@ Package: relsize 2013/03/29 ver 4.1
 \algocf@algoframe=\box104
 \algocf@algobox=\box105
 )
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/latex/floatflt/floatflt.sty
 Package: floatflt 1997/07/16 v. 1.31
 \c@OptionTest=\count297
@@ -419,101 +314,47 @@ LaTeX Font Info:    ... okay on input line 27.
 \makeMPintoPDFobject=\count310
 \everyMPtoPDFconversion=\toks24
 ) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
-dftex.def
-File: l3backend-pdftex.def 2022-08-30 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count297
-\l__pdf_internal_box=\box107
-) (gruppe3.aux)
-\openout1 = `gruppe3.aux'.
-
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
-mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count298
-\scratchdimen=\dimen172
-\scratchbox=\box108
-\nofMPsegments=\count299
-\nofMParguments=\count300
-\everyMPshowfont=\toks22
-\MPscratchCnt=\count301
-\MPscratchDim=\dimen173
-\MPnumerator=\count302
-\makeMPintoPDFobject=\count303
-\everyMPtoPDFconversion=\toks23
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf
--base.sty
->>>>>>> master
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
 
-<<<<<<< HEAD
 (/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
-=======
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys
-.cfg
-File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
->>>>>>> master
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 48.
+(Font)              <7> on input line 49.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 48.
+(Font)              <5> on input line 49.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
-<<<<<<< HEAD
-8.
+9.
 
 (/usr/share/texmf-dist/tex/latex/base/t1cmtt.fd
-=======
-7.
- (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
->>>>>>> master
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 Title too long for running head. Please supply
 a shorter form with \titlerunning prior to \maketitle
 [1
 
-<<<<<<< HEAD
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 <./Referenzen/Architekturdiagramm.pdf, id=12, 194.28864pt x 166.82513pt>
 File: ./Referenzen/Architekturdiagramm.pdf Graphic file (type pdf)
 <use ./Referenzen/Architekturdiagramm.pdf>
 Package pdftex.def Info: ./Referenzen/Architekturdiagramm.pdf  used on input li
-ne 72.
+ne 73.
 (pdftex.def)             Requested size: 136.0011pt x 116.77678pt.
 
-Underfull \hbox (badness 1418) in paragraph at lines 78--79
+Underfull \hbox (badness 1418) in paragraph at lines 79--80
 \T1/cmr/m/n/10 Wei-te-ren nur noch die Wei-ter-lei-tung von
  []
 
 <./Referenzen/Kartenmerge.pdf, id=13, 438.29257pt x 161.78024pt>
 File: ./Referenzen/Kartenmerge.pdf Graphic file (type pdf)
 <use ./Referenzen/Kartenmerge.pdf>
-Package pdftex.def Info: ./Referenzen/Kartenmerge.pdf  used on input line 92.
+Package pdftex.def Info: ./Referenzen/Kartenmerge.pdf  used on input line 93.
 (pdftex.def)             Requested size: 350.63454pt x 129.42435pt.
 
-Overfull \hbox (3.511pt too wide) in paragraph at lines 92--93
+Overfull \hbox (3.511pt too wide) in paragraph at lines 93--94
 [][] 
  []
 
@@ -521,119 +362,32 @@ Overfull \hbox (3.511pt too wide) in paragraph at lines 92--93
 <./Referenzen/Pathfinding.pdf, id=27, 81.23987pt x 85.77853pt>
 File: ./Referenzen/Pathfinding.pdf Graphic file (type pdf)
 <use ./Referenzen/Pathfinding.pdf>
-Package pdftex.def Info: ./Referenzen/Pathfinding.pdf  used on input line 103.
+Package pdftex.def Info: ./Referenzen/Pathfinding.pdf  used on input line 104.
 (pdftex.def)             Requested size: 81.23965pt x 85.77832pt.
 
-Overfull \hbox (1.40273pt too wide) in paragraph at lines 103--104
+Overfull \hbox (1.40273pt too wide) in paragraph at lines 104--105
 [][] 
  []
-=======
-{C:/Users/Melinda/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-Overfull \hbox (9.7652pt too wide) in paragraph at lines 61--62
-[]\T1/cmr/m/n/10 Das in die-ser Ar-beit ent-wi-ckel-te Agen-ten-sys-tem ba-sier
-t auf der BDI-Architektur
- []
 
 
-Overfull \hbox (10.40027pt too wide) in paragraph at lines 63--64
-\T1/cmr/m/n/10 UML-Diagrammen kon-kre-te Sys-te-mar-chi-tek-tu-ren er-ar-bei-te
-t. Die UML-Diagramme
- []
-
-[2]
-
-LaTeX Warning: File `./Referenzen/Architekturdiagramm.pdf' not found on input l
-ine 79.
-
-
-! Package pdftex.def Error: File `./Referenzen/Architekturdiagramm.pdf' not fou
-nd: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.79 ...e=1]{./Referenzen/Architekturdiagramm.pdf}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: File `./Referenzen/Kartenmerge.pdf' not found on input line 98.
-
-
-! Package pdftex.def Error: File `./Referenzen/Kartenmerge.pdf' not found: usin
-g draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.98 ...s[scale=0.8]{./Referenzen/Kartenmerge.pdf}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[3] [4]
-
-LaTeX Warning: File `./Referenzen/Pathfinding.pdf' not found on input line 127.
-
-
-
-! Package pdftex.def Error: File `./Referenzen/Pathfinding.pdf' not found: usin
-g draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.127 ...udegraphics{./Referenzen/Pathfinding.pdf}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
->>>>>>> master
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 104--104
+Underfull \hbox (badness 10000) in paragraph at lines 105--105
 []\T1/cmr/bx/n/9 Abb.3. \T1/cmr/m/n/9 Da-ten-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--104
+Underfull \hbox (badness 10000) in paragraph at lines 105--105
 \T1/cmr/m/n/9 struk-tur Weg-fin-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--104
+Underfull \hbox (badness 10000) in paragraph at lines 105--105
 \T1/cmr/m/n/9 dung (aus rea-ler
  []
 
-<<<<<<< HEAD
-=======
-
-LaTeX Warning: File `./Referenzen/Entscheidungsfindung.pdf' not found on input 
-line 140.
-
-
-! Package pdftex.def Error: File `./Referenzen/Entscheidungsfindung.pdf' not fo
-und: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.140 ...1]{./Referenzen/Entscheidungsfindung.pdf}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[5]
->>>>>>> master
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 110.
+(Font)              <9> on input line 111.
 LaTeX Font Info:    External font `cmex10' loaded for size
-<<<<<<< HEAD
-(Font)              <6> on input line 110.
+(Font)              <6> on input line 111.
 [3 <./Referenzen/Kartenmerge.pdf> <./Referenzen/Pathfinding.pdf
 
 pdfTeX warning: /usr/bin/pdflatex (file ./Referenzen/Pathfinding.pdf): PDF incl
@@ -643,10 +397,10 @@ usion: multiple pdfs with page group included in a single page
 File: ./Referenzen/Entscheidungsfindung2.pdf Graphic file (type pdf)
 <use ./Referenzen/Entscheidungsfindung2.pdf>
 Package pdftex.def Info: ./Referenzen/Entscheidungsfindung2.pdf  used on input 
-line 123.
+line 124.
 (pdftex.def)             Requested size: 351.67603pt x 77.74936pt.
 
-Overfull \hbox (4.55249pt too wide) in paragraph at lines 123--124
+Overfull \hbox (4.55249pt too wide) in paragraph at lines 124--125
  [][] 
  []
 
@@ -654,84 +408,31 @@ Overfull \hbox (4.55249pt too wide) in paragraph at lines 123--124
 <./Referenzen/Debugger3.png, id=54, 3836.3325pt x 845.1575pt>
 File: ./Referenzen/Debugger3.png Graphic file (type png)
 <use ./Referenzen/Debugger3.png>
-Package pdftex.def Info: ./Referenzen/Debugger3.png  used on input line 147.
+Package pdftex.def Info: ./Referenzen/Debugger3.png  used on input line 148.
 (pdftex.def)             Requested size: 349.11852pt x 76.91203pt.
 
-Overfull \hbox (1.99498pt too wide) in paragraph at lines 147--148
+Overfull \hbox (1.99498pt too wide) in paragraph at lines 148--149
 [][] 
  []
 
 [5 <./Referenzen/Debugger3.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 163--164
-=======
-(Font)              <6> on input line 166.
- [6]
-
-LaTeX Warning: File `./Referenzen/Debugger2.png' not found on input line 191.
-
-
-! Package pdftex.def Error: File `./Referenzen/Debugger2.png' not found: using 
-draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.191 ...[scale=0.091]{./Referenzen/Debugger2.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[7]
-Overfull \hbox (15.34766pt too wide) in paragraph at lines 226--232
+Overfull \hbox (15.34766pt too wide) in paragraph at lines 180--186
 \T1/cmr/m/n/10 MasterMultiBlocksDesire, Hel-per-Mult-iBlocks-De-si-re, Hel-per2
 MultiBlocksDesire,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 238--239
-
- []
-
-[8]
-Underfull \hbox (badness 10000) in paragraph at lines 243--244
->>>>>>> master
-
- []
-
-
-<<<<<<< HEAD
-Underfull \hbox (badness 10000) in paragraph at lines 165--166
-=======
-Underfull \hbox (badness 10000) in paragraph at lines 251--252
->>>>>>> master
-
- []
-
-[9] [10] [11]
-
-<<<<<<< HEAD
-Underfull \hbox (badness 10000) in paragraph at lines 167--169
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 170--173
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 175--176
+Underfull \hbox (badness 10000) in paragraph at lines 192--193
 
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 180--181
+Underfull \hbox (badness 10000) in paragraph at lines 197--198
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 182--184
+Underfull \hbox (badness 10000) in paragraph at lines 205--206
 
  []
 
@@ -740,85 +441,37 @@ Underfull \hbox (badness 10000) in paragraph at lines 182--184
 File: ./Referenzen/Measurement_Step1.png Graphic file (type png)
 <use ./Referenzen/Measurement_Step1.png>
 Package pdftex.def Info: ./Referenzen/Measurement_Step1.png  used on input line
- 244.
+ 263.
 (pdftex.def)             Requested size: 173.89926pt x 128.3542pt.
  [10]
 <./Referenzen/Measurement_Step2.png, id=77, 344.03531pt x 256.70906pt>
 File: ./Referenzen/Measurement_Step2.png Graphic file (type png)
 <use ./Referenzen/Measurement_Step2.png>
 Package pdftex.def Info: ./Referenzen/Measurement_Step2.png  used on input line
- 260.
+ 279.
 (pdftex.def)             Requested size: 172.01723pt x 128.3542pt.
- [11 <./Referenzen/Measurement_Step1.png> <./Referenzen/Measurement_Step2.png>]
- [12] [13]
-Underfull \hbox (badness 10000) in paragraph at lines 327--328
-=======
-LaTeX Warning: File `./Referenzen/Measurement_Step1.png' not found on input lin
-e 309.
-
-
-! Package pdftex.def Error: File `./Referenzen/Measurement_Step1.png' not found
-: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.309 ...=0.5]{./Referenzen/Measurement_Step1.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[12]
-
-LaTeX Warning: File `./Referenzen/Measurement_Step2.png' not found on input lin
-e 325.
-
-
-! Package pdftex.def Error: File `./Referenzen/Measurement_Step2.png' not found
-: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.325 ...=0.5]{./Referenzen/Measurement_Step2.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[13] [14] [15]
-Underfull \hbox (badness 10000) in paragraph at lines 391--392
-
- []
-
-[16] [17] [18] [19]
-Underfull \hbox (badness 10000) in paragraph at lines 498--499
->>>>>>> master
+ [11 <./Referenzen/Measurement_Step1.png>] [12 <./Referenzen/Measurement_Step2.
+png>] [13]
+Underfull \hbox (badness 10000) in paragraph at lines 345--346
 \T1/cmr/m/n/9 https://github.com/agentcontest/massim_2022/blob/main/docs/eismas
 sim.md,
  []
 
 
-<<<<<<< HEAD
-Overfull \hbox (24.81023pt too wide) in paragraph at lines 335--336
-=======
-Overfull \hbox (24.81023pt too wide) in paragraph at lines 506--507
->>>>>>> master
+Overfull \hbox (24.81023pt too wide) in paragraph at lines 353--354
 []\T1/cmr/m/n/9 Projekt-Quellcodeverwaltung, htt-ps://github.com/h1Modeling/ss2
 2_fp_mapc_gruppe3,
  []
 
-<<<<<<< HEAD
 [14] (./gruppe3.aux) ) 
 Here is how much of TeX's memory you used:
- 4344 strings out of 478238
- 70368 string characters out of 5850456
- 395064 words of memory out of 5000000
- 22545 multiletter control sequences out of 15000+600000
+ 4343 strings out of 478238
+ 70361 string characters out of 5850456
+ 394014 words of memory out of 5000000
+ 22544 multiletter control sequences out of 15000+600000
  480115 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,9n,62p,1173b,410s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,9n,62p,1339b,278s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-
 ts1.enc}{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/s
 hare/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist
@@ -830,45 +483,10 @@ dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fonts/type
 1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-sup
 er/sfti1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb
 >
-Output written on gruppe3.pdf (14 pages, 491237 bytes).
+Output written on gruppe3.pdf (14 pages, 491738 bytes).
 PDF statistics:
  141 PDF objects out of 1000 (max. 8388607)
  87 compressed objects within 1 object stream
-=======
-[20] (gruppe3.aux) ) 
-Here is how much of TeX's memory you used:
- 4504 strings out of 475389
- 79743 string characters out of 2776057
- 444148 words of memory out of 3000000
- 25817 multiletter control sequences out of 15000+600000
- 480281 words of font info for 48 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 55i,15n,62p,1342b,464s stack positions out of 10000i,1000n,20000p,200000b,80000s
- <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
-appen/ec/dpi600\tcrm0900.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/lj
-four/jknappen/ec/dpi600\ecbi0900.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fon
-ts/pk/ljfour/jknappen/ec/dpi600\ecti0900.pk> <C:\Users\Melinda\AppData\Local\Mi
-KTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\Melinda\AppData\
-Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx0900.pk> <C:\Users\Melinda\
-AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1000.pk> <C:\Users\
-Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C
-:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx120
-0.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600
-\ectt0900.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
-c/dpi600\ecrm0900.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jk
-nappen/ec/dpi600\ecrm1000.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/l
-jfour/jknappen/ec/dpi600\ecbx1440.pk><C:/Users/Melinda/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Melinda/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Melinda/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/M
-elinda/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><
-C:/Users/Melinda/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
-mr7.pfb><C:/Users/Melinda/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
-onts/cm/cmsy10.pfb>
-Output written on gruppe3.pdf (20 pages, 249640 bytes).
-PDF statistics:
- 567 PDF objects out of 1000 (max. 8388607)
->>>>>>> master
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
