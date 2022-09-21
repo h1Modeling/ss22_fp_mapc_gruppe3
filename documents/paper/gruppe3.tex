@@ -241,47 +241,30 @@ Für die Umsetzung der Strategie wurden folgende Teilaufgaben gelöst:
 
 Getestet wurde die Strategie, indem die eigenen Agenten auch als Gegnerteam eingesetzt wurden. Die Strategie ist nur wirksam, wenn sich gegnerische, Blöcke tragende Agenten ausreichend lange in der Zielzone nicht bewegen. Gegen 1-Block-Aufgaben ist die Strategie dadurch völlig wirkungslos, da die gegnerischen Agenten dabei in die Zielzone laufen und sofort die Aufgabe abgeben.
 
-\section{Gruppenbeitrag Björn Wladasch}
-\subsection{Kartengrösse bestimmen}
-Um dem Problem der endlosen Karte zu begegnen sollte eine Methode entwickelt werden die es ermöglicht, die tatsächliche Kartengröße zu bestimmen. Die Basisidee wie soetwas umgesetzt werden könnte, wurde der Dokumentation des letzten Wettbewerbs \cite{MAPC2021} entnommen.  
+\section{Gruppenbeitrag Björn Wladasch - Kartengröße bestimmen}
+Nach der Einarbeitung in die Strukturen der MASSim (\textit{Multi-Agent Systems Simulation Platform}) \cite{EISMASSim} sollte eine Möglichkeit implementiert werden, die tatsächliche Größe der Karte zu bestimmen.
+Dadurch, dass sich die Karte zu allen Seiten endlos wiederholt, scheint sie aus Sicht der Agenten unendlich sein. Für eine effiziente Pfadfindung und eine günstige Koordinierung der Agenten, ist  die tatsächliche Größe der Karte von erheblichem Vorteil. Im folgenden wird beschrieben, welche Ansätze verfolgt wurden, um die Kartengröße mit dem Agenten V1 zu bestimmen.
 
-Da in der Literatur aber keine vollständige Erklärung des verwendeten Algorithmus angegeben war, wurde mit verschiedenen Ansätzen zur Bestimmung der Kartengröße experimentiert. Unter anderem wurde versucht aus dem initialen Abstand zweier Agenten, der Anzahl der gemachten Schritte (in Richtung der zu vermessenden Achse) und dem Abstand bei erneuter Sichtung des Agenten zu berechnen, wie groß die Karte ist, was aber erfolglos blieb.
+\subsection{Kartengröße berechnen}
+Die grundsätzliche Idee Agenten in entgegengesetzte Richtungen zu schicken und zu beobachten, wann Sie vor dem jeweilig anderen Agenten wieder auftauchen, stammt aus der Turnierbeschreibung des letzten Wettbewerbs \cite[S.136]{MAPC2021}.
 
-Nach zahlreichen Versuchen wurde eine verlässliche Lösung gefunden, die im Folgenden vorgestellt wird.
+Um die Kartenbreite ( bzw. -höhe) zu bestimmen, wurde der Abstand der Agenten zueinander sowohl beim Start der Vermessung als auch beim erneuten Aufeinandertreffen gemessen und die Anzahl der Schritte in die jeweilige Richtung gespeichert. Aus diesen Werten lässt sich - im Idealfall - die Breite bzw. Höhe der Karte ermitteln.
 
-Dazu muss man zunächst ein paar Vorbemerkungen zur Ausgangslage im betrachteten Agenten (BDIAgentV1) machen. Agenten können zu Gruppen zusammengefasst werden, welche isch danneine Karte teilen, so dass die absolute Positionen der Agenten (im Bezug auf diese Karte) bekannt sind. Mittels einer Methode des zugehörigen Kartenobjektes ist es jederzeit möglich, über den Namen eines Agenten dessen bekannte Position auf der Karte zu erhalten.
+Bei der Umsetzung traten allerdings verschiedene Probleme auf, welche nur zum Teil gelöst werden konnten.
 
-Die Koordinaten der \textit{Things}, die von den jeweiligen Agenten gesehen werden, werden in relativen Koordinaten angegeben (also dem Abstand auf der x- bzw. y-Achse) bezogen auf die Position des Agenten. Diese befindet sich immer im Zentrum seines Sichtfeldes, und hat somit die relativen Koordinaten (0,0).
+\subsection{Koordination von Agenten}
+Für die Bestimmung der Kartengröße wurden fünf Agenten zu einer Gruppe zusammengefasst. Ein Agent (als Supervisor) koordinierte die anderen Agenten und gab das Ergebniss der Vermessung weiter. Die anderen vier Agenten wurden jeweils in eine der Himmelsrichtungen entsendet.
+Bei der Umsetzung stellte sich aber heraus, dass auf großen Karten mit relativ wenigen Agenten schon das Zusammenstellen der Gruppe lange dauert und somit viel Zeit verloren ging, manchmal konnte nicht einmal eine Gruppe gebildet werden.
 
+Zudem mussten die Agenten auf Ihrem Weg andern Agenten und Hindernissen ausweichen und wurden dadurch von ihrem Weg abgelenkt. Dies führte dazu, dass sich die Agenten nicht wieder begegneten,
+weil sie sich auf der zu ihrer Laufrichtung orthogonalen Achse zu weit von einander entfernt hatten. Dies wurde durch die Festlegung einer gemeinsame Basislinie (also die x- bzw. y-Achse auf der sich die Agenten bewegten) behoben, zu der sich die Agenten nach einem Ausweichmanöver wieder hin orientieren mussten.
 
-Die Grundidee zur Bestimmung der Kartengröße besteht nun darin, zwei Agenten miteinander zu verbinden ( es reicht, dass ein Agent den Namen des anderen Agenten kennt) und in entgegengesetzte Richtungen loszuschicken, jeweils ein Paar ( in der Abbildung sind die beiden Agenten der Einfachheit halber mit W und E benannte) entlang der x-Achse in Richtung Westen bzw. Osten und ein Paar in Richtung Norden bzw. Süden entlang der y-Achse.
+\subsection{Kommunikation in der Agentengruppe}
+Anfänglich hat jeder Agent der Gruppe alle vor ihm auftauchenden Agenten des eigenen Teams mit von allen Agenten des Gruppe auf eine Übereinstimmung mit seiner relativen Position überprüfen lassen. Dieses Vorgehen führte aber zu einem erheblichen Kommunikationsaufwand sowie zu falsch-positiven Sichtungen, da verschiedene Agenten zufällig einen anderen Agenten aus Ihrem Team an der selben relativen Position gesehen haben.
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.5]{./Referenzen/Measurement_Step1.png}
-\caption{Startsituation}
-\label{measurement1}
-\end{figure}
+Daher wurden die Agenten einer Achse miteinander bekannt gemacht. Agenten die gemeinsam eine Achse vermessen sollten, kannten den Namen des jeweils anderen Agenten und konnten so jeweils direkt miteinander kommunizieren, was sowohl den Kommunikationsaufwand erheblich gesenkt als  auch die falsch-positiven Sichtungen beseitigt hat.
 
-Auf Grund der sich wiederholenden Karte muss ein Agent der nach Westen läuft zwangsweise seinem Gegenstück das nach Osten gegangen ist wieder begegnen, sobald einer der Beiden (oder beide) die Kartengrenze überschritten haben.In Nord- Süd-Richtung passiert das ganze analog und wird hier nicht weiter betrachtet.
-
-Die mit der Kartenvermessung beauftragten Agenten betrachten nun jeden Agenten aus dem eigenen Team der vor ihnen in Bewegungsrichtung auftaucht und prüfen ob es sich um den gesuchten Agenten handelt.
-
-Die Position diesen entdeckten Agenten (hier als U1 bzw. U2 bezeichnet) auf der gemeinsamen Karte lässt sich bestimmen, in dem die eigene Kartenposition zur relativen Position des gefundenen Agenten hinzu addiert wird. Ist dabei die y-Koordinate (im Nord-Süd-Fall die x-Koordinate) identisch mit der bekannten Position des gesuchten Agenten und die x-Koordinate (bzw. y- Koordinate im Nord-Süd-Fall) entspricht nicht der bekannten Position des gesuchten Agenten so besteht die Möglichkeit, dass der andere Agent gefunden wurde. Wenn dieser an inverser relativer Position ebenfalls einen passend Agenten sieht, haben sich die beiden Agenten wiedergefunden.
-
-Beispiel (in Abbildung) 
-Der Agent U1 ist aus Sicht von Agent W die Koordinaten (-1,-1). Aus Sicht des Agenten E hat U2 die Koordinaten (1,1), was genau die entgegengesetzten Koordinaten sind. Damit sehen die beiden Agenten W und E in dem jeweiligen Agenten U1 bzw. U2 ihr Gegenstück nach Überquerung der Kartengrenze. Die Kartenbreite ist dann | U1.x - E.x | bzw. | U2.x - W.x| .
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.5]{./Referenzen/Measurement_Step2.png}
-\caption{unbekannte Agenten gefunden}
-\label{measurement2}
-\end{figure}
-
-
-Da auf der Karte aber zahlreiche Hindernisse im Weg der Agenten sein können, ist es wichtig, dass sich die Agenten nciht verpassen. Dazu muss man sicherstellen, dass die beiden Agenten möglichst auf einer vorher festgelegten Linie laufen, damit sie wieder in das Sichtfeld des anderen laufen. Dazu legt man einen y-Koordinaten Wert (im Fall der West- Ost-Vermessung, bei Nord -Süd Vermessung einen entsprechenden x-Wert)) fest auf den die Agenten nach Ausweichmanövern und ähnlichem immer wieder zusteuern.
-
+Da die beiden Probleme der Berechnung der Kartengröße aus Abständen und Schrittzählern sowie die  Koordination von 5 Agenten in einer Gruppe nicht zu befriedigenden Ergebnissen geführt haben, wurde durch die Gruppe eine alternative Lösung implementiert, welche dann im letzten Turnier eingesetzt wurde.
 
 \section{Turniere}\label{Turniere}
 Die Gruppe nahm an den Turnieren 2-6 teil. Den Großteil der Spiele bestritt das Agentensystem V1. Das System V2 übernahm jeweils ein Spiel in den Turnieren 2-5. 
