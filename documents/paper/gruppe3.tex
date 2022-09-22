@@ -26,7 +26,7 @@
 \RestyleAlgo{ruled}
 \begin{document}
 	%
-	\title{Gruppe 3 : Mehrschichtige und dezentrale Entscheidungsprozesse in Agentensystemen}
+	\title{Gruppe 3: Mehrschichtige und dezentrale Entscheidungsprozesse in Agentensystemen}
 	\pagenumbering {gobble}
 	%
 	\titlerunning{Mehrschichtige und dezentrale Entscheidungsprozesse in Agentensystemen}
@@ -50,7 +50,7 @@
 	%
 	%
 	\section{Einleitung}
-	Der MAPC \textit{Multi-Agent Programming Contest} 2021\cite{MAPC2021} bildet die thematische Grundlage für die in diesem Dokument beschrieben Agentensysteme. Es handelt sich um zwei Varianten, basierend auf der BDI-Architektur \cite{Bratman1987}, die das menschliche Denken und Schlussfolgern abstrahiert bzw. nachbildet. Beide Konzepte, nachfolgend als Agentensystem V1 (siehe Kap. \ref{agentV1}) bzw. V2 (siehe Kap. \ref{agentV2}) bezeichnet, unterscheiden sich konzeptionell durch unterschiedlich stark zentralisierte Entscheidungsprozesse.
+	Der MAPC \textit{Multi-Agent Programming Contest} 2021 \cite{MAPC2021} bildet die thematische Grundlage für die in diesem Dokument beschrieben Agentensysteme. Es handelt sich um zwei Varianten, basierend auf der BDI-Architektur \cite{Bratman1987}, die das menschliche Denken und Schlussfolgern abstrahiert bzw. nachbildet. Beide Konzepte, nachfolgend als Agentensystem V1 (siehe Kap. \ref{agentV1}) bzw. V2 (siehe Kap. \ref{agentV2}) bezeichnet, unterscheiden sich konzeptionell durch unterschiedlich stark zentralisierte Entscheidungsprozesse.
 	Die Gruppe erhoffte sich durch das Verfolgen verschiedener Ansätze differenzierte Lösungen von Teilproblemen, deren Vor- und Nachteile gegenseitig abgewogen werden sollten.
 	
 	
@@ -257,24 +257,24 @@
 	\subsection{Agent V1}
 	Das Agentensystem zeigte sich über alle teilgenommenen Turniere hinweg wettbewerbsfähig. Probleme in einzelnen Begegnungen wurden detailliert dokumentiert und im weiteren Entwicklungsverlauf behoben oder zumindest entschärft. Die Folgenden Absätze geben ein Überblick über die Leistung und Probleme in den einzelnen Turnieren.
 	
-	\textbf{Turnier 2}
+	\subsubsection{Turnier 2}
 	Es war erfreulich, dass 10 Agenten in der Lage waren bis zu 370 Punkte über Einblock-Aufgaben zu erringen. Trotzdem zeigte sich noch großes Verbesserungspotential bei der Befreiung von Agenten aus festgefahrenen Situationen und dem generellen Ausweichen von Agenten untereinander.
 	
-	\textbf{Turnier 3}
+	\subsubsection{Turnier 3}
 	Die erreichte Punktzahl über Einblock-Aufgaben konnte auf bis zu 720 gesteigert werden. Dies resultierte hauptsächlich aus besseren Strategien zur Befreiung aus festgefahrenen Situationen. Trotzdem waren weiterhin teilweise übermäßige Gruppenbildung und daraus resultierende gegenseitige Behinderung zu beobachten.
 	
-	\textbf{Turnier 4}
+	\subsubsection{Turnier 4}
 	Die Agenten waren erstmals in der Lage Mehrblock-Aufgaben zu bearbeiten. Das Zusammenspiel der Agenten war leider noch nicht zufriedenstellend, wodurch sich ein Rückgang der erreichten Maximalpunkte auf 680 ergab. Positiv war zu beobachten, dass die Gruppenbildung und daraus resultierender gegenseitiger Behinderung im Vergleich zum Vorturnier abgenommen hat.
 	
-	\textbf{Turnier 5}
+	\subsubsection{Turnier 5}
 	Die Behebung eines Fehlers im Entscheidungsprozess führte zu stark verbesserter Leistungsfähigkeit und sicherte der Gruppe den Turniersieg mit maximal 1300 erreichten Punkten. In diesem Turnier wurde erstmalig in einzelnen Begegnungen aggressive Strategien gegen die gegnerischen Agenten eingesetzt.
 	
-	\textbf{Turnier 6}
+	\subsubsection{Turnier 6}
 	Das Turnier 6 bot neue Herausforderungen, da die Kartengröße nicht bekannt war, die Zielzonen sich bewegten und Meteoriteneinschläge auf der Karte ergänzt wurden. Die Agenten bewältigten die neuen Herausforderungen zufriedenstellend und konnten auch dieses Mal den Turniersieg mit einer Maximalpunktzahl von 910 sichern. Die Schwierigkeitserhöhung war deutlich in der Durchschnittspunktzahl sichtbar. Trotzdem konnten die Agenten in einzelnen Spielen die erhöhte Schwierigkeit durch die Abgabe von Dreiblock-Aufgaben kompensieren.
 	
 	Interessant war weiter zu beobachten, dass speziell die Gruppe 1 sehr aggressiv gegen die Agenten vorging und dadurch eine spannende Begegnung entstand. Das Abwehren solchen Verhaltens wäre eine potenzielle Verbesserungsmöglichkeit für das Agentensystem. 
 	
-	\textbf{Bonusspiel - Jeder gegen Jeden}
+	\subsubsection{Bonusspiel - Jeder gegen Jeden}
 	Zum Abschluss wurde ein Spiel mit 6 x 25 Agenten durchgeführt. Trotz der Vielzahl an gegnerischen und eigenen Entitäten zeigten sich die implementierten Strategien erfolgreich. Es wurden 1370 Punkte erreicht und das Spiel trotz erhöhter Gruppenbildung und gegenseitiger Störung mit deutlichem Abstand gewonnen.
 	Positiv war zu beobachten, dass die 25 Agenten weiterhin performant arbeiteten und in sämtlichen Schritten alle Instanzen eine Aktion an den Simulationsserver übermittelten.
 	
@@ -307,27 +307,19 @@
 		Hart, P. E., Nilsson, N. J. und Raphael, B.: A Formal Basis for the Heuristic Determination of Minimum Cost Paths, in IEEE Transactions on Systems Science and Cybernetics, 4. Auflage, Nummer 2, Seiten 100-107, Juli 1968
 		\bibitem{Weiss2000}
 		Weiss, G.: Multiagent Systems, 2. Auflage, The MIT Press, Cambridge, 2000
-		\bibitem{EISMASSim}
-		github.com/agentcontest/massim\_2022, agentcontest/massim\_2022, \\ https://github.com/agentcontest/massim\_2022/blob/main/docs/eismassim.md, EISMASSim Documentation, abgerufe am 21.08.2022
 		\bibitem{Bratman1987}
 		Bratman, M.: Intention, plans, and practical reason, Harvard University Press, Cambridge, 1987
 		\bibitem{GLSL}
 		Kessenich, J., Baldwin, D., Rost, R.: The OpenGL® Shading Language, Version 4.60.7, https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.4.60.pdf, abgerufen am 10.09.2022
-		\bibitem{JUnit}
-		JUnit 5, https://junit.org/junit5, abgerufen am 11.09.2022
-		\bibitem{Github}
-		Projekt-Quellcodeverwaltung, https://github.com/h1Modeling/ss22\_fp\_mapc\_gruppe3, abgerufen am 11.09.2022
-		\bibitem{Site}
-		Projekt-Webseite: https://github.com/h1Modeling/ss22\_fp\_mapc\_gruppe3/tree/ master/site/index.html, abgerufen am 13.09.2022
-		\bibitem{Bug}
-		Massim 2022 - Issue 7: https://github.com/agentcontest/massim\_2022/issues/7, abgerufen am 11.09.2022
-		\bibitem{Goal}
-		GOAL: https://goalapl.atlassian.net/wiki/spaces/GOAL/overview, abgerufen am 13.09.2022
 		\bibitem{MAPC2021}
 		Ahlbrecht,T. , Dix, J. , Fiekas, N. ,Krausburg T. (Eds.): JaCaMo Builders: Team Description for the Multi-agent Programming Contest 2020/21  in The Multi-Agent Programming Contest 2021 One-and-a-Half Decades of Exploring Multi-Agent Systems, Springer Verlag, 2021, Seite 136
 		\bibitem{Bungartz2013}
 		Bungartz, H.J., Zimmer, S., Buchholz, M., Pflüger, D.: Modellbildung und Simulation Eine anwendungsorientierte Einführung, 2. Auflage, Springer Spektrum, Berlin Heidelberg, 2013
+		\bibitem{JUnit}
+		JUnit 5, https://junit.org/junit5, abgerufen am 11.09.2022
 		\bibitem{Craw2017}
-		Craw, S.: Manhattan Distance in Encyclopedia of Machine Learning and Data Mining, Springer, Bosten, 2017, Seite 790-791	
+		Craw, S.: Manhattan Distance in Encyclopedia of Machine Learning and Data Mining, Springer, Bosten, 2017, Seite 790-791
+		\bibitem{EISMASSim}
+		EISMASSim Documentation, \\ https://github.com/agentcontest/massim\_2022/blob/main/docs/eismassim.md, abgerufen am 21.08.2022
 	\end{thebibliography}
 \end{document}
