@@ -1,16 +1,17 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.7) (preloaded format=pdflatex 2022.9.16)  21 SEP 2022 20:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.8.28) (preloaded format=pdflatex 2022.9.8)  22 SEP 2022 11:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **./gruppe3.tex
 (gruppe3.tex
 LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-07-04> (llncs.cls
-Document Class: llncs 2022/01/12 v2.21 
+L3 programming layer <2022-08-30>
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/llncs\llncs.cls
+Document Class: llncs 2022/09/05 v2.22 
  LaTeX document class for Lecture Notes in Computer Science
-(C:\Program Files\MiKTeX\tex/latex/base\article.cls
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
-(C:\Program Files\MiKTeX\tex/latex/base\size10.clo
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
 File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
@@ -25,7 +26,7 @@ File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
 )
-(C:\Program Files\MiKTeX\tex/latex/tools\multicol.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/tools\multicol.sty
 Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \c@tracingmulticols=\count193
 \mult@box=\box51
@@ -94,7 +95,7 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \colbreak@box=\box95
 \mc@col@check@num=\count268
 )
-(C:\Program Files\MiKTeX\tex/latex/oberdiek\aliascnt.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/oberdiek\aliascnt.sty
 Package: aliascnt 2018/09/07 v1.5 Alias counters (HO)
 )
 \c@chapter=\count269
@@ -109,6 +110,7 @@ LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 369.
 LaTeX Font Info:    Redeclaring math symbol \Phi on input line 370.
 LaTeX Font Info:    Redeclaring math symbol \Psi on input line 371.
 LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
+LaTeX Info: Redefining \vec on input line 377.
 \tocchpnum=\dimen148
 \tocsecnum=\dimen149
 \tocsectotal=\dimen150
@@ -147,65 +149,66 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
 \c@solution=\count287
 \c@remark=\count288
 \headlineindent=\dimen160
-)
-(C:\Program Files\MiKTeX\tex/latex/base\fontenc.sty
+) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 )
-(C:\Program Files\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
-
-(C:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks20
 )
-(C:\Program Files\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
-
-(C:\Program Files\MiKTeX\tex/latex/graphics\trig.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
-(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics
+.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
 
-(C:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.d
+ef
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen161
 \Gin@req@width=\dimen162
 )
-(C:\Program Files\MiKTeX\tex/generic/babel\babel.sty
-Package: babel 2022/06/26 3.77 The Babel package
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
+Package: babel 2022/08/29 3.79 The Babel package
 \babel@savecnt=\count289
 \U@D=\dimen163
 \l@unhyphenated=\language79
 
-(C:\Program Files\MiKTeX\tex/generic/babel\txtbabel.def)
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count290
-
 *************************************
 * Local config file bblopts.cfg used
 *
-(C:\Program Files\MiKTeX\tex/latex/arabi\bblopts.cfg
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
 File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
  babel
 )
-(C:\Program Files\MiKTeX\tex/latex/babel-german\ngerman.ldf
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngerman.
+ldf
 Language: ngerman 2021/02/27 v2.13 German support for babel (post-1996 orthogra
 phy)
 
-(C:\Program Files\MiKTeX\tex/latex/babel-german\ngermanb.ldf
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngermanb
+.ldf
 Language: ngermanb 2021/02/27 v2.13 German support for babel (post-1996 orthogr
 aphy)
 Package babel Info: Making " an active character on input line 122.
 )))
-(C:\Program Files\MiKTeX\tex/generic/babel/locale/de\babel-ngerman.tex
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/de\bab
+el-ngerman.tex
 Package babel Info: Importing font and identification data for ngerman
 (babel)             from babel-de.ini. Reported on input line 11.
 )
-(C:\Program Files\MiKTeX\tex/latex/wrapfig\wrapfig.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/wrapfig\wrapfig.sty
 \wrapoverhang=\dimen164
 \WF@size=\dimen165
 \c@WF@wrappedlines=\count291
@@ -213,23 +216,23 @@ Package babel Info: Importing font and identification data for ngerman
 \WF@everypar=\toks21
 Package: wrapfig 2003/01/31  v 3.6
 )
-(C:\Program Files\MiKTeX\tex/latex/algorithm2e\algorithm2e.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/algorithm2e\algorithm
+2e.sty
 Package: algorithm2e 2017/07/18 v5.2 algorithms environments
 \c@AlgoLine=\count292
 
-(C:\Program Files\MiKTeX\tex/latex/base\ifthen.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
 Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
 )
 \algocf@hangindent=\skip51
 
-(C:\Program Files\MiKTeX\tex/latex/ifoddpage\ifoddpage.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/ifoddpage\ifoddpage.s
+ty
 Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
 \c@checkoddpage=\count293
-)
-(C:\Program Files\MiKTeX\tex/latex/tools\xspace.sty
+) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty
 Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
-)
-(C:\Program Files\MiKTeX\tex/latex/relsize\relsize.sty
+) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/relsize\relsize.sty
 Package: relsize 2013/03/29 ver 4.1
 )
 \skiptotal=\skip52
@@ -268,7 +271,7 @@ Package: relsize 2013/03/29 ver 4.1
 \algocf@algoframe=\box105
 \algocf@algobox=\box106
 )
-(C:\Program Files\MiKTeX\tex/latex/floatflt\floatflt.sty
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/floatflt\floatflt.sty
 Package: floatflt 1997/07/16 v. 1.31
 \c@OptionTest=\count297
 \figbox=\box107
@@ -290,8 +293,9 @@ Package: floatflt 1997/07/16 v. 1.31
 \fltitemwidth=\dimen179
 \outputpretest=\toks22
 )
-(C:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
-File: l3backend-pdftex.def 2022-07-01 L3 backend support: PDF output (pdfTeX)
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
+dftex.def
+File: l3backend-pdftex.def 2022-08-30 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count304
 \l__pdf_internal_box=\box110
 ) (gruppe3.aux)
@@ -311,7 +315,9 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
 LaTeX Font Info:    ... okay on input line 27.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
 LaTeX Font Info:    ... okay on input line 27.
- (C:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
+mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count305
 \scratchdimen=\dimen180
@@ -324,12 +330,15 @@ LaTeX Font Info:    ... okay on input line 27.
 \MPnumerator=\count309
 \makeMPintoPDFobject=\count310
 \everyMPtoPDFconversion=\toks24
-) (C:\Program Files\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
+)
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf
+-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
 
-(C:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
+(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys
+.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -338,15 +347,11 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 49.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
 9.
-
-(C:\Program Files\MiKTeX\tex/latex/base\t1cmtt.fd
+ (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-)
-Title too long for running head. Please supply
-a shorter form with \titlerunning prior to \maketitle
-[1
+) [1
 
-{C:/Users/Phil/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+{C:/Users/Melinda/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 <./Referenzen/Architekturdiagramm.pdf, id=11, 194.28864pt x 166.82513pt>
 File: ./Referenzen/Architekturdiagramm.pdf Graphic file (type pdf)
 <use ./Referenzen/Architekturdiagramm.pdf>
@@ -400,8 +405,8 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 111.
 [3 <./Referenzen/Kartenmerge.pdf> <./Referenzen/Pathfinding.pdf
 
-pdfTeX warning: pdflatex (file ./Referenzen/Pathfinding.pdf): PDF inclusion: mu
-ltiple pdfs with page group included in a single page
+pdfTeX warning: pdflatex.exe (file ./Referenzen/Pathfinding.pdf): PDF inclusion
+: multiple pdfs with page group included in a single page
 >]
 <./Referenzen/Entscheidungsfindung2.pdf, id=41, 502.39777pt x 111.0713pt>
 File: ./Referenzen/Entscheidungsfindung2.pdf Graphic file (type pdf)
@@ -425,78 +430,48 @@ Overfull \hbox (1.99498pt too wide) in paragraph at lines 148--149
 [][] 
  []
 
-[5 <./Referenzen/Debugger3.png>]
-Overfull \hbox (15.34766pt too wide) in paragraph at lines 180--186
-\T1/cmr/m/n/10 MasterMultiBlocksDesire, Hel-per-Mult-iBlocks-De-si-re, Hel-per2
-MultiBlocksDesire,
- []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 192--193
+Underfull \hbox (badness 10000) in paragraph at lines 161--172
 
  []
 
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 197--198
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 205--206
-
- []
-
-[7] [8] [9]
-<./Referenzen/Measurement_Step1.png, id=72, 347.79938pt x 256.70906pt>
-File: ./Referenzen/Measurement_Step1.png Graphic file (type png)
-<use ./Referenzen/Measurement_Step1.png>
-Package pdftex.def Info: ./Referenzen/Measurement_Step1.png  used on input line
- 261.
-(pdftex.def)             Requested size: 173.89926pt x 128.3542pt.
- [10]
-<./Referenzen/Measurement_Step2.png, id=76, 344.03531pt x 256.70906pt>
-File: ./Referenzen/Measurement_Step2.png Graphic file (type png)
-<use ./Referenzen/Measurement_Step2.png>
-Package pdftex.def Info: ./Referenzen/Measurement_Step2.png  used on input line
- 277.
-(pdftex.def)             Requested size: 172.01723pt x 128.3542pt.
- [11 <./Referenzen/Measurement_Step1.png> <./Referenzen/Measurement_Step2.png>]
- [12]
-Underfull \hbox (badness 10000) in paragraph at lines 343--344
+[5 <./Referenzen/Debugger3.png>] [6] [7] [8] [9] [10] [11] [12]
+Underfull \hbox (badness 10000) in paragraph at lines 311--312
 \T1/cmr/m/n/9 https://github.com/agentcontest/massim_2022/blob/main/docs/eismas
 sim.md,
  []
 
-[13]
-Overfull \hbox (24.81023pt too wide) in paragraph at lines 351--352
+
+Overfull \hbox (24.81023pt too wide) in paragraph at lines 319--320
 []\T1/cmr/m/n/9 Projekt-Quellcodeverwaltung, htt-ps://github.com/h1Modeling/ss2
 2_fp_mapc_gruppe3,
  []
 
-[14] (gruppe3.aux) ) 
+[13] (gruppe3.aux) ) 
 Here is how much of TeX's memory you used:
- 4405 strings out of 478338
- 72522 string characters out of 2846518
- 403019 words of memory out of 3000000
- 22789 multiletter control sequences out of 15000+600000
+ 4394 strings out of 475389
+ 73452 string characters out of 2776057
+ 446574 words of memory out of 3000000
+ 25725 multiletter control sequences out of 15000+600000
  480115 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,9n,62p,1341b,412s stack positions out of 10000i,1000n,20000p,200000b,80000s
- <C:\Users\Phil\AppData\Local\MiKTeX\fonts/pk/ljfour/jknapp
-en/ec/dpi600\tcrm0900.pk> <C:\Users\Phil\AppData\Local\MiKTeX\fonts/pk/ljfour/j
-knappen/ec/dpi600\ecrm0600.pk> <C:\Users\Phil\AppData\Local\MiKTeX\fonts/pk/ljf
-our/jknappen/ec/dpi600\ecrm0700.pk> <C:\Users\Phil\AppData\Local\MiKTeX\fonts/p
-k/ljfour/jknappen/ec/dpi600\ecbx0900.pk> <C:\Users\Phil\AppData\Local\MiKTeX\fo
-nts/pk/ljfour/jknappen/ec/dpi600\ecbx1000.pk> <C:\Users\Phil\AppData\Local\MiKT
-eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\Phil\AppData\Local
-\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Phil\AppData\
-Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt0900.pk> <C:\Users\Phil\App
-Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0900.pk> <C:\Users\Phi
-l\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\User
-s\Phil\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk>
-Output written on gruppe3.pdf (14 pages, 411733 bytes).
+ 55i,9n,62p,1342b,274s stack positions out of 10000i,1000n,20000p,200000b,80000s
+ <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
+appen/ec/dpi600\tcrm0900.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/lj
+four/jknappen/ec/dpi600\ecrm0600.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fon
+ts/pk/ljfour/jknappen/ec/dpi600\ecrm0700.pk> <C:\Users\Melinda\AppData\Local\Mi
+KTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx0900.pk> <C:\Users\Melinda\AppData\
+Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1000.pk> <C:\Users\Melinda\
+AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\
+Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C
+:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt090
+0.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600
+\ecrm0900.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
+c/dpi600\ecrm1000.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jk
+nappen/ec/dpi600\ecbx1440.pk>
+Output written on gruppe3.pdf (13 pages, 387542 bytes).
 PDF statistics:
- 470 PDF objects out of 1000 (max. 8388607)
+ 463 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
