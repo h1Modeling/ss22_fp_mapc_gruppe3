@@ -54,14 +54,14 @@
 	Die Gruppe erhoffte sich durch das Verfolgen verschiedener Ansätze differenzierte Lösungen von Teilproblemen, deren Vor- und Nachteile gegenseitig abgewogen werden sollten.
 	
 	
-	Als Grundlage diente das \textit{javaagents} Gerüst der MASSim (\textit{Multi-Agent Systems Simulation Platform}) \cite{EISMASSim} in der Sprache Java. Die Entscheidung für eine universelle Programmiersprache basierte auf dem Wunsch nach umfangreichen Werkzeugen und Bibliotheken zur Verifikation und Problemfindung und wurde durch die Aussage von T. Albrecht, dass für viele Teilnehmer am MAPC \textit{Multi-Agent Programming Contest} die Fehlerfindung eine schwierige und zeitintensive Aufgabe darstellt \cite[S. 17]{Ahlbrecht2021}, untermauert.
+	Als Grundlage diente das \textit{javaagents} Gerüst der MASSim (\textit{Multi-Agent Systems Simulation Platform}) \cite{EISMASSim} in der Sprache Java. Die Entscheidung für eine universelle Programmiersprache basierte auf dem Wunsch nach umfangreichen Werkzeugen und Bibliotheken zur Verifikation und Problemfindung und wurde durch die Aussage von T. Albrecht, dass für viele Teilnehmer am MAPC \textit{Multi-Agent Programming Contest} die Fehlerfindung eine schwierige und zeitintensive Aufgabe darstellt (vgl. \cite[S. 17]{Ahlbrecht2021}), untermauert.
 	
 	Die Konzeption der Agentensysteme erfolgte mittels UML-Diagrammen in gemeinsamer Gruppendiskussion.
 	Der Entwicklungsprozess wurde über das Versionsverwaltungssystem \textit{Github} und dessen Aufgaben- bzw. Fehlermanagement gesteuert. Es wurden Aufgaben ermittelt, Bearbeiter zugewiesen und für jede Aufgabe einzelne \textit{Feature-Branches} erstellt. Vor der Integration in den Hauptstamm des Quellcodes wurden die Änderungen durch ein weiteres Gruppenmitglied überprüft und anschließend freigegeben. Dieser Prozess soll Qualität des Quelltextes erhöhen, sowie das gemeinsame Verständnis fördern.
 	
 	
 	\section{Agentensystem V1 - Gruppenbeitrag Heinz Stadler}\label{agentV1}
-	Die Analyse der Ergebnisse des \textit{15. Multi-Agent Programming Contest} \cite{Ahlbrecht2021} ergab, dass nicht nur die Entscheidungsfindung der Agenten eine Herausforderung darstellt, sondern ebenso der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{Ahlbrecht2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}). \\
+	Die Analyse der Ergebnisse des \textit{15. Multi-Agent Programming Contest} \cite{Ahlbrecht2021} ergab, dass nicht nur die Entscheidungsfindung der Agenten eine Herausforderung darstellt, sondern ebenso der Aufbau einer konsistenten und umfangreichen Wissensbasis (vgl. \cite[S. 29]{AhlbrechtFitBut2021}) sowie die effiziente Problemfindung (vgl. \cite[S. 17]{Ahlbrecht2021}). \\
 	Als Folge dessen erfolgte der Aufbau und die Verifikation einer Wissensverwaltung (siehe \ref{wissensverwaltung}), die eine Datenstruktur zur Speicherung der Simulationsinformationen, sowie eine Lösung zum Aufbau einer globalen Karte des Simulationsgebiets umfasst. Zusätzlich wurde an der Konzeptionierung des Agentensystem V1 (siehe \ref{archAgentV1}) und dessen Ziel- und Absichtsfindung, sowie der Implementierung einer intelligenten Wegfindung (siehe \ref{wegfindung}) gearbeitet. Zur effektiven Verifizierung der Ergebnisse erfolgte die Erstellung eines grafischen Analysewerkzeugs (siehe \ref{verifikation}).
 	
 	\subsection{Architektur}\label{archAgentV1}
@@ -106,7 +106,7 @@
 		\label{pathfinding}
 	\end{wrapfigure}
 	
-	Zur Lösung der Probleme wurden klassische Suchalgorithmen wie z.B. A* \cite{Hart1968} als auch dynamische Echtzeitalgorithmen \cite[S. 182-191]{Weiss2000} untersucht. Da dynamische Algorithmen nicht zur Entfernungsermittlung eingesetzt werden können, wurde sich für den A* Algorithmus mit Heuristik Manhattan-Distanz \cite{Craw2017} entschieden.
+	Zur Lösung der Probleme wurden klassische Suchalgorithmen wie z.B. A* \cite{Hart1968} als auch dynamische Echtzeitalgorithmen \cite[S. 182-191]{WeissYokoo2000} untersucht. Da dynamische Algorithmen nicht zur Entfernungsermittlung eingesetzt werden können, wurde sich für den A* Algorithmus mit Heuristik Manhattan-Distanz \cite{Craw2017} entschieden.
 	
 	Durch geschätzte 50-100 Berechnungen pro Agent und Simulationsschritt schied eine CPU-basierte Lösung aufgrund Zeitbeschränkungen in der Absichtsfindung aus. Es erfolgte die Implementierung des Suchalgorithmus in der Form eines \textit{Computeshaders} in der GLSL (\textit{OpenGL Shading Language}) \cite{GLSL}. Mit dieser Technologie konnte die Wegfindung auf über 1000 Berechnungen pro Simulationsschritt in praktikabler Berechnungszeit\footnote{ca. 20-250 ms auf einer integrierten Intel UHD Graphics 620 Grafikkarte} parallelisiert werden.
 	
@@ -302,17 +302,21 @@
 	%
 	\newpage\begin{thebibliography}{8}
 		\bibitem{Ahlbrecht2021}
-		Ahlbrecht, T., Dix, J., Fiekas. N. und T. Krausburg: The Multi-Agent Programming Contest 2021, Springer, Heidelberg, 2021
+		Ahlbrecht, T., Dix, J., Fiekas. N. und T. Krausburg: The 15th Multi-Agent Programming Contest, in Ahlbrecht, T., Dix, J., Fiekas. N. und T. Krausburg (Hrsg.): The Multi-Agent Programming Contest 2021, Springer, Heidelberg, 2021
+		\bibitem{AhlbrechtFitBut2021}
+		Uhlir, V., Zboril, F., Vidensky, F.: FIT BUT: Rational Agents in the Multi-Agent Programming Contest, in Ahlbrecht, T., Dix, J., Fiekas, N., Krausburg, T. (Hrsg.): The Multi-Agent Programming Contest 2021, Springer, Heidelberg, 2021
 		\bibitem{Hart1968}
 		Hart, P. E., Nilsson, N. J. und Raphael, B.: A Formal Basis for the Heuristic Determination of Minimum Cost Paths, in IEEE Transactions on Systems Science and Cybernetics, 4. Auflage, Nummer 2, Seiten 100-107, Juli 1968
 		\bibitem{Weiss2000}
-		Weiss, G.: Multiagent Systems, 2. Auflage, The MIT Press, Cambridge, 2000
+		Wooldridge, M.,: Intelligent Agents, in Weiss, G. (Hrsg.): Multiagent Systems, 2. Auflage, The MIT Press, Cambridge, 2000
+		\bibitem{WeissYokoo2000}
+		Yokoo, M., Ishida, T.: Search Algorithms for Agents, in Weiss, G. (Hrsg.): Multiagent Systems, 2. Auflage, The MIT Press, Cambridge, 2000
 		\bibitem{Bratman1987}
 		Bratman, M.: Intention, plans, and practical reason, Harvard University Press, Cambridge, 1987
 		\bibitem{GLSL}
 		Kessenich, J., Baldwin, D., Rost, R.: The OpenGL® Shading Language, Version 4.60.7, https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.4.60.pdf, abgerufen am 10.09.2022
 		\bibitem{MAPC2021}
-		Ahlbrecht,T. , Dix, J. , Fiekas, N. ,Krausburg T. (Eds.): JaCaMo Builders: Team Description for the Multi-agent Programming Contest 2020/21  in The Multi-Agent Programming Contest 2021 One-and-a-Half Decades of Exploring Multi-Agent Systems, Springer Verlag, 2021, Seite 136
+		Amaral, C.J., et al.: JaCaMo Builders: Team Description for the Multi-agent Programming Contest 2020/21, in  Ahlbrecht, T., Dix, J., Fiekas, N., Krausburg T. (Hrsg.): The Multi-Agent Programming Contest 2021, Springer, Heidelberg, 2021, Seite 136
 		\bibitem{Bungartz2013}
 		Bungartz, H.J., Zimmer, S., Buchholz, M., Pflüger, D.: Modellbildung und Simulation Eine anwendungsorientierte Einführung, 2. Auflage, Springer Spektrum, Berlin Heidelberg, 2013
 		\bibitem{JUnit}

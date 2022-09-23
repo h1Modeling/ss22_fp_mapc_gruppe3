@@ -1,4 +1,3 @@
-target/
 .vscode/
 logs/
 logs/AgentLogger.log

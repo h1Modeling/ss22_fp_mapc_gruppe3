@@ -1,0 +1,1 @@
+/mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/jdk-17.0.2/bin/javadoc @options @packages
