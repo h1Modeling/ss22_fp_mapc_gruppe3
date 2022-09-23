@@ -1,0 +1,22 @@
+--class-path
+'/mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/target/classes:/home/heinz/.m2/repository/com/miglayout/miglayout/3.7.4/miglayout-3.7.4.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl/3.3.1/lwjgl-3.3.1.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-assimp/3.3.1/lwjgl-assimp-3.3.1.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-glfw/3.3.1/lwjgl-glfw-3.3.1.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-openal/3.3.1/lwjgl-openal-3.3.1.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-opengl/3.3.1/lwjgl-opengl-3.3.1.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-stb/3.3.1/lwjgl-stb-3.3.1.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl/3.3.1/lwjgl-3.3.1-natives-linux.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-assimp/3.3.1/lwjgl-assimp-3.3.1-natives-linux.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-glfw/3.3.1/lwjgl-glfw-3.3.1-natives-linux.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-openal/3.3.1/lwjgl-openal-3.3.1-natives-linux.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-opengl/3.3.1/lwjgl-opengl-3.3.1-natives-linux.jar:/home/heinz/.m2/repository/org/lwjgl/lwjgl-stb/3.3.1/lwjgl-stb-3.3.1-natives-linux.jar:/home/heinz/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar:/home/heinz/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar:/home/heinz/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/heinz/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar:/home/heinz/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar:/home/heinz/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/heinz/.m2/repository/massim/eismassim/4.5/eismassim-4.5.jar:/home/heinz/.m2/repository/org/mockito/mockito-core/4.6.1/mockito-core-4.6.1.jar:/home/heinz/.m2/repository/net/bytebuddy/byte-buddy/1.12.10/byte-buddy-1.12.10.jar:/home/heinz/.m2/repository/net/bytebuddy/byte-buddy-agent/1.12.10/byte-buddy-agent-1.12.10.jar:/home/heinz/.m2/repository/org/objenesis/objenesis/3.2/objenesis-3.2.jar'
+-encoding
+'UTF-8'
+-package
+-sourcepath
+'/mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/src/main/java:/mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2022 <a href="https://www.fernuni-hagen.de">FernUniversität in Hagen</a>. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Multiagent Programming - Group 3 - SS 22 FernUniversität in Hagen 2022-1.0 API'
+-use
+-version
+-windowtitle
+'Multiagent Programming - Group 3 - SS 22 FernUniversität in Hagen 2022-1.0 API'

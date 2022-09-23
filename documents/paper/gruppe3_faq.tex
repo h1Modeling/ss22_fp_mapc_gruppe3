@@ -1,0 +1,150 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.21 of 2022/01/12
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage[T1]{fontenc}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encondings may result in incorrect characters.
+%
+\usepackage{graphicx}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following two lines
+% to display URLs in blue roman font according to Springer's eBook style:
+%\usepackage{color}
+%\renewcommand\UrlFont{\color{blue}\rmfamily}
+%
+\usepackage[ngerman]{babel}
+\newcommand{\refMain}{{\textit{Gruppe 3: Mehrschichtige und dezentrale Entscheidungsprozesse in Agentensystemen }}}
+
+\begin{document}
+	%
+	\title{FAQ Gruppe 3}
+	\pagenumbering {gobble}
+	%
+	% \titlerunning{Mehrschichtige und dezentrale Entscheidungsprozesse in Agentensystemen}
+	% If the paper title is too long for the running head, you can set
+	% an abbreviated paper title here
+	%
+	\author{Heinz Stadler \and
+		Melinda Betz}
+	%
+	\authorrunning{H. Stadler et al.}
+	% First names are abbreviated in the running head.
+	% If there are more than two authors, 'et al.' is used.
+	%
+	\institute{FernUniversität in Hagen, Universitätsstraße 47, 58097 Hagen, Deutschland
+		\email{\{vorname.nachname\}@studium.fernuni-hagen.de}\\
+		\url{https://www.fernuni-hagen.de}}
+	%
+	\maketitle              % typeset the header of the contribution
+	%
+	%
+
+\section{Teilnehmer*innen und ihr Hintergrund}
+\subsubsection{Was war die Motivation an dem Praktikum teilzunehmen?\\}
+Der spannende Bereich Künstliche Intelligenz gepaart mit dem kompetitiven spielerischen Thema.
+
+\section{Statistiken}
+\subsubsection{Wurden die Agenten von Grund auf neu implementiert oder auf einer bestehenden Lösung aufgebaut?\\}
+Beide Agentensysteme wurden auf Basis des \textit{javaagents} Gerüst der MASSim (\textit{Multi-Agent Systems Simulation Platform})\footnote{https://github.com/agentcontest/massim\_2022} aufgebaut.
+\subsubsection{Wie viel Zeit wurde in die Entwicklung und Organisation des Praktikums gesteckt?\\}
+Die investierte Zeit variierte stark innerhalb der Gruppe. Im Mittel wurden ein bis zwei Stunden pro Tag für die Bearbeitung der Aufgabe aufgewendet.
+\subsubsection{Wie war die investierte Zeit im Verlauf des Praktikums verteilt?\\}
+Die Gruppenmitglieder ergänzten sie in diesem Punkt wodurch eine gleichmäßige Verteilung entstand.
+\subsubsection{Wie viele Zeilen Code wurden ungefähr geschrieben?\\}
+Die Gesamtlösung umfasst ca. 25.000 Zeilen inklusive Kommentaren.
+\subsubsection{Welche Programmiersprache und Entwicklungsumgebung wurde verwendet?\\}
+Es wurde die Programmiersprache Java in der Version 17 mit den Entwicklungsumgebungen Eclipse, IntelliJ IDEA und Visual Studio Code verwendet.
+\subsubsection{Wurden externe Werkzeuge/Bibliotheken verwendet?\\}
+Ja, eine Auflistung kann der Projektwebseite\footnote{Site} entnommen werden.
+\section{Agenten-System Details}
+\subsubsection{Wie erfolgt die Entscheidungsfindung?}
+\begin{itemize}
+\item Agent V1: Die Ziel- und Absichtsfindung wurde detailliert in Kapitel 2.4 des Abschnitts \refMain beschrieben. \\
+\item Agent V2: Ein Agent läuft durch alle Desires und merkt sich alle, in seinem momentanen Zustand (Belief) ausführbaren. Es werden Prioritäten vergeben und das Desire mit der höchsten Prio wird zur Intention und diese wird dann vom Agent ausgeführt.
+\end{itemize}
+
+\subsubsection{Wie werden Entscheidungen umgesetzt?}
+\begin{itemize}
+\item Agent V1: Es wurden sowohl deterministische Algorithmen als auch stochastische Faktoren integriert.
+\item Agent V2: Die Agenten arbeiten so, wie es vorher programmiert wurde (Actions).
+\end{itemize}
+
+\subsubsection{Wie arbeiten die Agenten zusammen und wie dezentralisiert ist der Ansatz?}
+\begin{itemize}
+\item Agent V1: Die gewählte Schichtenarchitektur ermöglicht dem Agentensystem sowohl dezentrale als auch zentrale Entscheidungen zu treffen.
+\item Agent V2: Sehr dezentralisiert, die Agenten (der Master) suchen sich selbst ihre Hilfen beim Zusammenbauen der Tasks. In der Klasse AgentsCooperations wird festgehalten welcher Agent gerade mit welcher Task beschäftigt ist (und in welchem Status).
+\end{itemize}
+
+\subsubsection{Kann ein Agent das generelle Verhalten zur Laufzeit ändern?}
+\begin{itemize}
+\item Agent V1: Die Agenten besitzen keine festen Rollen. Das Verhalten wird dynamisch an das Simulationsgeschehen angepasst.
+\item Agent V2: Nein, ein Agent erfüllt immer Tasks während der Laufzeit des Programms (außer es existieren gerade keine mit denen er etwas anfangen kann, dann wird gewartet)
+\end{itemize}
+
+\subsubsection{Wurden Änderungen (z.B kritische Fehler) während eines Turniers vorgenommen?}
+\begin{itemize}
+\item Agent V1: In den beiden letzten Turnieren wurde die Aggressivität der Agenten, jeweils auf die Fähigkeiten der gegnerischen Teams, individuell angepasst.
+\item Agent V2: Es wurden keine Änderungen während eines Turniers vorgenommen.
+\end{itemize}
+
+\subsubsection{Wurde Zeit investiert um die Agenten fehlertoleranter zu machen? Wenn ja, wie genau?}
+\begin{itemize}
+\item Agent V1: Die Verifikation und Problemfindung war ein essenzieller Entwicklungsteil. Eine detaillierte Beschreibung kann Kapitel 2.5 des Abschnitts \refMain entnommen werden.
+\item Agent V2: Ja, es wurden viele Testläufe gemacht und immer wenn ein Fehler auftrat wurde dieser so behoben, dass er nicht mehr auftritt (und wenn nur mit einem Skip Befehl).
+\end{itemize}
+
+\section{Szenario und Strategie}
+\subsubsection{Was ist die Hauptstrategie der Agenten?}
+\begin{itemize}
+\item Agent V1: Möglichst umfangreiche Informationen über das Simulationsgebiet zu erhalten und anschließend die Bearbeitung von Ein-, Zwei- und Dreiblockaufgaben.
+\item Agent V2: Sie holen sich zuerst einmal die Rolle Worker und dann holen sie sich einen Block und laufen mit ihm zur Goal Zone.
+\end{itemize}
+
+\subsubsection{Haben die Agenten selbstständig eine Strategie entwickelt oder wurde diese bereits in die Implementierung eingebaut?}
+\begin{itemize}
+\item Die Ziel- und Absichtsfindung erfolgt über klassische Algorithmen.
+\end{itemize}
+
+\subsubsection{Wurde eine Strategie implementiert, die Agenten anderer Teams mit einbezieht?}
+\begin{itemize}
+\item Agent V1: Ja, gegnerische Agenten werden in der Zielzone angegriffen.
+\item Agent V2: Nein
+\end{itemize}
+
+\subsubsection{Wie entscheiden Agenten, welche Aufgabe sie als nächstes übernehmen?}
+\begin{itemize}
+\item Agent V1: Die Ziel- und Absichtsfindung wurde detailliert in Kapitel 2.4 des Abschnitts \refMain beschrieben.
+\item Agent V2: Die Agenten entscheiden es selbst.
+\end{itemize}
+
+\subsubsection{Wie koordinieren die Agenten die Arbeit für eine Aufgabe untereinander?}
+\begin{itemize}
+\item Agent V1: Die Koordination erfolgte hauptsächlich über die in Kapitel 2.4 des Abschnitts \refMain beschriebene Schichtenarchitektur. Zusätzlich kommunizieren Agenten über den Austausch von Nachrichten.
+\item Agent V2: Die Agenten koordinieren indem sie durch Statusabfragen miteinander kommunizieren, wer wann fertig ist und wann weitergemacht werden kann.
+\end{itemize}
+
+\subsubsection{Welche Aspekte des Szenarios waren am herausforderndsten?}
+\begin{itemize}
+\item Agent V1: Die fragmentierten und stark beschränkten Umgebungsinformationen. 
+\item Agent V2: Wenn man nicht weiß wie groß die Karte ist.
+\end{itemize}
+
+\section{Und die Moral von der Geschichte}
+\subsubsection{Was wurde durch das Praktikum vermittelt?\\}
+Es wurden die theoretischen Grundlagen zu Multiagentensystemen und deren praktische Anwendung erlernt.
+\subsubsection{Welcher Ratschlag wäre für zukünftige Gruppen sinnvoll?\\}
+Die Verifikation und Problemfindung ist ein grundlegender und wichtiger Bestandteil der Aufgabe. Es sollten frühzeitig Konzepte und Herangehensweisen zu diesem Thema entwickelt werden.
+
+\subsubsection{Was waren Stärken und Schwächen der Gruppe?\\}
+Die Gruppe war in der Lage zielgerichtet erfolgreiche Lösungen zu entwickeln. Die fachliche Diskussion über konzeptionelle Entscheidungen und deren Implementierung könnte zukünftig noch verbessert werden.   
+
+\subsubsection{Was waren Vorteile und Nachteile der gewählten Programmiersprache und weiterer Werkzeuge?\\}
+Die Implementierung in Java ermöglichte flexible, individuelle Lösungen. Es konnten zusätzliche Bibliotheken z.B. zur Verwendung von OpenGL eingebunden werden. Im Vergleich zu auf den Anwendungsfall spezialisierten Sprachen, wie z.B. GOAL\footnote{https://goalapl.atlassian.net/wiki/spaces/GOAL/overview}, fiel der Implementierungsaufwand deutlich höher aus.
+
+\end{document}
