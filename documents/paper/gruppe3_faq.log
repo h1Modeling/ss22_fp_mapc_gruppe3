@@ -1,17 +1,16 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.8.28) (preloaded format=pdflatex 2022.9.8)  24 SEP 2022 07:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  24 SEP 2022 17:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./gruppe3_faq.tex
-(gruppe3_faq.tex
-LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-08-30>
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/llncs\llncs.cls
-Document Class: llncs 2022/09/05 v2.22 
+**gruppe3_faq.tex
+(./gruppe3_faq.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-04-10> (./llncs.cls
+Document Class: llncs 2022/01/12 v2.21 
  LaTeX document class for Lecture Notes in Computer Science
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+(/usr/share/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
+(/usr/share/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
@@ -26,10 +25,10 @@ File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/tools\multicol.sty
+(/usr/share/texmf-dist/tex/latex/tools/multicol.sty
 Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \c@tracingmulticols=\count193
-\mult@box=\box51
+\mult@box=\box50
 \multicol@leftmargin=\dimen139
 \c@unbalance=\count194
 \c@collectmore=\count195
@@ -42,13 +41,14 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \postmulticols=\dimen143
 \multicolsep=\skip49
 \multicolbaselineskip=\skip50
-\partial@page=\box52
-\last@line=\box53
+\partial@page=\box51
+\last@line=\box52
 \maxbalancingoverflow=\dimen144
-\mult@rightbox=\box54
-\mult@grightbox=\box55
-\mult@firstbox=\box56
-\mult@gfirstbox=\box57
+\mult@rightbox=\box53
+\mult@grightbox=\box54
+\mult@firstbox=\box55
+\mult@gfirstbox=\box56
+\@tempa=\box57
 \@tempa=\box58
 \@tempa=\box59
 \@tempa=\box60
@@ -84,18 +84,17 @@ Package: multicol 2021/10/28 v1.9b multicolumn formatting (FMi)
 \@tempa=\box90
 \@tempa=\box91
 \@tempa=\box92
-\@tempa=\box93
 \c@minrows=\count199
 \c@columnbadness=\count266
 \c@finalcolumnbadness=\count267
 \last@try=\dimen145
 \multicolovershoot=\dimen146
 \multicolundershoot=\dimen147
-\mult@nat@firstbox=\box94
-\colbreak@box=\box95
+\mult@nat@firstbox=\box93
+\colbreak@box=\box94
 \mc@col@check@num=\count268
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/oberdiek\aliascnt.sty
+(/usr/share/texmf-dist/tex/latex/oberdiek/aliascnt.sty
 Package: aliascnt 2018/09/07 v1.5 Alias counters (HO)
 )
 \c@chapter=\count269
@@ -110,7 +109,6 @@ LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 369.
 LaTeX Font Info:    Redeclaring math symbol \Phi on input line 370.
 LaTeX Font Info:    Redeclaring math symbol \Psi on input line 371.
 LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
-LaTeX Info: Redefining \vec on input line 377.
 \tocchpnum=\dimen148
 \tocsecnum=\dimen149
 \tocsectotal=\dimen150
@@ -127,10 +125,10 @@ LaTeX Info: Redefining \vec on input line 377.
 \c@@auth=\count272
 \c@auco=\count273
 \instindent=\dimen159
-\authrun=\box96
+\authrun=\box95
 \authorrunning=\toks16
 \tocauthor=\toks17
-\titrun=\box97
+\titrun=\box96
 \titlerunning=\toks18
 \toctitle=\toks19
 \c@theorem=\count274
@@ -149,71 +147,59 @@ LaTeX Info: Redefining \vec on input line 377.
 \c@solution=\count287
 \c@remark=\count288
 \headlineindent=\dimen160
-) (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+)
+(/usr/share/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(/usr/share/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
-Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+
+(/usr/share/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks20
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
-Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+(/usr/share/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics
-.cfg
+(/usr/share/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 107.
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.d
-ef
+(/usr/share/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen161
 \Gin@req@width=\dimen162
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
-Package: babel 2022/08/29 3.79 The Babel package
+(/usr/share/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2022/02/26 3.73 The Babel package
 \babel@savecnt=\count289
 \U@D=\dimen163
-\l@unhyphenated=\language79
+\l@unhyphenated=\language87
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
+(/usr/share/texmf-dist/tex/generic/babel/txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count290
-*************************************
-* Local config file bblopts.cfg used
-*
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
-File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
- babel
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngerman.
-ldf
+
+(/usr/share/texmf-dist/tex/generic/babel-german/ngerman.ldf
 Language: ngerman 2021/02/27 v2.13 German support for babel (post-1996 orthogra
 phy)
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/babel-german\ngermanb
-.ldf
+(/usr/share/texmf-dist/tex/generic/babel-german/ngermanb.ldf
 Language: ngermanb 2021/02/27 v2.13 German support for babel (post-1996 orthogr
 aphy)
 Package babel Info: Making " an active character on input line 122.
 )))
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/de\bab
-el-ngerman.tex
-Package babel Info: Importing font and identification data for ngerman
-(babel)             from babel-de.ini. Reported on input line 11.
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
-dftex.def
-File: l3backend-pdftex.def 2022-08-30 L3 backend support: PDF output (pdfTeX)
+(/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-04-14 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count291
-\l__pdf_internal_box=\box98
-) (gruppe3_faq.aux)
+\l__pdf_internal_box=\box97
+)
+(./gruppe3_faq.aux)
 \openout1 = `gruppe3_faq.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
@@ -230,13 +216,11 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
 LaTeX Font Info:    ... okay on input line 24.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
 LaTeX Font Info:    ... okay on input line 24.
-
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
-mkii
+ (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count292
 \scratchdimen=\dimen164
-\scratchbox=\box99
+\scratchbox=\box98
 \nofMPsegments=\count293
 \nofMParguments=\count294
 \everyMPshowfont=\toks21
@@ -245,39 +229,32 @@ mkii
 \MPnumerator=\count296
 \makeMPintoPDFobject=\count297
 \everyMPtoPDFconversion=\toks22
-)
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf
--base.sty
+) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr
-.sty
+(/usr/share/texmf-dist/tex/generic/infwarerr/infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/grfext\grfext.sty
+(/usr/share/texmf-dist/tex/latex/grfext/grfext.sty
 Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefi
-nekeys.sty
+(/usr/share/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
 ))
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.s
-ty
-Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+(/usr/share/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+(/usr/share/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
 Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
 )
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/kvsetkeys\kvsetkeys
-.sty
+(/usr/share/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty
 Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
 ))
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcm
-ds.sty
+(/usr/share/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
 Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
 )
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+(/usr/share/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
 )
 Package pdftexcmds Info: \pdf@primitive is available.
@@ -291,9 +268,9 @@ Package grfext Info: Graphics extension search list:
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 504.
 
-(C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys
-.cfg
-File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+(/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 44.
@@ -301,7 +278,8 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 44.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
 4.
- (C:\Users\Melinda\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
+
+(/usr/share/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -310,40 +288,33 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 54.
  [1
 
-{C:/Users/Melinda/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 Underfull \hbox (badness 10000) in paragraph at lines 68--69
 
  []
 
-[2] [3]
-Overfull \hbox (3.50075pt too wide) in paragraph at lines 128--129
-\T1/cmr/m/it/10 zes-se in Agen-ten-sys-te-men \T1/cmr/m/n/10 be-schrie-be-ne Sc
-hich-ten-ar-chi-tek-tur. Zu-sätz-lich kom-
- []
-
-[4] [5] (gruppe3_faq.aux) ) 
+[2] [3] [4] [5] (./gruppe3_faq.aux) ) 
 Here is how much of TeX's memory you used:
- 3673 strings out of 475389
- 62582 string characters out of 2776057
- 425430 words of memory out of 3000000
- 25006 multiletter control sequences out of 15000+600000
+ 3609 strings out of 478238
+ 58856 string characters out of 5850456
+ 373241 words of memory out of 5000000
+ 21814 multiletter control sequences out of 15000+600000
  479002 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 60i,9n,67p,546b,330s stack positions out of 10000i,1000n,20000p,200000b,80000s
- <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljf
-our/jknappen/ec/dpi600\ecrm0600.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\font
-s/pk/ljfour/jknappen/ec/dpi600\ecrm0700.pk> <C:\Users\Melinda\AppData\Local\MiK
-TeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\Melinda\AppData\L
-ocal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1000.pk> <C:\Users\Melinda\A
-ppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\M
-elinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt0900.pk> <C:
-\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0900
-.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\
-ecrm1000.pk> <C:\Users\Melinda\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec
-/dpi600\ecbx1440.pk>
-Output written on gruppe3_faq.pdf (5 pages, 106064 bytes).
+ 60i,9n,67p,544b,330s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf-dist/fonts/enc/dvips/cm-
+super/cm-super-t1.enc}</usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx10
+00.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/
+fonts/type1/public/cm-super/sfrm0600.pfb></usr/share/texmf-dist/fonts/type1/pub
+lic/cm-super/sfrm0700.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sf
+rm0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></us
+r/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-d
+ist/fonts/type1/public/cm-super/sftt0900.pfb>
+Output written on gruppe3_faq.pdf (5 pages, 204438 bytes).
 PDF statistics:
- 332 PDF objects out of 1000 (max. 8388607)
+ 66 PDF objects out of 1000 (max. 8388607)
+ 40 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

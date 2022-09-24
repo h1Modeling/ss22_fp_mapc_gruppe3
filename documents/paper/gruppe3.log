@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  23 SEP 2022 18:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.14)  24 SEP 2022 17:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -340,51 +340,41 @@ File: ./Referenzen/Architekturdiagramm.pdf Graphic file (type pdf)
 Package pdftex.def Info: ./Referenzen/Architekturdiagramm.pdf  used on input li
 ne 73.
 (pdftex.def)             Requested size: 136.0011pt x 116.77678pt.
-
-Underfull \hbox (badness 1418) in paragraph at lines 79--80
-\T1/cmr/m/n/10 Wei-te-ren nur noch die Wei-ter-lei-tung von
- []
-
 <./Referenzen/Kartenmerge.pdf, id=13, 438.29257pt x 161.78024pt>
 File: ./Referenzen/Kartenmerge.pdf Graphic file (type pdf)
 <use ./Referenzen/Kartenmerge.pdf>
-Package pdftex.def Info: ./Referenzen/Kartenmerge.pdf  used on input line 93.
-(pdftex.def)             Requested size: 350.63454pt x 129.42435pt.
-
-Overfull \hbox (3.511pt too wide) in paragraph at lines 93--94
-[][] 
- []
-
-[2 <./Referenzen/Architekturdiagramm.pdf>]
+Package pdftex.def Info: ./Referenzen/Kartenmerge.pdf  used on input line 94.
+(pdftex.def)             Requested size: 333.09912pt x 122.95178pt.
+ [2 <./Referenzen/Architekturdiagramm.pdf>]
 <./Referenzen/Pathfinding.pdf, id=27, 81.23987pt x 85.77853pt>
 File: ./Referenzen/Pathfinding.pdf Graphic file (type pdf)
 <use ./Referenzen/Pathfinding.pdf>
-Package pdftex.def Info: ./Referenzen/Pathfinding.pdf  used on input line 104.
+Package pdftex.def Info: ./Referenzen/Pathfinding.pdf  used on input line 103.
 (pdftex.def)             Requested size: 81.23965pt x 85.77832pt.
 
-Overfull \hbox (1.40273pt too wide) in paragraph at lines 104--105
+Overfull \hbox (1.40273pt too wide) in paragraph at lines 103--104
 [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 105--105
+Underfull \hbox (badness 10000) in paragraph at lines 104--104
 []\T1/cmr/bx/n/9 Abb.3. \T1/cmr/m/n/9 Da-ten-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 105--105
+Underfull \hbox (badness 10000) in paragraph at lines 104--104
 \T1/cmr/m/n/9 struk-tur Weg-fin-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 105--105
+Underfull \hbox (badness 10000) in paragraph at lines 104--104
 \T1/cmr/m/n/9 dung (aus rea-ler
  []
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 111.
+(Font)              <9> on input line 113.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 111.
+(Font)              <6> on input line 113.
 [3 <./Referenzen/Kartenmerge.pdf> <./Referenzen/Pathfinding.pdf
 
 pdfTeX warning: /usr/bin/pdflatex (file ./Referenzen/Pathfinding.pdf): PDF incl
@@ -394,10 +384,10 @@ usion: multiple pdfs with page group included in a single page
 File: ./Referenzen/Entscheidungsfindung2.pdf Graphic file (type pdf)
 <use ./Referenzen/Entscheidungsfindung2.pdf>
 Package pdftex.def Info: ./Referenzen/Entscheidungsfindung2.pdf  used on input 
-line 124.
+line 126.
 (pdftex.def)             Requested size: 351.67603pt x 77.74936pt.
 
-Overfull \hbox (4.55249pt too wide) in paragraph at lines 124--125
+Overfull \hbox (4.55249pt too wide) in paragraph at lines 126--127
  [][] 
  []
 
@@ -405,20 +395,20 @@ Overfull \hbox (4.55249pt too wide) in paragraph at lines 124--125
 <./Referenzen/Debugger3.png, id=54, 3836.3325pt x 845.1575pt>
 File: ./Referenzen/Debugger3.png Graphic file (type png)
 <use ./Referenzen/Debugger3.png>
-Package pdftex.def Info: ./Referenzen/Debugger3.png  used on input line 148.
+Package pdftex.def Info: ./Referenzen/Debugger3.png  used on input line 150.
 (pdftex.def)             Requested size: 349.11852pt x 76.91203pt.
 
-Overfull \hbox (1.99498pt too wide) in paragraph at lines 148--149
+Overfull \hbox (1.99498pt too wide) in paragraph at lines 150--151
 [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 161--172
+Underfull \hbox (badness 10000) in paragraph at lines 163--174
 
  []
 
 [5 <./Referenzen/Debugger3.png>] [6] [7] [8] [9] [10] [11] [12]
-Underfull \hbox (badness 10000) in paragraph at lines 327--328
+Underfull \hbox (badness 10000) in paragraph at lines 329--330
 \T1/cmr/m/n/9 https://github.com/agentcontest/massim_2022/blob/main/docs/eismas
 sim.md,
  []
@@ -443,7 +433,7 @@ dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fonts/type
 1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-sup
 er/sfti1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb
 >
-Output written on gruppe3.pdf (13 pages, 467439 bytes).
+Output written on gruppe3.pdf (13 pages, 468054 bytes).
 PDF statistics:
  134 PDF objects out of 1000 (max. 8388607)
  85 compressed objects within 1 object stream
