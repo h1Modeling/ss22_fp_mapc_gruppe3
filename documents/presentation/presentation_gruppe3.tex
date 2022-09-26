@@ -1,6 +1,6 @@
 %%% Choose between 16:9 and 4:3 format by commenting out/uncommenting one of the following lines:
-%\documentclass[aspectratio=169]{beamer} % 16:9
- \documentclass{beamer} % 4:3
+ \documentclass[aspectratio=169]{beamer} % 16:9
+%\documentclass{beamer} % 4:3
 
 %=========================================================================================================================
 
@@ -51,6 +51,56 @@ University of Hagen, Germany}
 \end{frame}
 
 \section{Agentensystem V2}
+\begin{frame}{Agentensystem V2}
+	\frametitle{Agentensystem V2}
+	\begin{block}{Struktur}
+	\end{block}
+	\textbf{ }
+	\begin{itemize}
+		\setlength\itemsep{5mm}
+		\item Der AgentV2 arbeitet mit der Step-Methode		
+		\item Desires mit und ohne Task-Bezug
+	\end{itemize}
+	\begin{table}
+	\small
+	\begin{tabular}{lll}
+		\textbf{ohne Task} & \textbf{mit Task} & \textbf{Mehr\-Block\-Task}\\
+		LocalExploreDesire & GoAbandonedBlockDesire & MasterMultiBlocksDesire\\
+		GoAdoptRoleDesire & GoDispenserDesire & HelperMultiBlocksDesire\\
+		ExploreMapSizeDesire & GoGoalZoneDesire & Helper2MultiBlocksDesire\\
+		& SubmitDesire & ConnectMultiBlocksDesire\\
+	\end{tabular}
+	\end{table}
+\end{frame}
+
+\begin{frame}{Agentensystem V2}
+	\frametitle{Agentensystem V2}
+	\begin{block}{Wie finden die Agenten ihre Desires?}
+	\end{block}
+	\textbf{ }
+	\begin{itemize}
+		\setlength\itemsep{5mm}
+		\item In jedem Step werden alle Desires auf Ausführbarkeit geprüft		
+		\item Alle ausführbaren Desires bekommen dynamisch eine Priorität vergeben
+		\item Das Desire mit der höchsten Priorität wird zur Intention
+		\item Aus der Intention wird die nächste Aktion des Agenten abgeleitet
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Agentensystem V2}
+	\frametitle{Agentensystem V2}
+	\begin{block}{Wie arbeiten die Agenten zusammen?}
+	\end{block}
+	\textbf{ }
+	\begin{itemize}
+		\setlength\itemsep{5mm}
+		\item Bildung von Supervisor-Gruppen bei jedem Treffen fremder Agenten		
+		\item Bildung von dynamischen Adhoc-Kooperationen innerhalb der Supervisor-Gruppen zur Bearbeitung einer Task
+		\item Keine zentrale Koordination der Agenten
+		\item Steuern der Art und Anzahl der Adhoc-Kooperationen über Setup-Variablen
+		\item Nutzung der Adhoc-Kooperationen auch zur Ermittlung der Mapgröße
+	\end{itemize}
+\end{frame}
 
 \section{Turniere}
 
