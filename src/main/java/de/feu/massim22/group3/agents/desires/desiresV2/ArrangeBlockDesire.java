@@ -5,7 +5,7 @@ import java.awt.Point;
 import de.feu.massim22.group3.agents.BdiAgentV2;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
@@ -29,7 +29,7 @@ public class ArrangeBlockDesire extends BeliefDesire {
      */
     public ArrangeBlockDesire(TaskInfo info, BdiAgentV2 agent) {
         super(agent.getBelief());
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlockDesire");
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ArrangeBlockDesire");
         this.info = info;
         this.agent = agent;
     }
@@ -41,7 +41,7 @@ public class ArrangeBlockDesire extends BeliefDesire {
     */
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.isFulfilled");
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.isFulfilled");
         block = info.requirements.get(0);
         Thing atAgent = belief.getThingWithTypeAt(new Point(block.x, block.y), Thing.TYPE_BLOCK);
 
@@ -58,8 +58,8 @@ public class ArrangeBlockDesire extends BeliefDesire {
      */
 	@Override
 	public BooleanInfo isExecutable() {
-		AgentLogger
-				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.isExecutable");
+		/*AgentLogger
+				.info(Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.isExecutable");*/
 		if (belief.getRole().actions().contains(Actions.DETACH)
 				&& belief.getRole().actions().contains(Actions.ATTACH)) {
 			//Ein Block Task
@@ -76,8 +76,8 @@ public class ArrangeBlockDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.getNextActionInfo");
+        /*AgentLogger.info(
+                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.getNextActionInfo");*/
         Point taskBlock = new Point(info.requirements.get(0).x, info.requirements.get(0).y);
         
         if (agent.getAttachedPoints().size() == 0)
@@ -86,8 +86,9 @@ public class ArrangeBlockDesire extends BeliefDesire {
         Point agentBlock = agent.getAttachedPoints().get(0);
         Thing agentThing = agent.getAttachedThings().get(0);
         
-        AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.getNextActionInfo agentBlock: " + agentThing + " , taskBlock: " + info.requirements.get(0));
+        /*AgentLogger.info(
+                Thread.currentThread().getName() + " runSupervisorDecisions - ArrangeBlockDesire.getNextActionInfo agentBlock: " 
+                + agentThing + " , taskBlock: " + info.requirements.get(0));*/
         
         if (!existsTask(agentThing)) {
             return ActionInfo.DETACH(DirectionUtil.intToString(DirectionUtil.getDirectionForCell(agentBlock)), getName());

@@ -4,7 +4,7 @@ import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.belief.reachable.ReachableGoalZone;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.utils.DirectionUtil;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
  * The class <code>LocalExploreDesire</code> models the desire to do a local explore.
@@ -23,7 +23,7 @@ public class LocalExploreDesire extends BeliefDesire {
      */
     public LocalExploreDesire(String supervisor, BdiAgentV2 agent) {
         super(agent.getBelief());
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start LocalExploreDesire");
+        //AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start LocalExploreDesire");
         this.agent = agent;
     }
 
@@ -54,8 +54,8 @@ public class LocalExploreDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(
-                Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());
+        /*AgentLogger.info(
+                Thread.currentThread().getName() + "LocalExploreDesire.getNextAction() - Agent: " + agent.getName());*/
         
         if (!agent.blockAttached || belief.getReachableGoalZones().size() == 0) {
             agent.exploreDirection = DirectionUtil

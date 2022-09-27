@@ -1,7 +1,7 @@
 package de.feu.massim22.group3.agents.utilsV2;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import massim.protocol.data.TaskInfo;
  */
 public class AgentCooperations {
     private static List<Cooperation> cooperations = new ArrayList<Cooperation>();
-    private static int maxMaster = 3;
+    private static int maxMaster = 2;
     private static int max2BMaster = 2;
-    private static int max3BMaster = 1;
+    private static int max3BMaster = 0;
     private static int maxTypes = 3;
     private static int[] scores = {0, 0, 0, 0};
     
@@ -444,14 +444,14 @@ public class AgentCooperations {
      * @return the status of the master
      */
     public static synchronized Status getStatusMaster(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {  
-        AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
+        //AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
         for (int i = 0; i < cooperations.size(); i++) {
-            AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster: " + cooperations.get(i).task.name + " , " + cooperations.get(i).master.getName() + " , " + cooperations.get(i).helper.getName());
+            //AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster: " + cooperations.get(i).task.name + " , " + cooperations.get(i).master.getName() + " , " + cooperations.get(i).helper.getName());
             if (cooperations.get(i).task.name.equals(task.name) 
                     && cooperations.get(i).master.getName().equals(master.getName()) 
                     && cooperations.get(i).helper.getName().equals(helper.getName())
                     && (cooperations.get(i).helper2 == null || cooperations.get(i).helper2.getName().equals(helper2.getName()))) {
-                AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster - in return ");
+                //AgentLogger.info(Thread.currentThread().getName() + " getStatusMaster - in return ");
                 return  cooperations.get(i).statusMaster;
             } 
         }
@@ -470,7 +470,7 @@ public class AgentCooperations {
      * @return the status of the helper
      */
     public static synchronized Status getStatusHelper(TaskInfo task, BdiAgentV2 master, BdiAgentV2 helper, BdiAgentV2 helper2) {    
-        AgentLogger.info(Thread.currentThread().getName() + " getStatusHelper - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
+        //AgentLogger.info(Thread.currentThread().getName() + " getStatusHelper - para: " + task.name + " , " + master.getName() + " , " + helper.getName());
         for (int i = 0; i < cooperations.size(); i++) {
             if (cooperations.get(i).task.name.equals(task.name) 
                     && cooperations.get(i).master.getName().equals(master.getName()) 

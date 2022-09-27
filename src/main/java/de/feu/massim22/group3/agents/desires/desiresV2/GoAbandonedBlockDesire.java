@@ -83,24 +83,24 @@ public class GoAbandonedBlockDesire extends BeliefDesire {
 
                     if (existsTask(t)) {
                         boolean add = true;
-                        AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - task exists for : " + t);
+                        //AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - task exists for : " + t);
                         
                         if ((belief.getLastAction().equals(Actions.DETACH)
                                 && belief.getLastActionResult().equals(ActionResults.SUCCESS))
                                 ||  agent.lastStepDetach > belief.getStep() - 10) {
                             if (AgentCooperations.detachedExists(agent)) {
                                 Cooperation coop = AgentCooperations.getDetached(agent);
-                                AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - coop : " + coop.toString());
+                                //AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - coop : " + coop.toString());
                                 
                                 if ((coop.helper().equals(agent) && coop.statusHelper().equals(Status.Detached))
                                         || (coop.helper2() != null && coop.helper2().equals(agent)
                                                 && coop.statusHelper2().equals(Status.Detached))) {
-                                    AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - noadd ");
+                                    //AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - noadd ");
                                     add = false;
                                 }
                             }
                         }
-                        AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - add ");
+                        //AgentLogger.info(Thread.currentThread().getName() + " GoAbandonedBlockDesire - isExecutable - add ");
                         if (add) possibleThings.add(t);
                     }
                 }

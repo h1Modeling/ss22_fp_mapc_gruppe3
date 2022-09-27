@@ -175,7 +175,7 @@ public class DesireUtilities {
 
         BdiAgentV2 supervisorAgent = StepUtilities.getAgent(supervisor.getName());
         
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.getBelief().getReachableDispensersX());
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Dispenser: " + supervisorAgent.getBelief().getReachableDispensersX());
 
         List<String> allGroupAgents = new ArrayList<>(supervisor.getAgents());
         List<String> freeGroupAgents = new ArrayList<>(allGroupAgents);
@@ -188,7 +188,7 @@ public class DesireUtilities {
                  continue;
             }
             task = loopTask;
-            AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name + " , " + task.requirements.size() + " , " + task.requirements);
+            //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Task: " + task.name + " , " + task.requirements.size() + " , " + task.requirements);
 
            if ( task.requirements.size() > maxTaskBlocks) {
            //if ( task.requirements.size() > 2) {
@@ -199,7 +199,7 @@ public class DesireUtilities {
             for (String agentStr : allGroupAgents) {
                 BdiAgentV2 agent = StepUtilities.getAgent(agentStr); 
                 
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr 
+                /*AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr 
                         + " , Pos: " + agent.getBelief().getPosition()+ " , abs: " 
                                 + ((Point.castToPoint(agent.getBelief().getAbsolutePosition()) != null) ? Point.castToPoint(agent.getBelief().getAbsolutePosition()) : "") + " , Step: " + agent.getBelief().getStep());
                 AgentLogger.info(
@@ -209,13 +209,13 @@ public class DesireUtilities {
                     AgentLogger.info(
                             Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: " + agent.getName()
                                     + " , para: " + para);           
-                }
+                }*/
               
                 agent.desireProcessing.attachedThings = new ArrayList<Thing>();
                 agent.desireProcessing.task = task;
                 agent.desireProcessing.attachedThings = agent.getAttachedThings();
 
-                AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Agent: " + agentStr + " attachedThings: "
+                /*AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Agent: " + agentStr + " attachedThings: "
                         + agent.desireProcessing.attachedThings);
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , Things: " + agent.getBelief().getThings());
@@ -224,11 +224,11 @@ public class DesireUtilities {
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , GoalZones: " + agent.getBelief().getGoalZones());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
-                        + agent.getName() + " , ReachableGoalZones: " + agent.getBelief().getReachableGoalZones());
+                        + agent.getName() + " , ReachableGoalZones: " + agent.getBelief().getReachableGoalZonesX());
                 AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: "
                         + agent.getName() + " , nicht in Zone: " + !agent.getBelief().getGoalZones().contains(Point.zero()) 
                         + " , in Zone: "+ agent.getBelief().getGoalZones().contains(Point.zero()) + " , att. Size: "
-                        + agent.desireProcessing.attachedThings.size());
+                        + agent.desireProcessing.attachedThings.size());*/
                                 
                 if (!agent.blockAttached
                 && doDecision(agent, new GoAbandonedBlockDesire(agent, getTaskBlockA(agent, task).type))) {
@@ -384,7 +384,7 @@ public class DesireUtilities {
             else {
                 result = 250 - desire.getPriority();
                 
-               switch (((GoDispenserDesire) desire).getBlock()) {
+               /*switch (((GoDispenserDesire) desire).getBlock()) {
                case "b0":
                    break;
                case "b1":
@@ -392,7 +392,7 @@ public class DesireUtilities {
                case "b2":
                    result = 290;
                    break;
-               }
+               }*/
             }
             break;
         case "GoGoalZoneDesire":
@@ -625,9 +625,9 @@ public class DesireUtilities {
 
         result = proofBlockType(result, reqs);
                 
-        AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - agent: " + agent.getName() + " , task: " + inTask.name 
+        /*AgentLogger.info(Thread.currentThread().getName() + " getTaskBlockC - agent: " + agent.getName() + " , task: " + inTask.name 
                 + " , block1: " + reqs.get(0).toString() + " , block2: " + (inTask.requirements.size() >= 2 ? reqs.get(1).toString() : "") 
-                + " , block3: " + (inTask.requirements.size() >= 3 ? reqs.get(2).toString() : "") + " , result: " + result.toString());        
+                + " , block3: " + (inTask.requirements.size() >= 3 ? reqs.get(2).toString() : "") + " , result: " + result.toString());  */      
 
         return result;
     }
@@ -642,9 +642,9 @@ public class DesireUtilities {
      */
     private Thing proofBlockType(Thing inBlock, List<Thing> inReqs) {
         Thing result = inBlock;
-        AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type 
+        /*AgentLogger.info(Thread.currentThread().getName() + " proofBlockType - type: " + inBlock.type 
                 + " , number: " + StepUtilities.getNumberAttachedBlocks(inBlock.type) 
-                + " , reqs: " + inReqs); 
+                + " , reqs: " + inReqs); */
         
         count++;
         
@@ -716,7 +716,7 @@ public class DesireUtilities {
             return getActionForMove(agent, dir, desire);
         }
 
-        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - getIteratedActionForMove - stuck");
+        //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - getIteratedActionForMove - stuck");
         return ActionInfo.SKIP("Agent is Stuck in iterated");
     }
     
@@ -787,44 +787,44 @@ public class DesireUtilities {
             for (Point p : attached) {
                 Point testPoint = new Point(p.x + dirPoint.x, p.y + dirPoint.y);
                 Thing t = agent.getBelief().getThingAt(testPoint);
-                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - Direction: " + dir
-                        + " , Block attached: " + p + " , in Richtung: " + testPoint);
+                //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - Direction: " + dir
+                   //     + " , Block attached: " + p + " , in Richtung: " + testPoint);
                 if (!isFree(t) && !testPoint.equals(new Point(0, 0))) {
                     // Can be rotated
                     Thing cw = agent.getBelief().getThingCRotatedAt(p);
                     Thing ccw = agent.getBelief().getThingCCRotatedAt(p);
                     Point cwP = getCRotatedPoint(p);
                     Point ccwP = getCCRotatedPoint(p);
-                    AgentLogger.info(
+                    /*AgentLogger.info(
                             Thread.currentThread().getName() + " getActionForMove - cw: " + cwP + " , ccw: " + ccwP);
                     AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - oppositeD: "
                             + DirectionUtil.oppositeDirection(dir) + " , Cell: "
                             + DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)));
                     AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - cw: " + cw + " , Free?: "
-                            + isFree(cw));
+                            + isFree(cw));*/
                     String lastRotation = agent.getBelief().getLastActionParams().size() > 0
                             ? agent.getBelief().getLastActionParams().get(0)
                             : "";
 
                     if (DirectionUtil.getCellInDirection(DirectionUtil.oppositeDirection(dir)).equals(cwP)) {
-                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
+                        //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if1");
                         if (isFree(cw) && !lastRotation.equals("ccw")) {
-                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
+                            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
                             return ActionInfo.ROTATE_CW(desire);
                         } else {
                             if (isFree(ccw) && !lastRotation.equals("cw")) {
-                                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                                //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
                                 return ActionInfo.ROTATE_CCW(desire);
                             }
                         }
                     } else {
-                        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
+                        //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - else1");
                         if (isFree(ccw) && !lastRotation.equals("cw")) {
-                            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
+                            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rccw");
                             return ActionInfo.ROTATE_CCW(desire);
                         } else {
                             if (isFree(cw) && !lastRotation.equals("ccw")) {
-                                AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
+                                //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - rcw");
                                 return ActionInfo.ROTATE_CW(desire);
                             }
                         }
@@ -856,16 +856,16 @@ public class DesireUtilities {
             //lastWish = dir;
         }
         
-        AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t + " , " + dir + " , "
-        + lastDir + " , " + lastWantedDir + " , " + DirectionUtil.oppositeDirection(lastDir));
+        //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - t: " + t + " , " + dir + " , "
+        //+ lastDir + " , " + lastWantedDir + " , " + DirectionUtil.oppositeDirection(lastDir));
         
         if (t != null && (t.type.equals(Thing.TYPE_OBSTACLE) /*|| (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint))*/)) {
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if2");
+            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if2");
             return ActionInfo.CLEAR(dirPoint, desire);
             
         } else if ((isFree(t) || attached.contains(dirPoint)) 
                 && (lastDir.equals(lastWantedDir) || !(dir.equals(DirectionUtil.oppositeDirection(lastDir))))) {
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
+            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3");
             lastWish = dir;
 
             if (dir2Used)
@@ -874,13 +874,13 @@ public class DesireUtilities {
                 return ActionInfo.MOVE(dir, desire);
 
         } else if (tryLastWanted && lastWantedDir != null && !lastDir.equals(lastWantedDir) && dir.equals(DirectionUtil.oppositeDirection(lastDir))) {
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3.5");
+            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if3.5");
             
             return getIteratedActionForMove(agent, lastWantedDir, desire);
             
         } else if (t != null && (t.type.equals(Thing.TYPE_ENTITY)                
                 || (t.type.equals(Thing.TYPE_BLOCK) && !attached.contains(dirPoint)))) {
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if4");
+            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if4");
             
             // Try to move around agent
             inDirection = inDirection ? false : true;
@@ -891,7 +891,7 @@ public class DesireUtilities {
             Thing tDir1next = agent.getBelief().getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), dir1));
             Thing tDir2next = agent.getBelief().getThingAt(DirectionUtil.getCellInDirection(DirectionUtil.getCellInDirection(dir), lDir2));
             
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove: " + dir1 + " , " + lDir2 + " , " + tDir1 + " , " + tDir2 + " , " + tDir1next + " , " + tDir2next);
+            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove: " + dir1 + " , " + lDir2 + " , " + tDir1 + " , " + tDir2 + " , " + tDir1next + " , " + tDir2next);
 
             if ((isFree(tDir1) || attached.contains(new Point(tDir1.x, tDir1.y)) || isSaveClearable(tDir1)) 
                     && (isFree(tDir1next) || isSaveClearable(tDir1next))) {
@@ -911,12 +911,12 @@ public class DesireUtilities {
                 return getIteratedActionForMove(agent, lDir2, desire);
             }
             
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if5");
+            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if5");
             return getIteratedActionForMove(agent, getCRotatedDirection(dir), desire);
             //return ActionInfo.SKIP("Agent is stuck");
 
         } else {
-            AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if6");
+            //AgentLogger.info(Thread.currentThread().getName() + " getActionForMove - if6");
             return getIteratedActionForMove(agent, getCRotatedDirection(dir), desire);
             //return ActionInfo.SKIP("Agent is stuck");
         }

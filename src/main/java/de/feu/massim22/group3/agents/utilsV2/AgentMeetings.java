@@ -1,7 +1,7 @@
 package de.feu.massim22.group3.agents.utilsV2;
 
 import de.feu.massim22.group3.agents.BdiAgentV2;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -166,14 +166,13 @@ public class AgentMeetings {
             Meeting fm = newMeeting(meeting.agent1.firstMeeting[meeting.agent2().index]);
             Meeting m = newMeeting(meeting);
 
-            AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings.evaluateMapSize - firstMeeting: "
-                    + fm.toString() + " , meeting: " + m.toString());
+            //AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings.evaluateMapSize - firstMeeting: "
+             //       + fm.toString() + " , meeting: " + m.toString());
 
             if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent1, 1)
                     && AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, meeting.agent2, 2)) {
                 int width = Math.abs(m.nmpAgent1.x - fm.nmpAgent1.x) + (m.relAgent2.x - fm.relAgent2.x);
-                AgentLogger.info(
-                        Thread.currentThread().getName() + " AgentMeetings - width: " + width);
+                //AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings - width: " + width);
                 
                 if (width > 20 && width != AgentCooperations.mapSize.x) {
                     AgentCooperations.setMapSize(new Point(width, AgentCooperations.mapSize.y));
@@ -184,8 +183,7 @@ public class AgentMeetings {
             if (AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent1, 1)
                     && AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, meeting.agent2, 2)) {
                 int height = Math.abs(m.nmpAgent1.y - fm.nmpAgent1.y) + (m.relAgent2.y - fm.relAgent2.y);
-                AgentLogger.info(
-                        Thread.currentThread().getName() + " AgentMeetings - height: " + height);
+                //AgentLogger.info(Thread.currentThread().getName() + " AgentMeetings - height: " + height);
                 
                 if (height > 20 && height != AgentCooperations.mapSize.y) {
                     AgentCooperations.setMapSize(new Point(AgentCooperations.mapSize.x, height));
