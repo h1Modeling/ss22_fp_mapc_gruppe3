@@ -290,7 +290,7 @@ public class AgentCooperations {
     /**
      * Converts the data of all cooperation into Strings.
      * 
-     * @param cooperations - all the cooperation whose data we want to print out
+     * @param inCooperations - all the cooperation whose data we want to print out
      * 
      *  @return the data to print out
      */

@@ -1595,7 +1595,7 @@ public class Belief {
     /**
      * recalculates the position of an agent using modulo with map size.
      * 
-     * @param position - non modulo position
+     * @param inPosition - non modulo position
      * 
      * @return modulo position
      */

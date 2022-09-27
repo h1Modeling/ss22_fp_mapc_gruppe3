@@ -549,7 +549,7 @@ public class DesireUtilities {
      * Has the task reached its deadline?
      *
      *@param agent - the agent that wants to do the task
-     * @param task - the task that is being examined
+     * @param inTask - the task that is being examined
      * 
      * @return it has expired or not
      */   
@@ -675,7 +675,7 @@ public class DesireUtilities {
     /**
      * Gets task requirements and orders them.
      *
-     * @param task - the requirements of the task that are to be ordered
+     * @param inTask - the requirements of the task that are to be ordered
      * 
      * @return the ordered requirements
      */
@@ -754,7 +754,7 @@ public class DesireUtilities {
      *
      * @param agent - the agent that wants to do a move
      * @param dir - the direction in which the agent wants to move first
-     * @param dir2 - the direction in which the agent wants to move second
+     * @param inDir2 - the direction in which the agent wants to move second
      * @param desire - the desire which the agent wants to do
      * 
      * @return the action to do
