@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="11" failures="0" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" time="0.739" errors="0" skipped="0">
+<testsuite tests="11" failures="0" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" time="0.831" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="17.0.2+8-86"/>
@@ -40,7 +40,7 @@
     <property name="java.class.path" value="/opt/maven/boot/plexus-classworlds-2.6.0.jar"/>
     <property name="java.vm.specification.version" value="17"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher install -f /mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/pom.xml"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher package -f /mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/pom.xml"/>
     <property name="java.home" value="/mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/jdk-17.0.2"/>
     <property name="user.language" value="de"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
@@ -57,15 +57,15 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.stdout.encoding" value="UTF-8"/>
   </properties>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy3" time="0.676"/>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy4" time="0.005"/>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy5" time="0.006"/>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy6" time="0.019"/>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy7" time="0.003"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy3" time="0.764"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy4" time="0.011"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy5" time="0.007"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy6" time="0.011"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy7" time="0.006"/>
   <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetCornerPoint" time="0.004"/>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetAllAdjacentThings1" time="0.007"/>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetAllAdjacentThings2" time="0.006"/>
-  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetAllAdjacentThings3" time="0.005"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetAllAdjacentThings1" time="0.008"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetAllAdjacentThings2" time="0.004"/>
+  <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetAllAdjacentThings3" time="0.008"/>
   <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy1" time="0.004"/>
   <testcase classname="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest" name="de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest.testGetNewPositionOfTargetEnemy2" time="0.004"/>
 </testsuite>

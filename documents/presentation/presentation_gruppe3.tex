@@ -22,11 +22,12 @@
 %=========================================================================================================================
 \title{Mehrschichtige und dezentrale
 Entscheidungsprozesse in Agentensystemen}
-
 \author[H. Stadler, M. Betz]{Gruppe 3: H. Stadler, M. Betz, P. Heger und B. Wladasch}
-\institute{Artificial Intelligence Group,\\
+\institute{
+Fachpraktikum Künstliche Intelligenz: Multiagentenprogrammierung \\
+Artificial Intelligence Group,\\
 University of Hagen, Germany}
-\date{22. September 2022}
+\date{30. September 2022}
 %=========================================================================================================================
 \logo{\includegraphics[width=3cm]{figures/logoaig.png}}
 %=========================================================================================================================
@@ -40,14 +41,58 @@ University of Hagen, Germany}
 \end{frame}
 \nologo
 
-\section{Einleitung}
-\begin{frame}{Einleitung}
-\frametitle{Einleitung}
+\section*{Motivation}
+\begin{frame}{Motivation}
+\begin{block}{Entwicklung und Bewertung unterschiedlicher Entscheidungsprozesse von Agentensystemen im Kontext des \textit{Multi-Agent Programming Contest} 2022}
+\begin{itemize}
+	\item 2 Varianten basierend auf der BDI-Architektur mit unterschiedlich stark dezentralisierten Entscheidungsprozessen
+	\begin{itemize}
+		\item Agent V1
+		\item Agent V2
+	\end{itemize}
+	\item Leistungsfähigkeit beider Varianten zu bewerten
+	\item Verschiedene Lösungsansätze zu erhalten, die zwischen den Systemen ausgetauscht werden können
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section{Technische Umsetzung}
+\begin{frame}{Technische Umsetzung}
+\begin{itemize}
+\setlength\itemsep{5mm}
+	\item Programmiersprache Java Version 17
+	\begin{itemize}
+		\item Wunsch nach umfangreichen Werkzeugen und Bibliotheken zur Verifikation und Problemfindung
+	\end{itemize}
+	\item Beide Agentensysteme basieren auf \textit{javaagents} Gerüst der MASSim \\ \textit{(Multi-Agent Systems Simulation Platform)}
+	\item Architekturkonzepte mittels UML-Diagrammen entwickelt
+	\item Projektmanagement über Github-Arbeitsablauf
+	\begin{itemize}
+		\item Arbeitsaufteilung über Aufgaben- und Fehlermanagement
+		\item \textit{Feature-Branches} mit Quellcodeüberprüfung durch weiteres Gruppenmitglied 
+	\end{itemize}
+\end{itemize}
 \end{frame}
 
 \section{Agentensystem V1}
 \begin{frame}{Agentensystem V1}
 \frametitle{Agentensystem V1}
+\begin{block}{Ziele}
+\begin{itemize}
+	\item Mehrschichtiger Entscheidungsprozess der das BDI-Konzept erweitert
+	\item Aufbau einer umfangreichen Wissensbasis
+	\item Integration der Wegfindung in den Entscheidungsprozess
+	\item Strategien zur Verifikation und Problemfindung des dynamischen Systems entwickeln
+\end{itemize}
+\end{block}
+\end{frame}
+\begin{frame}{Agentensystem V1}
+\frametitle{Agentensystem V1 - Architektur}
+	\begin{figure}
+		\includegraphics[scale=1]{./figures/Architekturdiagramm.pdf}
+		\caption{Architektur Agentensystem V1}
+		\label{debugger}
+	\end{figure}
 \end{frame}
 
 \section{Agentensystem V2}

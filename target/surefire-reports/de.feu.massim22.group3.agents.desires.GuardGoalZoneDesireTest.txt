@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: de.feu.massim22.group3.agents.desires.GuardGoalZoneDesireTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.742 sec
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.832 sec

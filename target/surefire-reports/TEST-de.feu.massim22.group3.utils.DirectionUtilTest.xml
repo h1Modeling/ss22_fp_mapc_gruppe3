@@ -40,7 +40,7 @@
     <property name="java.class.path" value="/opt/maven/boot/plexus-classworlds-2.6.0.jar"/>
     <property name="java.vm.specification.version" value="17"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher install -f /mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/pom.xml"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher package -f /mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/agents_group3/pom.xml"/>
     <property name="java.home" value="/mnt/aaaf8f1e-ba65-4a21-bcdc-0287d57b85e6/ownCloud/Studium/SS22/Fachpraktikum_KI/Source/jdk-17.0.2"/>
     <property name="user.language" value="de"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
