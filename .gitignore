@@ -7,3 +7,4 @@ logs/AgentLogger.log
 *.toc
 .idea
 /errors.log
+/target/

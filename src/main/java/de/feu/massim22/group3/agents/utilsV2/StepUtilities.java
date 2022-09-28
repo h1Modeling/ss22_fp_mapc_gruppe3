@@ -113,7 +113,7 @@ public class StepUtilities {
         BdiAgentV2 agent1;
         BdiAgentV2 agent2;
 
-        AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() in neuem Thread - Step: " + step);
+        //AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() in neuem Thread - Step: " + step);
         ArrayList<AgentMeeting> foundAgent = new ArrayList<AgentMeeting>();
         Set<Supervisor> exSupervisors = new HashSet<Supervisor>();
         Set<Thing> things = new HashSet<>();
@@ -170,9 +170,9 @@ public class StepUtilities {
                         agent1 = foundAgent.get(j).agent;
                         agent2 = foundAgent.get(k).agent;
 
-                        AgentLogger.info(
+                        /*AgentLogger.info(
                                 Thread.currentThread().getName() + " doGroupProcessing() meeting in vision - Agent1: "
-                                        + agent1.getName() + " , Agent2: " + agent2.getName());
+                                        + agent1.getName() + " , Agent2: " + agent2.getName());*/
 
                         // Can the agents be clearly identified? 
                         if (countMeetings(foundAgent, foundAgent.get(j).position) == 1) {                           
@@ -180,57 +180,57 @@ public class StepUtilities {
                             if (mergeGroups && !(agent1.supervisor == agent2.supervisor)) {
                                 // if true then, merge the smaller group into the bigger group
                                 if (agent1.supervisor.getAgents().size() >= agent2.supervisor.getAgents().size()) {
-                                    AgentLogger.info(Thread.currentThread().getName()
+                                    /*AgentLogger.info(Thread.currentThread().getName()
                                             + " doGroupProcessing() merge 2 in 1 - Supervisor1: "
                                             + agent1.supervisor.getName() + " , Supervisor2: "
-                                            + agent2.supervisor.getName());
+                                            + agent2.supervisor.getName());*/
                                     // merge group from agent2 into group from agent1 
                                     exSupervisors.add(agent2.supervisor);
-                                    Point posOld = Point.castToPoint(agent2.getBelief().getPosition());
+//                                    Point posOld = Point.castToPoint(agent2.getBelief().getPosition());
                                     mergeGroups(agent1.supervisor, agent2.supervisor, agent1, agent2, foundAgent.get(j).position);
-                                    AgentLogger.info(Thread.currentThread().getName()
+                                    /*AgentLogger.info(Thread.currentThread().getName()
                                             + " doGroupProcessing() Agent2: "
                                             + agent2.getName() + " , PositionOld: "
                                             + posOld  + " , PositionNew: "
-                                            + agent2.getBelief().getPosition());
+                                            + agent2.getBelief().getPosition());*/
                                 } else {
-                                    AgentLogger.info(Thread.currentThread().getName()
+                                    /*AgentLogger.info(Thread.currentThread().getName()
                                             + " doGroupProcessing() merge 1 in 2 - Supervisor1: "
                                             + agent1.supervisor.getName() + " , Supervisor2: "
-                                            + agent2.supervisor.getName());
+                                            + agent2.supervisor.getName());*/
                                     // merge group from agent1 into group from agent2
                                     exSupervisors.add(agent1.supervisor);
-                                    Point posOld = Point.castToPoint(agent1.getBelief().getPosition());
+//                                    Point posOld = Point.castToPoint(agent1.getBelief().getPosition());
                                     mergeGroups(agent2.supervisor, agent1.supervisor, agent2, agent1, foundAgent.get(k).position);
-                                    AgentLogger.info(Thread.currentThread().getName()
+                                    /*AgentLogger.info(Thread.currentThread().getName()
                                             + " doGroupProcessing() Agent1: "
                                             + agent1.getName() + " , PositionOld: "
                                             + posOld  + " , PositionNew: "
-                                            + agent1.getBelief().getPosition());
+                                            + agent1.getBelief().getPosition());*/
                                 }
                             } else
-                                AgentLogger.info(Thread.currentThread().getName()
+                                /*AgentLogger.info(Thread.currentThread().getName()
                                         + " doGroupProcessing() no merge, already in same group - Supervisor1: "
                                         + agent1.supervisor.getName() + " , Supervisor2: "
-                                        + agent2.supervisor.getName());
+                                        + agent2.supervisor.getName());*/
                             
                             // starting explore map size (meeting data will be saved in AgentMeetings by recordAgentMeeting)
                             if ((!exploreHorizontalMapSizeStarted || !exploreVerticalMapSizeStarted)
                                     && !agent1.isBusy && !agent2.isBusy && !agent1.blockAttached && !agent2.blockAttached) {
-                                AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map possible - Agent1: "
-                                        + agent1.getName() + " , Agent2: " + agent2.getName());
+                                /*AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map possible - Agent1: "
+                                        + agent1.getName() + " , Agent2: " + agent2.getName());*/
                                 
                                 if (!exploreHorizontalMapSizeStarted) {
                                     AgentCooperations.setCooperation(new AgentCooperations.Cooperation(exploreHorizontalMapSize,
                                                     agent1, Status.Explore, agent2, Status.Wait, null, Status.No2));
-                                    AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map horizontal: "
-                                            + AgentCooperations.get(exploreHorizontalMapSize, agent1, 1));
+                                    /*AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map horizontal: "
+                                            + AgentCooperations.get(exploreHorizontalMapSize, agent1, 1));*/
                                     exploreHorizontalMapSizeStarted = true;
                                 } else {
                                     AgentCooperations.setCooperation(new AgentCooperations.Cooperation(exploreVerticalMapSize,
                                                     agent1, Status.Explore, agent2, Status.Wait, null, Status.No2));
-                                    AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map horizontal: "
-                                            + AgentCooperations.get(exploreVerticalMapSize, agent1, 1));
+                                    /*AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() explore map horizontal: "
+                                            + AgentCooperations.get(exploreVerticalMapSize, agent1, 1));*/
                                     exploreVerticalMapSizeStarted = true;
                                 }
                                 
@@ -264,21 +264,33 @@ public class StepUtilities {
                                 AgentLogger.info(Thread.currentThread().getName()
                                         + " doGroupProcessing() explore map - known map size: "
                                         + AgentCooperations.mapSize.toString());
-                                
-                                for (BdiAgentV2 agent : allAgents) {
-                                    /*AgentLogger.info(Thread.currentThread().getName()
-                                            + " doGroupProcessing() explore map - agent: " + agent.getName() + " , nmp: " 
-                                            + agent.getBelief().getNonModPosition() + " , pos: " + agent.getBelief().getPosition());*/
-                                    agent.getBelief().setPosition(agent.getBelief().calcPositionModulo(new Point(Point.castToPoint(agent.getBelief().getNonModPosition()))));
-                                    /*AgentLogger.info(Thread.currentThread().getName()
-                                            + " doGroupProcessing() explore map - agent: " + agent.getName() + " , nmp: " 
-                                            + agent.getBelief().getNonModPosition() + " , pos: " + agent.getBelief().getPosition());*/
-                                }                              
+                         
+                                if (exploreHorizontalMapSizeFinished && exploreVerticalMapSizeFinished) {
+                                    for (BdiAgentV2 agent : allAgents) {
+                                        /*
+                                         * AgentLogger.info(Thread.currentThread().getName() +
+                                         * " doGroupProcessing() explore map - agent: " + agent.getName() + " , nmp: " +
+                                         * agent.getBelief().getNonModPosition() + " , pos: " +
+                                         * agent.getBelief().getPosition());
+                                         */
+                                        agent.getBelief().setPosition(agent.getBelief().calcPositionModulo(
+                                                new Point(Point.castToPoint(agent.getBelief().getNonModPosition()))));
+                                        calcDispModulo(agent);
+                                        calcRgzModulo(agent);
+                                        /*
+                                         * AgentLogger.info(Thread.currentThread().getName() +
+                                         * " doGroupProcessing() explore map - agent: " + agent.getName() + " , nmp: " +
+                                         * agent.getBelief().getNonModPosition() + " , pos: " +
+                                         * agent.getBelief().getPosition());
+                                         */
+                                    }
+                                }
                             }
-                        } else
-                            AgentLogger.info(Thread.currentThread().getName()
+                        } else {
+                            /*AgentLogger.info(Thread.currentThread().getName()
                                     + " doGroupProcessing() no merge, more than one possibility - Supervisor1: "
-                                    + agent1.supervisor.getName() + " , Supervisor2: " + agent2.supervisor.getName());
+                                    + agent1.supervisor.getName() + " , Supervisor2: " + agent2.supervisor.getName());*/
+                        }
                     }
                 }
             }
@@ -297,8 +309,8 @@ public class StepUtilities {
          * loop for all groups (after merge) with map update and group decisions
          */
         for (Supervisor supervisor : allSupervisors) {
-            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - Supervisor: "
-                    + supervisor.getName());
+            /*AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() Loop - Supervisor: "
+                    + supervisor.getName());*/
 
             Runnable runnable = () -> { //calculate group map           
                 List<CalcResult> agentCalcResults = calcGroup(supervisor);                
@@ -316,7 +328,7 @@ public class StepUtilities {
                     // update goalzones for supervisor  
                     List<java.awt.Point> list = new ArrayList<java.awt.Point>(agent.getBelief().getGoalZones());
                     List<java.awt.Point> listNew = new ArrayList<>();
-                    AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , list alt: " + list);  
+                    //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , list alt: " + list);  
                     
                     for (java.awt.Point p : list) {  
                         //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p alt: " + p);
@@ -325,14 +337,16 @@ public class StepUtilities {
                                 agent.getBelief().getNonModPosition().y + p.y);
                         listNew.add(p);
                         
-                        //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p neu: " + p);  
+                     //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p neu: " + p);  
                     } 
 
                     //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , list neu: " + listNew);                 
                     //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisor.getName() 
                     //        + " , rgz alt: " + ((BdiAgentV2) supervisor.getParent()).rgz); 
                     
-                    ((BdiAgentV2) agent.supervisor.getParent()).rgz.addAll(listNew);
+                    //((BdiAgentV2) agent.supervisor.getParent()).rgz.addAll(listNew);
+                    listAddAllPoint(((BdiAgentV2) agent.supervisor.getParent()).rgz, listNew);
+                    calcRgzModulo((BdiAgentV2) agent.supervisor.getParent());
                     
                     //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisor.getName() 
                     //        + " , rgz neu: " + ((BdiAgentV2) supervisor.getParent()).rgz);   
@@ -359,17 +373,40 @@ public class StepUtilities {
                     //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisor.getName() 
                      //       + " , disp alt: " + ((BdiAgentV2) supervisor.getParent()).disp); 
                     
-                    ((BdiAgentV2) agent.supervisor.getParent()).disp.addAll(thingListNew);
+                    //((BdiAgentV2) agent.supervisor.getParent()).disp.addAll(thingListNew);
+                    listAddAllThing(((BdiAgentV2) agent.supervisor.getParent()).disp, thingListNew);
+                    calcDispModulo((BdiAgentV2) agent.supervisor.getParent());
                     
                     //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisor.getName() 
                      //       + " , disp neu: " + ((BdiAgentV2) supervisor.getParent()).disp);   
                 }
+                
+                ((BdiAgentV2) supervisor.getParent()).rgz.sort((a, b) -> (a.x - b.x == 0 ? a.y - b.y : a.x - b.x));
+                
+                AgentLogger.info(Thread.currentThread().getName() + " vor updateRgz() - SV: "
+                        + ((BdiAgentV2) supervisor.getParent()).getName() + " , " 
+                        + ((BdiAgentV2) supervisor.getParent()).getBelief().getPosition() + " , " +  supervisor.getAgents() + " , " 
+                        + ((BdiAgentV2) supervisor.getParent()).getBelief().getStep() + " , rgz: " 
+                        + ((BdiAgentV2) supervisor.getParent()).rgz);
+                AgentLogger.info(Thread.currentThread().getName() + " vor updateDisp() - SV: "
+                + ((BdiAgentV2) supervisor.getParent()).getName() + " , " 
+                + ((BdiAgentV2) supervisor.getParent()).getBelief().getPosition() + " , " +  supervisor.getAgents() + " , " 
+                + ((BdiAgentV2) supervisor.getParent()).getBelief().getStep() + " , disp: " 
+                + ((BdiAgentV2) supervisor.getParent()).disp);
                 
                 for (String strA : supervisor.getAgents()) {
                     BdiAgentV2 a = getAgent(strA);
                     a.getBelief().updateRgz(((BdiAgentV2) supervisor.getParent()).rgz);
                     a.getBelief().updateDisp(((BdiAgentV2) supervisor.getParent()).disp);
                 }
+    
+                /*AgentLogger.info(Thread.currentThread().getName() + " nach updateRgz() - SV: "
+                        + ((BdiAgentV2) supervisor.getParent()).getName() + " , " 
+                        + ((BdiAgentV2) supervisor.getParent()).getBelief().getPosition() + " , " +  supervisor.getAgents() + " , "
+                        + ((BdiAgentV2) supervisor.getParent()).getBelief().getStep() + " , ReachableGoalZones: "  
+                        + ((BdiAgentV2) supervisor.getParent()).getBelief().getReachableGoalZones());*/
+                
+
                 
                 desireProcessing.runSupervisorDecisions(step, supervisor, this);
             };
@@ -377,10 +414,106 @@ public class StepUtilities {
             Thread t3 = new Thread(runnable);
             t3.start();
             
-            AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Supervisor: " + supervisor.getName());
+            //AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Supervisor: " + supervisor.getName());
         }
 
-        AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Step: " + step);
+        //AgentLogger.info(Thread.currentThread().getName() + " doGroupProcessing() End - Step: " + step);
+    }
+    
+    /*
+     * update dispencer positions with new known mapsize
+     */
+    private void calcDispModulo(BdiAgentV2 agent) {       
+        boolean alreadyExists = false;
+        
+        for (int i = 0; i < agent.disp.size(); i++) {
+            int x = agent.disp.get(i).x < 300 ? agent.disp.get(i).x : ((500 - agent.disp.get(i).x) * -1);
+            int y = agent.disp.get(i).y < 300 ? agent.disp.get(i).y : ((500 - agent.disp.get(i).y) * -1);
+            agent.disp.get(i).x = (((x % AgentCooperations.mapSize.x) + AgentCooperations.mapSize.x) % AgentCooperations.mapSize.x);
+            agent.disp.get(i).y = (((y % AgentCooperations.mapSize.y) + AgentCooperations.mapSize.y) % AgentCooperations.mapSize.y);
+            
+            for (int j = 0; j < i; j++) {
+                if (agent.disp.get(j).x == agent.disp.get(i).x && agent.disp.get(j).y == agent.disp.get(i).y) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            
+            if (alreadyExists) {
+                agent.disp.remove(i);
+                alreadyExists = false;
+            }
+        }
+    }
+    
+    /*
+     * update goal zone positions with new known mapsize
+     */
+    private void calcRgzModulo(BdiAgentV2 agent) {
+        boolean alreadyExists = false;
+        
+        for (int i = agent.rgz.size() - 1; i >= 0; i--) {
+            int x = agent.rgz.get(i).x < 300 ? agent.rgz.get(i).x : ((500 - agent.rgz.get(i).x) * -1);
+            int y = agent.rgz.get(i).y < 300 ? agent.rgz.get(i).y : ((500 - agent.rgz.get(i).y) * -1);
+            agent.rgz.get(i).x = (((x % AgentCooperations.mapSize.x) + AgentCooperations.mapSize.x) % AgentCooperations.mapSize.x);
+            agent.rgz.get(i).y = (((y % AgentCooperations.mapSize.y) + AgentCooperations.mapSize.y) % AgentCooperations.mapSize.y);
+        
+            for (int j = 0; j < i; j++) {
+                if (agent.rgz.get(j).x == agent.rgz.get(i).x && agent.rgz.get(j).y == agent.rgz.get(i).y) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            
+            if (alreadyExists) {
+                agent.rgz.remove(i);
+                alreadyExists = false;
+            }
+        }
+    }
+
+    /*
+     * addAll with a Set did not work (it added duplicates?!)
+     */
+    private void listAddAllThing(List<Thing> inList, List<Thing> inListNew) {
+        boolean alreadyExists = false;
+        
+        for (int i = 0; i < inListNew.size(); i++) {
+            for (int j = 0; j < inList.size(); j++) {
+                if (inList.get(j).x == inListNew.get(i).x && inList.get(j).y == inListNew.get(i).y) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            
+            if (!alreadyExists) {
+                inList.add(inListNew.get(i));
+            } else {
+                alreadyExists = false;
+            }
+        }
+    }
+   
+    /*
+     * addAll with a Set did not work (it added duplicates?!)
+     */
+    private void listAddAllPoint(List<java.awt.Point> inList, List<java.awt.Point> inListNew) {
+        boolean alreadyExists = false;
+        
+        for (int i = 0; i < inListNew.size(); i++) {
+            for (int j = 0; j < inList.size(); j++) {
+                if (inList.get(j).x == inListNew.get(i).x && inList.get(j).y == inListNew.get(i).y) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            
+            if (!alreadyExists) {
+                inList.add(inListNew.get(i));
+            } else {
+                alreadyExists = false;
+            }
+        }
     }
     
     private void recordAgentMeeting( BdiAgentV2 agent1, BdiAgentV2 agent2, Point realtivePositionAgent2) {
@@ -408,8 +541,10 @@ public class StepUtilities {
      *
      */
     public void updateMap(BdiAgentV2 agent) {
+        // because of ConcurrentModificationException
+        Set<Thing> things = new HashSet<>(agent.getBelief().getThings());
         navi.updateMap(agent.supervisor.getName(), agent.getName(), agent.index,
-                agent.getBelief().getPosition(), agent.getBelief().getVision(), agent.getBelief().getThings(),
+                agent.getBelief().getPosition(), agent.getBelief().getVision(), things,
                 agent.getBelief().getGoalZones(), agent.getBelief().getRoleZones(), agent.getBelief().getStep(),
                 agent.getBelief().getTeam(), agent.getBelief().getSteps(),  (int)agent.getBelief().getScore(), agent.getBelief().getNormsInfo(),
                 agent.getBelief().getTaskInfo(), agent.getBelief().getAttachedPoints());
@@ -429,9 +564,9 @@ public class StepUtilities {
      * @param foundPosition - the position of the agent found
      */
     public void mergeGroups(Supervisor supervisorGroup, Supervisor supervisorToMerge, BdiAgentV2 baseAgent, BdiAgentV2 agentFound, Point foundPosition) {
-        AgentLogger.info(
+        /*AgentLogger.info(
                 Thread.currentThread().getName() + " mergeGroups() Start - Supervisor: " + supervisorGroup.getName()
-                        + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + foundPosition);
+                        + " , OldSupervisor: " + supervisorToMerge.getName() + " , " + foundPosition);*/
  
         Point newPosAgentFound = new Point(baseAgent.getBelief().getPosition().x + foundPosition.x,
                 baseAgent.getBelief().getPosition().y + foundPosition.y);     
@@ -468,51 +603,65 @@ public class StepUtilities {
                 }
                 
                 if (agent.getName().equals(supervisorToMerge.getName())) {
-                    //recalculate rgz for new supervisor
-                    //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , " + newPosAgentFound + " , " + agentFound.getBelief().getPosition());
+                    // recalculate rgz for new supervisor
+                    // AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() +
+                    // " , " + newPosAgentFound + " , " + agentFound.getBelief().getPosition());
                     List<java.awt.Point> listNew = new ArrayList<>();
-                    
+
                     for (java.awt.Point p : agent.rgz) {
-                        //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p alt: " + p);  
-                        
-                        p = new java.awt.Point(newNonModPosAgentFound.x + (p.x - agentFound.getBelief().getNonModPosition().x),
+                         /*AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() +
+                         " , p alt: " + p);*/
+
+                        p = new java.awt.Point(
+                                newNonModPosAgentFound.x + (p.x - agentFound.getBelief().getNonModPosition().x),
                                 newNonModPosAgentFound.y + (p.y - agentFound.getBelief().getNonModPosition().y));
                         listNew.add(p);
-                        
-                        //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p neu: " + p);
-                    } 
-                    
-                    //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisorGroup.getName() 
-                       //     + " , rgz alt: " + ((BdiAgentV2) supervisorGroup.getParent()).rgz); 
-                    
-                    ((BdiAgentV2) supervisorGroup.getParent()).rgz.addAll(listNew);
-                    
-                    //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisorGroup.getName() 
-                       //     + " , rgz neu: " + ((BdiAgentV2) supervisorGroup.getParent()).rgz);  
-                
-                //recalculate disp for new supervisor
-                //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , " + newPosAgentFound + " , " + agentFound.getBelief().getPosition());
-                List<Thing> thingListNew = new ArrayList<>();
-                
-                for (Thing thing : agent.disp) {
-                    Point p = new Point(thing.x, thing.y);
-                    //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p alt: " + p);  
-                    
-                    p = new Point(newNonModPosAgentFound.x + (thing.x - agentFound.getBelief().getNonModPosition().x),
-                            newNonModPosAgentFound.y + (thing.y - agentFound.getBelief().getNonModPosition().y));
-                    thingListNew.add(new Thing(p.x, p.y, thing.type, thing.details));
-                    
-                    //AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() + " , p neu: " + p);
-                } 
-                
-                //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisorGroup.getName() 
-                 //       + " , disp alt: " + ((BdiAgentV2) supervisorGroup.getParent()).disp); 
-                
-                ((BdiAgentV2) supervisorGroup.getParent()).disp.addAll(thingListNew);
-                
-                //AgentLogger.info(Thread.currentThread().getName() + " - " + supervisorGroup.getName() 
-                   //     + " , disp neu: " + ((BdiAgentV2) supervisorGroup.getParent()).disp);  
-            }
+
+                         /*AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() +
+                         " , p neu: " + p);*/
+                    }
+
+                     /*AgentLogger.info(Thread.currentThread().getName() + " - " +
+                     supervisorGroup.getName()
+                     + " , rgz alt: " + ((BdiAgentV2) supervisorGroup.getParent()).rgz);*/
+
+                    // ((BdiAgentV2) supervisorGroup.getParent()).rgz.addAll(listNew);
+                    listAddAllPoint(((BdiAgentV2) supervisorGroup.getParent()).rgz, listNew);
+
+                     /*AgentLogger.info(Thread.currentThread().getName() + " - " +
+                     supervisorGroup.getName()
+                     + " , rgz neu: " + ((BdiAgentV2) supervisorGroup.getParent()).rgz);*/
+
+                    // recalculate disp for new supervisor
+                    // AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() +
+                    // " , " + newPosAgentFound + " , " + agentFound.getBelief().getPosition());
+                    List<Thing> thingListNew = new ArrayList<>();
+
+                    for (Thing thing : agent.disp) {
+                        Point p = new Point(thing.x, thing.y);
+                        // AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() +
+                        // " , p alt: " + p);
+
+                        p = new Point(
+                                newNonModPosAgentFound.x + (thing.x - agentFound.getBelief().getNonModPosition().x),
+                                newNonModPosAgentFound.y + (thing.y - agentFound.getBelief().getNonModPosition().y));
+                        thingListNew.add(new Thing(p.x, p.y, thing.type, thing.details));
+
+                        // AgentLogger.info(Thread.currentThread().getName() + " - " + agent.getName() +
+                        // " , p neu: " + p);
+                    }
+
+                    // AgentLogger.info(Thread.currentThread().getName() + " - " +
+                    // supervisorGroup.getName()
+                    // + " , disp alt: " + ((BdiAgentV2) supervisorGroup.getParent()).disp);
+
+                    // ((BdiAgentV2) supervisorGroup.getParent()).disp.addAll(thingListNew);
+                    listAddAllThing(((BdiAgentV2) supervisorGroup.getParent()).disp, thingListNew);
+
+                    // AgentLogger.info(Thread.currentThread().getName() + " - " +
+                    // supervisorGroup.getName()
+                    // + " , disp neu: " + ((BdiAgentV2) supervisorGroup.getParent()).disp);
+                }
 
                 newPosAgent.x = (((newPosAgent.x % AgentCooperations.mapSize.x) + AgentCooperations.mapSize.x) % AgentCooperations.mapSize.x);
                 newPosAgent.y = (((newPosAgent.y % AgentCooperations.mapSize.y) + AgentCooperations.mapSize.y) % AgentCooperations.mapSize.y);
@@ -522,6 +671,9 @@ public class StepUtilities {
                 updateMap(agent);
             }
         }
+        
+        calcRgzModulo((BdiAgentV2) supervisorGroup.getParent());
+        calcDispModulo((BdiAgentV2) supervisorGroup.getParent());
     }
 
     /**
@@ -532,7 +684,7 @@ public class StepUtilities {
      * @return the result of the calculation in a list
      */
     public synchronized List<CalcResult> calcGroup(Supervisor supervisor) {
-        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Start - Supervisor: " + supervisor.getName() + " Agents: " + supervisor.getAgents());
+        //AgentLogger.info(Thread.currentThread().getName() + " calcGroup() Start - Supervisor: " + supervisor.getName() + " Agents: " + supervisor.getAgents());
         List<String> agents = supervisor.getAgents();
         
         List<Percept> percepts = new ArrayList<>();
@@ -544,7 +696,7 @@ public class StepUtilities {
         if (interestingPoints.size() > 0) {
             PathFindingResult[] agentResultData = new PathFindingResult[interestingPoints.size()];
            Point mapTopLeft = Point.castToPoint(navi.getTopLeft(supervisor.getName()));
-           AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - mapTopLeft: " + mapTopLeft);
+           //AgentLogger.info(Thread.currentThread().getName() + " calcGroup() - mapTopLeft: " + mapTopLeft);
 
             for (int i = 0; i < agents.size(); i++) {
                 Point agentPos = Point.castToPoint(getAgent(agents.get(i)).getBelief().getPosition());
@@ -567,7 +719,7 @@ public class StepUtilities {
                         pathFindingResultToPercept(agents.get(i), agentResultData, interestingPoints, mapTopLeft)));
             }
         }
-        AgentLogger.info(Thread.currentThread().getName() + " calcGroup() End - Supervisor: " + supervisor.getName());
+        //AgentLogger.info(Thread.currentThread().getName() + " calcGroup() End - Supervisor: " + supervisor.getName());
         return calcResults;
     }
 

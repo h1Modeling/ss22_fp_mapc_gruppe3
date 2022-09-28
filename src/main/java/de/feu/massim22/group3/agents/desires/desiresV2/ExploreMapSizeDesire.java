@@ -3,7 +3,7 @@ package de.feu.massim22.group3.agents.desires.desiresV2;
 import de.feu.massim22.group3.agents.*;
 import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.utilsV2.*;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 
 /**
  * The class <code>ExploreMapSizeDesire</code> models the desire to explore the map size.
@@ -21,7 +21,7 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      */
     public ExploreMapSizeDesire(BdiAgentV2 agent) {
         super(agent.getBelief());
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start ExploreMapSizeDesire");
+        //AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions - Start ExploreMapSizeDesire");
         this.agent = agent;
     }
 
@@ -42,8 +42,8 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isExecutable() {
-        AgentLogger.info(
-                Thread.currentThread().getName() + " ExploreMapSizeDesire.isExecutable() - Agent: " + agent.getName());
+        /*AgentLogger.info(
+                Thread.currentThread().getName() + " ExploreMapSizeDesire.isExecutable() - Agent: " + agent.getName());*/
         if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, agent)
                 || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, agent)) {
             return new BooleanInfo(true, "");
@@ -59,14 +59,14 @@ public class ExploreMapSizeDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(
+        /*AgentLogger.info(
                 Thread.currentThread().getName() + " ExploreMapSizeDesire.getNextAction() - Agent: " + agent.getName());
         AgentLogger.info(Thread.currentThread().getName() + " ExploreMapSizeDesire.getNextAction() - horizontal: " 
                 + (AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, agent) != null ? 
                         AgentCooperations.get(StepUtilities.exploreHorizontalMapSize, agent).toString() : ""));
         AgentLogger.info(Thread.currentThread().getName() + " ExploreMapSizeDesire.getNextAction() - vertical: " 
         + (AgentCooperations.get(StepUtilities.exploreVerticalMapSize, agent) != null ? 
-                AgentCooperations.get(StepUtilities.exploreVerticalMapSize, agent).toString() : ""));
+                AgentCooperations.get(StepUtilities.exploreVerticalMapSize, agent).toString() : ""));*/
         
         if (AgentCooperations.exists(StepUtilities.exploreHorizontalMapSize, agent, 2) 
             || AgentCooperations.exists(StepUtilities.exploreVerticalMapSize, agent, 2)) {

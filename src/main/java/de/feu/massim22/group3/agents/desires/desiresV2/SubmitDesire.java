@@ -5,7 +5,7 @@ import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.utilsV2.AgentCooperations;
 import de.feu.massim22.group3.agents.utilsV2.Status;
 import de.feu.massim22.group3.agents.utilsV2.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
@@ -30,7 +30,7 @@ public class SubmitDesire extends BeliefDesire {
      */
     public SubmitDesire(TaskInfo info, BdiAgentV2 agent) {
         super(agent.getBelief());
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start SubmitDesire, Step: " + belief.getStep());
         this.info = info;
         this.agent = agent;
     }
@@ -64,9 +64,9 @@ public class SubmitDesire extends BeliefDesire {
                     if (!AgentCooperations.exists(this.info, agent, 1)) {
                         result = false;
                     } else {
-                        AgentLogger.info(Thread.currentThread().getName()
-                                + " runSupervisorDecisions - proofBlockStructure - ist master");
-                        // Agent ist als master in einer cooperation dieser task
+                        /*AgentLogger.info(Thread.currentThread().getName()
+                                + " runSupervisorDecisions - proofBlockStructure - ist master");*/
+                        // Agent is master in a cooperation of this task
                         Cooperation coop = AgentCooperations.get(this.info, agent, 1);
 
                         if (!(coop.statusMaster().equals(Status.Connected)

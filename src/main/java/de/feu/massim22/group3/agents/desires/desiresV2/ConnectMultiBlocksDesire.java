@@ -8,7 +8,7 @@ import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.utilsV2.AgentCooperations;
 import de.feu.massim22.group3.agents.utilsV2.Status;
 import de.feu.massim22.group3.agents.utilsV2.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.Actions;
@@ -32,7 +32,7 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
      */
     public ConnectMultiBlocksDesire(TaskInfo info, BdiAgentV2 agent) {
         super(agent.getBelief());
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ConnectMultiBlocksDesire");
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - Start ConnectMultiBlocksDesire");
         this.info = info;
         this.agent = agent;
     }
@@ -44,7 +44,7 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isFulfilled() {
-        AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ConnectMultiBlocksDesire.isFulfilled");
+        //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - ConnectMultiBlocksDesire.isFulfilled");
         
         if (AgentCooperations.exists(info, agent)) {
          // Agent ist als master in einer cooperation 
@@ -76,14 +76,14 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
      */
     @Override
     public BooleanInfo isExecutable() {
-        AgentLogger.info(
-                Thread.currentThread().getName() + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable");
+        /*AgentLogger.info(
+                Thread.currentThread().getName() + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable");*/
         if (belief.getRole().actions().contains(Actions.DETACH) && belief.getRole().actions().contains(Actions.ATTACH)
                 && belief.getRole().actions().contains(Actions.CONNECT)) {
 
             if (AgentCooperations.exists(info, agent, 1)) {
-                AgentLogger.info(Thread.currentThread().getName()
-                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist master: " + coop.toString());
+                /*AgentLogger.info(Thread.currentThread().getName()
+                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist master: " + coop.toString());*/
 
                 if ((coop.statusMaster().equals(Status.ReadyToConnect) 
                         || coop.statusMaster().equals(Status.Connected))
@@ -95,8 +95,8 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
             }
             
             if (AgentCooperations.exists(info, agent, 2)) {
-                AgentLogger.info(Thread.currentThread().getName()
-                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist helper: " + coop.toString());
+                /*AgentLogger.info(Thread.currentThread().getName()
+                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist helper: " + coop.toString());*/
 
                 if ((coop.statusMaster().equals(Status.ReadyToConnect))
                         && (coop.statusHelper().equals(Status.ReadyToConnect))) {
@@ -105,8 +105,8 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
             }
             
             if (AgentCooperations.exists(info, agent, 3)) {
-                AgentLogger.info(Thread.currentThread().getName()
-                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist helper2: " + coop.toString());
+                /*AgentLogger.info(Thread.currentThread().getName()
+                        + " runSupervisorDecisions - ConnectMultiBlocksDesire.isExecutable - ist helper2: " + coop.toString());*/
 
                 if ((coop.statusMaster().equals(Status.Connected))
                         && (coop.statusHelper().equals(Status.Detached))
@@ -126,17 +126,17 @@ public class ConnectMultiBlocksDesire extends BeliefDesire {
      */
     @Override
     public ActionInfo getNextActionInfo() {
-        AgentLogger.info(Thread.currentThread().getName()
-                + " runSupervisorDecisions - ConnectMultiBlocksDesire.getNextActionInfo");
+        /*AgentLogger.info(Thread.currentThread().getName()
+                + " runSupervisorDecisions - ConnectMultiBlocksDesire.getNextActionInfo");*/
 
         Point helperBlock = agent.getAttachedPoints().get(0);
         List<Thing> list = agent.desireProcessing.getTaskReqsOrdered(info);
         Point block1 = new Point(list.get(0).x, list.get(0).y);       
         Point block2 = new Point(list.get(1).x, list.get(1).y);           
 
-        AgentLogger.info(Thread.currentThread().getName()
+        /*AgentLogger.info(Thread.currentThread().getName()
                 + " runSupervisorDecisions - ConnectMultiBlocksDesire.getNextActionInfo agentBlocks: "
-                + agent.getAttachedThings() + " , taskBlocks: " + info.requirements);
+                + agent.getAttachedThings() + " , taskBlocks: " + info.requirements);*/
 
         if (agent.getName().equals(coop.master().getName())) {
             // Connect of master

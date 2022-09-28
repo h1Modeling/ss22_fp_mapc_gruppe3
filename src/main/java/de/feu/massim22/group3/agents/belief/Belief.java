@@ -1565,11 +1565,11 @@ public class Belief {
     public void updatePositionFromExternal() {
         setMapSize(AgentCooperations.mapSize.x, AgentCooperations.mapSize.y);
         String dir = null;
-        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Vorher: " +  getPosition());
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Vorher: " +  getPosition());
         if (lastAction != null && lastAction.equals(Actions.MOVE) && !lastActionResult.equals(ActionResults.FAILED)) {
             // Success
             if (lastActionResult.equals(ActionResults.SUCCESS)) {
-                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Success: " +  lastActionParams);
+                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Success: " +  lastActionParams);
                 
                 for (int i = 0; i < lastActionParams.size(); i++) {
                     dir = lastActionParams.get(i);
@@ -1581,7 +1581,7 @@ public class Belief {
 
             // Partial Success (Only realy OK for max speed two ?!? Maybe compare changed vision for better results ?)
             if (lastActionResult.equals(ActionResults.PARTIAL_SUCCESS)) {
-                AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Partial: " +  lastActionParams);
+                //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Partial: " +  lastActionParams);
                 moveOld(lastActionParams.get(0));
                 moveNonModuloPosition(lastActionParams.get(0));
                 moveMapSizePosition(lastActionParams.get(0));
@@ -1589,7 +1589,7 @@ public class Belief {
         }
         
         position = calcPositionModulo(position);
-        AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Nachher: " +  getPosition());
+        //AgentLogger.info(Thread.currentThread().getName() + " updatePositionFromExternal - Agent: " + agentShortName + " , Step: " +  step + " , Nachher: " +  getPosition());
     }
     
     /**
@@ -1707,6 +1707,29 @@ public class Belief {
     }
     
     /**
+     * Gets a list of all reachable goal zones.
+     * 
+     * @return list of all reachable goal zones
+     */
+    public List<ReachableGoalZone> getReachableGoalZonesX() {
+        List<ReachableGoalZone> reachableGoalZ = new ArrayList<>(this.reachableGoalZones);
+        List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
+        
+        for (ReachableGoalZone rd : reachableGoalZ) {
+            Point agentPos = getPosition();
+            Point pos = new Point((((rd.position().x % mapSize.x) + mapSize.x) % mapSize.x), 
+                    (((rd.position().y % mapSize.y) + mapSize.y) % mapSize.y));          
+            int distance = Math.min(Math.abs(pos.x - agentPos.x) % mapSize.x,  Math.abs(mapSize.x - Math.abs(pos.x - agentPos.x)) % mapSize.x)
+                    + Math.min(Math.abs(pos.y - agentPos.y) % mapSize.y,  Math.abs(mapSize.y - Math.abs(pos.y - agentPos.y)) % mapSize.y);    
+            int direction = DirectionUtil.stringToInt(DirectionUtil.getDirection(agentPos, pos));
+            ReachableGoalZone rdnew = new ReachableGoalZone(pos, distance, direction);
+            reachableGoalZonesX.add(rdnew);
+        }
+        
+        return reachableGoalZonesX;
+    }
+    
+    /**
      * Gets a list of all reachable dispensers.
      * 
      * @return list of all reachable dispensers
@@ -1759,7 +1782,7 @@ public class Belief {
      * 
      * @param inSet - Set of goal zone points
      */
-    public void updateRgz(Set<Point> inSet) {
+    public void updateRgz(List<Point> inSet) {
         List<ReachableGoalZone> reachableGoalZonesX = new ArrayList<>();
         
         for (Point inPos : inSet) {
@@ -1772,7 +1795,8 @@ public class Belief {
             reachableGoalZonesX.add(rdnew);
         }
    
-        reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
+        //reachableGoalZonesX.sort((a, b) -> a.distance() - b.distance());
+        reachableGoalZonesX.sort((a, b) -> (a.position().x - b.position().x == 0 ? a.position().y - b.position().y : a.position().x - b.position().x));
         this.reachableGoalZones = reachableGoalZonesX;
     }
     
@@ -1781,7 +1805,7 @@ public class Belief {
      * 
      * @param inSet - Set of dispensers
      */
-    public void updateDisp(Set<Thing> inSet) {
+    public void updateDisp(List<Thing> inSet) {
         List<ReachableDispenser> reachableDispensersX = new ArrayList<>();
         
         for (Thing inThing : inSet) {
