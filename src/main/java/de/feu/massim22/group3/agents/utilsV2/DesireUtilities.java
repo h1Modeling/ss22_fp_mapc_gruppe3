@@ -27,9 +27,7 @@ import massim.protocol.messages.scenario.Actions;
  * @author Melinda Betz
  * @author Heinz Stadler (minor contribution)
  */
-//@SuppressWarnings("hiding")
 public class DesireUtilities {
-    //private StepUtilities stepUtilities;
     private TaskInfo task;
     private int maxTaskBlocks = 3;
     private int maxTypes = AgentCooperations.getMaxTypes();
@@ -64,35 +62,35 @@ public class DesireUtilities {
      */
     public synchronized boolean runAgentDecisions(int step, BdiAgentV2 agent) {
         boolean result = false;
-        AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
-                + " , Agent: " + agent.getName());
+        /*AgentLogger.info(Thread.currentThread().getName() + " runAgentDecisions() Start - Step: " + step
+                + " , Agent: " + agent.getName());*/
 
         if (doDecision(agent, new DigFreeDesire(agent.getBelief()))) {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
             + " , DigFreeDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
             + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
             + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-        } else
-            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-            + " , DigFreeDesire");
+        } else {}
+            /*AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , DigFreeDesire");*/
         
         if (doDecision(agent, new FreedomDesire(agent.getBelief()))) {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
             + " , FreedomDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
             + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
             + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-        } else
-            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-            + " , FreedomDesire");
+        } else {}
+            /*AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , FreedomDesire");*/
         
         if (doDecision(agent, new LocalExploreDesire(agent.supervisor.getName(), agent))) {
             AgentLogger.info(Thread.currentThread().getName() + " Desire added - Agent: " + agent.getName()
             + " , LocalExploreDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
             + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
             + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-        } else
-            AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-            + " , LocalExploreDesire");
+        } else {}
+            /*AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+            + " , LocalExploreDesire");*/
         
         if (agent.blockAttached && agent.desireProcessing.attachedThings.size() > maxTaskBlocks 
                 && doDecision(agent, new LooseWeightDesire(agent.getBelief()))) {
@@ -100,9 +98,9 @@ public class DesireUtilities {
                 + " , LooseWeightDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                 + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters() 
                 + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-            } else
-                AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                        + " , LooseWeightDesire");
+            } else {}
+                /*AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        + " , LooseWeightDesire");*/
         
             if (agent.getBelief().getRole().name().equals("default")
                     && doDecision(agent, new GoAdoptRoleDesire(agent, "worker"))) {
@@ -112,9 +110,9 @@ public class DesireUtilities {
                         + " , Parameter: "
                         + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                         + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-            } else
-                AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                        + " , GoAdoptRoleDesire - worker");
+            } else {}
+                /*AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        + " , GoAdoptRoleDesire - worker");*/
 
             if ((StepUtilities.exploreHorizontalMapSizeStarted || StepUtilities.exploreVerticalMapSizeStarted)
                     && !(StepUtilities.exploreHorizontalMapSizeFinished && StepUtilities.exploreVerticalMapSizeFinished)
@@ -126,9 +124,9 @@ public class DesireUtilities {
                                 + " , Parameter: "
                                 + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                                  + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-            } else
-                AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                        + " , ExploreMapSizeDesire");
+            } else {} {}
+                /*AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        + " , ExploreMapSizeDesire");*/
         
         agent.decisionsDone = true;
         return result;
@@ -201,7 +199,8 @@ public class DesireUtilities {
                 
                 /*AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions() Agent: " + agentStr 
                         + " , Pos: " + agent.getBelief().getPosition()+ " , abs: " 
-                                + ((Point.castToPoint(agent.getBelief().getAbsolutePosition()) != null) ? Point.castToPoint(agent.getBelief().getAbsolutePosition()) : "") + " , Step: " + agent.getBelief().getStep());
+                                + ((Point.castToPoint(agent.getBelief().getAbsolutePosition()) != null) 
+                                ? Point.castToPoint(agent.getBelief().getAbsolutePosition()) : "") + " , Step: " + agent.getBelief().getStep());
                 AgentLogger.info(
                         Thread.currentThread().getName() + " runSupervisorDecisions() - Agent: " + agent.getName()
                                 + " , lA: " + agent.getBelief().getLastAction() + " , lAR: " + agent.getBelief().getLastActionResult());
@@ -236,9 +235,9 @@ public class DesireUtilities {
                     + " , GoAbandonedBlockDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                } else
-                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , GoAbandonedBlockDesire");
+                } else {}
+                    //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        //    + " , GoAbandonedBlockDesire");
                 
                 //String bType = (StepUtilities.getNumberAttachedBlocks(getTaskBlock(agent, task).type) < 4 ? getTaskBlock(agent, task).type : "b2");
                 
@@ -248,9 +247,9 @@ public class DesireUtilities {
                     + " , GoDispenserDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                } else
-                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , GoDispenserDesire");
+                } else {}
+                    //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        //    + " , GoDispenserDesire");
                 
                 if (maxTaskBlocks > 1 && agent.blockAttached && task.requirements.size() > 1
                         && doDecision(agent, new HelperMultiBlocksDesire(task, agent))) {
@@ -258,9 +257,9 @@ public class DesireUtilities {
                     + " , HelperMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                        } else
-                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                                + " , HelperMultiBlocksDesire");
+                        } else {}
+                        //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                            //    + " , HelperMultiBlocksDesire");
                 
                 if (maxTaskBlocks > 2 && agent.blockAttached && task.requirements.size() > 2
                         && doDecision(agent, new Helper2MultiBlocksDesire(task, agent))) {
@@ -268,9 +267,9 @@ public class DesireUtilities {
                     + " , Helper2MultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                        } else
-                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                        + " , Helper2MultiBlocksDesire");
+                        } else {}
+                        //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        //+ " , Helper2MultiBlocksDesire");
 
                 if (agent.blockAttached && !agent.getBelief().getGoalZones().contains(Point.zero()) 
                     && doDecision(agent, new GoGoalZoneDesire(agent))) {
@@ -278,9 +277,9 @@ public class DesireUtilities {
                     + " , GoGoalZoneDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                    } else
-                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , GoGoalZoneDesire");
+                    } else {}
+                    //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        //    + " , GoGoalZoneDesire");
 
                 if (agent.blockAttached && task.requirements.size() == 1 && agent.getBelief().getGoalZones().contains(Point.zero())
                     && doDecision(agent, new ArrangeBlockDesire(task, agent))) {
@@ -288,9 +287,9 @@ public class DesireUtilities {
                     + " , ArrangeBlockDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                    } else
-                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , ArrangeBlockDesire");
+                    } else {}
+                    //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                        //    + " , ArrangeBlockDesire");
                                 
                 if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())
                         && doDecision(agent, new MasterMultiBlocksDesire(task, agent))) {
@@ -298,9 +297,9 @@ public class DesireUtilities {
                     + " , MasterMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                        } else
-                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                                + " , MasterMultiBlocksDesire");
+                        } else {}
+                        //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                            //    + " , MasterMultiBlocksDesire");
                 
                 if (maxTaskBlocks > 1 && task.requirements.size() > 1 && agent.blockAttached 
                         && doDecision(agent, new ConnectMultiBlocksDesire(task, agent))) {
@@ -308,9 +307,9 @@ public class DesireUtilities {
                     + " , ConnectMultiBlocksDesire , Action: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getName() 
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
-                        } else
-                        AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                                + " , ConnectMultiBlocksDesire");
+                        } else {}
+                        //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                           //     + " , ConnectMultiBlocksDesire");
 
                 if (agent.blockAttached && agent.getBelief().getGoalZones().contains(Point.zero())
                     && doDecision(agent, new SubmitDesire(task, agent))) {
@@ -319,8 +318,8 @@ public class DesireUtilities {
                     + " , Parameter: " + agent.getDesires().get(agent.getDesires().size() - 1).getOutputAction().getParameters()
                     + " , Task: " + task.name + " , Prio: " + getPriority(agent.getDesires().get(agent.getDesires().size() - 1), agent));
                     } else {}
-                    AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
-                            + " , SubmitDesire");
+                    //AgentLogger.info(Thread.currentThread().getName() + " Desire not added - Agent: " + agent.getName()
+                      //      + " , SubmitDesire");
             } // Loop agents
         } // Loop tasks
 
@@ -346,10 +345,10 @@ public class DesireUtilities {
 
         switch (desire.getName()) {
         
-        case "DigFreeDesire": // this is a BdiAgentV1-Desire
+        case "DigFreeDesire": // this is a BdiAgentV1-Desire not realy used anymore
             result = 1900;
             break;
-        case "FreedomDesire": // this is a BdiAgentV1-Desire
+        case "FreedomDesire": // this is a BdiAgentV1-Desire not realy used anymore
             result = 2000;
             break;
         case "LocalExploreDesire":
@@ -448,10 +447,10 @@ public class DesireUtilities {
             else    
                 result = 1100;
             break;
-        case "LooseWeightDesire": // this is a BdiAgentV1-Desire
+        case "LooseWeightDesire": // this is a BdiAgentV1-Desire not realy used anymore
             result = 1400;
             break;
-        case "DisconnectMultiBlocksDesire": // this is not used anymore
+        case "DisconnectMultiBlocksDesire": 
             result = 2500;
             break;
         }

@@ -119,11 +119,9 @@ public class GoGoalZoneDesire extends BeliefDesire {
                 // Manhatten
                 String direction = getDirectionToRelativePoint(p);
                 String dirAlt = "";
-                Point gz = null;
 
                 for (int i = 1; i < belief.getGoalZones().size(); i++) {
                     dirAlt = getDirectionToRelativePoint(belief.getGoalZones().get(i));
-                    gz = Point.castToPoint(belief.getGoalZones().get(i));
 
                     if (!dirAlt.equals(direction)) {
                         break;

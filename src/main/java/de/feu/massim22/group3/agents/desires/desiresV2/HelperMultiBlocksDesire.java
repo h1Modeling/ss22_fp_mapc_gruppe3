@@ -218,7 +218,7 @@ public class HelperMultiBlocksDesire extends BeliefDesire {
                 String direction = DirectionUtil.getDirection(agent.getBelief().getPosition(), target);
                 AgentCooperations.setStatusHelper(info, nearestMeeting.agent1(), Status.GoTarget);
                 agent.alwaysToTarget = true; 
-                String dirAlt = "";
+//                String dirAlt = "";
                 //AgentLogger.info(Thread.currentThread().getName() + "HelperMultiBlocksDesire - nextActionDirectionManhatten: "
                     //    + direction + " , altdir: " + dirAlt);
                 return agent.desireProcessing.getActionForMove(agent, direction, getName());

@@ -9,7 +9,7 @@ import de.feu.massim22.group3.agents.desires.*;
 import de.feu.massim22.group3.agents.utilsV2.AgentCooperations;
 import de.feu.massim22.group3.agents.utilsV2.Status;
 import de.feu.massim22.group3.agents.utilsV2.AgentCooperations.Cooperation;
-import de.feu.massim22.group3.utils.logging.AgentLogger;
+//import de.feu.massim22.group3.utils.logging.AgentLogger;
 import massim.protocol.data.TaskInfo;
 import massim.protocol.data.Thing;
 import massim.protocol.messages.scenario.ActionResults;

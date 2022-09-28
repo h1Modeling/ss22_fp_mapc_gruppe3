@@ -311,10 +311,10 @@ public class BdiAgentV2 extends BdiAgent<IDesire> implements Supervisable {
                 
                 if (belief.getLastActionParams().size() == 2) {
                     AgentCooperations.setScore(Integer.parseInt(belief.getLastActionParams().get(1)));
-                    /*AgentLogger.info(Thread.currentThread().getName() + " Step: " + belief.getStep()
+                    AgentLogger.info(Thread.currentThread().getName() + " Step: " + belief.getStep()
                     + " , Scores: " + AgentCooperations.getScore(1)
                             + " , " + AgentCooperations.getScore(2)
-                                    + " , " + AgentCooperations.getScore(3)); */
+                                    + " , " + AgentCooperations.getScore(3)); 
                 }
             }
 

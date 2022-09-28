@@ -18,8 +18,8 @@ import massim.protocol.data.TaskInfo;
 public class AgentCooperations {
     private static List<Cooperation> cooperations = new ArrayList<Cooperation>();
     private static int maxMaster = 2;
-    private static int max2BMaster = 2;
-    private static int max3BMaster = 0;
+    private static int max2BMaster = 1;
+    private static int max3BMaster = 1;
     private static int maxTypes = 3;
     private static int[] scores = {0, 0, 0, 0};
     

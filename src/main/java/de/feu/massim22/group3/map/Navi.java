@@ -293,7 +293,7 @@ public class Navi implements INaviAgentV1, INaviAgentV2, INaviTest  {
 
         // Set agent Position
         map.setAgentPosition(agent, position);
-        AgentLogger.info(Thread.currentThread().getName() + " updateMap Position: " + position);
+        //AgentLogger.info(Thread.currentThread().getName() + " updateMap Position: " + position);
         
         // Set attached Points
         map.setAgentAttached(agent, attachedThings);

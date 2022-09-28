@@ -20,7 +20,7 @@ import massim.protocol.messages.scenario.Actions;
  * @author Melinda Betz
  */
 public class MasterMultiBlocksDesire extends BeliefDesire {
-
+    
     private TaskInfo info;
     private BdiAgentV2 agent;
     private BdiAgentV2 possibleHelper;
@@ -356,7 +356,6 @@ public class MasterMultiBlocksDesire extends BeliefDesire {
     public BooleanInfo findHelper2(TaskInfo task) {
         //AgentLogger.info(Thread.currentThread().getName() + " runSupervisorDecisions - findHelper2");
         BooleanInfo result = new BooleanInfo(false, "");
-        boolean found = false;
         foundMeetings = new TreeMap<>();
 
         /*//AgentLogger.info(Thread.currentThread().getName()
