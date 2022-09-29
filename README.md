@@ -9,7 +9,7 @@ Artificial Intelligence Group, FernUniversität in Hagen, Deutschland
 - P. Heger
 - B. Wladasch
 
-## Motivation
+## Motivation:
 Der [`Multi-Agent Programming Contest 2022`](https://multiagentcontest.org/) bildet die thematische
 Grundlage für die in diesem Repository enthaltenen Agentensysteme. Es handelt
 sich um zwei Varianten, basierend auf der BDI-Architektur, die das menschliche Denken und Schlussfolgern abstrahiert bzw. nachbildet. Beide Konzepte (Agentensystem V1 bzw. V2) unterscheiden sich konzeptionell durch unterschiedlich stark zentralisierte
@@ -21,7 +21,7 @@ zwischen den Systemen ausgetauscht werden können.
 Die Agentensysteme wurden in der Programmiersprache JAVA implementiert.
 Um die Agentensysteme auszuführen wird ein JDK >= 17 benötigt. 
 
-## Programmstart
+## Programmstart:
 Um eine Simulation zu starten wird ein [`Simulationsserver`](https://github.com/agentcontest/massim_2022/blob/main/docs/server.md) benötigt.
 Die Agentensysteme können mittels `java -jar group3-2022-1.0-jar-with-dependencies.jar` gestartet werden. Es ist darauf zu achten, dass sich im aktuellen Arbeitsverzeichnis ein Konfigurationsordner befindet. Eine Beispielkonfiguration kann dem `conf` Ordner im Hauptverzeichnis dieses Repositories entnommen werden.
 
