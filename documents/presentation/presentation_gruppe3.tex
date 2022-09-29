@@ -9,6 +9,8 @@
 \usepackage[ngerman]{babel}
 \usepackage[utf8]{inputenc}
 
+\usepackage{MnSymbol,wasysym}
+
 \usepackage{tikz}
 \usepackage{url}
 \usepackage{tabularx}
@@ -50,7 +52,7 @@ University of Hagen, Germany}
 		\item Agent V1
 		\item Agent V2
 	\end{itemize}
-	\item Leistungsfähigkeit beider Varianten zu bewerten
+	\item Leistungsfähigkeit beider Varianten bewerten
 	\item Verschiedene Lösungsansätze zu erhalten, die zwischen den Systemen ausgetauscht werden können
 \end{itemize}
 \end{block}
@@ -65,12 +67,6 @@ University of Hagen, Germany}
 		\item Wunsch nach umfangreichen Werkzeugen und Bibliotheken zur Verifikation und Problemfindung
 	\end{itemize}
 	\item Beide Agentensysteme basieren auf \textit{javaagents} Gerüst der MASSim \\ \textit{(Multi-Agent Systems Simulation Platform)}
-	\item Architekturkonzepte mittels UML-Diagrammen entwickelt
-	\item Projektmanagement über Github-Arbeitsablauf
-	\begin{itemize}
-		\item Arbeitsaufteilung über Aufgaben- und Fehlermanagement
-		\item \textit{Feature-Branches} mit Quellcodeüberprüfung durch weiteres Gruppenmitglied 
-	\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -79,20 +75,86 @@ University of Hagen, Germany}
 \frametitle{Agentensystem V1}
 \begin{block}{Ziele}
 \begin{itemize}
-	\item Mehrschichtiger Entscheidungsprozess der das BDI-Konzept erweitert
+	\item BDI-Konzept durch mehrschichtigen Entscheidungsprozess erweitern
 	\item Aufbau einer umfangreichen Wissensbasis
 	\item Integration der Wegfindung in den Entscheidungsprozess
-	\item Strategien zur Verifikation und Problemfindung des dynamischen Systems entwickeln
+	\item Strategien zur Verifikation und Problemfindung entwickeln
 \end{itemize}
 \end{block}
 \end{frame}
+
 \begin{frame}{Agentensystem V1}
-\frametitle{Agentensystem V1 - Architektur}
-	\begin{figure}
-		\includegraphics[scale=1]{./figures/Architekturdiagramm.pdf}
-		\caption{Architektur Agentensystem V1}
-		\label{debugger}
-	\end{figure}
+\frametitle{Agentensystem V1 -- Schichtenarchitektur}
+\begin{columns}
+\begin{column}{0.3\textwidth}
+   	\yellowhighlight{Entscheidungsschichten}
+	\\[2ex]
+	\highlight{Wissensschichten}
+
+\end{column}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+	\vspace{-6mm}
+     \includegraphics[scale=1.1]{./figures/Architekturdiagramm.pdf}    
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Agentensystem V1}
+\frametitle{Agentensystem V1 -- Wegfindung}
+\begin{columns}
+\begin{column}{0.7\textwidth}
+\begin{block}{Ziel: Ermittlung Entfernungsdaten mit intelligenter Behandlung von Hindernissen für Entscheidungsfindung}
+\end{block}
+	\begin{itemize}
+		\item{50-100 Berechnungen pro Agent und Simulationsschritt}
+		\item{CPU-basierte Lösung scheidet aufgrund Zeitbeschränkung aus}
+	\end{itemize}
+\begin{exampleblock}{Lösung: GPU basierte Wegfindung mittels OpenGL-Computeshader}
+\end{exampleblock}
+	\begin{itemize}
+		\item{bis zu 1.000 Berechnungen pro Simulationsschritt}
+		\item{A* Algorithmus mit Heuristik Manhattan-Distanz}
+		\item{Herausforderungen im Bereich Speicherkomplexität}
+	\end{itemize}
+\end{column}
+\begin{column}{0.3\textwidth}
+    \begin{center}
+     \includegraphics[scale=1.3]{./figures/Pathfinding.pdf}    
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Agentensystem V1}
+\frametitle{Agentensystem V1 -- Ziel- und Absichtsfindung}
+\begin{center}
+\includegraphics[scale=1.05]{./figures/Entscheidungsfindung2.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Agentensystem V1}
+\frametitle{Agentensystem V1 -- Verifikation und Problemfindung}
+\begin{block}{Validierung}
+\begin{itemize}
+	\item erfolgt über erreichte Punktzahl in Testspielen
+\end{itemize}
+\end{block}
+\begin{block}{Verifizierung / Problemfindung}
+\begin{itemize}
+	\item der Wissensbasis über Einzeltests
+	\item des Entscheidungsprozesses über punktuelle Einzeltests (Flächendeckende Tests sind aufgrund des dynamischen Systems nicht effizient umsetzbar)
+	\item Problemfindung stattdessen über Beobachtungen analog eines Trainers einer Sportmannschaft
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Agentensystem V1}
+\frametitle{Agentensystem V1 -- Grafisches Analysewerkzeug}
+\begin{center}
+\includegraphics[width=\textwidth]{./figures/Debugger2.png} 
+\end{center}
 \end{frame}
 
 \section{Agentensystem V2}
@@ -149,47 +211,59 @@ University of Hagen, Germany}
 
 \section{Turniere}
 
-\section{Rekapitulation und Ausblick}
-
-\begin{frame}{Blocks}
-    \begin{block}{Block}
-        This is a regular block.
-        \begin{itemize}
-            \item This is an item in a block.
-        \end{itemize}
-    \end{block}
-    
-    \begin{alertblock}{Block}
-        This is an alert block.
-        \begin{itemize}
-            \item This is an item in an alert block.
-        \end{itemize}
-    \end{alertblock}
-    
-    \begin{exampleblock}{Block}
-        This is an example block.
-        \begin{itemize}
-            \item This is an item in an example block.
-        \end{itemize}
-    \end{exampleblock}
+\begin{frame}{Turniere}
+\frametitle{Turniere}
+Teilnahme an Turnier 2-6. \\ Hauptagent war Agent V1 (Agent V2 hat insgesamt 4 Spiele bestritten)
+\begin{block}{Turnier 2}
+\textcolor{teal}{\smiley{}} max. 370 Punkte über Einzelblockaufgaben (zweiter Platz) \\
+\textcolor{red}{\frownie{}} übermäßige Gruppenbildung und gegenseitige Behinderung  
+\end{block}
+\begin{block}{Turnier 3}
+\textcolor{teal}{\smiley{}} max. 720 Punkte über Einzelblockaufgaben (zweiter Platz) \\
+\textcolor{red}{\frownie{}} teilweise Gruppenbildung und gegenseitige Behinderung  
+\end{block}
+\begin{block}{Turnier 4}
+\textcolor{teal}{\smiley{}} Mehrblockaufgaben wurden abgegeben \\
+\textcolor{teal}{\smiley{}} kaum Gruppenbildung \\
+\textcolor{red}{\frownie{}} schlechte Agentenzusammenarbeit (dritter Platz und \textit{nur} max. 680 Punkte)
+\end{block}
 \end{frame}
 
-
-\begin{frame}{Highlighting Text}
-    We can \highlight{highlight} text. There are also a \darkhighlight{darker} option, and a \yellowhighlight{yellow} option.\\
-    The same options are also available in math mode: $\mathhighlight{a} + \darkmathhighlight{b} = \yellowmathhighlight{c}$
+\begin{frame}{Turniere}
+\frametitle{Turniere}
+\begin{block}{Turnier 5}
+\textcolor{teal}{\smiley{}} stark verbesserte Agentenzusammenarbeit \\
+\textcolor{teal}{\frownie{}} max. 1300 Punkte (erster Platz)  
+\end{block}
+\begin{block}{Turnier 6}
+\textcolor{teal}{\smiley{}} verschärfter Schwierigkeitsgrad wurde gut gemeistert \\
+\textcolor{teal}{\smiley{}} Abgabe von Dreiblockaufgaben \\
+\textcolor{teal}{\smiley{}} max. 910 Punkte (erster Platz) \\
+\end{block}
+\begin{block}{Bonusspiel -- Jeder gegen Jeden mit insgesamt 150 Agenten}
+\textcolor{teal}{\smiley{}} Agenten blieben performant \\
+\textcolor{teal}{\smiley{}} 1370 Punkte (erster Platz)  \\
+\textcolor{red}{\frownie{}} Gruppenbildung und gegenseitige Behinderung war zu beobachten
+\end{block}
 \end{frame}
 
+\section{Rekapitulation}
 
-\appendix
-
-\section{Appendix}
-
-\begin{frame}{Appendix}
-    This is an appendix.
-    \begin{itemize}
-        \item Page numbers start from the beginning.
-    \end{itemize}
+\begin{frame}{Rekapitulation}
+\begin{itemize}
+	\item Die umgesetzten Architekturen waren sehr erfolgreich in den Turnieren.
+	\item Abgesehen von der Verwendung einer gemeinsamen Wissensbasis fand kaum Austausch zwischen den verfolgten Ansätzen statt, was kritisch zu bewerten ist.
+	\item Aufgrund der erreichten Punkte wird vermutet, dass der mehrschichtige Entscheidungsprozess \textit{(Agent V1)} leistungsfähiger ist als der vollständig dezentrale Ansatz \textit{(Agent V2)}
+	\item Ein direkter Vergleich ist aber aufgrund der unterschiedlichen Architekturen und Ersteller nur schwer durchzuführen und daher bleibt die Aussage eine Vermutung.
+	\item Die Gruppe ist mit der erreichten Funktionalität und deren \\ Qualität zufrieden. Dennoch besteht vielfältiges \\ Verbesserungspotential in der Entscheidungs- und \\Strategiefindung der Agenten.
+\end{itemize}
+\begin{tikzpicture}[remember picture, overlay]
+\node[left] at (current page.-20) 
+{
+    \includegraphics[width=0.3\textwidth]{figures/Thanks.pdf}
+};
+\end{tikzpicture}
 \end{frame}
+
 
 \end{document}

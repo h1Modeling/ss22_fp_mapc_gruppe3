@@ -21,48 +21,43 @@
 \headcommand {\beamer@framepages {6}{6}}
 \headcommand {\slideentry {3}{0}{3}{7/7}{}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\beamer@sectionpages {5}{7}}
-\headcommand {\beamer@subsectionpages {5}{7}}
-\headcommand {\sectionentry {4}{Agentensystem V2}{8}{Agentensystem V2}{0}}
-\headcommand {\slideentry {4}{0}{1}{8/8}{}{0}}
+\headcommand {\slideentry {3}{0}{4}{8/8}{}{0}}
 \headcommand {\beamer@framepages {8}{8}}
-\headcommand {\slideentry {4}{0}{2}{9/9}{}{0}}
+\headcommand {\slideentry {3}{0}{5}{9/9}{}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\slideentry {4}{0}{3}{10/10}{}{0}}
+\headcommand {\slideentry {3}{0}{6}{10/10}{}{0}}
 \headcommand {\beamer@framepages {10}{10}}
-\headcommand {\slideentry {4}{0}{4}{11/11}{}{0}}
+\headcommand {\slideentry {3}{0}{7}{11/11}{}{0}}
 \headcommand {\beamer@framepages {11}{11}}
-\headcommand {\beamer@sectionpages {8}{11}}
-\headcommand {\beamer@subsectionpages {8}{11}}
-\headcommand {\sectionentry {5}{Turniere}{12}{Turniere}{0}}
-\headcommand {\slideentry {5}{0}{1}{12/12}{}{0}}
+\headcommand {\beamer@sectionpages {5}{11}}
+\headcommand {\beamer@subsectionpages {5}{11}}
+\headcommand {\sectionentry {4}{Agentensystem V2}{12}{Agentensystem V2}{0}}
+\headcommand {\slideentry {4}{0}{1}{12/12}{}{0}}
 \headcommand {\beamer@framepages {12}{12}}
-\headcommand {\beamer@sectionpages {12}{12}}
-\headcommand {\beamer@subsectionpages {12}{12}}
-\headcommand {\sectionentry {6}{Rekapitulation und Ausblick}{13}{Rekapitulation und Ausblick}{0}}
-\headcommand {\slideentry {6}{0}{1}{13/13}{}{0}}
+\headcommand {\slideentry {4}{0}{2}{13/13}{}{0}}
 \headcommand {\beamer@framepages {13}{13}}
-\headcommand {\slideentry {6}{0}{2}{14/14}{}{0}}
+\headcommand {\slideentry {4}{0}{3}{14/14}{}{0}}
 \headcommand {\beamer@framepages {14}{14}}
-\headcommand {\slideentry {6}{0}{3}{15/15}{}{0}}
+\headcommand {\slideentry {4}{0}{4}{15/15}{}{0}}
 \headcommand {\beamer@framepages {15}{15}}
-\headcommand {\gdef \insertmainframenumber {15}}
-\headcommand {\partentry {Anhang}{1}}
-\headcommand {\beamer@partpages {1}{15}}
-\headcommand {\beamer@sectionpages {13}{15}}
-\headcommand {\beamer@subsectionpages {13}{15}}
-\headcommand {\beamer@appendixpages {16}}
-\headcommand {\beamer@sectionpages {16}{15}}
-\headcommand {\beamer@subsectionpages {16}{15}}
-\headcommand {\sectionentry {7}{Appendix}{16}{Appendix}{1}}
-\headcommand {\slideentry {7}{0}{1}{16/16}{}{1}}
+\headcommand {\beamer@sectionpages {12}{15}}
+\headcommand {\beamer@subsectionpages {12}{15}}
+\headcommand {\sectionentry {5}{Turniere}{16}{Turniere}{0}}
+\headcommand {\slideentry {5}{0}{1}{16/16}{}{0}}
 \headcommand {\beamer@framepages {16}{16}}
-\headcommand {\slideentry {7}{0}{2}{17/17}{}{1}}
+\headcommand {\slideentry {5}{0}{2}{17/17}{}{0}}
 \headcommand {\beamer@framepages {17}{17}}
-\headcommand {\beamer@partpages {16}{17}}
-\headcommand {\beamer@subsectionpages {16}{17}}
-\headcommand {\beamer@sectionpages {16}{17}}
-\headcommand {\beamer@documentpages {17}}
-\headcommand {\gdef \inserttotalframenumber {2}}
-\headcommand {\gdef \inserttotalframenumber {15}}
-\headcommand {\gdef \appendixtotalframenumber {2}}
+\headcommand {\slideentry {5}{0}{3}{18/18}{}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\beamer@sectionpages {16}{18}}
+\headcommand {\beamer@subsectionpages {16}{18}}
+\headcommand {\sectionentry {6}{Rekapitulation}{19}{Rekapitulation}{0}}
+\headcommand {\slideentry {6}{0}{1}{19/19}{}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\slideentry {6}{0}{2}{20/20}{}{0}}
+\headcommand {\beamer@framepages {20}{20}}
+\headcommand {\beamer@partpages {1}{20}}
+\headcommand {\beamer@subsectionpages {19}{20}}
+\headcommand {\beamer@sectionpages {19}{20}}
+\headcommand {\beamer@documentpages {20}}
+\headcommand {\gdef \inserttotalframenumber {20}}
